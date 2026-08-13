@@ -6,10 +6,21 @@ from app.api.routes import auth_router
 from app.db.session import engine
 from app.api.routes import auth_router, customer_router
 
+from app.api.routes import (
+    admin_router,
+    auth_router,
+    customer_router,
+)
+
 app = FastAPI(
     title="VanBass Music Center API",
     description="Backend API for VanBass Music Center.",
     version="0.1.0",
+)
+
+app.include_router(
+    admin_router,
+    prefix="/api",
 )
 
 app.include_router(
