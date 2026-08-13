@@ -44,11 +44,6 @@ class CustomerProfile(Base):
         nullable=False,
     )
 
-    district: Mapped[str | None] = mapped_column(
-        String(100),
-        nullable=True,
-    )
-
     ward: Mapped[str | None] = mapped_column(
         String(100),
         nullable=True,
