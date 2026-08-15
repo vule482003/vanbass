@@ -6,6 +6,7 @@ from app.api.routes.product import router as product_router
 from app.api.routes.product_image import router as product_image_router
 from app.api.routes.store_setting import router as store_settings_router
 from app.api.routes.cart import router as cart_router
+from app.api.routes.order import router as order_router
 
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "product_image_router",
     "store_settings_router",
     "cart_router",
+    "order_router",
 ]
