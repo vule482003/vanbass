@@ -46,6 +46,9 @@ htmlcov/
 .pnpm-store/
 **/.pnpm-store/
 
+# Local development scripts
+backend/scripts/
+
 # ==========================================
 # FastAPI / Application
 # ==========================================
