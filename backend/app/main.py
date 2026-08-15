@@ -15,12 +15,18 @@ from app.api.routes import (
     product_image_router,
     store_settings_router,
     cart_router,
+    order_router,
 )
 
 app = FastAPI(
     title="VanBass Music Center API",
     description="Backend API for VanBass Music Center.",
     version="0.1.0",
+)
+
+app.include_router(
+    order_router,
+    prefix="/api",
 )
 
 app.include_router(
