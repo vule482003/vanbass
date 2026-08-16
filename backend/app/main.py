@@ -13,6 +13,9 @@ from app.api.routes import (
     product_router,
     rental_request_router,
     store_settings_router,
+    cart_router,
+    order_router,
+    payment_router,
 )
 from app.db.session import engine
 
@@ -23,6 +26,11 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+app.include_router(
+    payment_router,
+    prefix="/api",
+)
 
 app.include_router(
     order_router,
