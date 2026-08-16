@@ -9,6 +9,7 @@ from app.api.routes.cart import router as cart_router
 from app.api.routes.order import router as order_router
 from app.api.routes.rental_request import router as rental_request_router
 from app.api.routes.payment import router as payment_router
+from app.api.routes.rental_payment import router as rental_payment_router
 
 
 __all__ = [
@@ -23,4 +24,5 @@ __all__ = [
     "order_router",
     "rental_request_router",
     "payment_router",
+    "rental_payment_router",
 ]
