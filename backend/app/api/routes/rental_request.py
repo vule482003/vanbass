@@ -4,7 +4,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.dependencies import get_current_user, get_db, require_admin
@@ -40,14 +40,19 @@ def calculate_number_of_days(
     return (end_date - start_date).days + 1
 
 
-def is_product_available(
+def get_reserved_quantity(
     db: Session,
     product_id: UUID,
     start_date: date,
     end_date: date,
-) -> bool:
-    overlapping_request = db.execute(
-        select(RentalRequestItem.id)
+) -> int:
+    reserved_quantity = db.execute(
+        select(
+            func.coalesce(
+                func.sum(RentalRequestItem.quantity),
+                0,
+            )
+        )
         .join(
             RentalRequest,
             RentalRequest.id == RentalRequestItem.rental_request_id,
@@ -63,10 +68,26 @@ def is_product_available(
             RentalRequest.start_date <= end_date,
             RentalRequest.end_date >= start_date,
         )
-        .limit(1)
-    ).scalar_one_or_none()
+    ).scalar_one()
 
-    return overlapping_request is None
+    return int(reserved_quantity or 0)
+
+
+def is_product_available(
+    db: Session,
+    product: Product,
+    quantity: int,
+    start_date: date,
+    end_date: date,
+) -> bool:
+    reserved_quantity = get_reserved_quantity(
+        db=db,
+        product_id=product.id,
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+    return reserved_quantity + quantity <= product.stock_quantity
 
 
 def get_rental_request_for_user(
@@ -184,9 +205,19 @@ def create_rental_request(
                 ),
             )
 
+        if item_data.quantity > product.stock_quantity:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Requested quantity for '{product.name}' "
+                    "exceeds available stock"
+                ),
+            )
+
         if not is_product_available(
             db=db,
-            product_id=product.id,
+            product=product,
+            quantity=item_data.quantity,
             start_date=data.start_date,
             end_date=data.end_date,
         ):
@@ -194,7 +225,8 @@ def create_rental_request(
                 status_code=status.HTTP_409_CONFLICT,
                 detail=(
                     f"Product '{product.name}' "
-                    "is already reserved during the requested period"
+                    "does not have enough stock during "
+                    "the requested rental period"
                 ),
             )
 
@@ -255,9 +287,7 @@ def list_my_rental_requests(
         .where(
             RentalRequest.user_id == current_user.id,
         )
-        .order_by(
-            RentalRequest.created_at.desc(),
-        )
+        .order_by(RentalRequest.created_at.desc())
     )
 
     return list(result.scalars().all())
@@ -274,9 +304,7 @@ def list_all_rental_requests(
     result = db.execute(
         select(RentalRequest)
         .options(selectinload(RentalRequest.items))
-        .order_by(
-            RentalRequest.created_at.desc(),
-        )
+        .order_by(RentalRequest.created_at.desc())
     )
 
     return list(result.scalars().all())
