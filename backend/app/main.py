@@ -2,21 +2,20 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.api.routes import auth_router
-from app.db.session import engine
-from app.api.routes import auth_router, customer_router
-
 from app.api.routes import (
     admin_router,
     auth_router,
+    cart_router,
     category_router,
     customer_router,
-    product_router,
-    product_image_router,
-    store_settings_router,
-    cart_router,
     order_router,
+    product_image_router,
+    product_router,
+    rental_request_router,
+    store_settings_router,
 )
+from app.db.session import engine
+
 
 app = FastAPI(
     title="VanBass Music Center API",
@@ -24,8 +23,14 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
 app.include_router(
     order_router,
+    prefix="/api",
+)
+
+app.include_router(
+    rental_request_router,
     prefix="/api",
 )
 
@@ -65,14 +70,10 @@ app.include_router(
 )
 
 app.include_router(
-    auth_router,
-    prefix="/api",
-)
-
-app.include_router(
     customer_router,
     prefix="/api",
 )
+
 
 @app.get("/health")
 def health_check() -> dict[str, str]:
