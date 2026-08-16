@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 from decimal import Decimal
 from uuid import UUID
 
@@ -32,6 +33,86 @@ def generate_request_number() -> str:
     return f"VR-{uuid.uuid4().hex[:12].upper()}"
 
 
+def calculate_number_of_days(
+    start_date: date,
+    end_date: date,
+) -> int:
+    return (end_date - start_date).days + 1
+
+
+def is_product_available(
+    db: Session,
+    product_id: UUID,
+    start_date: date,
+    end_date: date,
+) -> bool:
+    overlapping_request = db.execute(
+        select(RentalRequestItem.id)
+        .join(
+            RentalRequest,
+            RentalRequest.id == RentalRequestItem.rental_request_id,
+        )
+        .where(
+            RentalRequestItem.product_id == product_id,
+            RentalRequest.status.in_(
+                {
+                    RentalRequestStatus.CONTACTED,
+                    RentalRequestStatus.CONFIRMED,
+                }
+            ),
+            RentalRequest.start_date <= end_date,
+            RentalRequest.end_date >= start_date,
+        )
+        .limit(1)
+    ).scalar_one_or_none()
+
+    return overlapping_request is None
+
+
+def get_rental_request_for_user(
+    rental_request_id: UUID,
+    current_user: User,
+    db: Session,
+) -> RentalRequest:
+    rental_request = db.execute(
+        select(RentalRequest)
+        .options(selectinload(RentalRequest.items))
+        .where(
+            RentalRequest.id == rental_request_id,
+            RentalRequest.user_id == current_user.id,
+        )
+    ).scalar_one_or_none()
+
+    if rental_request is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Rental request not found",
+        )
+
+    return rental_request
+
+
+def get_rental_request_for_admin(
+    rental_request_id: UUID,
+    db: Session,
+) -> RentalRequest:
+    rental_request = db.execute(
+        select(RentalRequest)
+        .options(selectinload(RentalRequest.items))
+        .where(
+            RentalRequest.id == rental_request_id,
+        )
+    ).scalar_one_or_none()
+
+    if rental_request is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Rental request not found",
+        )
+
+    return rental_request
+
+
 @router.post(
     "",
     response_model=RentalRequestResponse,
@@ -48,7 +129,10 @@ def create_rental_request(
             detail="End date must be greater than or equal to start date",
         )
 
-    number_of_days = (data.end_date - data.start_date).days + 1
+    number_of_days = calculate_number_of_days(
+        data.start_date,
+        data.end_date,
+    )
 
     product_ids = [item.product_id for item in data.items]
 
@@ -85,13 +169,33 @@ def create_rental_request(
         if not product.rental_enabled:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Product '{product.name}' is not available for rental",
+                detail=(
+                    f"Product '{product.name}' "
+                    "is not available for rental"
+                ),
             )
 
         if product.rental_price is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Product '{product.name}' has no rental price",
+                detail=(
+                    f"Product '{product.name}' "
+                    "has no rental price"
+                ),
+            )
+
+        if not is_product_available(
+            db=db,
+            product_id=product.id,
+            start_date=data.start_date,
+            end_date=data.end_date,
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    f"Product '{product.name}' "
+                    "is already reserved during the requested period"
+                ),
             )
 
         subtotal = (
@@ -151,78 +255,12 @@ def list_my_rental_requests(
         .where(
             RentalRequest.user_id == current_user.id,
         )
-        .order_by(RentalRequest.created_at.desc())
+        .order_by(
+            RentalRequest.created_at.desc(),
+        )
     )
 
     return list(result.scalars().all())
-
-
-@router.get(
-    "/{rental_request_id}",
-    response_model=RentalRequestResponse,
-)
-def get_rental_request(
-    rental_request_id: UUID,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-) -> RentalRequest:
-    rental_request = db.execute(
-        select(RentalRequest)
-        .options(selectinload(RentalRequest.items))
-        .where(
-            RentalRequest.id == rental_request_id,
-            RentalRequest.user_id == current_user.id,
-        )
-    ).scalar_one_or_none()
-
-    if rental_request is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Rental request not found",
-        )
-
-    return rental_request
-
-
-@router.put(
-    "/{rental_request_id}/cancel",
-    response_model=RentalRequestResponse,
-)
-def cancel_rental_request(
-    rental_request_id: UUID,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-) -> RentalRequest:
-    rental_request = db.execute(
-        select(RentalRequest)
-        .options(selectinload(RentalRequest.items))
-        .where(
-            RentalRequest.id == rental_request_id,
-            RentalRequest.user_id == current_user.id,
-        )
-    ).scalar_one_or_none()
-
-    if rental_request is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Rental request not found",
-        )
-
-    if rental_request.status not in {
-        RentalRequestStatus.PENDING,
-        RentalRequestStatus.CONTACTED,
-    }:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Rental request cannot be cancelled in its current status",
-        )
-
-    rental_request.status = RentalRequestStatus.CANCELLED
-
-    db.commit()
-    db.refresh(rental_request)
-
-    return rental_request
 
 
 @router.get(
@@ -236,10 +274,27 @@ def list_all_rental_requests(
     result = db.execute(
         select(RentalRequest)
         .options(selectinload(RentalRequest.items))
-        .order_by(RentalRequest.created_at.desc())
+        .order_by(
+            RentalRequest.created_at.desc(),
+        )
     )
 
     return list(result.scalars().all())
+
+
+@router.get(
+    "/admin/{rental_request_id}",
+    response_model=RentalRequestResponse,
+)
+def get_admin_rental_request(
+    rental_request_id: UUID,
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> RentalRequest:
+    return get_rental_request_for_admin(
+        rental_request_id=rental_request_id,
+        db=db,
+    )
 
 
 @router.put(
@@ -252,29 +307,97 @@ def update_rental_request_status(
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> RentalRequest:
-    rental_request = db.execute(
-        select(RentalRequest)
-        .options(selectinload(RentalRequest.items))
-        .where(RentalRequest.id == rental_request_id)
-    ).scalar_one_or_none()
+    rental_request = get_rental_request_for_admin(
+        rental_request_id=rental_request_id,
+        db=db,
+    )
 
-    if rental_request is None:
+    current_status = rental_request.status
+    new_status = data.status
+
+    allowed_transitions = {
+        RentalRequestStatus.PENDING: {
+            RentalRequestStatus.CONTACTED,
+            RentalRequestStatus.REJECTED,
+            RentalRequestStatus.CANCELLED,
+        },
+        RentalRequestStatus.CONTACTED: {
+            RentalRequestStatus.CONFIRMED,
+            RentalRequestStatus.REJECTED,
+            RentalRequestStatus.CANCELLED,
+        },
+        RentalRequestStatus.CONFIRMED: {
+            RentalRequestStatus.COMPLETED,
+            RentalRequestStatus.CANCELLED,
+        },
+        RentalRequestStatus.REJECTED: set(),
+        RentalRequestStatus.CANCELLED: set(),
+        RentalRequestStatus.COMPLETED: set(),
+    }
+
+    if new_status not in allowed_transitions[current_status]:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Rental request not found",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                f"Cannot change rental request status "
+                f"from '{current_status.value}' "
+                f"to '{new_status.value}'"
+            ),
         )
 
-    if rental_request.status in {
-        RentalRequestStatus.CANCELLED,
-        RentalRequestStatus.COMPLETED,
+    rental_request.status = new_status
+    rental_request.admin_note = data.admin_note
+
+    db.commit()
+    db.refresh(rental_request)
+
+    return rental_request
+
+
+@router.get(
+    "/{rental_request_id}",
+    response_model=RentalRequestResponse,
+)
+def get_rental_request(
+    rental_request_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> RentalRequest:
+    return get_rental_request_for_user(
+        rental_request_id=rental_request_id,
+        current_user=current_user,
+        db=db,
+    )
+
+
+@router.put(
+    "/{rental_request_id}/cancel",
+    response_model=RentalRequestResponse,
+)
+def cancel_rental_request(
+    rental_request_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> RentalRequest:
+    rental_request = get_rental_request_for_user(
+        rental_request_id=rental_request_id,
+        current_user=current_user,
+        db=db,
+    )
+
+    if rental_request.status not in {
+        RentalRequestStatus.PENDING,
+        RentalRequestStatus.CONTACTED,
     }:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Rental request cannot be updated in its current status",
+            detail=(
+                "Rental request cannot be cancelled "
+                "in its current status"
+            ),
         )
 
-    rental_request.status = data.status
-    rental_request.admin_note = data.admin_note
+    rental_request.status = RentalRequestStatus.CANCELLED
 
     db.commit()
     db.refresh(rental_request)
