@@ -13,29 +13,33 @@ export default function ProductGrid() {
   const featuredProducts = MOCK_PRODUCTS.slice(0, 4);
 
   return (
-    <section className="products-section">
+    <section className="products-section" id="featured-products">
       <div className="container">
-        <div className="section-heading">
+        <div className="section-heading" style={{ marginBottom: "40px" }}>
           <div>
-            <p className="section-kicker">SẢN PHẨM</p>
-            <h2>Thiết bị nổi bật</h2>
+            <p className="section-kicker" style={{ fontSize: "12px", color: "#52525b", letterSpacing: "0.15em", marginBottom: "8px" }}>
+              SẢN PHẨM NỔI BẬT
+            </p>
+            <h2 style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 800, letterSpacing: "-0.03em" }}>
+              Thiết bị DJ & Âm thanh hàng đầu
+            </h2>
           </div>
 
-          <Link href="/products" className="text-link">
-            Xem tất cả <span>→</span>
+          <Link href="/products" className="text-link" style={{ fontSize: "14px", fontWeight: 600 }}>
+            Xem tất cả sản phẩm <span>→</span>
           </Link>
         </div>
 
         <div className="product-grid">
           {featuredProducts.map((product, index) => {
             return (
-              <article className="product-card" key={product.id}>
+              <article className="product-card" key={product.id} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                 <Link
                   href={`/products/${product.slug}`}
                   className="product-image"
                   aria-label={`Xem ${product.name}`}
                 >
-                  <span className="product-index">0{index + 1}</span>
+                  <span className="product-index" style={{ fontSize: "12px", fontWeight: 700 }}>0{index + 1}</span>
 
                   <div className="product-placeholder">
                     <div className="product-placeholder-top">
@@ -56,25 +60,51 @@ export default function ProductGrid() {
                   </div>
                 </Link>
 
-                <div className="product-info">
-                  <p>{product.category_name || product.brand}</p>
-                  <h3>{product.name}</h3>
-                  <span>{product.description}</span>
+                <div className="product-info" style={{ display: "flex", flexDirection: "column", flex: 1, padding: "20px 4px 0" }}>
+                  <p style={{ fontSize: "12px", fontWeight: 700, textTransform: "uppercase", color: "#71717a", letterSpacing: "0.08em", marginBottom: "6px" }}>
+                    {product.brand} • {product.category_name}
+                  </p>
 
-                  <div style={{ margin: "12px 0 8px 0" }}>
-                    <strong style={{ fontSize: "15px", color: "#fff" }}>
-                      {formatCurrency(product.sale_price)}
-                    </strong>
-                    {product.rental_enabled && (
-                      <span style={{ fontSize: "11px", color: "#22c55e", marginLeft: "10px" }}>
-                        (Thuê: {formatCurrency(product.rental_price)}/ngày)
-                      </span>
-                    )}
+                  <h3 style={{ fontSize: "18px", fontWeight: 700, lineHeight: 1.35, margin: "0 0 10px 0", color: "#18181b" }}>
+                    <Link href={`/products/${product.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                      {product.name}
+                    </Link>
+                  </h3>
+
+                  <span style={{ fontSize: "13px", lineHeight: 1.6, color: "#52525b", minHeight: "42px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", marginBottom: "14px" }}>
+                    {product.description}
+                  </span>
+
+                  <div style={{ marginTop: "auto", paddingTop: "12px", borderTop: "1px solid #e4e4e7" }}>
+                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "6px" }}>
+                      <strong style={{ fontSize: "18px", fontWeight: 800, color: "#09090b" }}>
+                        {formatCurrency(product.sale_price)}
+                      </strong>
+                      {product.rental_enabled && (
+                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#16a34a" }}>
+                          Thuê: {formatCurrency(product.rental_price)}/ngày
+                        </span>
+                      )}
+                    </div>
+
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="product-link"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginTop: "14px",
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        letterSpacing: "0.02em",
+                        color: "#09090b",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Chi tiết sản phẩm <span>→</span>
+                    </Link>
                   </div>
-
-                  <Link href={`/products/${product.slug}`} className="product-link">
-                    Xem sản phẩm <span>→</span>
-                  </Link>
                 </div>
               </article>
             );

@@ -45,8 +45,39 @@ export default function ProductDetailPage() {
     (p) => p.category_id === product.category_id && p.id !== product.id
   ).slice(0, 3);
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "image": product.images?.[0]?.image_url || "https://vanbass.vn/placeholder.png",
+    "description": product.description,
+    "sku": product.sku || product.slug,
+    "brand": {
+      "@type": "Brand",
+      "name": product.brand || "VanBass",
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://vanbass.vn/products/${product.slug}`,
+      "priceCurrency": "VND",
+      "price": product.sale_price || 0,
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": product.stock_quantity > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "VanBass Music Center",
+      },
+    },
+  };
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <Header />
 
       <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
