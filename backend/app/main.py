@@ -1,62 +1,46 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
-
-from app.api.routes import auth_router
-from app.db.session import engine
-from app.api.routes import auth_router, customer_router
 
 from app.api.routes import (
     admin_router,
     auth_router,
+    cart_router,
     category_router,
     customer_router,
-    product_router,
     product_image_router,
+    product_router,
 )
+from app.core.config import settings
+from app.db.session import engine
 
 app = FastAPI(
-    title="VanBass Music Center API",
+    title=settings.app_name,
     description="Backend API for VanBass Music Center.",
-    version="0.1.0",
+    version=settings.app_version,
 )
 
-app.include_router(
-    product_image_router,
-    prefix="/api",
+# Configure CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-app.include_router(
-    product_router,
-    prefix="/api",
-)
+# Register API Routers
+app.include_router(auth_router, prefix="/api")
+app.include_router(customer_router, prefix="/api")
+app.include_router(category_router, prefix="/api")
+app.include_router(product_router, prefix="/api")
+app.include_router(product_image_router, prefix="/api")
+app.include_router(cart_router, prefix="/api")
+app.include_router(admin_router, prefix="/api")
 
-app.include_router(
-    category_router,
-    prefix="/api",
-)
 
-app.include_router(
-    admin_router,
-    prefix="/api",
-)
-
-app.include_router(
-    auth_router,
-    prefix="/api",
-)
-
-app.include_router(
-    auth_router,
-    prefix="/api",
-)
-
-app.include_router(
-    customer_router,
-    prefix="/api",
-)
-
-@app.get("/health")
+@app.get("/health", tags=["Health"])
 def health_check() -> dict[str, str]:
     return {
         "status": "ok",
@@ -64,7 +48,7 @@ def health_check() -> dict[str, str]:
     }
 
 
-@app.get("/health/db")
+@app.get("/health/db", tags=["Health"])
 def database_health_check() -> dict[str, str]:
     try:
         with engine.connect() as connection:
