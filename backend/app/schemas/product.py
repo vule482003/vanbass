@@ -14,6 +14,11 @@ class ProductCreate(BaseModel):
     description: str | None = None
     specifications: dict | None = None
 
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+    meta_keywords: str | None = Field(default=None, max_length=255)
+    canonical_url: str | None = Field(default=None, max_length=500)
+
     sale_enabled: bool = False
     sale_price: Decimal | None = Field(default=None, gt=0)
 
@@ -31,19 +36,13 @@ class ProductCreate(BaseModel):
             raise ValueError("sale_price must be null when sale_enabled is false")
 
         if self.rental_enabled and self.rental_price is None:
-            raise ValueError(
-                "rental_price is required when rental_enabled is true"
-            )
+            raise ValueError("rental_price is required when rental_enabled is true")
 
         if not self.rental_enabled and self.rental_price is not None:
-            raise ValueError(
-                "rental_price must be null when rental_enabled is false"
-            )
+            raise ValueError("rental_price must be null when rental_enabled is false")
 
         if not self.sale_enabled and not self.rental_enabled:
-            raise ValueError(
-                "Product must be enabled for sale or rental"
-            )
+            raise ValueError("Product must be enabled for sale or rental")
 
         return self
 
@@ -56,6 +55,11 @@ class ProductUpdate(BaseModel):
     brand: str | None = Field(default=None, max_length=255)
     description: str | None = None
     specifications: dict | None = None
+
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+    meta_keywords: str | None = Field(default=None, max_length=255)
+    canonical_url: str | None = Field(default=None, max_length=500)
 
     sale_enabled: bool | None = None
     sale_price: Decimal | None = Field(default=None, gt=0)
@@ -78,6 +82,11 @@ class ProductResponse(BaseModel):
     brand: str | None
     description: str | None
     specifications: dict | None
+
+    meta_title: str | None = None
+    meta_description: str | None = None
+    meta_keywords: str | None = None
+    canonical_url: str | None = None
 
     sale_enabled: bool
     sale_price: Decimal | None

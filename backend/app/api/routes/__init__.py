@@ -3,8 +3,11 @@ from app.api.routes.auth import router as auth_router
 from app.api.routes.cart import router as cart_router
 from app.api.routes.category import router as category_router
 from app.api.routes.customer import router as customer_router
+from app.api.routes.order import router as order_router
 from app.api.routes.product import router as product_router
 from app.api.routes.product_image import router as product_image_router
+from app.api.routes.rental_request import router as rental_request_router
+from app.api.routes.upload import router as upload_router
 
 __all__ = [
     "admin_router",
@@ -12,6 +15,9 @@ __all__ = [
     "cart_router",
     "category_router",
     "customer_router",
+    "order_router",
     "product_router",
     "product_image_router",
+    "rental_request_router",
+    "upload_router",
 ]

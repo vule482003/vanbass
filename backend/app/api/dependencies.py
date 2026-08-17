@@ -31,7 +31,7 @@ def get_optional_current_user(
 
     try:
         user_id = decode_access_token(credentials.credentials)
-    except (ValueError, TypeError):
+    except Exception:
         return None
 
     user = db.get(User, user_id)
@@ -47,10 +47,10 @@ def get_current_user(
 ) -> User:
     try:
         user_id = decode_access_token(credentials.credentials)
-    except (ValueError, TypeError):
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired access token",
+            detail="Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
