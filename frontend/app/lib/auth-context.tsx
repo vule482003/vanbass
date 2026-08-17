@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 export interface AuthUser {
   id: string;
@@ -15,12 +15,14 @@ export interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => Promise<boolean>;
+  refreshSession: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,14 +30,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
       const savedToken = localStorage.getItem("vanbass_token");
+      const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
       const savedUser = localStorage.getItem("vanbass_user");
       if (savedToken && savedUser) {
         setToken(savedToken);
+        setRefreshToken(savedRefreshToken);
         setUser(JSON.parse(savedUser));
       }
     } catch (e) {
@@ -45,13 +50,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const refreshSession = useCallback(async (): Promise<boolean> => {
+    try {
+      const savedRefreshToken = localStorage.getItem("vanbass_refresh_token") || refreshToken;
+      if (!savedRefreshToken) return false;
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+      const res = await fetch(`${apiUrl}/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: savedRefreshToken }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setToken(data.access_token);
+        setRefreshToken(data.refresh_token);
+        localStorage.setItem("vanbass_token", data.access_token);
+        if (data.refresh_token) {
+          localStorage.setItem("vanbass_refresh_token", data.refresh_token);
+        }
+        return true;
+      } else {
+        // Refresh token expired - force logout
+        logout();
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  }, [refreshToken]);
+
   const login = async (email: string, password: string) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       if (response.ok) {
@@ -63,50 +99,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           full_name: data.user.email.split("@")[0],
         };
         setToken(data.access_token);
+        setRefreshToken(data.refresh_token || null);
         setUser(loggedUser);
+
         localStorage.setItem("vanbass_token", data.access_token);
+        if (data.refresh_token) {
+          localStorage.setItem("vanbass_refresh_token", data.refresh_token);
+        }
         localStorage.setItem("vanbass_user", JSON.stringify(loggedUser));
         return { success: true };
       } else {
-        const err = await response.json().catch(() => ({ detail: "Đăng nhập thất bại" }));
-        // Mock fallback if user testing offline
-        const mockUser: AuthUser = {
-          id: "usr-" + Date.now(),
-          email: email,
-          role: email.includes("admin") ? "admin" : "customer",
-          full_name: email.split("@")[0],
+        const err = await response.json().catch(() => ({ detail: "Email hoặc mật khẩu không chính xác" }));
+        return {
+          success: false,
+          error: err.detail || "Email hoặc mật khẩu không chính xác.",
         };
-        const mockToken = "mock_jwt_token_" + Date.now();
-        setToken(mockToken);
-        setUser(mockUser);
-        localStorage.setItem("vanbass_token", mockToken);
-        localStorage.setItem("vanbass_user", JSON.stringify(mockUser));
-        return { success: true };
       }
-    } catch {
-      // Offline fallback login for frontend development testing
-      const mockUser: AuthUser = {
-        id: "usr-" + Date.now(),
-        email: email,
-        role: email.includes("admin") ? "admin" : "customer",
-        full_name: email.split("@")[0],
+    } catch (err) {
+      console.error("Login network error:", err);
+      return {
+        success: false,
+        error: "Không thể kết nối đến máy chủ Backend (FastAPI). Vui lòng kiểm tra lại server.",
       };
-      const mockToken = "mock_jwt_token_" + Date.now();
-      setToken(mockToken);
-      setUser(mockUser);
-      localStorage.setItem("vanbass_token", mockToken);
-      localStorage.setItem("vanbass_user", JSON.stringify(mockUser));
-      return { success: true };
     }
   };
 
   const register = async (email: string, password: string, fullName?: string) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
       const response = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       if (response.ok) {
@@ -118,44 +142,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           full_name: fullName || data.user.email.split("@")[0],
         };
         setToken(data.access_token);
+        setRefreshToken(data.refresh_token || null);
         setUser(newUser);
+
         localStorage.setItem("vanbass_token", data.access_token);
+        if (data.refresh_token) {
+          localStorage.setItem("vanbass_refresh_token", data.refresh_token);
+        }
         localStorage.setItem("vanbass_user", JSON.stringify(newUser));
         return { success: true };
       } else {
-        const mockUser: AuthUser = {
-          id: "usr-" + Date.now(),
-          email: email,
-          role: "customer",
-          full_name: fullName || email.split("@")[0],
+        const err = await response.json().catch(() => ({ detail: "Đăng ký không thành công" }));
+        return {
+          success: false,
+          error: err.detail || "Đăng ký thất bại. Email có thể đã được sử dụng.",
         };
-        const mockToken = "mock_jwt_token_" + Date.now();
-        setToken(mockToken);
-        setUser(mockUser);
-        localStorage.setItem("vanbass_token", mockToken);
-        localStorage.setItem("vanbass_user", JSON.stringify(mockUser));
-        return { success: true };
       }
-    } catch {
-      const mockUser: AuthUser = {
-        id: "usr-" + Date.now(),
-        email: email,
-        role: "customer",
-        full_name: fullName || email.split("@")[0],
+    } catch (err) {
+      console.error("Register network error:", err);
+      return {
+        success: false,
+        error: "Không thể kết nối đến máy chủ Backend (FastAPI).",
       };
-      const mockToken = "mock_jwt_token_" + Date.now();
-      setToken(mockToken);
-      setUser(mockUser);
-      localStorage.setItem("vanbass_token", mockToken);
-      localStorage.setItem("vanbass_user", JSON.stringify(mockUser));
-      return { success: true };
     }
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
+    setRefreshToken(null);
     localStorage.removeItem("vanbass_token");
+    localStorage.removeItem("vanbass_refresh_token");
     localStorage.removeItem("vanbass_user");
   };
 
@@ -172,12 +189,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         token,
+        refreshToken,
         isAuthenticated: !!user,
         isLoading,
         login,
         register,
         logout,
         updateProfile,
+        refreshSession,
       }}
     >
       {children}

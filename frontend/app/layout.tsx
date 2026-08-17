@@ -70,13 +70,14 @@ export const metadata: Metadata = {
       "Phân phối & cho thuê thiết bị DJ, DJ Controller, Mixer, CDJ, Loa sân khấu chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng.",
   },
   robots: {
-    index: false,
-    follow: false,
-    nocache: true,
+    index: true,
+    follow: true,
     googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 };

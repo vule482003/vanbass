@@ -107,21 +107,41 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <button
-              onClick={handleLogout}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "transparent",
-                border: "1px solid rgba(239, 68, 68, 0.5)",
-                color: "#f87171",
-                fontSize: "13px",
-                fontWeight: 700,
-                cursor: "pointer",
-                transition: "background 180ms ease",
-              }}
-            >
-              Đăng xuất
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              {user.role === "admin" && (
+                <Link
+                  href="/admin"
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#ffffff",
+                    color: "#000000",
+                    fontSize: "13px",
+                    fontWeight: 800,
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  👑 Mở Trang Quản Trị (Admin) →
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "transparent",
+                  border: "1px solid rgba(239, 68, 68, 0.5)",
+                  color: "#f87171",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "background 180ms ease",
+                }}
+              >
+                Đăng xuất
+              </button>
+            </div>
           </div>
 
           {/* Grid Layout: Tabs + Content */}
