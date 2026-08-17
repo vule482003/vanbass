@@ -1,37 +1,17 @@
 import Link from "next/link";
+import { MOCK_PRODUCTS } from "../lib/mock-data";
 
-const featuredProducts = [
-  {
-    category: "DJ SYSTEM",
-    name: "AlphaTheta XDJ-AN",
-    description:
-      "Hệ thống DJ all-in-one dành cho người chơi DJ và nhu cầu biểu diễn chuyên nghiệp.",
-  },
-  {
-    category: "DJ PLAYER",
-    name: "AlphaTheta CDJ-1500X",
-    description:
-      "DJ Player thế hệ mới cho hệ thống DJ chuyên nghiệp và các không gian biểu diễn.",
-  },
-  {
-    category: "DJ MIXER",
-    name: "AlphaTheta DJM-V5",
-    description:
-      "Mixer DJ chuyên nghiệp dành cho những hệ thống cần khả năng phối trộn linh hoạt.",
-  },
-  {
-    category: "DJ CONTROLLER",
-    name: "Pioneer DJ DDJ-FLX4",
-    description:
-      "DJ Controller nhỏ gọn, phù hợp cho người mới bắt đầu và nhu cầu luyện tập tại nhà.",
-  },
-];
-
-function createProductSlug(name: string) {
-  return name.toLowerCase().replaceAll(" ", "-");
+function formatCurrency(amount?: number) {
+  if (amount === undefined || amount === null) return "Liên hệ";
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
 }
 
 export default function ProductGrid() {
+  const featuredProducts = MOCK_PRODUCTS.slice(0, 4);
+
   return (
     <section className="products-section">
       <div className="container">
@@ -48,18 +28,14 @@ export default function ProductGrid() {
 
         <div className="product-grid">
           {featuredProducts.map((product, index) => {
-            const productSlug = createProductSlug(product.name);
-
             return (
-              <article className="product-card" key={product.name}>
+              <article className="product-card" key={product.id}>
                 <Link
-                  href={`/products/${productSlug}`}
+                  href={`/products/${product.slug}`}
                   className="product-image"
                   aria-label={`Xem ${product.name}`}
                 >
-                  <span className="product-index">
-                    0{index + 1}
-                  </span>
+                  <span className="product-index">0{index + 1}</span>
 
                   <div className="product-placeholder">
                     <div className="product-placeholder-top">
@@ -70,29 +46,33 @@ export default function ProductGrid() {
 
                     <div className="product-placeholder-body">
                       <div className="product-wheel" />
-
                       <div className="product-faders">
                         <i />
                         <i />
                         <i />
                       </div>
-
                       <div className="product-wheel" />
                     </div>
                   </div>
                 </Link>
 
                 <div className="product-info">
-                  <p>{product.category}</p>
-
+                  <p>{product.category_name || product.brand}</p>
                   <h3>{product.name}</h3>
-
                   <span>{product.description}</span>
 
-                  <Link
-                    href={`/products/${productSlug}`}
-                    className="product-link"
-                  >
+                  <div style={{ margin: "12px 0 8px 0" }}>
+                    <strong style={{ fontSize: "15px", color: "#fff" }}>
+                      {formatCurrency(product.sale_price)}
+                    </strong>
+                    {product.rental_enabled && (
+                      <span style={{ fontSize: "11px", color: "#22c55e", marginLeft: "10px" }}>
+                        (Thuê: {formatCurrency(product.rental_price)}/ngày)
+                      </span>
+                    )}
+                  </div>
+
+                  <Link href={`/products/${product.slug}`} className="product-link">
                     Xem sản phẩm <span>→</span>
                   </Link>
                 </div>
