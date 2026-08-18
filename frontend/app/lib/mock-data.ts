@@ -2,28 +2,28 @@ import { Category, Product } from "./types";
 
 export const MOCK_CATEGORIES: Category[] = [
   {
-    id: "cat-1",
+    id: "a0000001-0000-4000-8000-000000000001",
     name: "Thiết bị DJ",
     slug: "dj",
     number: "01",
     description: "DJ Controller, CDJ, All-In-One DJ Systems và thiết bị biểu diễn chuyên nghiệp.",
   },
   {
-    id: "cat-2",
+    id: "a0000001-0000-4000-8000-000000000002",
     name: "Mixer & Bàn trộn",
     slug: "mixer",
     number: "02",
     description: "DJ Mixers 2 kênh, 4 kênh, 6 kênh và bàn trộn âm thanh phòng thu / sự kiện.",
   },
   {
-    id: "cat-3",
+    id: "a0000001-0000-4000-8000-000000000003",
     name: "Loa & Pro Audio",
     slug: "audio",
     number: "03",
     description: "Loa kiểm âm Monitor, Loa di động biểu diễn, Subwoofer và hệ thống âm thanh sân khấu.",
   },
   {
-    id: "cat-4",
+    id: "a0000001-0000-4000-8000-000000000004",
     name: "Tai nghe & Phụ kiện",
     slug: "accessories",
     number: "04",
@@ -33,8 +33,8 @@ export const MOCK_CATEGORIES: Category[] = [
 
 export const MOCK_PRODUCTS: Product[] = [
   {
-    id: "gmusic-1",
-    category_id: "cat-1",
+    id: "b0000001-0000-4000-8000-000000000001",
+    category_id: "a0000001-0000-4000-8000-000000000001",
     category_name: "Thiết bị DJ",
     category_slug: "dj",
     name: "Máy DJ AlphaTheta XDJ-AN",
@@ -59,8 +59,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-2",
-    category_id: "cat-1",
+    id: "b0000001-0000-4000-8000-000000000002",
+    category_id: "a0000001-0000-4000-8000-000000000001",
     category_name: "Thiết bị DJ",
     category_slug: "dj",
     name: "Máy DJ AlphaTheta CDJ-1500X",
@@ -85,8 +85,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-3",
-    category_id: "cat-1",
+    id: "b0000001-0000-4000-8000-000000000003",
+    category_id: "a0000001-0000-4000-8000-000000000001",
     category_name: "Thiết bị DJ",
     category_slug: "dj",
     name: "Đầu phát DJ AlphaTheta CDJ-3000X",
@@ -110,8 +110,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-4",
-    category_id: "cat-2",
+    id: "b0000001-0000-4000-8000-000000000004",
+    category_id: "a0000001-0000-4000-8000-000000000002",
     category_name: "Mixer & Bàn trộn",
     category_slug: "mixer",
     name: "Mixer AlphaTheta DJM-V5",
@@ -135,8 +135,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-5",
-    category_id: "cat-1",
+    id: "b0000001-0000-4000-8000-000000000005",
+    category_id: "a0000001-0000-4000-8000-000000000001",
     category_name: "Thiết bị DJ",
     category_slug: "dj",
     name: "Effector AlphaTheta RMX-Ignite",
@@ -159,8 +159,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-6",
-    category_id: "cat-1",
+    id: "b0000001-0000-4000-8000-000000000006",
+    category_id: "a0000001-0000-4000-8000-000000000001",
     category_name: "Thiết bị DJ",
     category_slug: "dj",
     name: "DJ Controller Pioneer DJ DDJ-FLX4-W",
@@ -185,8 +185,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-7",
-    category_id: "cat-4",
+    id: "b0000001-0000-4000-8000-000000000007",
+    category_id: "a0000001-0000-4000-8000-000000000004",
     category_name: "Tai nghe & Phụ kiện",
     category_slug: "accessories",
     name: "Tai nghe Bluetooth Pioneer DJ HDJ-CUE1BT-R",
@@ -211,8 +211,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-8",
-    category_id: "cat-4",
+    id: "b0000001-0000-4000-8000-000000000008",
+    category_id: "a0000001-0000-4000-8000-000000000004",
     category_name: "Tai nghe & Phụ kiện",
     category_slug: "accessories",
     name: "Tai nghe không dây AlphaTheta HDJ-F10",
@@ -236,8 +236,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-9",
-    category_id: "cat-2",
+    id: "b0000001-0000-4000-8000-000000000009",
+    category_id: "a0000001-0000-4000-8000-000000000002",
     category_name: "Mixer & Bàn trộn",
     category_slug: "mixer",
     name: "Mixer 4 kênh Pioneer DJ DJM-A9",
@@ -260,8 +260,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-10",
-    category_id: "cat-3",
+    id: "b0000001-0000-4000-8000-000000000010",
+    category_id: "a0000001-0000-4000-8000-000000000003",
     category_name: "Loa & Pro Audio",
     category_slug: "audio",
     name: "Loa di động không dây AlphaTheta WAVE-EIGHT",
@@ -285,8 +285,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-11",
-    category_id: "cat-3",
+    id: "b0000001-0000-4000-8000-000000000011",
+    category_id: "a0000001-0000-4000-8000-000000000003",
     category_name: "Loa & Pro Audio",
     category_slug: "audio",
     name: "Hệ thống loa cột JBL EON ONE MK2",
@@ -310,8 +310,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_active: true,
   },
   {
-    id: "gmusic-12",
-    category_id: "cat-3",
+    id: "b0000001-0000-4000-8000-000000000012",
+    category_id: "a0000001-0000-4000-8000-000000000003",
     category_name: "Loa & Pro Audio",
     category_slug: "audio",
     name: "Củ loa rời Subwoofer B&C 18TBX100 (Ý)",

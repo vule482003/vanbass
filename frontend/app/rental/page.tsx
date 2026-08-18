@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
-import { submitRentalRequest } from "../lib/api";
+import { fetchProducts, submitRentalRequest } from "../lib/api";
+import { Product } from "../lib/types";
+import { useAuth } from "../lib/auth-context";
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("vi-VN", {
@@ -18,19 +20,48 @@ function formatCurrency(amount: number) {
 function RentalContent() {
   const searchParams = useSearchParams();
   const preselectedSlug = searchParams.get("product");
+  const { user, token } = useAuth();
 
-  const rentalProducts = useMemo(() => {
-    return MOCK_PRODUCTS.filter((p) => p.rental_enabled);
+  const [rentalProducts, setRentalProducts] = useState<Product[]>(
+    MOCK_PRODUCTS.filter((p) => p.rental_enabled)
+  );
+
+  // Fetch live rental-enabled products
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const liveList = await fetchProducts({ rental_only: true });
+        if (liveList && liveList.length > 0) {
+          setRentalProducts(liveList);
+        }
+      } catch (e) {
+        console.error("Failed to load rental products:", e);
+      }
+    };
+    loadProducts();
   }, []);
 
   // Selected items: productId -> quantity
-  const [selectedItems, setSelectedItems] = useState<Record<string, number>>(() => {
-    if (preselectedSlug) {
-      const found = rentalProducts.find((p) => p.slug === preselectedSlug);
-      if (found) return { [found.id]: 1 };
+  const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (rentalProducts.length > 0) {
+      const hasValidSelectedProduct = Object.keys(selectedItems).some((id) =>
+        rentalProducts.some((p) => p.id === id)
+      );
+
+      if (!hasValidSelectedProduct) {
+        if (preselectedSlug) {
+          const found = rentalProducts.find((p) => p.slug === preselectedSlug);
+          if (found) {
+            setSelectedItems({ [found.id]: 1 });
+            return;
+          }
+        }
+        setSelectedItems({ [rentalProducts[0].id]: 1 });
+      }
     }
-    return { [rentalProducts[0]?.id || ""]: 1 };
-  });
+  }, [rentalProducts, preselectedSlug, selectedItems]);
 
   const todayStr = new Date().toISOString().split("T")[0];
   const tomorrow = new Date();
@@ -45,14 +76,24 @@ function RentalContent() {
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
+  const [submittedRequestNumber, setSubmittedRequestNumber] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Pre-fill user info if logged in
+  useEffect(() => {
+    if (user) {
+      if (!fullName && user.full_name) setFullName(user.full_name);
+      if (!phone && user.phone) setPhone(user.phone);
+      if (!email && user.email) setEmail(user.email);
+    }
+  }, [user, fullName, phone, email]);
 
   // Calculate days
   const numberOfDays = useMemo(() => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = Math.max(0, end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     return Math.max(1, diffDays);
   }, [startDate, endDate]);
 
@@ -66,8 +107,7 @@ function RentalContent() {
       const product = rentalProducts.find((p) => p.id === productId);
       if (product && product.rental_price) {
         total += product.rental_price * qty * numberOfDays;
-        // Estimated deposit is roughly 30% of sale price or fixed amount
-        deposit += (product.sale_price ? product.sale_price * 0.3 : product.rental_price * 3) * qty;
+        deposit += (product.sale_price ? product.sale_price * 0.3 : product.rental_price * 2) * qty;
       }
     }
 
@@ -97,32 +137,48 @@ function RentalContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !phone) {
-      alert("Vui lòng điền họ tên và số điện thoại.");
+      setErrorMsg("Vui lòng điền đầy đủ họ tên và số điện thoại.");
       return;
     }
 
     const items = Object.entries(selectedItems)
       .filter(([_, qty]) => qty > 0)
-      .map(([pid, qty]) => ({ product_id: pid, quantity: qty }));
+      .map(([pid, qty]) => {
+        const prod = rentalProducts.find((p) => p.id === pid);
+        return {
+          product_id: pid,
+          quantity: qty,
+          daily_rate: prod?.rental_price || 0,
+        };
+      });
 
     if (items.length === 0) {
-      alert("Vui lòng chọn ít nhất một thiết bị cần thuê.");
+      setErrorMsg("Vui lòng chọn ít nhất một thiết bị cần thuê.");
       return;
     }
 
     setSubmitting(true);
+    setErrorMsg("");
+
     const result = await submitRentalRequest({
       start_date: startDate,
       end_date: endDate,
-      pickup_location: pickupLocation,
-      customer_note: notes,
-      full_name: fullName,
-      phone: phone,
-      email: email,
+      delivery_address: pickupLocation,
+      note: notes,
+      customer_name: fullName.trim(),
+      customer_phone: phone.trim(),
+      customer_email: email.trim() || undefined,
       items: items,
+      token: token,
     });
+
     setSubmitting(false);
-    setSubmittedMessage(result.message);
+
+    if (result.success) {
+      setSubmittedRequestNumber(result.request_number || "RENT-SUCCESS");
+    } else {
+      setErrorMsg(typeof result.message === "string" ? result.message : "Đã xảy ra lỗi khi gửi yêu cầu thuê.");
+    }
   };
 
   return (
@@ -149,112 +205,110 @@ function RentalContent() {
             </p>
           </div>
 
-          {submittedMessage ? (
+          {submittedRequestNumber ? (
             <div
               style={{
                 backgroundColor: "var(--surface)",
                 border: "1px solid #22c55e",
                 padding: "48px 32px",
                 textAlign: "center",
-                maxWidth: "600px",
+                maxWidth: "640px",
                 margin: "40px auto",
               }}
             >
-              <div style={{ fontSize: "48px", marginBottom: "16px" }}>✅</div>
-              <h2 style={{ fontSize: "24px", color: "#fff", marginBottom: "12px" }}>
-                Yêu cầu thuê đã được gửi thành công!
+              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎉</div>
+              <h2 style={{ fontSize: "24px", color: "#fff", marginBottom: "12px", fontWeight: 800 }}>
+                Yêu cầu thuê thiết bị đã được tiếp nhận!
               </h2>
-              <p style={{ color: "#a1a1aa", lineHeight: 1.7, marginBottom: "28px" }}>
-                {submittedMessage}
+              <p style={{ color: "#a1a1aa", lineHeight: 1.7, marginBottom: "24px" }}>
+                Mã hợp đồng thuê chính thức:{" "}
+                <strong style={{ color: "#22c55e", fontSize: "18px" }}>{submittedRequestNumber}</strong>
+                <br />
+                Đội ngũ kỹ thuật VanBass sẽ liên hệ trực tiếp với bạn qua số điện thoại <strong>{phone}</strong> trong vòng 15 phút để xác nhận thời gian giao máy và địa chỉ sự kiện.
               </p>
-              <button
-                onClick={() => setSubmittedMessage(null)}
-                className="button button-primary"
-                style={{ cursor: "pointer" }}
-              >
-                Gửi yêu cầu thuê khác
-              </button>
+              <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+                <button
+                  onClick={() => {
+                    setSubmittedRequestNumber(null);
+                    setSelectedItems({});
+                  }}
+                  className="button button-secondary"
+                >
+                  Tạo yêu cầu thuê mới
+                </button>
+                <Link href="/" className="button button-primary">
+                  Về trang chủ
+                </Link>
+              </div>
             </div>
           ) : (
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
                 gap: "48px",
                 alignItems: "start",
               }}
             >
-              {/* Left Column: Equipment Selector */}
+              {/* Left Column: Equipment Selection */}
               <div>
-                <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "20px" }}>
-                  1. Chọn danh sách thiết bị cần thuê
-                </h3>
+                <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 20px 0", color: "#fff" }}>
+                  1. Chọn thiết bị cần thuê
+                </h2>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  {rentalProducts.map((p) => {
-                    const isSelected = !!selectedItems[p.id];
-                    const qty = selectedItems[p.id] || 0;
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "32px" }}>
+                  {rentalProducts.map((product) => {
+                    const isSelected = !!selectedItems[product.id];
+                    const qty = selectedItems[product.id] || 1;
 
                     return (
                       <div
-                        key={p.id}
+                        key={product.id}
                         style={{
-                          padding: "16px",
-                          backgroundColor: isSelected ? "rgba(255,255,255,0.06)" : "var(--surface)",
+                          backgroundColor: "var(--surface)",
                           border: isSelected ? "1px solid #fff" : "1px solid var(--border)",
+                          padding: "20px",
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          transition: "all 180ms ease",
+                          gap: "16px",
+                          transition: "border-color 180ms ease",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: 1 }}>
                           <input
                             type="checkbox"
                             checked={isSelected}
-                            onChange={() => toggleProduct(p.id)}
-                            style={{ width: "18px", height: "18px", cursor: "pointer" }}
+                            onChange={() => toggleProduct(product.id)}
+                            style={{ width: "18px", height: "18px", accentColor: "#fff", cursor: "pointer" }}
                           />
                           <div>
-                            <h4 style={{ fontSize: "14px", margin: "0 0 4px 0", color: "#fff" }}>
-                              {p.name}
-                            </h4>
-                            <span style={{ fontSize: "12px", color: "#22c55e", fontWeight: 600 }}>
-                              {formatCurrency(p.rental_price || 0)} / ngày
+                            <span style={{ fontSize: "11px", color: "#71717a", textTransform: "uppercase", fontWeight: 700 }}>
+                              {product.brand || "VanBass"}
+                            </span>
+                            <h3 style={{ fontSize: "15px", fontWeight: 700, margin: "2px 0 4px 0", color: "#fff" }}>
+                              {product.name}
+                            </h3>
+                            <span style={{ fontSize: "14px", fontWeight: 700, color: "#22c55e" }}>
+                              {formatCurrency(product.rental_price || 0)} / ngày
                             </span>
                           </div>
                         </div>
 
                         {isSelected && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "center", border: "1px solid var(--border)", backgroundColor: "#000" }}>
                             <button
-                              type="button"
-                              onClick={() => updateQuantity(p.id, -1)}
-                              style={{
-                                width: "28px",
-                                height: "28px",
-                                background: "#000",
-                                border: "1px solid var(--border)",
-                                color: "#fff",
-                                cursor: "pointer",
-                              }}
+                              onClick={() => updateQuantity(product.id, -1)}
+                              style={{ padding: "6px 12px", background: "none", border: "none", color: "#fff", cursor: "pointer" }}
                             >
                               -
                             </button>
-                            <span style={{ fontSize: "13px", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
+                            <span style={{ padding: "6px 10px", color: "#fff", fontSize: "13px", fontWeight: 700 }}>
                               {qty}
                             </span>
                             <button
-                              type="button"
-                              onClick={() => updateQuantity(p.id, 1)}
-                              style={{
-                                width: "28px",
-                                height: "28px",
-                                background: "#000",
-                                border: "1px solid var(--border)",
-                                color: "#fff",
-                                cursor: "pointer",
-                              }}
+                              onClick={() => updateQuantity(product.id, 1)}
+                              style={{ padding: "6px 12px", background: "none", border: "none", color: "#fff", cursor: "pointer" }}
                             >
                               +
                             </button>
@@ -266,7 +320,7 @@ function RentalContent() {
                 </div>
               </div>
 
-              {/* Right Column: Date Picker & Booking Form */}
+              {/* Right Column: Time, Customer Details & Summary */}
               <div
                 style={{
                   backgroundColor: "var(--surface)",
@@ -274,213 +328,124 @@ function RentalContent() {
                   padding: "32px",
                 }}
               >
-                <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "24px" }}>
-                  2. Thời gian thuê & Thông tin liên hệ
-                </h3>
+                <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
+                  2. Thời gian & Thông tin nhận máy
+                </h2>
 
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  {/* Date Pickers */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                {errorMsg && (
+                  <div style={{ padding: "10px 14px", backgroundColor: "rgba(239,68,68,0.15)", border: "1px solid #ef4444", color: "#fca5a5", fontSize: "13px", marginBottom: "20px" }}>
+                    {errorMsg}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+                  {/* Date Range */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                        Ngày bắt đầu nhận máy:
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                        Ngày nhận máy *
                       </label>
                       <input
                         type="date"
-                        min={todayStr}
+                        required
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          backgroundColor: "#000",
-                          border: "1px solid var(--border)",
-                          color: "#fff",
-                          fontSize: "13px",
-                          outline: "none",
-                        }}
-                        required
+                        style={{ width: "100%", padding: "10px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                       />
                     </div>
                     <div>
-                      <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                        Ngày hoàn trả thiết bị:
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                        Ngày trả máy *
                       </label>
                       <input
                         type="date"
-                        min={startDate}
+                        required
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          backgroundColor: "#000",
-                          border: "1px solid var(--border)",
-                          color: "#fff",
-                          fontSize: "13px",
-                          outline: "none",
-                        }}
-                        required
+                        style={{ width: "100%", padding: "10px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                       />
                     </div>
                   </div>
 
                   {/* Customer Info */}
-                  <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                      Họ và tên người thuê:
+                  <div style={{ marginBottom: "16px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                      Họ và tên người thuê *
                     </label>
                     <input
                       type="text"
-                      placeholder="Nguyễn Văn A"
+                      required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
-                        color: "#fff",
-                        fontSize: "13px",
-                        outline: "none",
-                      }}
-                      required
+                      placeholder="Nguyễn Văn A"
+                      style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                     />
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                        Số điện thoại:
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                        Số điện thoại *
                       </label>
                       <input
                         type="tel"
-                        placeholder="0706 067 799"
+                        required
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#000",
-                          border: "1px solid var(--border)",
-                          color: "#fff",
-                          fontSize: "13px",
-                          outline: "none",
-                        }}
-                        required
+                        placeholder="0905 123 456"
+                        style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                       />
                     </div>
                     <div>
-                      <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                        Email (nếu có):
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                        Email liên hệ
                       </label>
                       <input
                         type="email"
-                        placeholder="email@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#000",
-                          border: "1px solid var(--border)",
-                          color: "#fff",
-                          fontSize: "13px",
-                          outline: "none",
-                        }}
+                        placeholder="example@gmail.com"
+                        style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                      Địa điểm nhận máy:
+                  <div style={{ marginBottom: "24px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                      Địa điểm nhận thiết bị hoặc giao tận nơi
                     </label>
-                    <select
+                    <input
+                      type="text"
                       value={pickupLocation}
                       onChange={(e) => setPickupLocation(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
-                        color: "#fff",
-                        fontSize: "13px",
-                        outline: "none",
-                      }}
-                    >
-                      <option value="Showroom VanBass (Đà Nẵng)">Nhận trực tiếp tại Showroom Đà Nẵng</option>
-                      <option value="Giao tận nơi (Sự kiện / Quán bar / Khách sạn)">
-                        Giao tận nơi theo địa chỉ yêu cầu
-                      </option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                      Ghi chú thêm (yêu cầu kỹ thuật viên, cáp kết nối, micro...):
-                    </label>
-                    <textarea
-                      rows={3}
-                      placeholder="Ví dụ: Cần hỗ trợ setup tại bãi biển Mỹ Khê lúc 17h..."
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
-                        color: "#fff",
-                        fontSize: "13px",
-                        outline: "none",
-                      }}
+                      placeholder="Showroom VanBass hoặc Địa chỉ sự kiện..."
+                      style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                     />
                   </div>
 
                   {/* Summary Box */}
-                  <div
-                    style={{
-                      padding: "20px",
-                      backgroundColor: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "13px" }}>
-                      <span style={{ color: "#888" }}>Thời gian thuê:</span>
-                      <span style={{ color: "#fff", fontWeight: 600 }}>{numberOfDays} ngày</span>
+                  <div style={{ padding: "20px", backgroundColor: "#000", border: "1px solid var(--border)", marginBottom: "24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "13px", color: "#a1a1aa" }}>
+                      <span>Tổng thời gian thuê:</span>
+                      <strong style={{ color: "#fff" }}>{numberOfDays} ngày</strong>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "13px" }}>
-                      <span style={{ color: "#888" }}>Tiền cọc ước tính:</span>
-                      <span style={{ color: "#a1a1aa" }}>{formatCurrency(estimatedDeposit)}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "14px" }}>
+                      <span style={{ color: "#a1a1aa" }}>Tổng tiền thuê máy:</span>
+                      <strong style={{ color: "#22c55e", fontSize: "16px" }}>{formatCurrency(totalRental)}</strong>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        borderTop: "1px solid rgba(255,255,255,0.1)",
-                        paddingTop: "12px",
-                        marginTop: "8px",
-                      }}
-                    >
-                      <strong style={{ fontSize: "14px", color: "#fff" }}>Tổng tiền thuê dự kiến:</strong>
-                      <strong style={{ fontSize: "18px", color: "#22c55e" }}>
-                        {formatCurrency(totalRental)}
-                      </strong>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "#a1a1aa", paddingTop: "8px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                      <span>Tiền cọc thiết bị dự kiến:</span>
+                      <span style={{ color: "#eab308" }}>{formatCurrency(estimatedDeposit)}</span>
                     </div>
                   </div>
 
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="button button-primary"
-                    style={{
-                      width: "100%",
-                      justifyContent: "center",
-                      cursor: submitting ? "not-allowed" : "pointer",
-                      opacity: submitting ? 0.7 : 1,
-                    }}
+                    className="button button-primary button-lg"
+                    style={{ width: "100%", cursor: submitting ? "not-allowed" : "pointer" }}
                   >
-                    {submitting ? "Đang gửi yêu cầu..." : "Gửi yêu cầu đặt thuê thiết bị"}
+                    {submitting ? "Đang gửi yêu cầu..." : `Gửi Yêu Cầu Thuê (${formatCurrency(totalRental)})`}
                   </button>
                 </form>
               </div>
@@ -496,7 +461,13 @@ function RentalContent() {
 
 export default function RentalPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", backgroundColor: "#090909" }} />}>
+    <Suspense
+      fallback={
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#090909", color: "#fff" }}>
+          Đang tải dịch vụ cho thuê VanBass...
+        </div>
+      }
+    >
       <RentalContent />
     </Suspense>
   );

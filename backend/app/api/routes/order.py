@@ -1,128 +1,149 @@
-import random
-import string
-from datetime import datetime, timezone
-from decimal import Decimal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_user, get_db, require_admin
-from app.models.order import Order, OrderStatus, PaymentStatus
-from app.models.order_item import OrderItem
-from app.models.product import Product
-from app.models.user import User
-from app.schemas.order import OrderCreateRequest, OrderListResponse, OrderResponse
+from app.api.dependencies import get_db, get_optional_current_user, require_admin
+from app.core.rate_limit import rate_limit_order
+from app.models.order import Order, OrderStatus
+from app.models.user import User, UserRole
+from app.schemas.order import (
+    OrderCancelRequest,
+    OrderCreateRequest,
+    OrderListResponse,
+    OrderResponse,
+    OrderStatusUpdate,
+)
+from app.services.order_service import OrderService
+from app.services.user_service import UserService
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-def generate_order_number() -> str:
-    now_str = datetime.now(timezone.utc).strftime("%Y%m%d")
-    rand_chars = "".join(random.choices(string.digits, k=4))
-    return f"VB-{now_str}-{rand_chars}"
-
-
-@router.post("", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=OrderResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(rate_limit_order)],
+)
 def create_order(
     payload: OrderCreateRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User | None = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ) -> Order:
-    subtotal = Decimal(0)
-    order_items: list[OrderItem] = []
-
-    for item_in in payload.items:
-        product = db.get(Product, item_in.product_id)
-        if not product or not product.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Sản phẩm {item_in.product_id} không tồn tại hoặc đã ngừng kinh doanh",
-            )
-        if product.stock_quantity < item_in.quantity:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Sản phẩm {product.name} chỉ còn {product.stock_quantity} cái trong kho",
-            )
-
-        unit_price = product.sale_price if product.sale_price is not None else Decimal(0)
-        line_total = unit_price * item_in.quantity
-        subtotal += line_total
-
-        # Deduct stock
-        product.stock_quantity -= item_in.quantity
-
-        order_item = OrderItem(
-            product_id=product.id,
-            product_name=product.name,
-            product_sku=product.sku,
-            unit_price=unit_price,
-            quantity=item_in.quantity,
-            line_total=line_total,
-        )
-        order_items.append(order_item)
-
-    shipping_fee = Decimal(0)
-    total_amount = subtotal + shipping_fee
-
-    order = Order(
-        user_id=current_user.id,
-        order_number=generate_order_number(),
-        status=OrderStatus.PENDING,
-        payment_status=PaymentStatus.UNPAID,
-        subtotal=subtotal,
-        shipping_fee=shipping_fee,
-        total_amount=total_amount,
-        shipping_name=payload.shipping_name,
-        shipping_phone=payload.shipping_phone,
-        shipping_address=payload.shipping_address,
-        customer_note=payload.customer_note,
-        items=order_items,
+    """
+    Create a new order with atomic stock deduction and race condition protection.
+    """
+    user_id = UserService.resolve_user_id(
+        db=db,
+        current_user=current_user,
+        phone=payload.shipping_phone,
     )
+    return OrderService.create_order(payload=payload, user_id=user_id, db=db)
 
-    db.add(order)
-    db.commit()
-    db.refresh(order)
-    return order
+
+@router.get("", response_model=OrderListResponse)
+def list_orders(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=100),
+    status_filter: OrderStatus | None = Query(None, alias="status"),
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> OrderListResponse:
+    """
+    Admin: List all orders with pagination and optional status filter.
+    """
+    query = select(Order)
+    if status_filter:
+        query = query.where(Order.status == status_filter)
+
+    orders = db.execute(query.order_by(Order.created_at.desc()).offset(skip).limit(limit)).scalars().all()
+    return OrderListResponse(items=list(orders), total=len(orders))
 
 
 @router.get("/me", response_model=OrderListResponse)
-def get_my_orders(
-    current_user: User = Depends(get_current_user),
+def list_my_orders(
+    current_user: User = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
-) -> dict:
-    orders = (
-        db.query(Order)
-        .filter(Order.user_id == current_user.id)
-        .order_date(Order.created_at.desc()) if hasattr(db.query(Order), "order_date") else db.query(Order).filter(Order.user_id == current_user.id).order_by(Order.created_at.desc()).all()
-    )
-    return {"items": orders, "total": len(orders)}
+) -> OrderListResponse:
+    """
+    Customer: List current user's order history.
+    """
+    if not current_user:
+        return OrderListResponse(items=[], total=0)
+
+    query = select(Order).where(Order.user_id == current_user.id).order_by(Order.created_at.desc())
+    orders = db.execute(query).scalars().all()
+    return OrderListResponse(items=list(orders), total=len(orders))
 
 
 @router.get("/{order_id}", response_model=OrderResponse)
-def get_order_by_id(
+def get_order(
     order_id: UUID,
-    current_user: User = Depends(get_current_user),
+    current_user: User | None = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ) -> Order:
+    """
+    Get detailed order information by ID.
+    """
     order = db.get(Order, order_id)
     if not order:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Không tìm thấy đơn hàng",
         )
-    if order.user_id != current_user.id and current_user.role != "admin":
+
+    if current_user and current_user.role != UserRole.ADMIN and order.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xem đơn hàng này",
         )
+
     return order
 
 
-@router.get("", response_model=OrderListResponse)
-def list_all_orders_admin(
-    _: User = Depends(require_admin),
+@router.patch("/{order_id}/status", response_model=OrderResponse)
+def update_order_status(
+    order_id: UUID,
+    payload: OrderStatusUpdate,
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
-) -> dict:
-    orders = db.query(Order).order_by(Order.created_at.desc()).all()
-    return {"items": orders, "total": len(orders)}
+) -> Order:
+    """
+    Admin: Advance or transition order status and/or payment status.
+    """
+    return OrderService.update_order_status(
+        order_id=order_id,
+        db=db,
+        new_status=payload.status,
+        new_payment_status=payload.payment_status,
+        admin_note=payload.note,
+    )
+
+
+@router.post(
+    "/{order_id}/cancel",
+    response_model=OrderResponse,
+    dependencies=[Depends(rate_limit_order)],
+)
+def cancel_order(
+    order_id: UUID,
+    payload: OrderCancelRequest | None = None,
+    current_user: User = Depends(get_optional_current_user),
+    db: Session = Depends(get_db),
+) -> Order:
+    """
+    Cancel an order and trigger immediate inventory restock.
+    """
+    is_admin = current_user.role == UserRole.ADMIN if current_user else False
+    current_user_id = current_user.id if current_user else None
+    reason = payload.reason if payload else None
+
+    return OrderService.cancel_order(
+        order_id=order_id,
+        current_user_id=current_user_id,
+        is_admin=is_admin,
+        reason=reason,
+        db=db,
+    )

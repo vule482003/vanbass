@@ -312,6 +312,60 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: string, newPaymentStatus?: string) => {
+    try {
+      const payload: Record<string, string> = {};
+      if (newStatus) payload.status = newStatus;
+      if (newPaymentStatus) payload.payment_status = newPaymentStatus;
+
+      const res = await fetch(`${apiUrl}/orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setActionSuccessMsg(`✓ Đã cập nhật trạng thái đơn hàng thành công!`);
+        loadAllData();
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật" }));
+        setActionErrorMsg(err.detail || "Không thể cập nhật trạng thái đơn hàng.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối đến máy chủ.");
+    }
+  };
+
+  const handleUpdateRentalStatus = async (rentalId: string, newStatus: string, newPaymentStatus?: string) => {
+    try {
+      const payload: Record<string, string> = {};
+      if (newStatus) payload.status = newStatus;
+      if (newPaymentStatus) payload.payment_status = newPaymentStatus;
+
+      const res = await fetch(`${apiUrl}/rental-requests/${rentalId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setActionSuccessMsg(`✓ Đã cập nhật trạng thái hợp đồng thuê thành công!`);
+        loadAllData();
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật" }));
+        setActionErrorMsg(err.detail || "Không thể cập nhật trạng thái hợp đồng thuê.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối đến máy chủ.");
+    }
+  };
+
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#090909", color: "#fff" }}>
@@ -607,7 +661,7 @@ export default function AdminDashboardPage() {
           {activeTab === "orders" && (
             <div>
               <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                Danh Sách Đơn Mua Hàng
+                Danh Sách Đơn Mua Hàng ({orders.length})
               </h2>
               {orders.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", backgroundColor: "#121212", color: "#71717a" }}>
@@ -622,7 +676,8 @@ export default function AdminDashboardPage() {
                         <th style={{ padding: "16px" }}>Khách Hàng & SĐT</th>
                         <th style={{ padding: "16px" }}>Địa Chỉ Giao Hàng</th>
                         <th style={{ padding: "16px" }}>Tổng Tiền</th>
-                        <th style={{ padding: "16px" }}>Trạng Thái</th>
+                        <th style={{ padding: "16px" }}>Trạng Thái Đơn</th>
+                        <th style={{ padding: "16px" }}>Thanh Toán</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -630,18 +685,54 @@ export default function AdminDashboardPage() {
                         <tr key={o.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                           <td style={{ padding: "16px" }}>
                             <strong style={{ color: "#fff" }}>{o.order_number}</strong>
-                            <div style={{ fontSize: "12px", color: "#71717a" }}>{new Date(o.created_at).toLocaleDateString("vi-VN")}</div>
+                            <div style={{ fontSize: "12px", color: "#71717a" }}>{new Date(o.created_at).toLocaleString("vi-VN")}</div>
                           </td>
                           <td style={{ padding: "16px", color: "#fff" }}>
                             <div>{o.shipping_name}</div>
                             <div style={{ fontSize: "12px", color: "#a1a1aa" }}>{o.shipping_phone}</div>
                           </td>
-                          <td style={{ padding: "16px", color: "#d4d4d8", maxWidth: "260px" }}>{o.shipping_address}</td>
+                          <td style={{ padding: "16px", color: "#d4d4d8", maxWidth: "240px" }}>{o.shipping_address}</td>
                           <td style={{ padding: "16px", color: "#fff", fontWeight: 800 }}>{formatCurrency(o.total_amount)}</td>
                           <td style={{ padding: "16px" }}>
-                            <span style={{ padding: "4px 10px", backgroundColor: "rgba(34, 197, 94, 0.15)", color: "#4ade80", fontSize: "12px", fontWeight: 700 }}>
-                              {o.status.toUpperCase()}
-                            </span>
+                            <select
+                              value={o.status}
+                              onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
+                              style={{
+                                padding: "6px 10px",
+                                backgroundColor: "#1e1e24",
+                                color: "#fff",
+                                border: "1px solid #3f3f46",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              <option value="pending">⏳ Chờ xử lý</option>
+                              <option value="confirmed">✓ Đã xác nhận</option>
+                              <option value="processing">📦 Đang chuẩn bị</option>
+                              <option value="shipped">🚚 Đang giao hàng</option>
+                              <option value="completed">🎉 Hoàn thành</option>
+                              <option value="cancelled">✕ Đã hủy</option>
+                            </select>
+                          </td>
+                          <td style={{ padding: "16px" }}>
+                            <select
+                              value={o.payment_status || "unpaid"}
+                              onChange={(e) => handleUpdateOrderStatus(o.id, o.status, e.target.value)}
+                              style={{
+                                padding: "6px 10px",
+                                backgroundColor: o.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "#1e1e24",
+                                color: o.payment_status === "paid" ? "#4ade80" : "#facc15",
+                                border: "1px solid #3f3f46",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              <option value="unpaid">Chưa thanh toán</option>
+                              <option value="paid">Đã thanh toán</option>
+                              <option value="refunded">Đã hoàn tiền</option>
+                            </select>
                           </td>
                         </tr>
                       ))}
@@ -656,7 +747,7 @@ export default function AdminDashboardPage() {
           {activeTab === "rentals" && (
             <div>
               <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                Danh Sách Yêu Cầu Thuê Thiết Bị
+                Danh Sách Yêu Cầu Thuê Thiết Bị ({rentals.length})
               </h2>
               {rentals.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", backgroundColor: "#121212", color: "#71717a" }}>
@@ -671,7 +762,8 @@ export default function AdminDashboardPage() {
                         <th style={{ padding: "16px" }}>Thời Gian Thuê</th>
                         <th style={{ padding: "16px" }}>Tiền Thuê</th>
                         <th style={{ padding: "16px" }}>Tiền Cọc</th>
-                        <th style={{ padding: "16px" }}>Trạng Thái</th>
+                        <th style={{ padding: "16px" }}>Trạng Thái Thuê</th>
+                        <th style={{ padding: "16px" }}>Tiền Cọc / TT</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -686,9 +778,45 @@ export default function AdminDashboardPage() {
                           <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>{formatCurrency(r.rental_total)}</td>
                           <td style={{ padding: "16px", color: "#eab308", fontWeight: 700 }}>{formatCurrency(r.deposit_amount)}</td>
                           <td style={{ padding: "16px" }}>
-                            <span style={{ padding: "4px 10px", backgroundColor: "rgba(59, 130, 246, 0.15)", color: "#60a5fa", fontSize: "12px", fontWeight: 700 }}>
-                              {r.status.toUpperCase()}
-                            </span>
+                            <select
+                              value={r.status}
+                              onChange={(e) => handleUpdateRentalStatus(r.id, e.target.value)}
+                              style={{
+                                padding: "6px 10px",
+                                backgroundColor: "#1e1e24",
+                                color: "#fff",
+                                border: "1px solid #3f3f46",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              <option value="pending">⏳ Chờ liên hệ</option>
+                              <option value="contacted">📞 Đã liên hệ</option>
+                              <option value="confirmed">✓ Đã xác nhận</option>
+                              <option value="completed">🎉 Đã trả máy</option>
+                              <option value="cancelled">✕ Đã hủy</option>
+                            </select>
+                          </td>
+                          <td style={{ padding: "16px" }}>
+                            <select
+                              value={r.payment_status || "unpaid"}
+                              onChange={(e) => handleUpdateRentalStatus(r.id, r.status, e.target.value)}
+                              style={{
+                                padding: "6px 10px",
+                                backgroundColor: r.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "#1e1e24",
+                                color: r.payment_status === "paid" ? "#4ade80" : "#facc15",
+                                border: "1px solid #3f3f46",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              <option value="unpaid">Chưa cọc</option>
+                              <option value="partially_paid">Đã cọc 1 phần</option>
+                              <option value="paid">Đã cọc đủ</option>
+                              <option value="refunded">Đã hoàn cọc</option>
+                            </select>
                           </td>
                         </tr>
                       ))}

@@ -1,137 +1,186 @@
-import random
-import string
-from datetime import datetime, timezone
-from decimal import Decimal
+from datetime import date, timedelta
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_user, get_db, require_admin
-from app.models.product import Product
-from app.models.rental_request import (
-    RentalPaymentStatus,
-    RentalRequest,
-    RentalRequestStatus,
-)
-from app.models.rental_request_item import RentalRequestItem
-from app.models.user import User
+from app.api.dependencies import get_db, get_optional_current_user, require_admin
+from app.core.rate_limit import rate_limit_rental
+from app.models.rental_request import RentalRequest, RentalRequestStatus
+from app.models.user import User, UserRole
 from app.schemas.rental_request import (
+    ProductAvailabilityResponse,
+    RentalCancelRequest,
     RentalRequestCreate,
     RentalRequestListResponse,
     RentalRequestResponse,
+    RentalStatusUpdate,
 )
+from app.services.rental_service import RentalService
+from app.services.user_service import UserService
 
 router = APIRouter(prefix="/rental-requests", tags=["Rental Requests"])
 
 
-def generate_rental_request_number() -> str:
-    now_str = datetime.now(timezone.utc).strftime("%Y%m%d")
-    rand_chars = "".join(random.choices(string.digits, k=4))
-    return f"RENT-{now_str}-{rand_chars}"
-
-
-@router.post("", response_model=RentalRequestResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=RentalRequestResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(rate_limit_rental)],
+)
 def create_rental_request(
     payload: RentalRequestCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User | None = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ) -> RentalRequest:
-    if payload.end_date < payload.start_date:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Ngày trả máy phải sau hoặc bằng ngày nhận máy",
-        )
-
-    rental_days = max((payload.end_date - payload.start_date).days + 1, 1)
-    rental_total = Decimal(0)
-    total_deposit = Decimal(0)
-    request_items: list[RentalRequestItem] = []
-
-    for item_in in payload.items:
-        product = db.get(Product, item_in.product_id)
-        if not product or not product.is_active or not product.rental_enabled:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Sản phẩm {item_in.product_id} không hỗ trợ cho thuê",
-            )
-
-        daily_rate = item_in.daily_rate if item_in.daily_rate > 0 else (product.rental_price or Decimal(0))
-        deposit_rate = item_in.deposit_rate if item_in.deposit_rate > 0 else (product.rental_deposit or Decimal(0))
-        line_total = daily_rate * rental_days * item_in.quantity
-        rental_total += line_total
-        total_deposit += deposit_rate * item_in.quantity
-
-        rental_item = RentalRequestItem(
-            product_id=product.id,
-            product_name=product.name,
-            product_sku=product.sku,
-            quantity=item_in.quantity,
-            daily_rate=daily_rate,
-            deposit_rate=deposit_rate,
-            line_total=line_total,
-        )
-        request_items.append(rental_item)
-
-    rental_req = RentalRequest(
-        user_id=current_user.id,
-        request_number=generate_rental_request_number(),
-        start_date=payload.start_date,
-        end_date=payload.end_date,
-        status=RentalRequestStatus.PENDING,
-        payment_status=RentalPaymentStatus.UNPAID,
-        rental_total=rental_total,
-        deposit_amount=total_deposit,
-        pickup_location=payload.pickup_location,
-        pickup_note=payload.pickup_note,
-        customer_note=payload.customer_note,
-        items=request_items,
+    """
+    Create a new rental contract with date collision verification and tiered pricing calculation.
+    """
+    user_id = UserService.resolve_user_id(
+        db=db,
+        current_user=current_user,
+        phone=payload.customer_phone or "guest",
+        email=payload.customer_email,
     )
 
-    db.add(rental_req)
-    db.commit()
-    db.refresh(rental_req)
-    return rental_req
+    return RentalService.create_rental_request(
+        payload=payload,
+        user_id=user_id,
+        db=db,
+    )
+
+
+@router.get(
+    "/availability/{product_id}",
+    response_model=ProductAvailabilityResponse,
+)
+def get_product_availability(
+    product_id: UUID,
+    start_date: date | None = None,
+    end_date: date | None = None,
+    db: Session = Depends(get_db),
+) -> ProductAvailabilityResponse:
+    """
+    Query real-time availability calendar for a rental instrument across a date range.
+    """
+    today = date.today()
+    s_date = start_date if start_date and start_date >= today else today
+    e_date = end_date if end_date and end_date >= s_date else s_date + timedelta(days=30)
+
+    if (e_date - s_date).days > 90:
+        e_date = s_date + timedelta(days=90)
+
+    return RentalService.get_product_availability(
+        product_id=product_id,
+        start_date=s_date,
+        end_date=e_date,
+        db=db,
+    )
+
+
+@router.get("", response_model=RentalRequestListResponse)
+def list_rental_requests(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=100),
+    status_filter: RentalRequestStatus | None = Query(None, alias="status"),
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> RentalRequestListResponse:
+    """
+    Admin: List all rental requests with pagination and optional status filter.
+    """
+    query = select(RentalRequest)
+    if status_filter:
+        query = query.where(RentalRequest.status == status_filter)
+
+    query = query.order_by(RentalRequest.created_at.desc()).offset(skip).limit(limit)
+    results = db.execute(query).scalars().all()
+    return RentalRequestListResponse(items=list(results), total=len(results))
 
 
 @router.get("/me", response_model=RentalRequestListResponse)
-def get_my_rental_requests(
-    current_user: User = Depends(get_current_user),
+def list_my_rental_requests(
+    current_user: User = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
-) -> dict:
-    rentals = (
-        db.query(RentalRequest)
-        .filter(RentalRequest.user_id == current_user.id)
-        .order_by(RentalRequest.created_at.desc())
-        .all()
-    )
-    return {"items": rentals, "total": len(rentals)}
+) -> RentalRequestListResponse:
+    """
+    Customer: List current user's rental requests history.
+    """
+    if not current_user:
+        return RentalRequestListResponse(items=[], total=0)
+
+    query = select(RentalRequest).where(RentalRequest.user_id == current_user.id).order_by(RentalRequest.created_at.desc())
+    results = db.execute(query).scalars().all()
+    return RentalRequestListResponse(items=list(results), total=len(results))
 
 
 @router.get("/{request_id}", response_model=RentalRequestResponse)
-def get_rental_request_by_id(
+def get_rental_request(
     request_id: UUID,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ) -> RentalRequest:
+    """
+    Get detailed rental request information by ID.
+    """
     rental_req = db.get(RentalRequest, request_id)
     if not rental_req:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Không tìm thấy yêu cầu thuê máy",
+            detail="Không tìm thấy yêu cầu thuê",
         )
-    if rental_req.user_id != current_user.id and current_user.role != "admin":
+
+    if current_user and current_user.role != UserRole.ADMIN and rental_req.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xem yêu cầu thuê này",
         )
+
     return rental_req
 
 
-@router.get("", response_model=RentalRequestListResponse)
-def list_all_rental_requests_admin(
-    _: User = Depends(require_admin),
+@router.patch("/{request_id}/status", response_model=RentalRequestResponse)
+def update_rental_status(
+    request_id: UUID,
+    payload: RentalStatusUpdate,
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
-) -> dict:
-    rentals = db.query(RentalRequest).order_by(RentalRequest.created_at.desc()).all()
-    return {"items": rentals, "total": len(rentals)}
+) -> RentalRequest:
+    """
+    Admin: Advance rental status and/or deposit/payment status according to state machine rules.
+    """
+    return RentalService.update_rental_status(
+        request_id=request_id,
+        db=db,
+        new_status=payload.status,
+        new_payment_status=payload.payment_status,
+        admin_note=payload.note,
+    )
+
+
+@router.post(
+    "/{request_id}/cancel",
+    response_model=RentalRequestResponse,
+    dependencies=[Depends(rate_limit_rental)],
+)
+def cancel_rental_request(
+    request_id: UUID,
+    payload: RentalCancelRequest | None = None,
+    current_user: User = Depends(get_optional_current_user),
+    db: Session = Depends(get_db),
+) -> RentalRequest:
+    """
+    Cancel rental request and immediately release booked calendar days.
+    """
+    is_admin = current_user.role == UserRole.ADMIN if current_user else False
+    current_user_id = current_user.id if current_user else None
+    reason = payload.reason if payload else None
+
+    return RentalService.cancel_rental_request(
+        request_id=request_id,
+        current_user_id=current_user_id,
+        is_admin=is_admin,
+        reason=reason,
+        db=db,
+    )

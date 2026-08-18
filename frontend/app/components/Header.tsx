@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "../lib/cart-context";
@@ -17,6 +17,25 @@ export default function Header() {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [searchCatalog, setSearchCatalog] = useState(MOCK_PRODUCTS);
+
+  useEffect(() => {
+    const loadSearchCatalog = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const res = await fetch(`${apiUrl}/products`);
+        if (res.ok) {
+          const liveData = await res.json();
+          if (Array.isArray(liveData) && liveData.length > 0) {
+            setSearchCatalog(liveData);
+          }
+        }
+      } catch {
+        // Fallback to MOCK_PRODUCTS
+      }
+    };
+    loadSearchCatalog();
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Trang chủ" },
@@ -27,11 +46,12 @@ export default function Header() {
   ];
 
   const searchResults = searchQuery.trim()
-    ? MOCK_PRODUCTS.filter(
+    ? searchCatalog.filter(
         (p) =>
           p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5)
+          (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (p.sku || "").toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 6)
     : [];
 
   const handleSelectSearchResult = (slug: string) => {
@@ -153,7 +173,28 @@ export default function Header() {
 
             {/* User Auth Button */}
             {isAuthenticated ? (
-              <div style={{ position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative" }}>
+                {user?.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    style={{
+                      padding: "8px 14px",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      border: "1px solid rgba(255, 255, 255, 0.3)",
+                      color: "#fff",
+                      fontSize: "12px",
+                      fontWeight: 800,
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      letterSpacing: "0.02em",
+                    }}
+                  >
+                    👑 Quản Trị
+                  </Link>
+                )}
+
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   style={{
@@ -180,7 +221,7 @@ export default function Header() {
                       position: "absolute",
                       top: "48px",
                       right: 0,
-                      width: "180px",
+                      width: "200px",
                       backgroundColor: "#111111",
                       border: "1px solid rgba(255,255,255,0.15)",
                       boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
@@ -188,6 +229,23 @@ export default function Header() {
                       padding: "8px 0",
                     }}
                   >
+                    {user?.role === "admin" && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserDropdownOpen(false)}
+                        style={{
+                          display: "block",
+                          padding: "10px 16px",
+                          color: "#22c55e",
+                          fontSize: "13px",
+                          fontWeight: 700,
+                          textDecoration: "none",
+                          borderBottom: "1px solid rgba(255,255,255,0.08)",
+                        }}
+                      >
+                        👑 Bảng Quản Trị Admin
+                      </Link>
+                    )}
                     <Link
                       href="/profile"
                       onClick={() => setUserDropdownOpen(false)}

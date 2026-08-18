@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "../lib/mock-data";
 import { useCart } from "../lib/cart-context";
-import { Product } from "../lib/types";
+import { Product, Category } from "../lib/types";
 
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "Liên hệ";
@@ -22,16 +22,52 @@ function ProductsContent() {
   const initialCategory = searchParams.get("category") || "all";
   const { addItem } = useCart();
 
+  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
+  const [categories, setCategories] = useState<Category[]>(MOCK_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [filterMode, setFilterMode] = useState<"all" | "sale" | "rental">("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("featured");
 
+  // Fetch live products & categories from PostgreSQL
+  useEffect(() => {
+    const fetchLiveData = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const [prodRes, catRes] = await Promise.all([
+          fetch(`${apiUrl}/products`),
+          fetch(`${apiUrl}/categories`),
+        ]);
+
+        if (prodRes.ok) {
+          const prodData = await prodRes.json();
+          if (Array.isArray(prodData) && prodData.length > 0) {
+            setProducts(prodData);
+          }
+        }
+
+        if (catRes.ok) {
+          const catData = await catRes.json();
+          if (Array.isArray(catData) && catData.length > 0) {
+            setCategories(catData);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch live product catalog:", err);
+      }
+    };
+
+    fetchLiveData();
+  }, []);
+
   const filteredProducts = useMemo(() => {
-    return MOCK_PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       // Category filter
-      if (selectedCategory !== "all" && product.category_slug !== selectedCategory) {
-        return false;
+      if (selectedCategory !== "all") {
+        const cat = categories.find((c) => c.slug === selectedCategory);
+        if (cat && product.category_id && product.category_id !== cat.id && product.category_slug !== selectedCategory) {
+          return false;
+        }
       }
       // Mode filter
       if (filterMode === "sale" && !product.sale_enabled) return false;
@@ -43,7 +79,8 @@ function ProductsContent() {
         const matchName = product.name.toLowerCase().includes(query);
         const matchBrand = product.brand?.toLowerCase().includes(query);
         const matchDesc = product.description?.toLowerCase().includes(query);
-        if (!matchName && !matchBrand && !matchDesc) return false;
+        const matchSku = product.sku?.toLowerCase().includes(query);
+        if (!matchName && !matchBrand && !matchDesc && !matchSku) return false;
       }
 
       return true;
@@ -59,274 +96,193 @@ function ProductsContent() {
       }
       return 0;
     });
-  }, [selectedCategory, filterMode, searchQuery, sortBy]);
+  }, [products, categories, selectedCategory, filterMode, searchQuery, sortBy]);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "80px" }}>
+      <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
         <div className="container">
-          {/* Breadcrumb & Heading */}
+          {/* Page Heading */}
           <div style={{ marginBottom: "40px" }}>
-            <p className="section-kicker">CATALOG SẢN PHẨM</p>
+            <p className="section-kicker">DANH MỤC THIẾT BỊ</p>
             <h1
               style={{
-                fontSize: "clamp(32px, 5vw, 48px)",
+                fontSize: "clamp(32px, 5vw, 56px)",
                 fontWeight: 800,
-                letterSpacing: "-0.04em",
-                margin: "0 0 16px 0",
+                letterSpacing: "-0.03em",
+                margin: "0 0 12px 0",
               }}
             >
-              Thiết bị DJ & Âm thanh chuyên nghiệp
+              Thiết Bị DJ & Âm Thanh Chuyên Nghiệp
             </h1>
-            <p style={{ color: "#a1a1aa", maxWidth: "600px", margin: 0 }}>
-              Cung cấp các dòng DJ Controller, CDJ, Mixer, Loa biểu diễn và phụ kiện âm thanh hàng đầu từ Pioneer DJ, AlphaTheta, JBL, Yamaha.
+            <p style={{ color: "#a1a1aa", fontSize: "16px", maxWidth: "700px", margin: 0 }}>
+              Cung cấp giải pháp mua bán và cho thuê thiết bị DJ, DJ Controller, CDJ, Mixer, Loa kiểm âm chính hãng tại Đà Nẵng.
             </p>
           </div>
 
-          {/* Controls Bar: Search & Sort */}
+          {/* Filters Bar */}
           <div
             style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "16px",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "32px",
-              padding: "20px",
               backgroundColor: "var(--surface)",
               border: "1px solid var(--border)",
+              padding: "24px",
+              marginBottom: "40px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
             }}
           >
-            {/* Search Input */}
-            <div style={{ position: "relative", flex: "1 1 280px", maxWidth: "400px" }}>
-              <input
-                type="text"
-                placeholder="Tìm kiếm theo tên thiết bị, thương hiệu..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  backgroundColor: "#000",
-                  border: "1px solid var(--border)",
-                  color: "#fff",
-                  fontSize: "13px",
-                  outline: "none",
-                }}
-              />
+            {/* Top row: Categories tabs */}
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, color: "#71717a", textTransform: "uppercase", marginRight: "8px" }}>
+                Danh mục:
+              </span>
+              <button
+                className={`button button-sm ${selectedCategory === "all" ? "button-primary" : "button-secondary"}`}
+                onClick={() => setSelectedCategory("all")}
+              >
+                Tất cả ({products.length})
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  className={`button button-sm ${selectedCategory === cat.slug ? "button-primary" : "button-secondary"}`}
+                  onClick={() => setSelectedCategory(cat.slug)}
+                >
+                  {cat.name}
+                </button>
+              ))}
             </div>
 
-            {/* Filter Mode Buttons */}
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              <button
-                onClick={() => setFilterMode("all")}
-                style={{
-                  padding: "8px 16px",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  backgroundColor: filterMode === "all" ? "#fff" : "transparent",
-                  color: filterMode === "all" ? "#000" : "#a1a1aa",
-                  border: "1px solid var(--border)",
-                  textTransform: "uppercase",
-                }}
-              >
-                Tất cả
-              </button>
-              <button
-                onClick={() => setFilterMode("sale")}
-                style={{
-                  padding: "8px 16px",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  backgroundColor: filterMode === "sale" ? "#fff" : "transparent",
-                  color: filterMode === "sale" ? "#000" : "#a1a1aa",
-                  border: "1px solid var(--border)",
-                  textTransform: "uppercase",
-                }}
-              >
-                Mua hàng
-              </button>
-              <button
-                onClick={() => setFilterMode("rental")}
-                style={{
-                  padding: "8px 16px",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  backgroundColor: filterMode === "rental" ? "#fff" : "transparent",
-                  color: filterMode === "rental" ? "#000" : "#a1a1aa",
-                  border: "1px solid var(--border)",
-                  textTransform: "uppercase",
-                }}
-              >
-                Cho thuê
-              </button>
-            </div>
+            {/* Bottom row: Search + Mode + Sort */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "16px",
+                alignItems: "center",
+                paddingTop: "16px",
+                borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+              }}
+            >
+              {/* Search input */}
+              <div>
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm theo tên máy, hãng, SKU..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#0d0d0d",
+                    border: "1px solid var(--border)",
+                    color: "#fff",
+                    fontSize: "14px",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
 
-            {/* Sort Select */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "12px", color: "#a1a1aa" }}>Sắp xếp:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                style={{
-                  padding: "8px 12px",
-                  backgroundColor: "#000",
-                  border: "1px solid var(--border)",
-                  color: "#fff",
-                  fontSize: "12px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-              >
-                <option value="featured">Nổi bật</option>
-                <option value="price_asc">Giá: Thấp đến cao</option>
-                <option value="price_desc">Giá: Cao đến thấp</option>
-                <option value="name">Tên: A-Z</option>
-              </select>
+              {/* Mode filter (All / Sale / Rental) */}
+              <div style={{ display: "flex", gap: "6px" }}>
+                <button
+                  className={`button button-sm ${filterMode === "all" ? "button-primary" : "button-secondary"}`}
+                  onClick={() => setFilterMode("all")}
+                  style={{ flex: 1 }}
+                >
+                  Tất cả
+                </button>
+                <button
+                  className={`button button-sm ${filterMode === "sale" ? "button-primary" : "button-secondary"}`}
+                  onClick={() => setFilterMode("sale")}
+                  style={{ flex: 1 }}
+                >
+                  Mua bán
+                </button>
+                <button
+                  className={`button button-sm ${filterMode === "rental" ? "button-primary" : "button-secondary"}`}
+                  onClick={() => setFilterMode("rental")}
+                  style={{ flex: 1 }}
+                >
+                  Cho thuê
+                </button>
+              </div>
+
+              {/* Sort by */}
+              <div>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#0d0d0d",
+                    border: "1px solid var(--border)",
+                    color: "#fff",
+                    fontSize: "14px",
+                    outline: "none",
+                    boxSizing: "border-box",
+                    cursor: "pointer",
+                  }}
+                >
+                  <option value="featured">Sắp xếp: Mặc định nổi bật</option>
+                  <option value="price_asc">Giá bán: Thấp đến Cao</option>
+                  <option value="price_desc">Giá bán: Cao đến Thấp</option>
+                  <option value="name">Tên sản phẩm: A - Z</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          {/* Category Tabs */}
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              overflowX: "auto",
-              paddingBottom: "12px",
-              marginBottom: "40px",
-              borderBottom: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
-            <button
-              onClick={() => setSelectedCategory("all")}
-              style={{
-                padding: "8px 20px",
-                fontSize: "13px",
-                fontWeight: 600,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                border: "none",
-                backgroundColor: selectedCategory === "all" ? "rgba(255,255,255,0.15)" : "transparent",
-                color: selectedCategory === "all" ? "#fff" : "#888",
-                borderRadius: "2px",
-              }}
-            >
-              Tất cả danh mục ({MOCK_PRODUCTS.length})
-            </button>
-            {MOCK_CATEGORIES.map((cat) => (
-              <button
-                key={cat.slug}
-                onClick={() => setSelectedCategory(cat.slug)}
-                style={{
-                  padding: "8px 20px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  border: "none",
-                  backgroundColor: selectedCategory === cat.slug ? "rgba(255,255,255,0.15)" : "transparent",
-                  color: selectedCategory === cat.slug ? "#fff" : "#888",
-                  borderRadius: "2px",
-                }}
-              >
-                {cat.name}
-              </button>
-            ))}
+          {/* Results count */}
+          <div style={{ marginBottom: "24px", color: "#a1a1aa", fontSize: "14px" }}>
+            Hiển thị <strong>{filteredProducts.length}</strong> thiết bị
           </div>
 
           {/* Products Grid */}
           {filteredProducts.length === 0 ? (
             <div
               style={{
-                textAlign: "center",
-                padding: "80px 20px",
                 backgroundColor: "var(--surface)",
                 border: "1px solid var(--border)",
+                padding: "60px 24px",
+                textAlign: "center",
               }}
             >
-              <h3 style={{ fontSize: "18px", marginBottom: "8px" }}>Không tìm thấy thiết bị phù hợp</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "14px" }}>
-                Vui lòng thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc.
+              <p style={{ color: "#a1a1aa", fontSize: "16px", marginBottom: "16px" }}>
+                Không tìm thấy thiết bị nào phù hợp với bộ lọc hiện tại.
               </p>
               <button
+                className="button button-primary"
                 onClick={() => {
                   setSelectedCategory("all");
                   setFilterMode("all");
                   setSearchQuery("");
                 }}
-                style={{
-                  marginTop: "16px",
-                  padding: "10px 24px",
-                  backgroundColor: "#fff",
-                  color: "#000",
-                  fontWeight: 700,
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                  textTransform: "uppercase",
-                }}
               >
-                Xóa tất cả bộ lọc
+                Đặt lại bộ lọc
               </button>
             </div>
           ) : (
             <div className="product-grid">
               {filteredProducts.map((product, index) => (
-                <article className="product-card" key={product.id}>
+                <article
+                  className="product-card"
+                  key={product.id}
+                  style={{ display: "flex", flexDirection: "column", height: "100%" }}
+                >
                   <Link
                     href={`/products/${product.slug}`}
                     className="product-image"
                     aria-label={`Xem ${product.name}`}
                   >
-                    <span className="product-index">0{index + 1}</span>
-
-                    {/* Visual Badge */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "16px",
-                        right: "16px",
-                        display: "flex",
-                        gap: "6px",
-                        zIndex: 2,
-                      }}
-                    >
-                      {product.sale_enabled && (
-                        <span
-                          style={{
-                            fontSize: "9px",
-                            fontWeight: 800,
-                            letterSpacing: "0.08em",
-                            padding: "4px 8px",
-                            backgroundColor: "rgba(255,255,255,0.9)",
-                            color: "#000",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          Bán
-                        </span>
-                      )}
-                      {product.rental_enabled && (
-                        <span
-                          style={{
-                            fontSize: "9px",
-                            fontWeight: 800,
-                            letterSpacing: "0.08em",
-                            padding: "4px 8px",
-                            backgroundColor: "#22c55e",
-                            color: "#000",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          Thuê
-                        </span>
-                      )}
-                    </div>
+                    <span className="product-index" style={{ fontSize: "12px", fontWeight: 700 }}>
+                      0{index + 1}
+                    </span>
 
                     <div className="product-placeholder">
                       <div className="product-placeholder-top">
@@ -334,6 +290,7 @@ function ProductsContent() {
                         <span />
                         <span />
                       </div>
+
                       <div className="product-placeholder-body">
                         <div className="product-wheel" />
                         <div className="product-faders">
@@ -346,59 +303,145 @@ function ProductsContent() {
                     </div>
                   </Link>
 
-                  <div className="product-info">
-                    <p>{product.category_name || product.brand}</p>
-                    <h3>{product.name}</h3>
-                    <span>{product.description}</span>
-
-                    {/* Price Block */}
-                    <div style={{ margin: "16px 0", borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "12px" }}>
-                      {product.sale_enabled && (
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "11px", color: "#888" }}>Giá bán:</span>
-                          <strong style={{ fontSize: "14px", color: "#fff" }}>
-                            {formatCurrency(product.sale_price)}
-                          </strong>
-                        </div>
-                      )}
-                      {product.rental_enabled && (
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span style={{ fontSize: "11px", color: "#22c55e" }}>Giá thuê:</span>
-                          <span style={{ fontSize: "13px", color: "#22c55e", fontWeight: 600 }}>
-                            {formatCurrency(product.rental_price)} / ngày
+                  <div
+                    className="product-info"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flex: 1,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div>
+                      <div className="product-meta">
+                        <span className="product-category" style={{ fontSize: "12px", fontWeight: 700 }}>
+                          {product.brand || "VanBass"}
+                        </span>
+                        {product.stock_quantity > 0 ? (
+                          <span className="badge badge-sale" style={{ fontSize: "11px", fontWeight: 700 }}>
+                            Còn hàng
                           </span>
-                        </div>
+                        ) : (
+                          <span
+                            className="badge"
+                            style={{
+                              backgroundColor: "#27272a",
+                              color: "#a1a1aa",
+                              fontSize: "11px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            Hết hàng
+                          </span>
+                        )}
+                      </div>
+
+                      <h3
+                        className="product-name"
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: 700,
+                          margin: "8px 0 12px 0",
+                          lineHeight: "1.4",
+                        }}
+                      >
+                        <Link href={`/products/${product.slug}`} style={{ color: "#fff", textDecoration: "none" }}>
+                          {product.name}
+                        </Link>
+                      </h3>
+
+                      {product.description && (
+                        <p
+                          style={{
+                            fontSize: "13px",
+                            color: "#a1a1aa",
+                            lineHeight: "1.5",
+                            marginBottom: "12px",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {product.description}
+                        </p>
                       )}
                     </div>
 
-                    {/* Actions */}
-                    <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
-                      <Link
-                        href={`/products/${product.slug}`}
-                        className="product-link"
-                        style={{ flex: 1, textAlign: "center" }}
+                    <div
+                      className="product-pricing"
+                      style={{
+                        marginTop: "auto",
+                        paddingTop: "12px",
+                        borderTop: "1px solid rgba(255,255,255,0.06)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "baseline",
+                          flexWrap: "wrap",
+                          gap: "8px",
+                        }}
                       >
-                        Chi tiết <span>→</span>
-                      </Link>
+                        {product.sale_enabled && product.sale_price ? (
+                          <div>
+                            <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", display: "block" }}>
+                              Giá bán
+                            </span>
+                            <span className="price-sale" style={{ fontSize: "16px", fontWeight: 800 }}>
+                              {formatCurrency(product.sale_price)}
+                            </span>
+                          </div>
+                        ) : (
+                          <div>
+                            <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", display: "block" }}>
+                              Giá bán
+                            </span>
+                            <span style={{ fontSize: "13px", color: "#a1a1aa", fontWeight: 600 }}>Chỉ cho thuê</span>
+                          </div>
+                        )}
 
-                      {product.sale_enabled && (
-                        <button
-                          onClick={() => addItem(product, 1)}
-                          style={{
-                            padding: "8px 12px",
-                            backgroundColor: "rgba(255,255,255,0.1)",
-                            border: "1px solid rgba(255,255,255,0.2)",
-                            color: "#fff",
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            cursor: "pointer",
-                            transition: "background 180ms ease",
-                          }}
-                          aria-label="Thêm vào giỏ hàng"
+                        {product.rental_enabled && product.rental_price && (
+                          <div style={{ textAlign: "right" }}>
+                            <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", display: "block" }}>
+                              Giá thuê
+                            </span>
+                            <span className="price-rental" style={{ fontSize: "14px", fontWeight: 700, color: "#22c55e" }}>
+                              {formatCurrency(product.rental_price)}
+                              <span style={{ fontSize: "11px", fontWeight: 500 }}>/ngày</span>
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "14px" }}>
+                        <Link
+                          href={`/products/${product.slug}`}
+                          className="button button-secondary button-sm"
+                          style={{ textAlign: "center", textDecoration: "none" }}
                         >
-                          + Giỏ hàng
-                        </button>
-                      )}
+                          Chi tiết
+                        </Link>
+                        {product.sale_enabled && product.stock_quantity > 0 ? (
+                          <button
+                            onClick={() => addItem(product, 1)}
+                            className="button button-primary button-sm"
+                            style={{ textAlign: "center" }}
+                          >
+                            + Giỏ hàng
+                          </button>
+                        ) : (
+                          <Link
+                            href={`/rental?product=${product.slug}`}
+                            className="button button-primary button-sm"
+                            style={{ textAlign: "center", textDecoration: "none" }}
+                          >
+                            Thuê máy
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -415,7 +458,13 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", backgroundColor: "#090909" }} />}>
+    <Suspense
+      fallback={
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#090909", color: "#fff" }}>
+          Đang tải danh mục thiết bị VanBass...
+        </div>
+      }
+    >
       <ProductsContent />
     </Suspense>
   );

@@ -7,10 +7,10 @@ from pydantic import BaseModel, ConfigDict, Field
 class CustomerProfileRequest(BaseModel):
     full_name: str = Field(min_length=1, max_length=255)
     phone: str = Field(min_length=1, max_length=30)
-    country: str = Field(min_length=1, max_length=100)
-    city: str = Field(min_length=1, max_length=100)
+    country: str = Field(default="Việt Nam", max_length=100)
+    city: str = Field(default="Đà Nẵng", max_length=100)
     ward: str | None = Field(default=None, max_length=100)
-    address: str = Field(min_length=1, max_length=500)
+    address: str = Field(default="Đà Nẵng", max_length=500)
 
 
 class CustomerProfileResponse(BaseModel):

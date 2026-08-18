@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, notFound } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
+import { Product } from "../../lib/types";
 
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "Liên hệ";
@@ -21,16 +22,51 @@ export default function ProductDetailPage() {
   const slug = params?.slug as string;
   const { addItem } = useCart();
 
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  const [product, setProduct] = useState<Product | null>(
+    MOCK_PRODUCTS.find((p) => p.slug === slug) || null
+  );
+  const [allProducts, setAllProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "rental">("specs");
+  const [addedNotice, setAddedNotice] = useState(false);
+
+  // Fetch live product from Backend PostgreSQL
+  useEffect(() => {
+    const fetchLiveProduct = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const [singleRes, allRes] = await Promise.all([
+          fetch(`${apiUrl}/products/by-slug/${slug}`),
+          fetch(`${apiUrl}/products`),
+        ]);
+
+        if (singleRes.ok) {
+          const liveProduct = await singleRes.json();
+          setProduct(liveProduct);
+        }
+
+        if (allRes.ok) {
+          const allList = await allRes.json();
+          if (Array.isArray(allList)) {
+            setAllProducts(allList);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch live product detail:", err);
+      }
+    };
+
+    if (slug) {
+      fetchLiveProduct();
+    }
+  }, [slug]);
 
   if (!product) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
         <Header />
         <div className="container" style={{ flex: 1, paddingTop: "140px", textAlign: "center" }}>
-          <h2>Sản phẩm không tồn tại</h2>
+          <h2 style={{ color: "#fff" }}>Sản phẩm không tồn tại</h2>
           <p style={{ color: "#a1a1aa", marginTop: "12px" }}>Thiết bị bạn tìm kiếm không có hoặc đã ngừng kinh doanh.</p>
           <Link href="/products" className="button button-primary" style={{ marginTop: "24px" }}>
             Quay lại danh mục sản phẩm
@@ -41,9 +77,9 @@ export default function ProductDetailPage() {
     );
   }
 
-  const relatedProducts = MOCK_PRODUCTS.filter(
-    (p) => p.category_id === product.category_id && p.id !== product.id
-  ).slice(0, 3);
+  const relatedProducts = allProducts
+    .filter((p) => p.category_id === product.category_id && p.id !== product.id)
+    .slice(0, 3);
 
   const productSchema = {
     "@context": "https://schema.org",
@@ -72,8 +108,15 @@ export default function ProductDetailPage() {
     },
   };
 
+  const handleAddToCart = () => {
+    if (!product.sale_enabled) return;
+    addItem(product, quantity);
+    setAddedNotice(true);
+    setTimeout(() => setAddedNotice(false), 3000);
+  };
+
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
@@ -83,232 +126,202 @@ export default function ProductDetailPage() {
       <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
         <div className="container">
           {/* Breadcrumb */}
-          <nav
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "12px",
-              color: "#888",
-              marginBottom: "32px",
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-            }}
-          >
-            <Link href="/" style={{ color: "#888" }}>
-              Trang chủ
-            </Link>
-            <span>/</span>
-            <Link href="/products" style={{ color: "#888" }}>
-              Sản phẩm
-            </Link>
-            <span>/</span>
-            <span style={{ color: "#fff" }}>{product.name}</span>
+          <nav style={{ marginBottom: "32px", fontSize: "13px", color: "#71717a" }} aria-label="Breadcrumb">
+            <Link href="/" style={{ color: "#a1a1aa", textDecoration: "none" }}>Trang chủ</Link>
+            <span style={{ margin: "0 8px" }}>/</span>
+            <Link href="/products" style={{ color: "#a1a1aa", textDecoration: "none" }}>Thiết bị</Link>
+            <span style={{ margin: "0 8px" }}>/</span>
+            <span style={{ color: "#f5f5f0" }}>{product.name}</span>
           </nav>
 
-          {/* Product Hero Grid */}
+          {/* Product Detail Layout */}
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "48px",
+              gap: "60px",
               alignItems: "start",
-              marginBottom: "64px",
+              marginBottom: "80px",
             }}
           >
-            {/* Visual Column */}
-            <div
-              style={{
-                position: "relative",
-                aspectRatio: "1/1",
-                backgroundColor: "var(--surface)",
-                border: "1px solid var(--border)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "32px",
-              }}
-            >
+            {/* Left: Product Mock/Image */}
+            <div>
               <div
                 style={{
-                  position: "absolute",
-                  top: "20px",
-                  left: "20px",
-                  fontSize: "11px",
-                  fontWeight: 800,
-                  color: "#666",
-                  letterSpacing: "0.1em",
+                  backgroundColor: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  aspectRatio: "4/3",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                  padding: "40px",
                 }}
               >
-                SKU: {product.sku}
-              </div>
-
-              {/* Equipment Aesthetic Blueprint */}
-              <div className="product-placeholder" style={{ width: "100%", maxWidth: "340px" }}>
-                <div className="product-placeholder-top">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-                <div className="product-placeholder-body">
-                  <div className="product-wheel" />
-                  <div className="product-faders">
-                    <i />
-                    <i />
-                    <i />
+                <div className="product-placeholder" style={{ width: "100%", height: "100%", maxWidth: "340px", maxHeight: "240px" }}>
+                  <div className="product-placeholder-top">
+                    <span />
+                    <span />
+                    <span />
                   </div>
-                  <div className="product-wheel" />
+                  <div className="product-placeholder-body">
+                    <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
+                    <div className="product-faders">
+                      <i /><i /><i />
+                    </div>
+                    <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "16px",
+                    left: "16px",
+                    display: "flex",
+                    gap: "8px",
+                  }}
+                >
+                  {product.sale_enabled && <span className="badge badge-sale">MUA BÁN</span>}
+                  {product.rental_enabled && <span className="badge badge-rental">CHO THUÊ</span>}
                 </div>
               </div>
             </div>
 
-            {/* Info & Purchase Column */}
+            {/* Right: Product Info & Actions */}
             <div>
-              <p className="section-kicker" style={{ marginBottom: "8px" }}>
-                {product.brand || "CHUYÊN NGHIỆP"} • {product.category_name}
-              </p>
-              <h1
-                style={{
-                  fontSize: "clamp(28px, 4vw, 42px)",
-                  fontWeight: 800,
-                  letterSpacing: "-0.03em",
-                  margin: "0 0 16px 0",
-                  lineHeight: 1.1,
-                }}
-              >
+              <div style={{ marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                  {product.brand || "VanBass"}
+                </span>
+                <span style={{ fontSize: "12px", color: "#52525b" }}>•</span>
+                <span style={{ fontSize: "12px", color: "#71717a" }}>SKU: {product.sku || "VB-DEVICE"}</span>
+              </div>
+
+              <h1 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, margin: "0 0 16px 0", color: "#fff", lineHeight: 1.25 }}>
                 {product.name}
               </h1>
 
-              <p style={{ color: "#a1a1aa", lineHeight: 1.7, fontSize: "15px", marginBottom: "28px" }}>
-                {product.description}
-              </p>
-
-              {/* Price Block */}
+              {/* Pricing Box */}
               <div
                 style={{
-                  padding: "24px",
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
-                  marginBottom: "28px",
+                  padding: "24px",
+                  marginBottom: "32px",
                 }}
               >
-                {product.sale_enabled && (
-                  <div style={{ marginBottom: product.rental_enabled ? "16px" : "0" }}>
-                    <span style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "4px" }}>
-                      Giá mua mới chính hãng (Đã gồm VAT):
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                  {/* Sale Price */}
+                  <div>
+                    <span style={{ fontSize: "11px", color: "#a1a1aa", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+                      Giá bán chính hãng
                     </span>
-                    <strong style={{ fontSize: "28px", fontWeight: 800, color: "#ffffff" }}>
-                      {formatCurrency(product.sale_price)}
-                    </strong>
-                    <span style={{ fontSize: "12px", color: "#22c55e", marginLeft: "12px" }}>
-                      ● Còn {product.stock_quantity} sản phẩm
-                    </span>
+                    {product.sale_enabled && product.sale_price ? (
+                      <div>
+                        <span style={{ fontSize: "24px", fontWeight: 900, color: "#fff" }}>
+                          {formatCurrency(product.sale_price)}
+                        </span>
+                        <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginTop: "2px" }}>
+                          (Đã bao gồm VAT & Bảo hành 12 tháng)
+                        </span>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: "16px", color: "#71717a" }}>Chỉ áp dụng cho thuê</span>
+                    )}
                   </div>
-                )}
 
-                {product.rental_enabled && (
-                  <div
-                    style={{
-                      borderTop: product.sale_enabled ? "1px solid rgba(255,255,255,0.08)" : "none",
-                      paddingTop: product.sale_enabled ? "16px" : "0",
-                    }}
-                  >
-                    <span style={{ fontSize: "12px", color: "#22c55e", display: "block", marginBottom: "4px" }}>
-                      Dịch vụ cho thuê biểu diễn & sự kiện:
+                  {/* Rental Price */}
+                  <div style={{ borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "24px" }}>
+                    <span style={{ fontSize: "11px", color: "#a1a1aa", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+                      Giá thuê biểu diễn
                     </span>
-                    <strong style={{ fontSize: "22px", fontWeight: 800, color: "#22c55e" }}>
-                      {formatCurrency(product.rental_price)}
-                      <small style={{ fontSize: "13px", fontWeight: 600, color: "#a1a1aa" }}> / ngày</small>
-                    </strong>
+                    {product.rental_enabled && product.rental_price ? (
+                      <div>
+                        <span style={{ fontSize: "24px", fontWeight: 900, color: "#22c55e" }}>
+                          {formatCurrency(product.rental_price)}
+                        </span>
+                        <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginTop: "2px" }}>
+                          / 24 giờ sử dụng
+                        </span>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: "16px", color: "#71717a" }}>Không cho thuê</span>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
 
-              {/* Quantity and Actions */}
+              {/* Quantity & Buy Button */}
               {product.sale_enabled && (
-                <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      border: "1px solid var(--border)",
-                      backgroundColor: "#000",
-                    }}
-                  >
+                <div style={{ marginBottom: "24px" }}>
+                  <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                    <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                      >
+                        -
+                      </button>
+                      <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
+                        {quantity}
+                      </span>
+                      <button
+                        onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
+                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                      >
+                        +
+                      </button>
+                    </div>
+
                     <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      style={{
-                        padding: "12px 18px",
-                        background: "none",
-                        border: "none",
-                        color: "#fff",
-                        cursor: "pointer",
-                        fontSize: "16px",
-                      }}
+                      onClick={handleAddToCart}
+                      className="button button-primary button-lg"
+                      style={{ flex: 1 }}
                     >
-                      -
-                    </button>
-                    <span style={{ padding: "0 12px", fontSize: "14px", fontWeight: 700 }}>{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(Math.min(product.stock_quantity, quantity + 1))}
-                      style={{
-                        padding: "12px 18px",
-                        background: "none",
-                        border: "none",
-                        color: "#fff",
-                        cursor: "pointer",
-                        fontSize: "16px",
-                      }}
-                    >
-                      +
+                      Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
                     </button>
                   </div>
 
-                  <button
-                    onClick={() => addItem(product, quantity)}
-                    className="button button-primary"
-                    style={{ flex: 1, cursor: "pointer" }}
-                  >
-                    Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
-                  </button>
+                  {addedNotice && (
+                    <div style={{ marginTop: "12px", padding: "10px 16px", backgroundColor: "rgba(34,197,94,0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "13px" }}>
+                      ✓ Đã thêm thiết bị vào giỏ hàng! <Link href="/cart" style={{ color: "#fff", fontWeight: 700, marginLeft: "8px", textDecoration: "underline" }}>Xem giỏ hàng →</Link>
+                    </div>
+                  )}
                 </div>
               )}
 
+              {/* Direct Rental Link */}
               {product.rental_enabled && (
-                <Link
-                  href={`/rental?product=${product.slug}`}
-                  className="button button-secondary"
-                  style={{ width: "100%", justifyContent: "center", boxSizing: "border-box" }}
-                >
-                  📅 Đặt thuê thiết bị này ngay
-                </Link>
+                <div style={{ padding: "20px", backgroundColor: "#111111", border: "1px solid rgba(34,197,94,0.2)", marginBottom: "32px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+                    <div>
+                      <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>Cần thuê thiết bị này cho sự kiện / Show diễn?</strong>
+                      <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Giao máy tận nơi tại Đà Nẵng, hỗ trợ setup âm thanh chuyên nghiệp.</span>
+                    </div>
+                    <Link href={`/rental?product=${product.slug}`} className="button button-secondary">
+                      Tính giá thuê ngay →
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Detailed Tabs */}
-          <div style={{ marginTop: "40px" }}>
-            <div
-              style={{
-                display: "flex",
-                gap: "24px",
-                borderBottom: "1px solid var(--border)",
-                marginBottom: "32px",
-              }}
-            >
+          {/* Specifications & Description Tabs */}
+          <div style={{ marginBottom: "80px" }}>
+            <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--border)", marginBottom: "32px" }}>
               <button
                 onClick={() => setActiveTab("specs")}
                 style={{
-                  padding: "12px 0",
+                  padding: "14px 24px",
                   background: "none",
                   border: "none",
                   borderBottom: activeTab === "specs" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "specs" ? "#fff" : "#888",
+                  color: activeTab === "specs" ? "#fff" : "#71717a",
                   fontWeight: 700,
-                  fontSize: "13px",
+                  fontSize: "15px",
                   cursor: "pointer",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
                 }}
               >
                 Thông số kỹ thuật
@@ -316,149 +329,100 @@ export default function ProductDetailPage() {
               <button
                 onClick={() => setActiveTab("desc")}
                 style={{
-                  padding: "12px 0",
+                  padding: "14px 24px",
                   background: "none",
                   border: "none",
                   borderBottom: activeTab === "desc" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "desc" ? "#fff" : "#888",
+                  color: activeTab === "desc" ? "#fff" : "#71717a",
                   fontWeight: 700,
-                  fontSize: "13px",
+                  fontSize: "15px",
                   cursor: "pointer",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
                 }}
               >
-                Đặc điểm nổi bật
+                Mô tả chi tiết
               </button>
               <button
                 onClick={() => setActiveTab("rental")}
                 style={{
-                  padding: "12px 0",
+                  padding: "14px 24px",
                   background: "none",
                   border: "none",
                   borderBottom: activeTab === "rental" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "rental" ? "#fff" : "#888",
+                  color: activeTab === "rental" ? "#fff" : "#71717a",
                   fontWeight: 700,
-                  fontSize: "13px",
+                  fontSize: "15px",
                   cursor: "pointer",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
                 }}
               >
-                Chính sách bảo hành & Thuê
+                Chính sách cho thuê & Đặt cọc
               </button>
             </div>
 
-            {/* Tab 1: Specs */}
             {activeTab === "specs" && (
-              <div
-                style={{
-                  backgroundColor: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  padding: "24px",
-                }}
-              >
-                <h3 style={{ fontSize: "16px", marginBottom: "20px" }}>Bảng thông số chi tiết</h3>
-                {product.specifications ? (
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px" }}>
+                {product.specifications && Object.keys(product.specifications).length > 0 ? (
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                     <tbody>
                       {Object.entries(product.specifications).map(([key, value]) => (
                         <tr key={key} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                          <td style={{ padding: "12px 0", color: "#888", width: "40%" }}>{key}</td>
-                          <td style={{ padding: "12px 0", color: "#fff", fontWeight: 500 }}>
-                            {Array.isArray(value) ? value.join(", ") : String(value)}
-                          </td>
+                          <td style={{ padding: "14px 0", color: "#a1a1aa", width: "30%", fontWeight: 600 }}>{key}</td>
+                          <td style={{ padding: "14px 0", color: "#fff" }}>{String(value)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 ) : (
-                  <p style={{ color: "#888" }}>Đang cập nhật thông số từ nhà sản xuất.</p>
+                  <p style={{ color: "#a1a1aa" }}>Đang cập nhật thông số kỹ thuật chi tiết từ hãng sản xuất.</p>
                 )}
               </div>
             )}
 
-            {/* Tab 2: Desc */}
             {activeTab === "desc" && (
-              <div
-                style={{
-                  backgroundColor: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  padding: "32px",
-                  lineHeight: 1.8,
-                  color: "#d4d4d8",
-                }}
-              >
-                <h3>Giới thiệu {product.name}</h3>
-                <p>{product.description}</p>
-                <p>
-                  Sản phẩm được phân phối và bảo hành chính hãng tại VanBass Music Center Đà Nẵng. Đi kèm đầy đủ phụ kiện cáp nguồn, cáp kết nối và sách hướng dẫn sử dụng.
-                </p>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+                <p>{product.description || "Thiết bị âm thanh và DJ chuyên nghiệp chính hãng tại VanBass Music Center Đà Nẵng."}</p>
               </div>
             )}
 
-            {/* Tab 3: Rental & Warranty */}
             {activeTab === "rental" && (
-              <div
-                style={{
-                  backgroundColor: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  padding: "32px",
-                  lineHeight: 1.8,
-                  color: "#d4d4d8",
-                }}
-              >
-                <h4 style={{ color: "#fff", marginBottom: "8px" }}>🛡️ Chính sách bảo hành (Khi mua hàng):</h4>
-                <ul style={{ paddingLeft: "20px", marginBottom: "24px" }}>
-                  <li>Bảo hành chính hãng 12 tháng tại VanBass Music Center.</li>
-                  <li>1 đổi 1 trong vòng 7 ngày đầu nếu có lỗi phần cứng từ nhà sản xuất.</li>
-                  <li>Hỗ trợ kỹ thuật cấu hình phần mềm và setup âm thanh trọn đời.</li>
-                </ul>
-
-                <h4 style={{ color: "#22c55e", marginBottom: "8px" }}>📅 Thủ tục & Quy định cho thuê:</h4>
-                <ul style={{ paddingLeft: "20px" }}>
-                  <li>Giao nhận và kiểm tra thiết bị trực tiếp tại Showroom Đà Nẵng hoặc giao tận nơi theo yêu cầu.</li>
-                  <li>Khách hàng cung cấp CCCD/Hộ chiếu gốc và đặt cọc theo giá trị thiết bị.</li>
-                  <li>Hỗ trợ kỹ thuật viên trực âm thanh nếu khách hàng có nhu cầu cho sự kiện.</li>
-                </ul>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+                <h4 style={{ color: "#fff", margin: "0 0 12px 0" }}>Quy trình thuê máy tại VanBass:</h4>
+                <ol style={{ paddingLeft: "20px", margin: "0 0 20px 0" }}>
+                  <li>Chọn thiết bị và ngày cần sử dụng máy trên website.</li>
+                  <li>Nhân viên kỹ thuật liên hệ xác nhận thời gian nhận và địa chỉ sự kiện.</li>
+                  <li>Ký hợp đồng thuê bàn giao thiết bị + Đặt cọc theo quy định.</li>
+                  <li>Hỗ trợ hướng dẫn sử dụng và bàn giao đầy đủ phụ kiện, dây cáp âm thanh.</li>
+                </ol>
               </div>
             )}
           </div>
 
           {/* Related Products */}
           {relatedProducts.length > 0 && (
-            <div style={{ marginTop: "80px" }}>
-              <div className="section-heading">
-                <div>
-                  <p className="section-kicker">GỢI Ý</p>
-                  <h2>Sản phẩm cùng danh mục</h2>
-                </div>
-                <Link href="/products" className="text-link">
-                  Xem tất cả <span>→</span>
-                </Link>
-              </div>
-
+            <div>
+              <h3 style={{ fontSize: "22px", fontWeight: 800, color: "#fff", marginBottom: "24px" }}>
+                Thiết Bị Cùng Danh Mục
+              </h3>
               <div className="product-grid">
-                {relatedProducts.map((rel, index) => (
-                  <article className="product-card" key={rel.id}>
-                    <Link href={`/products/${rel.slug}`} className="product-image">
-                      <span className="product-index">0{index + 1}</span>
+                {relatedProducts.map((p, idx) => (
+                  <article key={p.id} className="product-card" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                    <Link href={`/products/${p.slug}`} className="product-image">
+                      <span className="product-index" style={{ fontSize: "12px", fontWeight: 700 }}>0{idx + 1}</span>
                       <div className="product-placeholder">
+                        <div className="product-placeholder-top"><span /><span /><span /></div>
                         <div className="product-placeholder-body">
                           <div className="product-wheel" />
-                          <div className="product-faders">
-                            <i />
-                            <i />
-                          </div>
+                          <div className="product-faders"><i /><i /><i /></div>
+                          <div className="product-wheel" />
                         </div>
                       </div>
                     </Link>
-                    <div className="product-info">
-                      <p>{rel.category_name}</p>
-                      <h3>{rel.name}</h3>
-                      <Link href={`/products/${rel.slug}`} className="product-link">
-                        Xem chi tiết <span>→</span>
-                      </Link>
+                    <div className="product-info" style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+                      <h4 style={{ fontSize: "15px", fontWeight: 700, margin: "8px 0" }}>
+                        <Link href={`/products/${p.slug}`} style={{ color: "#fff", textDecoration: "none" }}>{p.name}</Link>
+                      </h4>
+                      <div style={{ paddingTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                        <span className="price-sale" style={{ fontSize: "15px", fontWeight: 800 }}>{formatCurrency(p.sale_price)}</span>
+                      </div>
                     </div>
                   </article>
                 ))}

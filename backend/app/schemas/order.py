@@ -29,7 +29,28 @@ class OrderCreateRequest(BaseModel):
     shipping_phone: str = Field(min_length=1, max_length=30)
     shipping_address: str = Field(min_length=1, max_length=1000)
     customer_note: str | None = None
+    note: str | None = None
     items: list[OrderItemCreate] = Field(min_length=1)
+
+
+class OrderStatusUpdate(BaseModel):
+    status: OrderStatus | None = None
+    payment_status: PaymentStatus | None = None
+    note: str | None = None
+
+
+class OrderPaymentStatusUpdate(BaseModel):
+    payment_status: PaymentStatus
+    note: str | None = None
+
+
+class OrderCancelRequest(BaseModel):
+    reason: str | None = Field(default=None, max_length=500)
+
+
+class OrderTrackRequest(BaseModel):
+    order_number: str = Field(min_length=1, max_length=50)
+    phone: str = Field(min_length=1, max_length=30)
 
 
 class OrderResponse(BaseModel):
@@ -47,7 +68,7 @@ class OrderResponse(BaseModel):
     shipping_name: str
     shipping_phone: str
     shipping_address: str
-    customer_note: str | None
+    customer_note: str | None = None
     created_at: datetime
     updated_at: datetime
     items: list[OrderItemResponse] = []
