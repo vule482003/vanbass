@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import ShopeeProductCard from "../../components/ShopeeProductCard";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
 import { Product } from "../../lib/types";
@@ -158,20 +159,48 @@ export default function ProductDetailPage() {
                   padding: "40px",
                 }}
               >
-                <div className="product-placeholder" style={{ width: "100%", height: "100%", maxWidth: "340px", maxHeight: "240px" }}>
-                  <div className="product-placeholder-top">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <div className="product-placeholder-body">
-                    <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
-                    <div className="product-faders">
-                      <i /><i /><i />
+                {(() => {
+                  const resolveImageUrl = (url?: string) => {
+                    if (!url) return null;
+                    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+                    const backendBase = apiUrl.replace(/\/api\/?$/, "");
+                    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
+                  };
+                  const rawImg = product.images?.[0]?.image_url || product.image_url;
+                  const displayImg = resolveImageUrl(rawImg);
+
+                  return displayImg ? (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <img
+                        src={displayImg}
+                        alt={product.name}
+                        style={{ maxWidth: "100%", maxHeight: "280px", objectFit: "contain", filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.5))" }}
+                        onError={(e) => {
+                          (e.currentTarget.parentElement as HTMLElement).style.display = "none";
+                          const fb = e.currentTarget.parentElement?.nextElementSibling as HTMLElement;
+                          if (fb) fb.style.display = "block";
+                        }}
+                      />
                     </div>
-                    <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
-                  </div>
-                </div>
+                  ) : (
+                    <div className="product-placeholder" style={{ width: "100%", height: "100%", maxWidth: "340px", maxHeight: "240px", display: "block" }}>
+                      <div className="product-placeholder-top">
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                      <div className="product-placeholder-body">
+                        <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
+                        <div className="product-faders">
+                          <i />
+                          <i />
+                        </div>
+                        <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div
                   style={{
@@ -398,33 +427,13 @@ export default function ProductDetailPage() {
 
           {/* Related Products */}
           {relatedProducts.length > 0 && (
-            <div>
-              <h3 style={{ fontSize: "22px", fontWeight: 800, color: "#fff", marginBottom: "24px" }}>
+            <div style={{ marginTop: "40px" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #ee4d2d", paddingBottom: "10px" }}>
                 Thiết Bị Cùng Danh Mục
               </h3>
-              <div className="product-grid">
-                {relatedProducts.map((p, idx) => (
-                  <article key={p.id} className="product-card" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                    <Link href={`/products/${p.slug}`} className="product-image">
-                      <span className="product-index" style={{ fontSize: "12px", fontWeight: 700 }}>0{idx + 1}</span>
-                      <div className="product-placeholder">
-                        <div className="product-placeholder-top"><span /><span /><span /></div>
-                        <div className="product-placeholder-body">
-                          <div className="product-wheel" />
-                          <div className="product-faders"><i /><i /><i /></div>
-                          <div className="product-wheel" />
-                        </div>
-                      </div>
-                    </Link>
-                    <div className="product-info" style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
-                      <h4 style={{ fontSize: "15px", fontWeight: 700, margin: "8px 0" }}>
-                        <Link href={`/products/${p.slug}`} style={{ color: "#fff", textDecoration: "none" }}>{p.name}</Link>
-                      </h4>
-                      <div style={{ paddingTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                        <span className="price-sale" style={{ fontSize: "15px", fontWeight: 800 }}>{formatCurrency(p.sale_price)}</span>
-                      </div>
-                    </div>
-                  </article>
+              <div className="shopee-product-grid">
+                {relatedProducts.map((p) => (
+                  <ShopeeProductCard key={p.id} product={p} />
                 ))}
               </div>
             </div>

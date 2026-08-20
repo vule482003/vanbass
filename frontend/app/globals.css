@@ -11,20 +11,26 @@
   --accent-dark: #0b0b0b;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+input, button, select, textarea, optgroup {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 a {
@@ -321,144 +327,229 @@ a {
   text-transform: uppercase;
 }
 
-/* Hero visual */
+/* =========================================================
+   3-CARD TILTED HERO SECTION (THIẾT BỊ • DJ • TRẢI NGHIỆM)
+   ========================================================= */
 
-.hero-visual {
+.hero-3cards-section {
   position: relative;
-  height: 580px;
-}
-
-.hero-circle {
-  position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-}
-
-.hero-circle-large {
-  top: 50%;
-  left: 50%;
-  width: 500px;
-  height: 500px;
-  transform: translate(-50%, -50%);
-}
-
-.hero-circle-small {
-  top: 50%;
-  left: 50%;
-  width: 340px;
-  height: 340px;
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translate(-50%, -50%);
-}
-
-.hero-equipment {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(540px, 92%);
-  height: 330px;
-  padding: 22px;
-  border: 1px solid #303030;
-  border-radius: 8px;
-  background:
-    linear-gradient(145deg, #242424, #101010 55%, #1b1b1b);
-  box-shadow:
-    0 50px 100px rgba(0, 0, 0, 0.7),
-    inset 0 1px rgba(255, 255, 255, 0.08);
-  transform: translate(-50%, -50%) rotate(-6deg);
-}
-
-.equipment-top {
-  display: flex;
-  gap: 8px;
-  height: 20px;
-}
-
-.equipment-top span {
-  width: 12px;
-  height: 12px;
-  border: 1px solid #555;
-  border-radius: 50%;
-}
-
-.equipment-display {
+  min-height: calc(100vh - 76px);
+  padding: 120px 0 70px;
+  background: radial-gradient(circle at 50% 35%, #141a15 0%, #090909 75%);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 7px;
   justify-content: center;
-  width: 160px;
-  height: 62px;
-  margin: 8px auto 24px;
-  padding: 12px;
-  border: 1px solid #333;
-  background: #070707;
 }
 
-.display-line {
-  width: 90%;
-  height: 3px;
-  background: #888;
-}
-
-.display-line.short {
-  width: 55%;
-  background: #444;
-}
-
-.equipment-controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+.hero-header-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 28px;
-}
-
-.jog-wheel {
-  width: 110px;
-  height: 110px;
-  margin-inline: auto;
-  border: 14px solid #242424;
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 0 2px #555,
-    inset 0 0 0 22px #101010;
-}
-
-.faders {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  height: 100px;
-}
-
-.faders span {
-  position: relative;
-  width: 2px;
-  height: 100%;
-  background: #555;
-}
-
-.faders span::after {
-  position: absolute;
-  top: 38%;
-  left: 50%;
-  width: 14px;
-  height: 26px;
-  border: 1px solid #777;
-  background: #171717;
-  content: "";
-  transform: translateX(-50%);
-}
-
-.equipment-bottom {
-  display: flex;
   gap: 8px;
-  margin-top: 24px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
 }
 
-.equipment-bottom span {
-  flex: 1;
-  height: 5px;
-  background: #3a3a3a;
+.hero-header-badge span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* Soundwaves / energy squiggles around the cards (from user's drawing) */
+.hero-soundwave-svg {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-soundwave-top {
+  top: 90px;
+}
+
+.hero-soundwave-bottom {
+  bottom: 25px;
+}
+
+.hero-3cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin: 32px 0;
+  position: relative;
+  z-index: 10;
+}
+
+.tilted-card {
+  position: relative;
+  background: linear-gradient(165deg, #151815 0%, #0d0f0e 60%, #090909 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 34px 28px;
+  min-height: 490px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: skewX(-7deg);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tilted-card.card-featured {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: linear-gradient(165deg, #18221a 0%, #0f1611 60%, #090909 100%);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(34, 197, 94, 0.15);
+}
+
+.tilted-card:hover {
+  transform: translateY(-10px) skewX(-7deg);
+  border-color: #22c55e;
+  background: linear-gradient(165deg, #1b261e 0%, #111a13 60%, #0a0e0b 100%);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 32px rgba(34, 197, 94, 0.3);
+  z-index: 20;
+}
+
+.tilted-card-inner {
+  transform: skewX(7deg); /* Counter-skew so text, diagrams & icons stay perfectly upright */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.tilted-card-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4ade80;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tilted-card-tag::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.tilted-card-title {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+}
+
+.tilted-card-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #a1a1aa;
+  margin: 0 0 20px 0;
+}
+
+.tilted-card-visual {
+  width: 100%;
+  height: 140px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0 22px 0;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.tilted-card:hover .tilted-card-visual {
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.tilted-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.tilted-card:hover .tilted-card-btn {
+  color: #22c55e;
+  transform: translateX(4px);
+}
+
+.hero-bottom-trust-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 10;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d4d4d8;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.trust-item span.icon {
+  color: #22c55e;
+  font-size: 16px;
+}
+
+@media (max-width: 1024px) {
+  .hero-3cards-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .tilted-card {
+    transform: none !important;
+    min-height: auto;
+    padding: 28px 22px;
+  }
+  .tilted-card-inner {
+    transform: none !important;
+  }
+  .hero-3cards-section {
+    padding: 100px 0 60px;
+  }
 }
 
 .hero-label {
@@ -808,109 +899,391 @@ a {
    PRODUCTS
    ========================================================= */
 
-.products-section {
-  padding: 140px 0;
-  background: #f4f4f0;
-  color: #0a0a0a;
-}
+/* =========================================================
+   SHOPEE-STYLE PRODUCTS & GRID
+   ========================================================= */
 
-.products-section .section-kicker {
-  color: #777;
-}
-
-.products-section .section-heading .text-link {
-  color: #111;
-}
-
-.product-grid {
+.shopee-product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
 }
 
-.product-card {
-  min-width: 0;
+@media (max-width: 1200px) {
+  .shopee-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
-.product-image {
+@media (max-width: 900px) {
+  .shopee-product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .shopee-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+.shopee-card {
   position: relative;
-  display: block;
-  aspect-ratio: 1 / 1.05;
-  overflow: hidden;
-  background: #e6e6e1;
-}
-
-.product-index {
-  position: absolute;
-  z-index: 2;
-  top: 18px;
-  left: 18px;
-  color: #888;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-}
-
-.product-placeholder {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 74%;
-  height: 54%;
-  padding: 15px;
-  border: 1px solid #343434;
-  border-radius: 5px;
-  background: linear-gradient(145deg, #292929, #101010);
-  box-shadow: 20px 30px 60px rgba(0, 0, 0, 0.2);
-  transform: translate(-50%, -50%) rotate(-5deg);
-  transition: transform 350ms ease;
-}
-
-.product-image:hover .product-placeholder {
-  transform: translate(-50%, -50%) rotate(-2deg) scale(1.03);
-}
-
-.product-placeholder-top {
+  background: #121215;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-.product-placeholder-top span {
-  width: 5px;
-  height: 5px;
-  border: 1px solid #777;
-  border-radius: 50%;
+.shopee-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 197, 94, 0.6);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(34, 197, 94, 0.18);
+  z-index: 40;
+}
+
+.shopee-card-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: radial-gradient(circle at 50% 50%, #171c18 0%, #090b09 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.shopee-card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 14px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+}
+
+.shopee-card:hover .shopee-card-image-wrap img {
+  transform: scale(1.06);
+  filter: drop-shadow(0 10px 20px rgba(34, 197, 94, 0.2));
+}
+
+/* Luxury Nightlife Badges */
+.shopee-badge-mall {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 3;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.shopee-badge-rental {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  z-index: 3;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+/* Luxury Bottom Quick Actions Drawer */
+.shopee-card-bottom-actions {
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  right: -1px;
+  background: #141614;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 10px 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9), 0 0 20px rgba(34, 197, 94, 0.18);
+  z-index: 50;
+}
+
+.shopee-card:hover .shopee-card-bottom-actions {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.shopee-btn-cart {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.18s ease;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+}
+
+.shopee-btn-cart:hover {
+  background: #e4e4e7;
+  transform: translateY(-1px);
+}
+
+.shopee-btn-rental {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.shopee-btn-rental:hover {
+  background: #22c55e;
+  color: #000000;
+  border-color: #22c55e;
+  transform: translateY(-1px);
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
+}
+
+/* Card Body Content */
+.shopee-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  background: #121215;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
+.shopee-product-title {
+  font-size: 13px;
+  line-height: 19px;
+  height: 38px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #f4f4f5;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.shopee-product-title:hover {
+  color: #22c55e;
+}
+
+.shopee-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.shopee-tag-item {
+  font-size: 10px;
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.shopee-tag-brand {
+  font-size: 10px;
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.shopee-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.shopee-sale-price {
+  font-size: 17px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.shopee-sale-price small {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fbbf24;
+  margin-right: 2px;
+}
+
+.shopee-rental-price {
+  font-size: 11px;
+  font-weight: 700;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.shopee-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #71717a;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 10px;
+}
+
+.shopee-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #fbbf24;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.shopee-location {
+  font-size: 10px;
+  color: #71717a;
+}
+
+/* Luxury Nightlife Vector Fallback */
+.product-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, #161c16 0%, #070907 100%);
+  padding: 20px;
 }
 
 .product-placeholder-body {
   display: grid;
-  grid-template-columns: 1fr 0.6fr 1fr;
+  grid-template-columns: 1fr 0.5fr 1fr;
   align-items: center;
-  gap: 8px;
-  height: 80%;
+  gap: 10px;
+  width: 90%;
+  height: 90%;
 }
 
 .product-wheel {
-  width: 70px;
-  height: 70px;
+  width: 68px;
+  height: 68px;
   margin-inline: auto;
-  border: 9px solid #222;
+  border: 4px solid #1a221a;
   border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #1a241b 0%, #0a0e0b 100%);
   box-shadow:
-    inset 0 0 0 2px #555,
-    inset 0 0 0 12px #101010;
+    inset 0 0 0 2px rgba(34, 197, 94, 0.4),
+    0 0 14px rgba(34, 197, 94, 0.18),
+    inset 0 0 10px rgba(0, 0, 0, 0.9);
+  position: relative;
+}
+
+.product-wheel::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .product-faders {
   display: flex;
   justify-content: center;
   gap: 6px;
-  height: 65px;
+  height: 60px;
 }
 
 .product-faders i {
   width: 2px;
-  background: #555;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+
+.product-faders i::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 14px;
+  background: #27272a;
+  border: 1px solid #22c55e;
+  border-radius: 1px;
 }
 
 .product-info {

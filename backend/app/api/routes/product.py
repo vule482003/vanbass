@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy import or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.api.dependencies import get_db, require_admin
 from app.models.category import Category
@@ -45,7 +45,7 @@ def list_products(
     # SEO Cache-Control: Cache for 60s, background revalidate for 300s
     response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
 
-    query = select(Product).where(Product.is_active.is_(True))
+    query = select(Product).options(selectinload(Product.images)).where(Product.is_active.is_(True))
 
     if category_id is not None:
         query = query.where(Product.category_id == category_id)
@@ -86,7 +86,9 @@ def get_product_by_slug(
     db: Session = Depends(get_db),
 ) -> Product:
     product = db.execute(
-        select(Product).where(Product.slug == slug, Product.is_active.is_(True))
+        select(Product)
+        .options(selectinload(Product.images))
+        .where(Product.slug == slug, Product.is_active.is_(True))
     ).scalar_one_or_none()
 
     if product is not None:
@@ -123,9 +125,13 @@ def get_product(
     response: Response,
     db: Session = Depends(get_db),
 ) -> Product:
-    product = db.get(Product, product_id)
+    product = db.execute(
+        select(Product)
+        .options(selectinload(Product.images))
+        .where(Product.id == product_id, Product.is_active.is_(True))
+    ).scalar_one_or_none()
 
-    if product is None or not product.is_active:
+    if product is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Product not found",

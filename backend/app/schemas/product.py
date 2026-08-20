@@ -4,6 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from app.schemas.product_image import ProductImageResponse
+
 
 class ProductCreate(BaseModel):
     category_id: UUID
@@ -96,6 +98,8 @@ class ProductResponse(BaseModel):
 
     stock_quantity: int
     is_active: bool
+
+    images: list[ProductImageResponse] = []
 
     created_at: datetime
     updated_at: datetime

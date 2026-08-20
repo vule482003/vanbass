@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ShopeeProductCard from "../components/ShopeeProductCard";
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "../lib/mock-data";
 import { useCart } from "../lib/cart-context";
 import { Product, Category } from "../lib/types";
@@ -20,14 +21,22 @@ function formatCurrency(amount?: number) {
 function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
+  const initialSearch = searchParams.get("search") || "";
   const { addItem } = useCart();
 
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [categories, setCategories] = useState<Category[]>(MOCK_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [filterMode, setFilterMode] = useState<"all" | "sale" | "rental">("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
   const [sortBy, setSortBy] = useState<string>("featured");
+
+  useEffect(() => {
+    const urlSearch = searchParams.get("search");
+    if (urlSearch !== null) {
+      setSearchQuery(urlSearch);
+    }
+  }, [searchParams]);
 
   // Fetch live products & categories from PostgreSQL
   useEffect(() => {
@@ -268,183 +277,9 @@ function ProductsContent() {
               </button>
             </div>
           ) : (
-            <div className="product-grid">
-              {filteredProducts.map((product, index) => (
-                <article
-                  className="product-card"
-                  key={product.id}
-                  style={{ display: "flex", flexDirection: "column", height: "100%" }}
-                >
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="product-image"
-                    aria-label={`Xem ${product.name}`}
-                  >
-                    <span className="product-index" style={{ fontSize: "12px", fontWeight: 700 }}>
-                      0{index + 1}
-                    </span>
-
-                    <div className="product-placeholder">
-                      <div className="product-placeholder-top">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
-
-                      <div className="product-placeholder-body">
-                        <div className="product-wheel" />
-                        <div className="product-faders">
-                          <i />
-                          <i />
-                          <i />
-                        </div>
-                        <div className="product-wheel" />
-                      </div>
-                    </div>
-                  </Link>
-
-                  <div
-                    className="product-info"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      flex: 1,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
-                      <div className="product-meta">
-                        <span className="product-category" style={{ fontSize: "12px", fontWeight: 700 }}>
-                          {product.brand || "VanBass"}
-                        </span>
-                        {product.stock_quantity > 0 ? (
-                          <span className="badge badge-sale" style={{ fontSize: "11px", fontWeight: 700 }}>
-                            Còn hàng
-                          </span>
-                        ) : (
-                          <span
-                            className="badge"
-                            style={{
-                              backgroundColor: "#27272a",
-                              color: "#a1a1aa",
-                              fontSize: "11px",
-                              fontWeight: 700,
-                            }}
-                          >
-                            Hết hàng
-                          </span>
-                        )}
-                      </div>
-
-                      <h3
-                        className="product-name"
-                        style={{
-                          fontSize: "16px",
-                          fontWeight: 700,
-                          margin: "8px 0 12px 0",
-                          lineHeight: "1.4",
-                        }}
-                      >
-                        <Link href={`/products/${product.slug}`} style={{ color: "#fff", textDecoration: "none" }}>
-                          {product.name}
-                        </Link>
-                      </h3>
-
-                      {product.description && (
-                        <p
-                          style={{
-                            fontSize: "13px",
-                            color: "#a1a1aa",
-                            lineHeight: "1.5",
-                            marginBottom: "12px",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {product.description}
-                        </p>
-                      )}
-                    </div>
-
-                    <div
-                      className="product-pricing"
-                      style={{
-                        marginTop: "auto",
-                        paddingTop: "12px",
-                        borderTop: "1px solid rgba(255,255,255,0.06)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "baseline",
-                          flexWrap: "wrap",
-                          gap: "8px",
-                        }}
-                      >
-                        {product.sale_enabled && product.sale_price ? (
-                          <div>
-                            <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", display: "block" }}>
-                              Giá bán
-                            </span>
-                            <span className="price-sale" style={{ fontSize: "16px", fontWeight: 800 }}>
-                              {formatCurrency(product.sale_price)}
-                            </span>
-                          </div>
-                        ) : (
-                          <div>
-                            <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", display: "block" }}>
-                              Giá bán
-                            </span>
-                            <span style={{ fontSize: "13px", color: "#a1a1aa", fontWeight: 600 }}>Chỉ cho thuê</span>
-                          </div>
-                        )}
-
-                        {product.rental_enabled && product.rental_price && (
-                          <div style={{ textAlign: "right" }}>
-                            <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", display: "block" }}>
-                              Giá thuê
-                            </span>
-                            <span className="price-rental" style={{ fontSize: "14px", fontWeight: 700, color: "#22c55e" }}>
-                              {formatCurrency(product.rental_price)}
-                              <span style={{ fontSize: "11px", fontWeight: 500 }}>/ngày</span>
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "14px" }}>
-                        <Link
-                          href={`/products/${product.slug}`}
-                          className="button button-secondary button-sm"
-                          style={{ textAlign: "center", textDecoration: "none" }}
-                        >
-                          Chi tiết
-                        </Link>
-                        {product.sale_enabled && product.stock_quantity > 0 ? (
-                          <button
-                            onClick={() => addItem(product, 1)}
-                            className="button button-primary button-sm"
-                            style={{ textAlign: "center" }}
-                          >
-                            + Giỏ hàng
-                          </button>
-                        ) : (
-                          <Link
-                            href={`/rental?product=${product.slug}`}
-                            className="button button-primary button-sm"
-                            style={{ textAlign: "center", textDecoration: "none" }}
-                          >
-                            Thuê máy
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </article>
+            <div className="shopee-product-grid">
+              {filteredProducts.map((product) => (
+                <ShopeeProductCard key={product.id} product={product} />
               ))}
             </div>
           )}

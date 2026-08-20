@@ -31,6 +31,7 @@ export interface Product {
   rental_price?: number;
   stock_quantity: number;
   is_active: boolean;
+  image_url?: string;
   images?: ProductImage[];
 }
 

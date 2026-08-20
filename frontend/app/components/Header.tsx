@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "../lib/cart-context";
@@ -14,11 +14,55 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchCatalog, setSearchCatalog] = useState(MOCK_PRODUCTS);
 
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  // Smart Sticky Header states: Hide on scroll down, show on scroll up
+  const [isVisible, setIsVisible] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+
+          // Header background styling threshold
+          if (currentScrollY > 60) {
+            setIsScrolled(true);
+          } else {
+            setIsScrolled(false);
+          }
+
+          // Scroll direction check with tolerance threshold
+          if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            // Scrolling DOWN -> Hide header (unless search or mobile menu is active)
+            setIsVisible(false);
+          } else if (currentScrollY < lastScrollY) {
+            // Scrolling UP -> Reveal header
+            setIsVisible(true);
+          }
+
+          lastScrollY = Math.max(0, currentScrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fetch live product catalog for instant search
   useEffect(() => {
     const loadSearchCatalog = async () => {
       try {
@@ -37,34 +81,76 @@ export default function Header() {
     loadSearchCatalog();
   }, []);
 
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Removed "Cho thuê" from navigation links
   const navLinks = [
     { href: "/", label: "Trang chủ" },
     { href: "/products", label: "Sản phẩm" },
-    { href: "/rental", label: "Cho thuê" },
     { href: "/about", label: "Về VanBass" },
     { href: "/contact", label: "Liên hệ" },
   ];
 
   const searchResults = searchQuery.trim()
-    ? searchCatalog.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (p.sku || "").toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 6)
+    ? searchCatalog
+        .filter(
+          (p) =>
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (p.sku || "").toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .slice(0, 6)
     : [];
 
   const handleSelectSearchResult = (slug: string) => {
-    setSearchModalOpen(false);
+    setIsSearchDropdownOpen(false);
     setSearchQuery("");
     router.push(`/products/${slug}`);
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearchDropdownOpen(false);
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <>
-      <header className="site-header">
-        <div className="container header-inner">
-          <Link href="/" className="brand" aria-label="VanBass Music Center">
+      <header
+        className="site-header"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 100,
+          transform: isVisible || mobileMenuOpen || isSearchDropdownOpen ? "translateY(0)" : "translateY(-100%)",
+          transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
+          backgroundColor: isScrolled ? "rgba(9, 9, 9, 0.95)" : "rgba(9, 9, 9, 0.8)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderBottom: isScrolled ? "1px solid rgba(255, 255, 255, 0.12)" : "1px solid rgba(255, 255, 255, 0.08)",
+          boxShadow: isScrolled ? "0 10px 30px rgba(0, 0, 0, 0.6)" : "none",
+        }}
+      >
+        <div className="container header-inner" style={{ minHeight: "76px", gap: "20px" }}>
+          {/* Logo Brand */}
+          <Link href="/" className="brand" aria-label="VanBass Music Center" style={{ flexShrink: 0 }}>
             <span className="brand-mark">VB</span>
             <span className="brand-text">
               VANBASS
@@ -73,7 +159,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="desktop-nav" aria-label="Main navigation">
+          <nav className="desktop-nav" aria-label="Main navigation" style={{ margin: "0 0 0 16px" }}>
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -82,8 +168,8 @@ export default function Header() {
                   href={link.href}
                   style={{
                     color: isActive ? "#ffffff" : undefined,
-                    borderBottom: isActive ? "1px solid #ffffff" : undefined,
-                    paddingBottom: isActive ? "2px" : undefined,
+                    borderBottom: isActive ? "2px solid #22c55e" : undefined,
+                    paddingBottom: isActive ? "4px" : undefined,
                   }}
                 >
                   {link.label}
@@ -92,32 +178,175 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Action Controls */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {/* Quick Search Button */}
-            <button
-              onClick={() => setSearchModalOpen(true)}
+          {/* Fixed Elongated Search Bar */}
+          <div
+            ref={searchContainerRef}
+            style={{
+              position: "relative",
+              flex: "1 1 340px",
+              maxWidth: "420px",
+              minWidth: "220px",
+            }}
+          >
+            <form
+              onSubmit={handleSearchSubmit}
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                width: "40px",
+                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                border: isSearchFocused ? "1px solid #22c55e" : "1px solid rgba(255, 255, 255, 0.14)",
+                borderRadius: "6px",
+                padding: "0 12px",
                 height: "40px",
-                background: "transparent",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                color: "#f5f5f0",
-                cursor: "pointer",
-                transition: "border-color 180ms ease",
+                transition: "border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease",
+                boxShadow: isSearchFocused ? "0 0 12px rgba(34, 197, 94, 0.2)" : "none",
               }}
-              aria-label="Tìm kiếm thiết bị"
-              title="Tìm kiếm"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={isSearchFocused ? "#22c55e" : "rgba(255, 255, 255, 0.45)"}
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ flexShrink: 0, marginRight: "10px", transition: "stroke 0.2s ease" }}
+              >
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-            </button>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchDropdownOpen(true);
+                }}
+                onFocus={() => {
+                  setIsSearchFocused(true);
+                  setIsSearchDropdownOpen(true);
+                }}
+                onBlur={() => {
+                  setIsSearchFocused(false);
+                }}
+                placeholder="Tìm kiếm thiết bị DJ, mixer, loa..."
+                style={{
+                  width: "100%",
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  color: "#ffffff",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                }}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setIsSearchDropdownOpen(false);
+                  }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "rgba(255, 255, 255, 0.4)",
+                    fontSize: "13px",
+                    cursor: "pointer",
+                    padding: "2px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  title="Xóa tìm kiếm"
+                >
+                  ✕
+                </button>
+              )}
+            </form>
 
+            {/* Autocomplete Dropdown */}
+            {isSearchDropdownOpen && searchQuery.trim() && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "#121215",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  borderRadius: "6px",
+                  boxShadow: "0 16px 36px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5)",
+                  maxHeight: "360px",
+                  overflowY: "auto",
+                  zIndex: 200,
+                }}
+              >
+                {searchResults.length === 0 ? (
+                  <div style={{ padding: "16px", color: "#a1a1aa", fontSize: "13px", textAlign: "center" }}>
+                    Không tìm thấy thiết bị nào phù hợp với &quot;{searchQuery}&quot;
+                  </div>
+                ) : (
+                  <>
+                    {searchResults.map((item) => (
+                      <div
+                        key={item.id}
+                        onMouseDown={() => handleSelectSearchResult(item.slug)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 14px",
+                          cursor: "pointer",
+                          borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+                          transition: "background 0.15s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#1a1f1a")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                      >
+                        <div>
+                          <div style={{ fontSize: "13px", fontWeight: 700, color: "#ffffff", marginBottom: "2px" }}>
+                            {item.name}
+                          </div>
+                          <div style={{ fontSize: "11px", color: "#a1a1aa" }}>
+                            {item.brand} • {item.sku}
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "13px",
+                            fontWeight: 800,
+                            color: "#22c55e",
+                            whiteSpace: "nowrap",
+                            marginLeft: "12px",
+                          }}
+                        >
+                          {item.sale_price ? item.sale_price.toLocaleString("vi-VN") + "₫" : "Liên hệ"}
+                        </div>
+                      </div>
+                    ))}
+                    <div
+                      onMouseDown={handleSearchSubmit}
+                      style={{
+                        padding: "10px 14px",
+                        textAlign: "center",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        color: "#22c55e",
+                        cursor: "pointer",
+                        backgroundColor: "rgba(34, 197, 94, 0.08)",
+                      }}
+                    >
+                      Xem tất cả kết quả cho &quot;{searchQuery}&quot; →
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Action Controls (Cart, User Auth) */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
             {/* Cart Icon & Badge */}
             <Link
               href="/cart"
@@ -128,9 +357,11 @@ export default function Header() {
                 justifyContent: "center",
                 width: "40px",
                 height: "40px",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                borderRadius: "6px",
                 color: "#f5f5f0",
-                transition: "border-color 180ms ease",
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                transition: "border-color 180ms ease, background-color 180ms ease",
               }}
               aria-label="Xem giỏ hàng"
             >
@@ -154,16 +385,17 @@ export default function Header() {
                     position: "absolute",
                     top: "-6px",
                     right: "-6px",
-                    backgroundColor: "#ffffff",
-                    color: "#0a0a0a",
+                    backgroundColor: "#22c55e",
+                    color: "#000000",
                     fontSize: "10px",
-                    fontWeight: "800",
+                    fontWeight: "900",
                     width: "18px",
                     height: "18px",
                     borderRadius: "999px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    boxShadow: "0 0 8px rgba(34, 197, 94, 0.5)",
                   }}
                 >
                   {totalItems}
@@ -179,9 +411,10 @@ export default function Header() {
                     href="/admin"
                     style={{
                       padding: "8px 14px",
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      border: "1px solid rgba(255, 255, 255, 0.3)",
-                      color: "#fff",
+                      backgroundColor: "rgba(34, 197, 94, 0.12)",
+                      border: "1px solid rgba(34, 197, 94, 0.4)",
+                      borderRadius: "6px",
+                      color: "#4ade80",
                       fontSize: "12px",
                       fontWeight: 800,
                       textDecoration: "none",
@@ -207,6 +440,7 @@ export default function Header() {
                     color: "#000000",
                     fontWeight: 900,
                     fontSize: "14px",
+                    borderRadius: "6px",
                     border: "none",
                     cursor: "pointer",
                   }}
@@ -224,6 +458,7 @@ export default function Header() {
                       width: "200px",
                       backgroundColor: "#111111",
                       border: "1px solid rgba(255,255,255,0.15)",
+                      borderRadius: "6px",
                       boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
                       zIndex: 150,
                       padding: "8px 0",
@@ -292,35 +527,33 @@ export default function Header() {
                   alignItems: "center",
                   fontSize: "12px",
                   fontWeight: 700,
-                  color: "#d4d4d8",
+                  color: "#ffffff",
                   textDecoration: "none",
-                  padding: "8px 12px",
-                  border: "1px solid rgba(255,255,255,0.15)",
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  border: "1px solid rgba(255,255,255,0.18)",
                 }}
               >
                 Đăng nhập
               </Link>
             )}
 
-            <Link href="/rental" className="header-cta">
-              Thuê thiết bị
-            </Link>
-
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               style={{
                 display: "none",
                 background: "none",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "none",
                 color: "#fff",
-                padding: "8px 12px",
+                fontSize: "22px",
                 cursor: "pointer",
               }}
-              className="mobile-menu-toggle"
-              aria-label="Mở menu"
+              className="mobile-menu-btn"
+              aria-label="Mở menu điều hướng"
             >
-              <span style={{ fontSize: "16px" }}>{mobileMenuOpen ? "✕" : "☰"}</span>
+              ☰
             </button>
           </div>
         </div>
@@ -330,7 +563,7 @@ export default function Header() {
           <div
             style={{
               position: "fixed",
-              top: "84px",
+              top: "76px",
               left: 0,
               width: "100%",
               backgroundColor: "#0d0d0d",
@@ -348,7 +581,7 @@ export default function Header() {
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
                 style={{
-                  color: pathname === link.href ? "#fff" : "#a1a1aa",
+                  color: pathname === link.href ? "#22c55e" : "#a1a1aa",
                   fontSize: "15px",
                   fontWeight: "600",
                   letterSpacing: "0.05em",
@@ -402,106 +635,6 @@ export default function Header() {
           </div>
         )}
       </header>
-
-      {/* Quick Search Modal */}
-      {searchModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            backdropFilter: "blur(6px)",
-            zIndex: 200,
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            paddingTop: "120px",
-          }}
-          onClick={() => setSearchModalOpen(false)}
-        >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "600px",
-              backgroundColor: "#121212",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              padding: "24px",
-              boxShadow: "0 25px 60px rgba(0,0,0,0.8)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: "12px" }}>
-              <span style={{ fontSize: "18px", color: "#a1a1aa" }}>🔍</span>
-              <input
-                type="text"
-                autoFocus
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm máy DJ, Mixer, CDJ, Loa..."
-                style={{
-                  width: "100%",
-                  background: "none",
-                  border: "none",
-                  color: "#fff",
-                  fontSize: "16px",
-                  outline: "none",
-                }}
-              />
-              <button
-                onClick={() => setSearchModalOpen(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#a1a1aa",
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Results Preview */}
-            <div style={{ marginTop: "16px", maxHeight: "300px", overflowY: "auto" }}>
-              {searchQuery.trim() && searchResults.length === 0 && (
-                <p style={{ color: "#71717a", fontSize: "14px", textAlign: "center", padding: "20px 0" }}>
-                  Không tìm thấy thiết bị phù hợp với &quot;{searchQuery}&quot;.
-                </p>
-              )}
-
-              {searchResults.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleSelectSearchResult(item.slug)}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "12px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
-                    transition: "background 150ms ease",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#1a1a1a")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                >
-                  <div>
-                    <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: 700, color: "#fff" }}>
-                      {item.name}
-                    </h4>
-                    <span style={{ fontSize: "12px", color: "#a1a1aa" }}>
-                      {item.brand} • {item.category_name}
-                    </span>
-                  </div>
-                  <strong style={{ fontSize: "14px", color: "#fff" }}>
-                    {item.sale_price ? item.sale_price.toLocaleString("vi-VN") + "₫" : "Liên hệ"}
-                  </strong>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
