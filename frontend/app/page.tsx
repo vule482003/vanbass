@@ -6,11 +6,13 @@ import RentalSection from "./components/RentalSection";
 import IntroSection from "./components/IntroSection";
 import LocalCTA from "./components/LocalCTA";
 import Footer from "./components/Footer";
+import ScrollObserver from "./components/ScrollObserver";
 
 export default function Home() {
   return (
     <>
       <Header />
+      <ScrollObserver />
 
       <main>
         {/* 1. Hero Banner (THIẾT BỊ • DJ • TRẢI NGHIỆM) */}

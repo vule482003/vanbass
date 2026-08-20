@@ -5,7 +5,7 @@ export default function CategoryGrid() {
   const categories = MOCK_CATEGORIES;
 
   return (
-    <section className="categories-section" id="categories">
+    <section className="categories-section reveal-on-scroll" id="categories">
       <div className="container">
         <div className="section-heading" style={{ marginBottom: "24px" }}>
           <div>

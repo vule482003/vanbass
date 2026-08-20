@@ -35,18 +35,15 @@ export default function Header() {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
 
-          // Header background styling threshold
-          if (currentScrollY > 40) {
-            setIsScrolled(true);
-          } else {
-            setIsScrolled(false);
-          }
+          // Header background styling threshold (only set state when changed)
+          const nextScrolled = currentScrollY > 40;
+          setIsScrolled((prev) => (prev !== nextScrolled ? nextScrolled : prev));
 
           // Scroll direction check with tolerance threshold
-          if (currentScrollY > lastScrollY && currentScrollY > 100) {
-            setIsVisible(false);
+          if (currentScrollY > lastScrollY && currentScrollY > 120) {
+            setIsVisible((prev) => (prev !== false ? false : prev));
           } else if (currentScrollY < lastScrollY) {
-            setIsVisible(true);
+            setIsVisible((prev) => (prev !== true ? true : prev));
           }
 
           lastScrollY = Math.max(0, currentScrollY);

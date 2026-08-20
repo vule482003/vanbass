@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function IntroSection() {
   return (
-    <section className="intro-section" id="about-intro">
+    <section className="intro-section reveal-on-scroll" id="about-intro">
       <div className="container intro-grid">
         <div>
           <p className="section-kicker" style={{ fontSize: "11px", letterSpacing: "0.2em", marginBottom: "12px" }}>

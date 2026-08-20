@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function LocalCTA() {
   return (
-    <section className="local-section" id="contact-cta">
+    <section className="local-section reveal-on-scroll" id="contact-cta">
       <div className="container local-content">
         <p className="section-kicker" style={{ fontSize: "11px", letterSpacing: "0.2em", color: "#4ade80", marginBottom: "12px" }}>
           SHOWROOM &amp; TRẢI NGHIỆM THỰC TẾ

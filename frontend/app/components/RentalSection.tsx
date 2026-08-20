@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function RentalSection() {
   return (
-    <section className="rental-section" id="rental">
+    <section className="rental-section reveal-on-scroll" id="rental">
       <div className="container rental-grid">
         <div className="rental-visual">
           <div className="rental-grid-pattern" />

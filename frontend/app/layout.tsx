@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import JsonLd from "./components/JsonLd";
+import FloatingContact from "./components/FloatingContact";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -79,7 +80,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+            <FloatingContact />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

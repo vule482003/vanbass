@@ -29,7 +29,7 @@ export default function ProductGrid() {
   }, []);
 
   return (
-    <section className="products-section" id="featured-products" style={{ padding: "85px 0", backgroundColor: "#090909" }}>
+    <section className="products-section reveal-on-scroll" id="featured-products" style={{ padding: "85px 0", backgroundColor: "#090909" }}>
       <div className="container">
         {/* Luxury Nightlife Section Header */}
         <div
