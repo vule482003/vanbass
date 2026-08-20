@@ -36,7 +36,7 @@ export default function Header() {
           const currentScrollY = window.scrollY;
 
           // Header background styling threshold
-          if (currentScrollY > 60) {
+          if (currentScrollY > 40) {
             setIsScrolled(true);
           } else {
             setIsScrolled(false);
@@ -44,10 +44,8 @@ export default function Header() {
 
           // Scroll direction check with tolerance threshold
           if (currentScrollY > lastScrollY && currentScrollY > 100) {
-            // Scrolling DOWN -> Hide header (unless search or mobile menu is active)
             setIsVisible(false);
           } else if (currentScrollY < lastScrollY) {
-            // Scrolling UP -> Reveal header
             setIsVisible(true);
           }
 

@@ -29,7 +29,7 @@ export default function ProductGrid() {
   }, []);
 
   return (
-    <section className="products-section" id="featured-products" style={{ padding: "90px 0", backgroundColor: "#090909" }}>
+    <section className="products-section" id="featured-products" style={{ padding: "85px 0", backgroundColor: "#090909" }}>
       <div className="container">
         {/* Luxury Nightlife Section Header */}
         <div
@@ -38,7 +38,7 @@ export default function ProductGrid() {
             alignItems: "center",
             justifyContent: "space-between",
             marginBottom: "28px",
-            paddingBottom: "18px",
+            paddingBottom: "16px",
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
           }}
         >
@@ -58,7 +58,7 @@ export default function ProductGrid() {
               GỢI Ý THIẾT BỊ
             </span>
             <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff", margin: 0, letterSpacing: "-0.02em" }}>
-              Thiết Bị DJ & Âm Thanh Biểu Diễn Chuyên Nghiệp
+              Thiết Bị DJ &amp; Âm Thanh Biểu Diễn Chuyên Nghiệp
             </h2>
           </div>
 
@@ -75,7 +75,7 @@ export default function ProductGrid() {
               transition: "opacity 0.2s ease",
             }}
           >
-            Xem tất cả ({products.length > 0 ? "50+" : "0"}) <span>→</span>
+            Xem tất cả (50+) <span>→</span>
           </Link>
         </div>
 

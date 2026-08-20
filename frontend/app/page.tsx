@@ -13,10 +13,10 @@ export default function Home() {
       <Header />
 
       <main>
-        {/* 1. Hero Banner */}
+        {/* 1. Hero Banner (THIẾT BỊ • DJ • TRẢI NGHIỆM) */}
         <Hero />
 
-        {/* 2. Thiết bị nổi bật (Khối thứ 2 theo yêu cầu) */}
+        {/* 2. Thiết bị nổi bật */}
         <ProductGrid />
 
         {/* 3. Danh mục sản phẩm */}
@@ -32,6 +32,7 @@ export default function Home() {
         <LocalCTA />
       </main>
 
+      {/* Chân trang Footer */}
       <Footer />
     </>
   );

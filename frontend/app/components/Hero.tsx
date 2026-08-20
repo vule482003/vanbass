@@ -30,33 +30,33 @@ export default function Hero() {
         />
       </svg>
 
-      <div className="container" style={{ position: "relative", zIndex: 10 }}>
+      <div className="container" style={{ position: "relative", zIndex: 10, width: "min(1240px, calc(100% - 40px))" }}>
         {/* Top Centered Header Intro */}
-        <div style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto 10px auto" }}>
+        <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 4px auto" }}>
           <div className="hero-header-badge">
             <span />
             VANBASS MUSIC CENTER • ĐÀ NẴNG
           </div>
           <h1
             style={{
-              fontSize: "clamp(28px, 4vw, 46px)",
+              fontSize: "clamp(22px, 3vw, 36px)",
               fontWeight: 900,
               color: "#ffffff",
               letterSpacing: "-0.03em",
               lineHeight: 1.15,
-              margin: "0 0 12px 0",
+              margin: "0 0 6px 0",
               textTransform: "uppercase",
             }}
           >
-            HỆ THỐNG ÂM THANH & THIẾT BỊ DJ CHUYÊN NGHIỆP
+            HỆ THỐNG ÂM THANH &amp; THIẾT BỊ DJ CHUYÊN NGHIỆP
           </h1>
           <p
             style={{
-              fontSize: "15px",
+              fontSize: "13.5px",
               color: "#a1a1aa",
-              lineHeight: 1.6,
+              lineHeight: 1.5,
               margin: "0 auto",
-              maxWidth: "620px",
+              maxWidth: "580px",
             }}
           >
             Phân phối chính hãng Pioneer DJ, AlphaTheta, Allen &amp; Heath và giải pháp biểu diễn âm thanh sự kiện hàng đầu miền Trung.
