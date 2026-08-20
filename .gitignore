@@ -54,6 +54,8 @@ backend/scripts/
 # ==========================================
 *.log
 logs/
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
 
 # ==========================================
 # Docker

@@ -7,6 +7,7 @@ from app.models.product import Product
 from app.models.product_image import ProductImage
 from app.models.rental_request import RentalRequest
 from app.models.rental_request_item import RentalRequestItem
+from app.models.slug_redirect import SlugRedirect
 from app.models.store_setting import StoreSettings
 from app.models.user import User
 from app.models.cart import Cart
@@ -22,6 +23,7 @@ __all__ = [
     "ProductImage",
     "RentalRequest",
     "RentalRequestItem",
+    "SlugRedirect",
     "StoreSettings",
     "User",
 ]

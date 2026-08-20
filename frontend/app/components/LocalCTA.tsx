@@ -2,32 +2,32 @@ import Link from "next/link";
 
 export default function LocalCTA() {
   return (
-    <section className="local-section">
-        <div className="container local-content">
-          <p className="section-kicker">VANBASS / ĐÀ NẴNG</p>
+    <section className="local-section reveal-on-scroll" id="contact-cta">
+      <div className="container local-content">
+        <p className="section-kicker" style={{ fontSize: "11px", letterSpacing: "0.2em", color: "#4ade80", marginBottom: "12px" }}>
+          SHOWROOM &amp; TRẢI NGHIỆM THỰC TẾ
+        </p>
 
-          <h2>
-            Tìm thiết bị DJ
-            <br />
-            <span>tại Đà Nẵng.</span>
-          </h2>
+        <h2 style={{ fontSize: "clamp(32px, 4.2vw, 56px)", fontWeight: 900, letterSpacing: "-0.03em", margin: "0 0 16px 0" }}>
+          Trải nghiệm thiết bị DJ
+          <br />
+          <span style={{ color: "#71717a" }}>ngay tại Showroom Đà Nẵng.</span>
+        </h2>
 
-          <p>
-            Khám phá thiết bị DJ, mixer, loa và các thiết bị âm thanh cho
-            nhu cầu sử dụng cá nhân, studio, sự kiện và giải trí.
-          </p>
+        <p style={{ fontSize: "15px", color: "#a1a1aa", maxWidth: "580px", margin: "0 auto 26px auto", lineHeight: 1.7 }}>
+          Ghé thăm không gian trải nghiệm thực tế các dòng máy DJ mới nhất, nhận tư vấn chuyên sâu và giải pháp âm thanh sự kiện tối ưu.
+        </p>
 
-          <div className="local-actions">
-            <Link href="/products" className="button button-primary">
-              Xem sản phẩm
-              <span>→</span>
-            </Link>
+        <div className="local-actions" style={{ gap: "14px", marginTop: "0" }}>
+          <Link href="/products" className="button button-primary" style={{ background: "#ffffff", color: "#000000" }}>
+            Khám phá sản phẩm <span>→</span>
+          </Link>
 
-            <Link href="/contact" className="button button-outline">
-              Liên hệ VanBass
-            </Link>
-          </div>
+          <Link href="/contact" className="button button-outline" style={{ borderColor: "#3f3f46", color: "#ffffff" }}>
+            Liên hệ tư vấn / Showroom
+          </Link>
         </div>
-      </section>
+      </div>
+    </section>
   );
 }

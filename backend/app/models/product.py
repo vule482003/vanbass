@@ -112,6 +112,26 @@ class Product(Base):
         default=0,
     )
 
+    meta_title: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    meta_description: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    meta_keywords: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    canonical_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,

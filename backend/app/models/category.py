@@ -38,6 +38,21 @@ class Category(Base):
         nullable=True,
     )
 
+    meta_title: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    meta_description: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    meta_keywords: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,

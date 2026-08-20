@@ -1,70 +1,53 @@
 import Link from "next/link";
-
-const categories = [
-  {
-    number: "01",
-    title: "Thiết bị DJ",
-    description:
-      "DJ controller, CDJ và hệ thống DJ dành cho nhu cầu cá nhân và biểu diễn.",
-    href: "/products?category=dj",
-  },
-  {
-    number: "02",
-    title: "Mixer & Bàn trộn",
-    description:
-      "Mixer DJ và bàn trộn chuyên nghiệp cho các hệ thống âm thanh đa dạng.",
-    href: "/products?category=mixer",
-  },
-  {
-    number: "03",
-    title: "Loa & Âm thanh",
-    description:
-      "Thiết bị loa và âm thanh phù hợp cho studio, sự kiện và giải trí.",
-    href: "/products?category=audio",
-  },
-  {
-    number: "04",
-    title: "Phụ kiện",
-    description:
-      "Các phụ kiện hỗ trợ DJ và hệ thống âm thanh trong quá trình sử dụng.",
-    href: "/products?category=accessories",
-  },
-];
+import { MOCK_CATEGORIES } from "../lib/mock-data";
 
 export default function CategoryGrid() {
+  const categories = MOCK_CATEGORIES;
+
   return (
-    <section className="categories-section">
+    <section className="categories-section reveal-on-scroll" id="categories">
       <div className="container">
-        <div className="section-heading">
+        <div className="section-heading" style={{ marginBottom: "24px" }}>
           <div>
-            <p className="section-kicker">DANH MỤC</p>
-            <h2>Khám phá thiết bị</h2>
+            <p className="section-kicker" style={{ fontSize: "11px", color: "#a1a1aa", letterSpacing: "0.15em", marginBottom: "6px" }}>
+              DANH MỤC SẢN PHẨM
+            </p>
+            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 42px)", fontWeight: 800, letterSpacing: "-0.03em" }}>
+              Khám phá theo danh mục
+            </h2>
           </div>
 
-          <Link href="/products" className="text-link">
-            Xem tất cả <span>→</span>
+          <Link href="/products" className="text-link" style={{ fontSize: "12px", fontWeight: 700 }}>
+            Xem toàn bộ <span>→</span>
           </Link>
         </div>
 
         <div className="category-grid">
           {categories.map((category) => (
             <Link
-              key={category.number}
-              href={category.href}
+              key={category.id}
+              href={`/products?category=${category.slug}`}
               className="category-card"
+              style={{ textDecoration: "none" }}
             >
-              <span className="category-number">{category.number}</span>
+              <span className="category-number" style={{ fontSize: "11px", fontWeight: 700, color: "#71717a" }}>
+                {category.number}
+              </span>
 
               <div className="category-icon">
                 <div />
               </div>
 
               <div className="category-content">
-                <h3>{category.title}</h3>
-                <p>{category.description}</p>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, margin: "0 0 6px 0", color: "#ffffff" }}>
+                  {category.name}
+                </h3>
+                <p style={{ fontSize: "12.5px", lineHeight: 1.55, color: "#a1a1aa", maxWidth: "100%" }}>
+                  {category.description}
+                </p>
               </div>
 
-              <span className="category-arrow">↗</span>
+              <span className="category-arrow" style={{ fontSize: "18px", color: "#a1a1aa" }}>↗</span>
             </Link>
           ))}
         </div>

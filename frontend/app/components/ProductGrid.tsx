@@ -1,104 +1,89 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-
-const featuredProducts = [
-  {
-    category: "DJ SYSTEM",
-    name: "AlphaTheta XDJ-AN",
-    description:
-      "Hệ thống DJ all-in-one dành cho người chơi DJ và nhu cầu biểu diễn chuyên nghiệp.",
-  },
-  {
-    category: "DJ PLAYER",
-    name: "AlphaTheta CDJ-1500X",
-    description:
-      "DJ Player thế hệ mới cho hệ thống DJ chuyên nghiệp và các không gian biểu diễn.",
-  },
-  {
-    category: "DJ MIXER",
-    name: "AlphaTheta DJM-V5",
-    description:
-      "Mixer DJ chuyên nghiệp dành cho những hệ thống cần khả năng phối trộn linh hoạt.",
-  },
-  {
-    category: "DJ CONTROLLER",
-    name: "Pioneer DJ DDJ-FLX4",
-    description:
-      "DJ Controller nhỏ gọn, phù hợp cho người mới bắt đầu và nhu cầu luyện tập tại nhà.",
-  },
-];
-
-function createProductSlug(name: string) {
-  return name.toLowerCase().replaceAll(" ", "-");
-}
+import { Product } from "../lib/types";
+import { MOCK_PRODUCTS } from "../lib/mock-data";
+import ShopeeProductCard from "./ShopeeProductCard";
 
 export default function ProductGrid() {
+  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS.slice(0, 10));
+
+  useEffect(() => {
+    const fetchLiveProducts = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const res = await fetch(`${apiUrl}/products`);
+        if (res.ok) {
+          const liveData = await res.json();
+          if (Array.isArray(liveData) && liveData.length > 0) {
+            setProducts(liveData.slice(0, 10));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch live products for ProductGrid:", err);
+      }
+    };
+
+    fetchLiveProducts();
+  }, []);
+
   return (
-    <section className="products-section">
+    <section className="products-section reveal-on-scroll" id="featured-products" style={{ padding: "85px 0", backgroundColor: "#090909" }}>
       <div className="container">
-        <div className="section-heading">
-          <div>
-            <p className="section-kicker">SẢN PHẨM</p>
-            <h2>Thiết bị nổi bật</h2>
+        {/* Luxury Nightlife Section Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "28px",
+            paddingBottom: "16px",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span
+              style={{
+                backgroundColor: "#ffffff",
+                color: "#000000",
+                fontSize: "11px",
+                fontWeight: 900,
+                padding: "4px 10px",
+                borderRadius: "3px",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
+              GỢI Ý THIẾT BỊ
+            </span>
+            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff", margin: 0, letterSpacing: "-0.02em" }}>
+              Thiết Bị DJ &amp; Âm Thanh Biểu Diễn Chuyên Nghiệp
+            </h2>
           </div>
 
-          <Link href="/products" className="text-link">
-            Xem tất cả <span>→</span>
+          <Link
+            href="/products"
+            style={{
+              fontSize: "13px",
+              fontWeight: 700,
+              color: "#22c55e",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              textDecoration: "none",
+              transition: "opacity 0.2s ease",
+            }}
+          >
+            Xem tất cả (50+) <span>→</span>
           </Link>
         </div>
 
-        <div className="product-grid">
-          {featuredProducts.map((product, index) => {
-            const productSlug = createProductSlug(product.name);
-
-            return (
-              <article className="product-card" key={product.name}>
-                <Link
-                  href={`/products/${productSlug}`}
-                  className="product-image"
-                  aria-label={`Xem ${product.name}`}
-                >
-                  <span className="product-index">
-                    0{index + 1}
-                  </span>
-
-                  <div className="product-placeholder">
-                    <div className="product-placeholder-top">
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-
-                    <div className="product-placeholder-body">
-                      <div className="product-wheel" />
-
-                      <div className="product-faders">
-                        <i />
-                        <i />
-                        <i />
-                      </div>
-
-                      <div className="product-wheel" />
-                    </div>
-                  </div>
-                </Link>
-
-                <div className="product-info">
-                  <p>{product.category}</p>
-
-                  <h3>{product.name}</h3>
-
-                  <span>{product.description}</span>
-
-                  <Link
-                    href={`/products/${productSlug}`}
-                    className="product-link"
-                  >
-                    Xem sản phẩm <span>→</span>
-                  </Link>
-                </div>
-              </article>
-            );
-          })}
+        {/* Nightlife Multi-column Grid */}
+        <div className="shopee-product-grid">
+          {products.map((product) => (
+            <ShopeeProductCard key={product.id} product={product} />
+          ))}
         </div>
       </div>
     </section>
