@@ -4,12 +4,22 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+<<<<<<< HEAD
+
+class OrderCreate(BaseModel):
+    shipping_name: str = Field(min_length=1, max_length=255)
+    shipping_phone: str = Field(min_length=1, max_length=30)
+    shipping_address: str = Field(min_length=1, max_length=1000)
+    customer_note: str | None = None
+    shipping_fee: Decimal = Field(default=Decimal("0"), ge=0)
+=======
 from app.models.order import OrderStatus, PaymentStatus
 
 
 class OrderItemCreate(BaseModel):
     product_id: UUID
     quantity: int = Field(gt=0)
+>>>>>>> 201b4c121c9fbc2f3e1a969c00b0a2a178f68102
 
 
 class OrderItemResponse(BaseModel):
@@ -18,6 +28,12 @@ class OrderItemResponse(BaseModel):
     id: UUID
     product_id: UUID
     product_name: str
+<<<<<<< HEAD
+    sku: str
+    quantity: int
+    unit_price: Decimal
+    subtotal: Decimal
+=======
     product_sku: str
     unit_price: Decimal
     quantity: int
@@ -51,6 +67,7 @@ class OrderCancelRequest(BaseModel):
 class OrderTrackRequest(BaseModel):
     order_number: str = Field(min_length=1, max_length=50)
     phone: str = Field(min_length=1, max_length=30)
+>>>>>>> 201b4c121c9fbc2f3e1a969c00b0a2a178f68102
 
 
 class OrderResponse(BaseModel):
@@ -59,8 +76,13 @@ class OrderResponse(BaseModel):
     id: UUID
     user_id: UUID
     order_number: str
+<<<<<<< HEAD
+    status: str
+    payment_status: str
+=======
     status: OrderStatus
     payment_status: PaymentStatus
+>>>>>>> 201b4c121c9fbc2f3e1a969c00b0a2a178f68102
     subtotal: Decimal
     shipping_fee: Decimal
     total_amount: Decimal
@@ -68,6 +90,16 @@ class OrderResponse(BaseModel):
     shipping_name: str
     shipping_phone: str
     shipping_address: str
+<<<<<<< HEAD
+    customer_note: str | None
+    created_at: datetime
+    updated_at: datetime
+    items: list[OrderItemResponse]
+
+
+class OrderStatusUpdate(BaseModel):
+    status: str
+=======
     customer_note: str | None = None
     created_at: datetime
     updated_at: datetime
@@ -77,3 +109,4 @@ class OrderResponse(BaseModel):
 class OrderListResponse(BaseModel):
     items: list[OrderResponse]
     total: int
+>>>>>>> 201b4c121c9fbc2f3e1a969c00b0a2a178f68102

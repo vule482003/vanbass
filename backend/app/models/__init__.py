@@ -10,6 +10,8 @@ from app.models.rental_request_item import RentalRequestItem
 from app.models.slug_redirect import SlugRedirect
 from app.models.store_setting import StoreSettings
 from app.models.user import User
+from app.models.cart import Cart
+from app.models.cart_item import CartItem
 
 __all__ = [
     "Category",

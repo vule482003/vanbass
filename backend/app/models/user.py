@@ -69,6 +69,12 @@ class User(Base):
         back_populates="user",
     )
 
+    cart: Mapped["Cart | None"] = relationship(
+    back_populates="user",
+    uselist=False,
+    cascade="all, delete-orphan",
+    )
+
     rental_requests: Mapped[list["RentalRequest"]] = relationship(
         back_populates="user",
     )
