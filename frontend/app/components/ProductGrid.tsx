@@ -33,6 +33,7 @@ export default function ProductGrid() {
       <div className="container">
         {/* Luxury Nightlife Section Header */}
         <div
+          className="products-section-heading"
           style={{
             display: "flex",
             alignItems: "center",

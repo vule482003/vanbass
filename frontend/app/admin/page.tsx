@@ -576,7 +576,7 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* Main Admin Content */}
-      <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", flex: 1, alignItems: "start" }}>
+      <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "240px 1fr", flex: 1, alignItems: "start" }}>
         {/* Sidebar */}
         <aside
           style={{
@@ -670,7 +670,7 @@ export default function AdminDashboardPage() {
         </aside>
 
         {/* Content Area */}
-        <main style={{ padding: "32px 40px", backgroundColor: "#090909" }}>
+        <main className="mobile-page-content" style={{ padding: "32px 40px", backgroundColor: "#090909" }}>
           {/* Notifications */}
           {actionSuccessMsg && (
             <div style={{ padding: "14px 20px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "24px" }}>
@@ -690,7 +690,7 @@ export default function AdminDashboardPage() {
                 Bảng Thống kê Hoạt động
               </h2>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "40px" }}>
+              <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "40px" }}>
                 <div style={{ padding: "24px", backgroundColor: "#121212", border: "1px solid rgba(255,255,255,0.08)" }}>
                   <p style={{ margin: "0 0 8px 0", color: "#a1a1aa", fontSize: "13px", textTransform: "uppercase" }}>Tổng Sản Phẩm</p>
                   <strong style={{ fontSize: "32px", fontWeight: 900, color: "#22c55e" }}>{products.length}</strong>

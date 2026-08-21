@@ -113,7 +113,8 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
 
             {product.rental_enabled && product.rental_price ? (
               <div className="shopee-rental-price" title="Giá thuê theo ngày">
-                Thuê: {formatVND(product.rental_price)}/ngày
+                <span className="shopee-rental-label">Thuê / ngày</span>
+                <strong>{formatVND(product.rental_price)}</strong>
               </div>
             ) : null}
           </div>

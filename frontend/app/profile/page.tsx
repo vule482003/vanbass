@@ -269,7 +269,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Grid Layout: Tabs + Content */}
-          <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "40px" }} className="profile-layout">
+          <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "40px" }} className="profile-layout mobile-stack">
             {/* Sidebar Navigation */}
             <div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -351,7 +351,7 @@ export default function ProfilePage() {
                   )}
 
                   <form onSubmit={handleSaveProfile}>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+                    <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
                       <div>
                         <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
                           Họ và tên
@@ -397,7 +397,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+                    <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
                       <div>
                         <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
                           Email tài khoản
