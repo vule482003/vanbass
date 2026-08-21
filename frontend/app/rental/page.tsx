@@ -144,7 +144,7 @@ function RentalContent() {
     }
 
     const items = Object.entries(selectedItems)
-      .filter(([_, qty]) => qty > 0)
+      .filter(([, qty]) => qty > 0)
       .map(([pid, qty]) => {
         const prod = rentalProducts.find((p) => p.id === pid);
         return {
@@ -422,6 +422,19 @@ function RentalContent() {
                       onChange={(e) => setPickupLocation(e.target.value)}
                       placeholder="Showroom VanBass hoặc Địa chỉ sự kiện..."
                       style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "24px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                      Ghi chú thêm (Tùy chọn)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="Yêu cầu kèm thêm dây cáp, bàn DJ, thời gian nhận máy cụ thể..."
+                      style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box", resize: "vertical" }}
                     />
                   </div>
 

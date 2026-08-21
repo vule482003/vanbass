@@ -52,8 +52,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {
       startTransition(() => setItems([]));
     }
-    setMounted(true);
-  }, [user?.id, isAuthLoading]);
+    startTransition(() => {
+      setMounted(true);
+    });
+  }, [user, isAuthLoading]);
 
   // Persist cart whenever items change for the current user
   useEffect(() => {
@@ -69,7 +71,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Ignore localStorage errors
       }
     }
-  }, [items, user?.id, mounted, isAuthLoading]);
+  }, [items, user, mounted, isAuthLoading]);
 
   const showNotification = (message: string) => {
     setNotification(message);

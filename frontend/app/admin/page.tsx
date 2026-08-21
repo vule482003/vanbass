@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [rentals, setRentals] = useState<RentalRequestItem[]>([]);
-  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [, setIsDataLoading] = useState(true);
 
   // Add Product Modal states
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -1390,7 +1390,7 @@ export default function AdminDashboardPage() {
                     type="text"
                     required
                     value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
+                    onChange={(e) => handleBrandChange(e.target.value)}
                     placeholder="AlphaTheta, Pioneer DJ, JBL..."
                     style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
                   />
