@@ -84,7 +84,7 @@ export default function Hero() {
         </Link>
 
         {/* KHUNG 2 (Ở GIỮA - NỔI BẬT): BIỂU DIỄN & CHO THUÊ SỰ KIỆN */}
-        <Link href="/rental" className="triptych-panel panel-featured" title="Dịch vụ cho thuê thiết bị DJ biểu diễn sự kiện">
+        <Link href="/products" className="triptych-panel panel-featured" title="Dịch vụ cho thuê thiết bị DJ biểu diễn sự kiện">
           <div className="triptych-bg" style={{ backgroundImage: "url('/images/hero/hero_performance.jpg')" }} />
           <div className="triptych-overlay featured-overlay" />
 

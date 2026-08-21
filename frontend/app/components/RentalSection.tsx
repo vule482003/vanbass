@@ -53,7 +53,7 @@ export default function RentalSection() {
             </li>
           </ul>
 
-          <Link href="/rental" className="button button-light" style={{ alignSelf: "flex-start" }}>
+          <Link href="/products" className="button button-light" style={{ alignSelf: "flex-start" }}>
             Xem thiết bị cho thuê
             <span>→</span>
           </Link>
