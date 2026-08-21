@@ -76,8 +76,10 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
           )}
         </Link>
 
-        {/* Shopee Mall / Official Brand Badge */}
-        <span className="shopee-badge-mall">Chính hãng</span>
+        {/* Out of Stock Badge (Hiển thị khi sản phẩm có tồn kho bằng 0) */}
+        {product.stock_quantity <= 0 && (
+          <span className="shopee-badge-soldout">Hết hàng</span>
+        )}
 
         {/* Rental tag badge if rental enabled */}
         {product.rental_enabled && (
@@ -97,7 +99,13 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
           <div className="shopee-tags-row">
             {product.brand && <span className="shopee-tag-brand">{product.brand}</span>}
             <span className="shopee-tag-item">Bảo hành 12T</span>
-            {product.stock_quantity > 0 && <span className="shopee-tag-item">Sẵn hàng</span>}
+            {product.stock_quantity > 0 ? (
+              <span className="shopee-tag-item">Sẵn hàng</span>
+            ) : (
+              <span className="shopee-tag-item" style={{ color: "#f87171", borderColor: "rgba(239, 68, 68, 0.3)" }}>
+                Hết hàng
+              </span>
+            )}
           </div>
 
           {/* Price Section */}
@@ -134,30 +142,62 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
 
       {/* Shopee Bottom Actions Drawer (Xuất hiện bên dưới thẻ khi hover - chuẩn ảnh 2) */}
       <div className="shopee-card-bottom-actions">
-        {/* Nút 1: Thêm vào giỏ hàng */}
-        <button
-          type="button"
-          className="shopee-btn-cart"
-          onClick={handleAddToCart}
-          title="Thêm sản phẩm này vào giỏ hàng"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {/* Nút 1: Thêm vào giỏ hàng / Tạm hết hàng */}
+        {product.stock_quantity > 0 ? (
+          <button
+            type="button"
+            className="shopee-btn-cart"
+            onClick={handleAddToCart}
+            title="Thêm sản phẩm này vào giỏ hàng"
           >
-            <circle cx="9" cy="21" r="1" />
-            <circle cx="20" cy="21" r="1" />
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-          </svg>
-          Thêm vào giỏ hàng
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            Thêm vào giỏ hàng
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="shopee-btn-cart"
+            disabled
+            style={{
+              opacity: 0.55,
+              cursor: "not-allowed",
+              backgroundColor: "#27272a",
+              color: "#a1a1aa",
+            }}
+            title="Sản phẩm hiện đang tạm hết hàng"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            Tạm hết hàng
+          </button>
+        )}
 
         {/* Nút 2: Thuê sản phẩm -> Link sang Facebook fanpage VanBass */}
         <a

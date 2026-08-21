@@ -58,6 +58,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    if (product.stock_quantity <= 0) {
+      showNotification(`Sản phẩm "${product.name}" hiện đang tạm hết hàng.`);
+      return;
+    }
+
     setItems((prev) => {
       const existing = prev.find((item) => item.product_id === product.id);
       if (existing) {

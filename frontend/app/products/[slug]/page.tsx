@@ -211,7 +211,12 @@ export default function ProductDetailPage() {
                     gap: "8px",
                   }}
                 >
-                  {product.sale_enabled && <span className="badge badge-sale">MUA BÁN</span>}
+                  {product.sale_enabled && product.stock_quantity > 0 && <span className="badge badge-sale">MUA BÁN</span>}
+                  {product.sale_enabled && product.stock_quantity <= 0 && (
+                    <span className="badge" style={{ backgroundColor: "rgba(239,68,68,0.2)", color: "#f87171", border: "1px solid rgba(239,68,68,0.4)" }}>
+                      HẾT HÀNG
+                    </span>
+                  )}
                   {product.rental_enabled && <span className="badge badge-rental">CHO THUÊ</span>}
                 </div>
               </div>
@@ -284,33 +289,45 @@ export default function ProductDetailPage() {
               {/* Quantity & Buy Button */}
               {product.sale_enabled && (
                 <div style={{ marginBottom: "24px" }}>
-                  <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                    <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                  {product.stock_quantity > 0 ? (
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                        <button
+                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                          style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        >
+                          -
+                        </button>
+                        <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
+                          {quantity}
+                        </span>
+                        <button
+                          onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
+                          style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        onClick={handleAddToCart}
+                        className="button button-primary button-lg"
+                        style={{ flex: 1 }}
                       >
-                        -
-                      </button>
-                      <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
-                        {quantity}
-                      </span>
-                      <button
-                        onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
-                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
-                      >
-                        +
+                        Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
                       </button>
                     </div>
-
-                    <button
-                      onClick={handleAddToCart}
-                      className="button button-primary button-lg"
-                      style={{ flex: 1 }}
-                    >
-                      Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
-                    </button>
-                  </div>
+                  ) : (
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <button
+                        disabled
+                        className="button button-secondary button-lg"
+                        style={{ flex: 1, opacity: 0.6, cursor: "not-allowed", backgroundColor: "#1f2937", color: "#9ca3af" }}
+                      >
+                        Tạm hết hàng
+                      </button>
+                    </div>
+                  )}
 
                   {addedNotice && (
                     <div style={{ marginTop: "12px", padding: "10px 16px", backgroundColor: "rgba(34,197,94,0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "13px" }}>

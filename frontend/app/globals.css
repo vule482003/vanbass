@@ -1444,6 +1444,25 @@ a {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
+.shopee-badge-soldout {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 3;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+}
+
 .shopee-badge-rental {
   position: absolute;
   top: 10px;
