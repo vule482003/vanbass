@@ -1,5 +1,4 @@
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -23,7 +22,6 @@ from app.schemas.rental_payment import (
     RentalPaymentResponse,
     RentalPaymentStatusUpdate,
 )
-
 
 router = APIRouter(
     prefix="/rental-requests",
@@ -101,17 +99,14 @@ def create_rental_payment(
             detail="Rental request has already been fully paid",
         )
 
-    remaining_amount = (
-        rental_request.rental_total
-        - sum(
-            payment.amount
-            for payment in rental_request.payments
-            if payment.status
-            in {
-                PaymentTransactionStatus.PAID,
-                PaymentTransactionStatus.PROCESSING,
-            }
-        )
+    remaining_amount = rental_request.rental_total - sum(
+        payment.amount
+        for payment in rental_request.payments
+        if payment.status
+        in {
+            PaymentTransactionStatus.PAID,
+            PaymentTransactionStatus.PROCESSING,
+        }
     )
 
     if data.amount > remaining_amount:
@@ -176,7 +171,7 @@ def get_rental_payment_for_user(
         db=db,
     )
 
-    rental_request = get_rental_request_for_user(
+    get_rental_request_for_user(
         rental_request_id=payment.rental_request_id,
         current_user=current_user,
         db=db,
@@ -250,25 +245,27 @@ def update_rental_payment_status(
         payment.transaction_id = data.transaction_id
 
     if data.status == PaymentTransactionStatus.PAID:
-        payment.paid_at = datetime.now(timezone.utc)
+        payment.paid_at = datetime.now(UTC)
 
-        paid_amount = db.execute(
-            select(Payment.amount).where(
-                Payment.rental_request_id == rental_request.id,
-                Payment.status == PaymentTransactionStatus.PAID,
+        paid_amount = (
+            db.execute(
+                select(Payment.amount).where(
+                    Payment.rental_request_id == rental_request.id,
+                    Payment.status == PaymentTransactionStatus.PAID,
+                )
             )
-        ).scalars().all()
+            .scalars()
+            .all()
+        )
 
-        total_paid = sum(paid_amount, Decimal("0"))
+        total_paid = sum(paid_amount, Decimal(0))
 
         total_paid += payment.amount
 
         if total_paid >= rental_request.rental_total:
             rental_request.payment_status = RentalPaymentStatus.PAID
         else:
-            rental_request.payment_status = (
-                RentalPaymentStatus.PARTIALLY_PAID
-            )
+            rental_request.payment_status = RentalPaymentStatus.PARTIALLY_PAID
 
     elif data.status in {
         PaymentTransactionStatus.FAILED,

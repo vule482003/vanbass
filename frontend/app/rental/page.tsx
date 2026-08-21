@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import { startTransition, useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../components/Header";
@@ -54,11 +54,11 @@ function RentalContent() {
         if (preselectedSlug) {
           const found = rentalProducts.find((p) => p.slug === preselectedSlug);
           if (found) {
-            setSelectedItems({ [found.id]: 1 });
+            startTransition(() => setSelectedItems({ [found.id]: 1 }));
             return;
           }
         }
-        setSelectedItems({ [rentalProducts[0].id]: 1 });
+        startTransition(() => setSelectedItems({ [rentalProducts[0].id]: 1 }));
       }
     }
   }, [rentalProducts, preselectedSlug, selectedItems]);
@@ -82,9 +82,11 @@ function RentalContent() {
   // Pre-fill user info if logged in
   useEffect(() => {
     if (user) {
-      if (!fullName && user.full_name) setFullName(user.full_name);
-      if (!phone && user.phone) setPhone(user.phone);
-      if (!email && user.email) setEmail(user.email);
+      startTransition(() => {
+        if (!fullName && user.full_name) setFullName(user.full_name);
+        if (!phone && user.phone) setPhone(user.phone);
+        if (!email && user.email) setEmail(user.email);
+      });
     }
   }, [user, fullName, phone, email]);
 

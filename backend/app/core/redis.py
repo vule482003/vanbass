@@ -1,5 +1,7 @@
 from functools import lru_cache
+
 import redis
+
 from app.core.config import settings
 
 
@@ -13,5 +15,5 @@ def get_redis_client() -> redis.Redis:
         retry_on_timeout=False,
     )
 
-redis_client = get_redis_client()
 
+redis_client = get_redis_client()

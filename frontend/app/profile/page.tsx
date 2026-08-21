@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { startTransition, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
@@ -121,10 +121,12 @@ export default function ProfilePage() {
       router.push("/login");
     }
     if (user) {
-      setFullName(user.full_name || "");
-      setPhone(user.phone || "");
-      setCity(user.city || "Đà Nẵng");
-      setAddress(user.address || "");
+      startTransition(() => {
+        setFullName(user.full_name || "");
+        setPhone(user.phone || "");
+        setCity(user.city || "Đà Nẵng");
+        setAddress(user.address || "");
+      });
     }
   }, [user, isAuthenticated, isLoading, router]);
 

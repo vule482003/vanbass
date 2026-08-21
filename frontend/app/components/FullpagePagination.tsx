@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface SlideItem {
   id: string;
@@ -19,6 +19,13 @@ export const SLIDES: SlideItem[] = [
 
 export default function FullpagePagination() {
   const [activeSlide, setActiveSlide] = useState("hero");
+
+  const scrollToSlide = useCallback((id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
   useEffect(() => {
     const slideElements = SLIDES.map((slide) =>
@@ -81,14 +88,7 @@ export default function FullpagePagination() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeSlide]);
-
-  const scrollToSlide = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
+  }, [activeSlide, scrollToSlide]);
 
   const activeIndex = SLIDES.findIndex((s) => s.id === activeSlide);
   const displayIndex = activeIndex >= 0 ? activeIndex + 1 : 1;

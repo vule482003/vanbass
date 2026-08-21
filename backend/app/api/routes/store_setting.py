@@ -10,7 +10,6 @@ from app.schemas.store_setting import (
     StoreSettingsUpdate,
 )
 
-
 router = APIRouter(
     prefix="/store-settings",
     tags=["Store Settings"],
@@ -25,9 +24,7 @@ def get_store_settings(
     db: Session = Depends(get_db),
 ) -> StoreSettings:
     settings = db.execute(
-        select(StoreSettings)
-        .order_by(StoreSettings.updated_at.desc())
-        .limit(1)
+        select(StoreSettings).order_by(StoreSettings.updated_at.desc()).limit(1)
     ).scalar_one_or_none()
 
     if settings is None:
@@ -49,9 +46,7 @@ def update_store_settings(
     db: Session = Depends(get_db),
 ) -> StoreSettings:
     settings = db.execute(
-        select(StoreSettings)
-        .order_by(StoreSettings.updated_at.desc())
-        .limit(1)
+        select(StoreSettings).order_by(StoreSettings.updated_at.desc()).limit(1)
     ).scalar_one_or_none()
 
     if settings is None:

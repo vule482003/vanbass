@@ -30,10 +30,16 @@ VALID_ORDER_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
 class OrderService:
     @staticmethod
     def calculate_shipping_fee(subtotal: Decimal) -> Decimal:
-        return Decimal("0.00") if subtotal >= FREE_SHIPPING_THRESHOLD else STANDARD_SHIPPING_FEE
+        return (
+            Decimal("0.00")
+            if subtotal >= FREE_SHIPPING_THRESHOLD
+            else STANDARD_SHIPPING_FEE
+        )
 
     @classmethod
-    def create_order(cls, payload: OrderCreateRequest, user_id: UUID, db: Session) -> Order:
+    def create_order(
+        cls, payload: OrderCreateRequest, user_id: UUID, db: Session
+    ) -> Order:
         """
         Create order with atomic inventory reservation using SELECT FOR UPDATE.
         Eliminates race conditions and prevents overselling.
@@ -47,15 +53,15 @@ class OrderService:
         # 1. Aggregate quantities per product
         item_qty_map: dict[UUID, int] = {}
         for item in payload.items:
-            item_qty_map[item.product_id] = item_qty_map.get(item.product_id, 0) + item.quantity
+            item_qty_map[item.product_id] = (
+                item_qty_map.get(item.product_id, 0) + item.quantity
+            )
 
-        sorted_product_ids = sorted(list(item_qty_map.keys()))
+        sorted_product_ids = sorted(item_qty_map.keys())
 
         # 2. Lock product rows in DB (ordered by ID to avoid deadlocks)
         stmt = (
-            select(Product)
-            .where(Product.id.in_(sorted_product_ids))
-            .with_for_update()
+            select(Product).where(Product.id.in_(sorted_product_ids)).with_for_update()
         )
         products = db.execute(stmt).scalars().all()
         product_map = {p.id: p for p in products}
@@ -88,7 +94,11 @@ class OrderService:
 
         for pid, requested_qty in item_qty_map.items():
             product = product_map[pid]
-            unit_price = product.sale_price if product.sale_price is not None else Decimal("0.00")
+            unit_price = (
+                product.sale_price
+                if product.sale_price is not None
+                else Decimal("0.00")
+            )
             line_total = unit_price * requested_qty
             subtotal += line_total
 
@@ -170,7 +180,10 @@ class OrderService:
             if new_status == OrderStatus.CANCELLED:
                 cls._restock_order_items(order, db)
 
-            if new_status == OrderStatus.COMPLETED and order.payment_status == PaymentStatus.UNPAID:
+            if (
+                new_status == OrderStatus.COMPLETED
+                and order.payment_status == PaymentStatus.UNPAID
+            ):
                 order.payment_status = PaymentStatus.PAID
 
             order.status = new_status
@@ -179,7 +192,9 @@ class OrderService:
             order.payment_status = new_payment_status
 
         if admin_note:
-            order.customer_note = append_timestamped_note(order.customer_note, admin_note)
+            order.customer_note = append_timestamped_note(
+                order.customer_note, admin_note
+            )
 
         db.commit()
         db.refresh(order)
@@ -217,7 +232,9 @@ class OrderService:
                 )
 
         actor = "Admin" if is_admin else "Khách hàng"
-        cancel_note = f"Hủy bởi {actor}" + (f": {reason.strip()}" if reason and reason.strip() else "")
+        cancel_note = f"Hủy bởi {actor}" + (
+            f": {reason.strip()}" if reason and reason.strip() else ""
+        )
 
         return cls.update_order_status(
             order_id=order_id,

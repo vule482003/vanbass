@@ -26,9 +26,7 @@ class ProductService:
             pass
 
         return db.execute(
-            select(Product).where(
-                (Product.slug == raw_str) | (Product.sku == raw_str)
-            )
+            select(Product).where((Product.slug == raw_str) | (Product.sku == raw_str))
         ).scalar_one_or_none()
 
     @classmethod

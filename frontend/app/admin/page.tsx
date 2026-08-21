@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { startTransition, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/auth-context";
@@ -166,7 +166,9 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     if (user?.role === "admin" && token) {
-      loadAllData();
+      startTransition(() => {
+        void loadAllData();
+      });
     }
   }, [user, token, loadAllData]);
 

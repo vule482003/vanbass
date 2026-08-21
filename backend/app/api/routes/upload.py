@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from pathlib import Path
@@ -58,8 +59,7 @@ async def upload_image(
     unique_filename = f"{uuid.uuid4().hex}{ext}"
     file_path = UPLOAD_DIR / unique_filename
 
-    with open(file_path, "wb") as f:
-        f.write(content)
+    await asyncio.to_thread(file_path.write_bytes, content)
 
     return ImageUploadResponse(
         url=f"/static/uploads/{unique_filename}",

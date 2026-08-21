@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -58,9 +58,11 @@ def get_product_availability(
     end_date: date | None = None,
     db: Session = Depends(get_db),
 ) -> ProductAvailabilityResponse:
-    today = date.today()
+    today = datetime.now(UTC).date()
     s_date = start_date if start_date and start_date >= today else today
-    e_date = end_date if end_date and end_date >= s_date else s_date + timedelta(days=30)
+    e_date = (
+        end_date if end_date and end_date >= s_date else s_date + timedelta(days=30)
+    )
 
     if (e_date - s_date).days > 90:
         e_date = s_date + timedelta(days=90)
@@ -98,7 +100,11 @@ def list_my_rental_requests(
     if not current_user:
         return RentalRequestListResponse(items=[], total=0)
 
-    query = select(RentalRequest).where(RentalRequest.user_id == current_user.id).order_by(RentalRequest.created_at.desc())
+    query = (
+        select(RentalRequest)
+        .where(RentalRequest.user_id == current_user.id)
+        .order_by(RentalRequest.created_at.desc())
+    )
     results = db.execute(query).scalars().all()
     return RentalRequestListResponse(items=list(results), total=len(results))
 
@@ -116,7 +122,11 @@ def get_rental_request(
             detail="Không tìm thấy yêu cầu thuê",
         )
 
-    if current_user and current_user.role != UserRole.ADMIN and rental_req.user_id != current_user.id:
+    if (
+        current_user
+        and current_user.role != UserRole.ADMIN
+        and rental_req.user_id != current_user.id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xem yêu cầu thuê này",

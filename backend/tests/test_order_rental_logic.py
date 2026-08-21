@@ -21,10 +21,10 @@ from app.schemas.rental_request import RentalRequestCreate, RentalRequestItemCre
 from app.services.order_service import OrderService
 from app.services.rental_service import RentalService
 
-
 # ==========================================
 # 1. ORDER & STOCK ENGINE TESTS
 # ==========================================
+
 
 def test_order_create_success_deducts_stock():
     mock_db = MagicMock()
@@ -117,7 +117,9 @@ def test_order_state_machine_invalid_transition():
 
     # PENDING -> COMPLETED directly is invalid (must go through CONFIRMED/SHIPPED)
     with pytest.raises(HTTPException) as exc_info:
-        OrderService.update_order_status(order_id=order_id, db=mock_db, new_status=OrderStatus.COMPLETED)
+        OrderService.update_order_status(
+            order_id=order_id, db=mock_db, new_status=OrderStatus.COMPLETED
+        )
 
     assert exc_info.value.status_code == 400
     assert "Không thể chuyển trạng thái" in exc_info.value.detail
@@ -220,6 +222,7 @@ def test_order_cancel_restocks_inventory():
 # ==========================================
 # 2. SMART RENTAL ENGINE TESTS
 # ==========================================
+
 
 def test_rental_tiered_pricing():
     assert RentalService.get_tier_discount_multiplier(1) == Decimal("1.00")
@@ -379,8 +382,11 @@ def test_rental_date_collision_detected_and_rejected():
 # 3. DISTRIBUTED RATE LIMITER TESTS
 # ==========================================
 
+
 def test_rate_limiter_fallback_in_memory():
-    limiter = RedisDistributedRateLimiter(requests_limit=3, window_seconds=10, prefix="test:rl")
+    limiter = RedisDistributedRateLimiter(
+        requests_limit=3, window_seconds=10, prefix="test:rl"
+    )
 
     with patch("app.core.rate_limit.redis_client") as mock_redis:
         # Simulate Redis connection failure

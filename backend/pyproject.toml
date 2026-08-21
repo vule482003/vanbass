@@ -36,3 +36,14 @@ dev = [
 ]
 [tool.uv]
 package = false
+
+[tool.ruff.lint]
+extend-ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/api/dependencies.py" = ["BLE001"]
+"app/api/routes/auth.py" = ["BLE001"]
+"app/core/rate_limit.py" = ["BLE001"]
+"app/models/*.py" = ["F821"]
+"tests/*.py" = ["DTZ011"]
+"tests/test_simple.py" = ["BLE001"]

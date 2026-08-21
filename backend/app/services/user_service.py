@@ -22,9 +22,15 @@ class UserService:
         Resolve an existing customer or create a new guest user based on phone/email.
         """
         cleaned_phone = clean_phone_number(phone)
-        guest_email = email.strip() if email and email.strip() else f"guest_{cleaned_phone}@vanbass.vn"
+        guest_email = (
+            email.strip()
+            if email and email.strip()
+            else f"guest_{cleaned_phone}@vanbass.vn"
+        )
 
-        user = db.execute(select(User).where(User.email == guest_email)).scalar_one_or_none()
+        user = db.execute(
+            select(User).where(User.email == guest_email)
+        ).scalar_one_or_none()
         if not user:
             user = User(
                 id=uuid.uuid4(),

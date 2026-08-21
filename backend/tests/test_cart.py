@@ -1,13 +1,13 @@
+import uuid
 from decimal import Decimal
 from unittest.mock import MagicMock, patch
-import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.product import Product
-from app.models.user import User, UserRole
-from app.schemas.cart import CartItemAdd, CartItemResponse, CartItemUpdate, CartResponse
+from app.schemas.cart import CartItemAdd, CartItemUpdate
 from app.services.cart_service import CartService
 
 client = TestClient(app)
@@ -94,10 +94,9 @@ def test_cart_service_add_item_stock_validation():
 
 def test_cart_api_endpoints_registered():
     from app.api.routes.cart import router as cart_router
+
     cart_routes = [route.path for route in cart_router.routes if hasattr(route, "path")]
     assert "/cart" in cart_routes
     assert "/cart/items" in cart_routes
     assert "/cart/items/{product_id}" in cart_routes
     assert "/cart/merge" in cart_routes
-
-

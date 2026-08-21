@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { startTransition, useState, useEffect } from "react";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -31,9 +31,11 @@ export default function CartPage() {
   // Auto-fill user info if logged in
   useEffect(() => {
     if (user) {
-      if (!shippingName && user.full_name) setShippingName(user.full_name);
-      if (!shippingPhone && user.phone) setShippingPhone(user.phone);
-      if (!shippingAddress && user.address) setShippingAddress(user.address);
+      startTransition(() => {
+        if (!shippingName && user.full_name) setShippingName(user.full_name);
+        if (!shippingPhone && user.phone) setShippingPhone(user.phone);
+        if (!shippingAddress && user.address) setShippingAddress(user.address);
+      });
     }
   }, [user, shippingName, shippingPhone, shippingAddress]);
 
@@ -85,7 +87,7 @@ export default function CartPage() {
         if (typeof err.detail === "string") {
           msg = err.detail;
         } else if (Array.isArray(err.detail)) {
-          msg = err.detail.map((d: any) => d.msg || "Lỗi dữ liệu").join(", ");
+          msg = err.detail.map((d: { msg?: string }) => d.msg || "Lỗi dữ liệu").join(", ");
         } else if (typeof err.detail === "object" && err.detail !== null) {
           msg = JSON.stringify(err.detail);
         }

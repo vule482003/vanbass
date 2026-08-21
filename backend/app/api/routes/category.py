@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_user, get_db, require_admin
+from app.api.dependencies import get_db, require_admin
 from app.models.category import Category
 from app.models.user import User
 from app.schemas.category import (
@@ -12,7 +12,6 @@ from app.schemas.category import (
     CategoryResponse,
     CategoryUpdate,
 )
-
 
 router = APIRouter(
     prefix="/categories",

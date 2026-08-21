@@ -82,7 +82,11 @@ class CartService:
                 continue
 
             # First image if exists
-            first_image = sorted(product.images, key=lambda img: img.sort_order)[0] if product.images else None
+            first_image = (
+                min(product.images, key=lambda img: img.sort_order)
+                if product.images
+                else None
+            )
             image_url = first_image.image_url if first_image else None
 
             sale_price = product.sale_price or Decimal("0.00")
@@ -160,7 +164,11 @@ class CartService:
                 )
 
             redis_client.hset(key, str(product_id), new_qty)
-            ttl = USER_CART_TTL_SECONDS if cart_id.startswith("user:") else GUEST_CART_TTL_SECONDS
+            ttl = (
+                USER_CART_TTL_SECONDS
+                if cart_id.startswith("user:")
+                else GUEST_CART_TTL_SECONDS
+            )
             redis_client.expire(key, ttl)
         except RedisError as e:
             raise HTTPException(
@@ -204,7 +212,11 @@ class CartService:
 
         try:
             redis_client.hset(key, str(product_id), quantity)
-            ttl = USER_CART_TTL_SECONDS if cart_id.startswith("user:") else GUEST_CART_TTL_SECONDS
+            ttl = (
+                USER_CART_TTL_SECONDS
+                if cart_id.startswith("user:")
+                else GUEST_CART_TTL_SECONDS
+            )
             redis_client.expire(key, ttl)
         except RedisError as e:
             raise HTTPException(
@@ -236,7 +248,9 @@ class CartService:
             pass
 
     @classmethod
-    def merge_guest_cart(cls, guest_session_id: str, user_id: UUID, db: Session) -> None:
+    def merge_guest_cart(
+        cls, guest_session_id: str, user_id: UUID, db: Session
+    ) -> None:
         guest_key = cls._get_cart_key(f"guest:{guest_session_id}")
         user_key = cls._get_cart_key(f"user:{user_id}")
         try:

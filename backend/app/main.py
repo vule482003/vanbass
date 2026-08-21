@@ -24,7 +24,6 @@ from app.api.routes import (
 from app.core.config import settings
 from app.db.session import engine
 
-
 # Ensure static/uploads exists
 Path("static/uploads").mkdir(
     parents=True,

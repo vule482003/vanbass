@@ -3,6 +3,24 @@ import { Category, Product } from "./types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
+interface ApiValidationError {
+  msg?: string;
+}
+
+interface ApiErrorPayload {
+  detail?: string | ApiValidationError[] | Record<string, unknown>;
+}
+
+interface OrderResponse {
+  order_number: string;
+  [key: string]: unknown;
+}
+
+interface RentalRequestResponse {
+  request_number: string;
+  [key: string]: unknown;
+}
+
 export async function fetchCategories(): Promise<Category[]> {
   try {
     const res = await fetch(`${API_BASE_URL}/categories`, {
@@ -129,7 +147,7 @@ export async function submitOrder(payload: {
   customer_note?: string;
   items: Array<{ product_id: string; quantity: number }>;
   token?: string | null;
-}): Promise<{ success: boolean; message: string; order?: any }> {
+}): Promise<{ success: boolean; message: string; order?: OrderResponse }> {
   try {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (payload.token) {
@@ -149,17 +167,17 @@ export async function submitOrder(payload: {
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: "Không thể tạo đơn hàng" }));
+      const err: ApiErrorPayload = await res.json().catch(() => ({ detail: "Không thể tạo đơn hàng" }));
       let msg = "Không thể đặt hàng. Vui lòng kiểm tra lại thông tin.";
       if (typeof err.detail === "string") {
         msg = err.detail;
       } else if (Array.isArray(err.detail)) {
-        msg = err.detail.map((d: any) => d.msg || "Lỗi dữ liệu").join(", ");
+        msg = err.detail.map((d) => d.msg || "Lỗi dữ liệu").join(", ");
       }
       return { success: false, message: msg };
     }
 
-    const data = await res.json();
+    const data: OrderResponse = await res.json();
     return {
       success: true,
       message: `Đặt hàng thành công! Mã đơn: ${data.order_number}`,
@@ -184,7 +202,7 @@ export async function submitRentalRequest(payload: {
   note?: string;
   items: Array<{ product_id: string; quantity: number; daily_rate?: number }>;
   token?: string | null;
-}): Promise<{ success: boolean; message: string; request_number?: string; rental_request?: any }> {
+}): Promise<{ success: boolean; message: string; request_number?: string; rental_request?: RentalRequestResponse }> {
   try {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (payload.token) {
@@ -211,12 +229,12 @@ export async function submitRentalRequest(payload: {
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: "Không thể tạo hợp đồng thuê" }));
+      const err: ApiErrorPayload = await res.json().catch(() => ({ detail: "Không thể tạo hợp đồng thuê" }));
       let msg = "Không thể gửi yêu cầu thuê. Vui lòng kiểm tra lại thông tin.";
       if (typeof err.detail === "string") {
         msg = err.detail;
       } else if (Array.isArray(err.detail)) {
-        msg = err.detail.map((d: any) => d.msg || "Lỗi dữ liệu").join(", ");
+        msg = err.detail.map((d) => d.msg || "Lỗi dữ liệu").join(", ");
       } else if (typeof err.detail === "object" && err.detail !== null) {
         msg = JSON.stringify(err.detail);
       }
@@ -227,7 +245,7 @@ export async function submitRentalRequest(payload: {
       };
     }
 
-    const data = await res.json();
+    const data: RentalRequestResponse = await res.json();
     return {
       success: true,
       message: `Tạo yêu cầu thuê thành công! Mã hợp đồng: ${data.request_number}`,

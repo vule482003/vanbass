@@ -98,7 +98,9 @@ def clear_cart(
     summary="Merge guest cart into user cart upon login",
 )
 def merge_guest_cart(
-    x_session_id: str = Header(..., alias="X-Session-ID", description="Guest session ID to merge from"),
+    x_session_id: str = Header(
+        ..., alias="X-Session-ID", description="Guest session ID to merge from"
+    ),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> CartResponse:

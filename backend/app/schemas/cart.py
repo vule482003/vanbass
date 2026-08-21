@@ -6,7 +6,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class CartItemAdd(BaseModel):
     product_id: UUID
-    quantity: int = Field(default=1, ge=1, le=100, description="Quantity to add (1-100)")
+    quantity: int = Field(
+        default=1, ge=1, le=100, description="Quantity to add (1-100)"
+    )
 
 
 class CartItemUpdate(BaseModel):

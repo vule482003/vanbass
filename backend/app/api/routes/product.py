@@ -45,12 +45,18 @@ def list_products(
     # SEO Cache-Control: Cache for 60s, background revalidate for 300s
     response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
 
-    query = select(Product).options(selectinload(Product.images)).where(Product.is_active.is_(True))
+    query = (
+        select(Product)
+        .options(selectinload(Product.images))
+        .where(Product.is_active.is_(True))
+    )
 
     if category_id is not None:
         query = query.where(Product.category_id == category_id)
     elif category_slug is not None:
-        cat = db.execute(select(Category).where(Category.slug == category_slug)).scalar_one_or_none()
+        cat = db.execute(
+            select(Category).where(Category.slug == category_slug)
+        ).scalar_one_or_none()
         if cat:
             query = query.where(Product.category_id == cat.id)
 
@@ -92,7 +98,9 @@ def get_product_by_slug(
     ).scalar_one_or_none()
 
     if product is not None:
-        response.headers["Cache-Control"] = "public, max-age=120, stale-while-revalidate=600"
+        response.headers["Cache-Control"] = (
+            "public, max-age=120, stale-while-revalidate=600"
+        )
         return product
 
     # Check 301 Redirect history
@@ -137,7 +145,9 @@ def get_product(
             detail="Product not found",
         )
 
-    response.headers["Cache-Control"] = "public, max-age=120, stale-while-revalidate=600"
+    response.headers["Cache-Control"] = (
+        "public, max-age=120, stale-while-revalidate=600"
+    )
     return product
 
 

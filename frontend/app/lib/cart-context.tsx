@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, startTransition, useContext, useEffect, useState } from "react";
 import { CartItem, Product } from "./types";
 
 interface CartContextType {
@@ -24,11 +24,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       if (saved) {
-        setItems(JSON.parse(saved));
+        startTransition(() => setItems(JSON.parse(saved)));
       }
     } catch {
       // Ignore localstorage errors

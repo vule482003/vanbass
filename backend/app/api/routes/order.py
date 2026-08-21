@@ -52,7 +52,11 @@ def list_orders(
     if status_filter:
         query = query.where(Order.status == status_filter)
 
-    orders = db.execute(query.order_by(Order.created_at.desc()).offset(skip).limit(limit)).scalars().all()
+    orders = (
+        db.execute(query.order_by(Order.created_at.desc()).offset(skip).limit(limit))
+        .scalars()
+        .all()
+    )
     return OrderListResponse(items=list(orders), total=len(orders))
 
 
@@ -64,7 +68,11 @@ def list_my_orders(
     if not current_user:
         return OrderListResponse(items=[], total=0)
 
-    query = select(Order).where(Order.user_id == current_user.id).order_by(Order.created_at.desc())
+    query = (
+        select(Order)
+        .where(Order.user_id == current_user.id)
+        .order_by(Order.created_at.desc())
+    )
     orders = db.execute(query).scalars().all()
     return OrderListResponse(items=list(orders), total=len(orders))
 
@@ -82,7 +90,11 @@ def get_order(
             detail="Không tìm thấy đơn hàng",
         )
 
-    if current_user and current_user.role != UserRole.ADMIN and order.user_id != current_user.id:
+    if (
+        current_user
+        and current_user.role != UserRole.ADMIN
+        and order.user_id != current_user.id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xem đơn hàng này",

@@ -11,7 +11,6 @@ from app.models.product import Product
 from app.models.rental_request import RentalRequest
 from app.models.user import User
 
-
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"],
@@ -34,47 +33,41 @@ def get_admin_dashboard(
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> dict:
-    total_users = db.scalar(
-        select(func.count(User.id))
-    ) or 0
+    total_users = db.scalar(select(func.count(User.id))) or 0
 
-    total_products = db.scalar(
-        select(func.count(Product.id))
-    ) or 0
+    total_products = db.scalar(select(func.count(Product.id))) or 0
 
-    active_products = db.scalar(
-        select(func.count(Product.id)).where(
-            Product.is_active.is_(True)
+    active_products = (
+        db.scalar(select(func.count(Product.id)).where(Product.is_active.is_(True)))
+        or 0
+    )
+
+    total_orders = db.scalar(select(func.count(Order.id))) or 0
+
+    total_rental_requests = db.scalar(select(func.count(RentalRequest.id))) or 0
+
+    pending_rental_requests = (
+        db.scalar(
+            select(func.count(RentalRequest.id)).where(
+                RentalRequest.status == "pending"
+            )
         )
-    ) or 0
-
-    total_orders = db.scalar(
-        select(func.count(Order.id))
-    ) or 0
-
-    total_rental_requests = db.scalar(
-        select(func.count(RentalRequest.id))
-    ) or 0
-
-    pending_rental_requests = db.scalar(
-        select(func.count(RentalRequest.id)).where(
-            RentalRequest.status == "pending"
-        )
-    ) or 0
+        or 0
+    )
 
     paid_revenue = db.scalar(
         select(func.coalesce(func.sum(Payment.amount), 0)).where(
             Payment.status == PaymentTransactionStatus.PAID,
             Payment.order_id.is_not(None),
         )
-    ) or Decimal("0")
+    ) or Decimal(0)
 
     rental_revenue = db.scalar(
         select(func.coalesce(func.sum(Payment.amount), 0)).where(
             Payment.status == PaymentTransactionStatus.PAID,
             Payment.rental_request_id.is_not(None),
         )
-    ) or Decimal("0")
+    ) or Decimal(0)
 
     return {
         "users": {

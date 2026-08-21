@@ -1,28 +1,17 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
-import Link from "next/link";
+import { startTransition, useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ShopeeProductCard from "../components/ShopeeProductCard";
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "../lib/mock-data";
-import { useCart } from "../lib/cart-context";
 import { Product, Category } from "../lib/types";
-
-function formatCurrency(amount?: number) {
-  if (amount === undefined || amount === null) return "Liên hệ";
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount);
-}
 
 function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
   const initialSearch = searchParams.get("search") || "";
-  const { addItem } = useCart();
 
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [categories, setCategories] = useState<Category[]>(MOCK_CATEGORIES);
@@ -34,7 +23,7 @@ function ProductsContent() {
   useEffect(() => {
     const urlSearch = searchParams.get("search");
     if (urlSearch !== null) {
-      setSearchQuery(urlSearch);
+      startTransition(() => setSearchQuery(urlSearch));
     }
   }, [searchParams]);
 

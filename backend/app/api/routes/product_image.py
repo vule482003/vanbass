@@ -14,7 +14,6 @@ from app.schemas.product_image import (
     ProductImageUpdate,
 )
 
-
 router = APIRouter(
     prefix="/products/{product_id}/images",
     tags=["Product Image"],
