@@ -266,6 +266,43 @@ export default function AdminDashboardPage() {
     }
   }, [user, token, loadAllData]);
 
+  const resetProductForm = useCallback(() => {
+    setName("");
+    setSlug("");
+    setSku("");
+    setBrand("AlphaTheta");
+    setCategoryId(categories.length > 0 ? categories[0].id : "");
+    setSaleEnabled(true);
+    setSalePrice("");
+    setRentalEnabled(true);
+    setRentalPrice("");
+    setStockQuantity("5");
+    setDescription("");
+    setMetaTitle("");
+    setMetaDescription("");
+    setMetaKeywords("");
+    setImageUrl("");
+    setSelectedImageFile(null);
+    setImagePreviewUrl(null);
+    setEditingProduct(null);
+    setActionErrorMsg("");
+  }, [categories]);
+
+  const handleOpenAddModal = () => {
+    resetProductForm();
+    setShowAddProductModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setShowAddProductModal(false);
+    resetProductForm();
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditProductModal(false);
+    resetProductForm();
+  };
+
   // Handle auto slug from name
   const handleNameChange = (val: string) => {
     setName(val);
@@ -373,20 +410,7 @@ export default function AdminDashboardPage() {
         }
 
         setActionSuccessMsg(`✓ Đã thêm sản phẩm "${name}" thành công vào hệ thống!`);
-        setShowAddProductModal(false);
-
-        // Reset form
-        setName("");
-        setSlug("");
-        setSku("");
-        setSalePrice("");
-        setRentalPrice("");
-        setDescription("");
-        setImageUrl("");
-        setSelectedImageFile(null);
-        setImagePreviewUrl(null);
-
-        // Reload data
+        handleCloseAddModal();
         loadAllData();
       } else {
         const err = await res.json().catch(() => ({ detail: "Không thể tạo sản phẩm" }));
@@ -506,8 +530,7 @@ export default function AdminDashboardPage() {
         }
 
         setActionSuccessMsg(`✓ Đã cập nhật sản phẩm "${name}" thành công!`);
-        setShowEditProductModal(false);
-        setEditingProduct(null);
+        handleCloseEditModal();
         loadAllData();
       } else {
         const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật sản phẩm" }));
@@ -938,7 +961,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <button
-                  onClick={() => setShowAddProductModal(true)}
+                  onClick={handleOpenAddModal}
                   style={{
                     padding: "12px 24px",
                     backgroundColor: "#ffffff",
@@ -1289,7 +1312,7 @@ export default function AdminDashboardPage() {
             justifyContent: "center",
             padding: "20px",
           }}
-          onClick={() => setShowAddProductModal(false)}
+          onClick={handleCloseAddModal}
         >
           <div
             style={{
@@ -1308,7 +1331,7 @@ export default function AdminDashboardPage() {
               <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#fff" }}>
                 Thêm Thiết Bị Mới Vào Cơ Sở Dữ Liệu
               </h3>
-              <button onClick={() => setShowAddProductModal(false)} style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}>
+              <button onClick={handleCloseAddModal} style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}>
                 ✕
               </button>
             </div>
@@ -1526,7 +1549,7 @@ export default function AdminDashboardPage() {
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
                 <button
                   type="button"
-                  onClick={() => setShowAddProductModal(false)}
+                  onClick={handleCloseAddModal}
                   style={{ padding: "12px 20px", backgroundColor: "transparent", border: "1px solid #3f3f46", color: "#fff", cursor: "pointer", fontWeight: 600 }}
                 >
                   Hủy bỏ
@@ -1544,7 +1567,7 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* 5. EDIT / UPDATE PRODUCT MODAL */}
+      {/* MODAL: EDIT PRODUCT */}
       {showEditProductModal && editingProduct && (
         <div
           style={{
@@ -1558,10 +1581,7 @@ export default function AdminDashboardPage() {
             justifyContent: "center",
             padding: "20px",
           }}
-          onClick={() => {
-            setShowEditProductModal(false);
-            setEditingProduct(null);
-          }}
+          onClick={handleCloseEditModal}
         >
           <div
             style={{
