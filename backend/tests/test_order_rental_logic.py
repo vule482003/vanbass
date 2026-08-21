@@ -402,3 +402,56 @@ def test_rate_limiter_fallback_in_memory():
 
         # Different client IP is unaffected
         assert limiter.is_rate_limited("client_ip_2") is False
+
+
+def test_order_response_and_list_response_serialization():
+    from datetime import datetime, UTC
+    from app.schemas.order import OrderListResponse, OrderResponse
+
+    prod_id = uuid.uuid4()
+    order_id = uuid.uuid4()
+
+    fake_item = OrderItem(
+        id=uuid.uuid4(),
+        order_id=order_id,
+        product_id=prod_id,
+        product_name="Pioneer DJ DDJ-FLX4",
+        sku="DDJ-FLX4-PIO",
+        unit_price=Decimal("10000000.00"),
+        quantity=1,
+        subtotal=Decimal("10000000.00"),
+    )
+
+    fake_order = Order(
+        id=order_id,
+        user_id=uuid.uuid4(),
+        order_number="VB-20260821-0001",
+        status=OrderStatus.PENDING,
+        payment_status=PaymentStatus.UNPAID,
+        subtotal=Decimal("10000000.00"),
+        shipping_fee=Decimal("0.00"),
+        total_amount=Decimal("10000000.00"),
+        currency="VND",
+        shipping_name="Nguyen Van A",
+        shipping_phone="0905123456",
+        shipping_address="123 Nguyen Van Linh, Da Nang",
+        customer_note="Giao gio hanh chinh",
+        created_at=datetime.now(UTC),
+        updated_at=datetime.now(UTC),
+        items=[fake_item],
+    )
+
+    # Test single OrderResponse
+    order_resp = OrderResponse.model_validate(fake_order)
+    assert len(order_resp.items) == 1
+    assert order_resp.items[0].product_sku == "DDJ-FLX4-PIO"
+    assert order_resp.items[0].sku == "DDJ-FLX4-PIO"
+    assert order_resp.items[0].line_total == Decimal("10000000.00")
+    assert order_resp.items[0].subtotal == Decimal("10000000.00")
+
+    # Test OrderListResponse
+    list_resp = OrderListResponse(items=[fake_order], total=1)
+    assert len(list_resp.items) == 1
+    assert list_resp.items[0].items[0].product_sku == "DDJ-FLX4-PIO"
+    assert list_resp.items[0].items[0].line_total == Decimal("10000000.00")
+

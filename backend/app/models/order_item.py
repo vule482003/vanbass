@@ -67,3 +67,12 @@ class OrderItem(Base):
     product: Mapped["Product"] = relationship(
         "Product",
     )
+
+    @property
+    def product_sku(self) -> str:
+        return self.sku
+
+    @property
+    def line_total(self) -> Decimal:
+        return self.subtotal
+
