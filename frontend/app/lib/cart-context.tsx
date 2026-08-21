@@ -2,6 +2,7 @@
 
 import React, { createContext, startTransition, useContext, useEffect, useState } from "react";
 import { CartItem, Product } from "./types";
+import { useAuth } from "./auth-context";
 
 interface CartContextType {
   items: CartItem[];
@@ -16,34 +17,59 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = "vanbass_cart_items";
+const getUserCartStorageKey = (userId?: string) => {
+  return userId ? `vanbass_cart_items_${userId}` : null;
+};
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  // Load cart specific to authenticated user
   useEffect(() => {
-    startTransition(() => setMounted(true));
+    if (isAuthLoading) return;
+
     try {
-      const saved = localStorage.getItem(CART_STORAGE_KEY);
-      if (saved) {
-        startTransition(() => setItems(JSON.parse(saved)));
+      // Clean up legacy global key if present to avoid cross-user contamination
+      localStorage.removeItem("vanbass_cart_items");
+
+      if (user && user.id) {
+        const userKey = getUserCartStorageKey(user.id);
+        if (userKey) {
+          const saved = localStorage.getItem(userKey);
+          if (saved) {
+            startTransition(() => setItems(JSON.parse(saved)));
+          } else {
+            startTransition(() => setItems([]));
+          }
+        }
+      } else {
+        // Guest or logged out -> clear cart in memory
+        startTransition(() => setItems([]));
       }
     } catch {
-      // Ignore localstorage errors
+      startTransition(() => setItems([]));
     }
-  }, []);
+    setMounted(true);
+  }, [user?.id, isAuthLoading]);
 
+  // Persist cart whenever items change for the current user
   useEffect(() => {
-    if (mounted) {
+    if (!mounted || isAuthLoading) return;
+
+    if (user && user.id) {
       try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+        const userKey = getUserCartStorageKey(user.id);
+        if (userKey) {
+          localStorage.setItem(userKey, JSON.stringify(items));
+        }
       } catch {
-        // Ignore localstorage errors
+        // Ignore localStorage errors
       }
     }
-  }, [items, mounted]);
+  }, [items, user?.id, mounted, isAuthLoading]);
 
   const showNotification = (message: string) => {
     setNotification(message);
@@ -53,6 +79,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addItem = (product: Product, quantity: number = 1) => {
+    if (!isAuthenticated || !user) {
+      showNotification("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
     if (!product.sale_enabled || !product.sale_price) {
       showNotification("Sản phẩm này chỉ hỗ trợ cho thuê hoặc chưa mở bán.");
       return;
@@ -83,7 +114,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           name: product.name,
           slug: product.slug,
           sku: product.sku,
-          image_url: product.images?.[0]?.image_url,
+          image_url: product.images?.[0]?.image_url || product.image_url,
           sale_price: salePrice,
           stock_quantity: product.stock_quantity,
           quantity: quantity,
@@ -125,6 +156,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    if (user && user.id) {
+      try {
+        const userKey = getUserCartStorageKey(user.id);
+        if (userKey) {
+          localStorage.removeItem(userKey);
+        }
+      } catch {
+        // Ignore
+      }
+    }
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

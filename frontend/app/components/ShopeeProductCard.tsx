@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
+import { useAuth } from "../lib/auth-context";
 
 interface ShopeeProductCardProps {
   product: Product;
@@ -21,12 +23,21 @@ const FACEBOOK_RENTAL_URL =
   "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN";
 
 export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
   const [imageError, setImageError] = useState(false);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!isAuthenticated) {
+      const redirectUrl = typeof window !== "undefined" ? window.location.pathname : "/products";
+      router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+      return;
+    }
+
     addItem(product);
   };
 

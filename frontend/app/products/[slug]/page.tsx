@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ShopeeProductCard from "../../components/ShopeeProductCard";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
+import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
 
 function formatCurrency(amount?: number) {
@@ -19,8 +20,10 @@ function formatCurrency(amount?: number) {
 }
 
 export default function ProductDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const slug = params?.slug as string;
+  const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
 
   const [product, setProduct] = useState<Product | null>(
@@ -110,6 +113,10 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      router.push(`/login?redirect=/products/${slug}`);
+      return;
+    }
     if (!product.sale_enabled) return;
     addItem(product, quantity);
     setAddedNotice(true);
