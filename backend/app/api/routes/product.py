@@ -179,17 +179,25 @@ def create_product(
             detail="Product slug already exists",
         )
 
+    # Process & ensure unique SKU
+    sku_val = data.sku.strip() if (data.sku and data.sku.strip()) else f"VB-{uuid.uuid4().hex[:6].upper()}"
     existing_sku = db.execute(
-        select(Product).where(Product.sku == data.sku)
+        select(Product).where(Product.sku == sku_val)
     ).scalar_one_or_none()
 
     if existing_sku is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Product SKU already exists",
-        )
+        if data.sku and data.sku.strip():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Product SKU already exists",
+            )
+        # If auto-generated SKU had collision, retry with new random suffix
+        while db.execute(select(Product).where(Product.sku == sku_val)).scalar_one_or_none() is not None:
+            sku_val = f"VB-{uuid.uuid4().hex[:6].upper()}"
 
-    product = Product(**data.model_dump())
+    product_data = data.model_dump()
+    product_data["sku"] = sku_val
+    product = Product(**product_data)
 
     db.add(product)
     db.commit()

@@ -266,10 +266,24 @@ export default function AdminDashboardPage() {
     }
   }, [user, token, loadAllData]);
 
+  // Auto-generate clean, professional SKU from product name and brand
+  const generateSkuFromName = (productName: string, brandName?: string) => {
+    const clean = (productName || "")
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-zA-Z0-9\s]/g, " ")
+      .trim();
+    const words = clean.split(/\s+/).filter(Boolean);
+    const prefix = brandName ? brandName.replace(/[^a-zA-Z0-9]/g, "").slice(0, 3).toUpperCase() : "VB";
+    const model = words.length > 0 ? words[words.length - 1].toUpperCase().slice(0, 6) : "PROD";
+    const rand = Math.floor(100 + Math.random() * 900);
+    return `${prefix || "VB"}-${model}-${rand}`.replace(/--+/g, "-");
+  };
+
   const resetProductForm = useCallback(() => {
     setName("");
     setSlug("");
-    setSku("");
+    setSku(`VB-PROD-${Math.floor(100 + Math.random() * 900)}`);
     setBrand("AlphaTheta");
     setCategoryId(categories.length > 0 ? categories[0].id : "");
     setSaleEnabled(true);
@@ -303,7 +317,7 @@ export default function AdminDashboardPage() {
     resetProductForm();
   };
 
-  // Handle auto slug from name
+  // Handle auto slug and auto SKU from name
   const handleNameChange = (val: string) => {
     setName(val);
     const generatedSlug = val
@@ -315,6 +329,21 @@ export default function AdminDashboardPage() {
       .trim()
       .replace(/\s+/g, "-");
     setSlug(generatedSlug);
+
+    if (!editingProduct) {
+      setSku(generateSkuFromName(val, brand));
+    }
+  };
+
+  const handleBrandChange = (newBrand: string) => {
+    setBrand(newBrand);
+    if (!editingProduct && name) {
+      setSku(generateSkuFromName(name, newBrand));
+    }
+  };
+
+  const handleRegenerateSku = () => {
+    setSku(generateSkuFromName(name, brand));
   };
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1385,16 +1414,33 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                    Mã SKU *
-                  </label>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                    <label style={{ fontSize: "12px", fontWeight: 700, color: "#a1a1aa", textTransform: "uppercase" }}>
+                      Mã SKU
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleRegenerateSku}
+                      title="Tạo mã SKU ngẫu nhiên khác"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#60a5fa",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        padding: "0 4px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      🔄 Đổi mã
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    required
                     value={sku}
                     onChange={(e) => setSku(e.target.value)}
-                    placeholder="XDJ-AZ-AT"
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                    placeholder="Tự động sinh khi nhập tên..."
+                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#22c55e", fontWeight: 700, fontSize: "14px", boxSizing: "border-box" }}
                   />
                 </div>
 
@@ -1666,16 +1712,34 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                    Mã SKU *
-                  </label>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                    <label style={{ fontSize: "12px", fontWeight: 700, color: "#a1a1aa", textTransform: "uppercase" }}>
+                      Mã SKU
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleRegenerateSku}
+                      title="Tạo lại mã SKU mới"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#60a5fa",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        padding: "0 4px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      🔄 Tạo mã mới
+                    </button>
+                  </div>
                   <input
                     type="text"
                     required
                     value={sku}
                     onChange={(e) => setSku(e.target.value)}
                     placeholder="XDJ-AZ-AT"
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#22c55e", fontWeight: 700, fontSize: "14px", boxSizing: "border-box" }}
                   />
                 </div>
 
