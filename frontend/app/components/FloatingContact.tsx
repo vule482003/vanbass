@@ -6,7 +6,7 @@ const PHONE_NUMBER = "0706067799";
 const PHONE_DISPLAY = "0706.067.799";
 const ZALO_URL = "https://zalo.me/0706067799";
 const FACEBOOK_URL = "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN";
-const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Đà+Nẵng+VanBass+Music+Center";
+const MAPS_URL = "https://www.google.com/maps?cid=3481175637981139835";
 
 export default function FloatingContact() {
   const [isOpen, setIsOpen] = useState(true);
@@ -45,7 +45,7 @@ export default function FloatingContact() {
         >
           <div className="floating-btn-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.42 3.84 7.02-.17 1.25-.8 3.16-1.57 4.15 1.7-.22 3.83-1.07 5.17-1.99.82.21 1.68.32 2.56.32 5.52 0 10-4.03 10-9s-4.48-9-10-9zm-3.5 11.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+              <path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.42 3.84 7.02-.17 1.25-.8 3.16-1.57 4.15 1.7-.22 3.83-1.07 5.17-1.99.82.21 1.68.32 2.56.32 5.52 0 10-4.03 10-9s-4.48-9-10-9zm-3.5 11.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
             </svg>
           </div>
           <span className="floating-btn-tooltip">
@@ -106,7 +106,7 @@ export default function FloatingContact() {
       >
         <span className="trigger-pulse" />
         <span className="trigger-badge">1</span>
-        
+
         {isOpen ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18" />

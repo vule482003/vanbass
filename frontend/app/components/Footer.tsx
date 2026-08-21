@@ -37,7 +37,13 @@ export default function Footer() {
         <div className="footer-column">
           <h3>Liên hệ</h3>
           <a href="tel:0706067799" style={{ color: "#22c55e", fontWeight: 700 }}>0706 067 799</a>
-          <span>Đà Nẵng, Việt Nam</span>
+          <a
+            href="https://www.google.com/maps?cid=3481175637981139835"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            77 Nguyễn Tất Thành, Thanh Khê, Đà Nẵng
+          </a>
           <span style={{ fontSize: "10px", color: "#71717a" }}>8:00 - 22:00 Hàng ngày</span>
         </div>
       </div>
