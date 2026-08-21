@@ -32,17 +32,35 @@ interface CategoryItem {
   slug: string;
 }
 
+interface OrderLineItem {
+  id?: string;
+  product_id?: string;
+  product_name: string;
+  sku?: string;
+  product_sku?: string;
+  quantity: number;
+  unit_price: number;
+  subtotal?: number;
+  line_total?: number;
+  product_slug?: string;
+  product_image?: string;
+}
+
 interface OrderItem {
   id: string;
   order_number: string;
   shipping_name: string;
   shipping_phone: string;
   shipping_address: string;
+  customer_note?: string;
+  subtotal?: number;
+  shipping_fee?: number;
   total_amount: number;
   status: string;
   payment_status: string;
   created_at: string;
-  items?: Array<{ product_name: string; quantity: number; unit_price: number }>;
+  updated_at?: string;
+  items?: OrderLineItem[];
 }
 
 interface RentalRequestItem {
@@ -148,6 +166,7 @@ export default function AdminDashboardPage() {
   const [actionSuccessMsg, setActionSuccessMsg] = useState("");
   const [actionErrorMsg, setActionErrorMsg] = useState("");
   const [statusConfirmModal, setStatusConfirmModal] = useState<StatusConfirmModalState | null>(null);
+  const [selectedOrderDetail, setSelectedOrderDetail] = useState<OrderItem | null>(null);
 
   // Auto-dismiss notifications after 3 seconds
   useEffect(() => {
@@ -1002,6 +1021,7 @@ export default function AdminDashboardPage() {
                         <th style={{ padding: "16px" }}>Tổng Tiền</th>
                         <th style={{ padding: "16px" }}>Trạng Thái Đơn</th>
                         <th style={{ padding: "16px" }}>Thanh Toán</th>
+                        <th style={{ padding: "16px", textAlign: "center" }}>Chi Tiết</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1082,6 +1102,25 @@ export default function AdminDashboardPage() {
                               <option value="paid">Đã thanh toán</option>
                               <option value="refunded">Đã hoàn tiền</option>
                             </select>
+                          </td>
+                          <td style={{ padding: "16px", textAlign: "center" }}>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedOrderDetail(o)}
+                              style={{
+                                padding: "6px 12px",
+                                backgroundColor: "rgba(59, 130, 246, 0.15)",
+                                border: "1px solid #3b82f6",
+                                color: "#60a5fa",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                cursor: "pointer",
+                                borderRadius: "2px",
+                                transition: "all 150ms ease",
+                              }}
+                            >
+                              👁 Xem
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -1905,6 +1944,219 @@ export default function AdminDashboardPage() {
                 }}
               >
                 Xác nhận cập nhật
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ORDER DETAIL (ADMIN) */}
+      {selectedOrderDetail && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(6px)",
+            zIndex: 99990,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => setSelectedOrderDetail(null)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "760px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              backgroundColor: "#141416",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              borderRadius: "8px",
+              padding: "32px",
+              boxShadow: "0 30px 80px rgba(0, 0, 0, 0.9)",
+              boxSizing: "border-box",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "16px" }}>
+              <div>
+                <span style={{ fontSize: "12px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Chi Tiết Đơn Hàng
+                </span>
+                <h3 style={{ margin: "4px 0 0 0", fontSize: "22px", fontWeight: 900, color: "#ffffff" }}>
+                  #{selectedOrderDetail.order_number}
+                </h3>
+                <p style={{ margin: "4px 0 0 0", fontSize: "13px", color: "#71717a" }}>
+                  Ngày đặt: {new Date(selectedOrderDetail.created_at).toLocaleString("vi-VN")}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedOrderDetail(null)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#a1a1aa",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  padding: "4px",
+                  lineHeight: 1,
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Info Summary 2-col */}
+            <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "20px", marginBottom: "24px" }}>
+              {/* Shipping info */}
+              <div style={{ backgroundColor: "#0d0e0f", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "6px", padding: "16px" }}>
+                <span style={{ fontSize: "11px", color: "#a1a1aa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "10px" }}>
+                  📦 Thông tin giao hàng
+                </span>
+                <div style={{ fontSize: "14px", color: "#fff", fontWeight: 700, marginBottom: "4px" }}>
+                  {selectedOrderDetail.shipping_name}
+                </div>
+                <div style={{ fontSize: "13px", color: "#60a5fa", marginBottom: "6px" }}>
+                  📞 {selectedOrderDetail.shipping_phone}
+                </div>
+                <div style={{ fontSize: "13px", color: "#cbd5e1", lineHeight: 1.4 }}>
+                  📍 {selectedOrderDetail.shipping_address}
+                </div>
+                {selectedOrderDetail.customer_note && (
+                  <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px dashed rgba(255,255,255,0.1)", fontSize: "12px", color: "#fbbf24" }}>
+                    💬 Ghi chú: {selectedOrderDetail.customer_note}
+                  </div>
+                )}
+              </div>
+
+              {/* Status info */}
+              <div style={{ backgroundColor: "#0d0e0f", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "6px", padding: "16px" }}>
+                <span style={{ fontSize: "11px", color: "#a1a1aa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "10px" }}>
+                  📋 Trạng thái & Thanh toán
+                </span>
+                <div style={{ marginBottom: "12px" }}>
+                  <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginBottom: "4px" }}>Trạng thái đơn:</span>
+                  <span style={{ padding: "4px 10px", backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "4px", fontSize: "13px", fontWeight: 700, color: "#fff" }}>
+                    {ORDER_STATUS_LABELS[selectedOrderDetail.status] || selectedOrderDetail.status}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginBottom: "4px" }}>Thanh toán:</span>
+                  <span
+                    style={{
+                      padding: "4px 10px",
+                      borderRadius: "4px",
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      backgroundColor: selectedOrderDetail.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)",
+                      color: selectedOrderDetail.payment_status === "paid" ? "#4ade80" : "#facc15",
+                    }}
+                  >
+                    {ORDER_PAYMENT_STATUS_LABELS[selectedOrderDetail.payment_status] || selectedOrderDetail.payment_status}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Products Table */}
+            <div style={{ marginBottom: "24px" }}>
+              <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "12px" }}>
+                🛒 Danh sách sản phẩm ({selectedOrderDetail.items?.length || 0})
+              </span>
+              <div style={{ backgroundColor: "#0d0e0f", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "6px", overflow: "hidden" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#71717a", fontSize: "11px", textTransform: "uppercase" }}>
+                      <th style={{ padding: "12px 16px" }}>Sản phẩm</th>
+                      <th style={{ padding: "12px 16px", textAlign: "center" }}>SL</th>
+                      <th style={{ padding: "12px 16px", textAlign: "right" }}>Đơn giá</th>
+                      <th style={{ padding: "12px 16px", textAlign: "right" }}>Thành tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedOrderDetail.items && selectedOrderDetail.items.length > 0 ? (
+                      selectedOrderDetail.items.map((item, idx) => (
+                        <tr key={idx} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                          <td style={{ padding: "12px 16px" }}>
+                            <strong style={{ color: "#fff", display: "block", fontSize: "13.5px" }}>
+                              {item.product_name}
+                            </strong>
+                            {(item.product_sku || item.sku) && (
+                              <span style={{ fontSize: "11px", color: "#71717a" }}>
+                                SKU: {item.product_sku || item.sku}
+                              </span>
+                            )}
+                          </td>
+                          <td style={{ padding: "12px 16px", textAlign: "center", color: "#fff", fontWeight: 700 }}>
+                            {item.quantity}
+                          </td>
+                          <td style={{ padding: "12px 16px", textAlign: "right", color: "#cbd5e1" }}>
+                            {formatCurrency(item.unit_price)}
+                          </td>
+                          <td style={{ padding: "12px 16px", textAlign: "right", color: "#fff", fontWeight: 700 }}>
+                            {formatCurrency(item.line_total || item.subtotal || (item.unit_price * item.quantity))}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} style={{ padding: "16px", textAlign: "center", color: "#71717a" }}>
+                          Không có dữ liệu chi tiết sản phẩm.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Financial Summary */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "28px" }}>
+              <div style={{ width: "300px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13.5px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", color: "#a1a1aa" }}>
+                  <span>Tạm tính tiền hàng:</span>
+                  <span style={{ color: "#fff" }}>
+                    {formatCurrency(selectedOrderDetail.subtotal || selectedOrderDetail.total_amount)}
+                  </span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", color: "#a1a1aa" }}>
+                  <span>Phí vận chuyển:</span>
+                  <span style={{ color: "#fff" }}>
+                    {selectedOrderDetail.shipping_fee ? formatCurrency(selectedOrderDetail.shipping_fee) : "Miễn phí (0 ₫)"}
+                  </span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.1)", fontSize: "16px", fontWeight: 800 }}>
+                  <span style={{ color: "#fff" }}>Tổng thanh toán:</span>
+                  <span style={{ color: "#22c55e", fontSize: "18px" }}>
+                    {formatCurrency(selectedOrderDetail.total_amount)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer button */}
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                onClick={() => setSelectedOrderDetail(null)}
+                style={{
+                  padding: "10px 24px",
+                  backgroundColor: "#ffffff",
+                  color: "#000000",
+                  border: "none",
+                  borderRadius: "4px",
+                  fontWeight: 800,
+                  fontSize: "13px",
+                  cursor: "pointer",
+                }}
+              >
+                Đóng
               </button>
             </div>
           </div>

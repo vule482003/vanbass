@@ -7,32 +7,12 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../lib/auth-context";
 
-function formatCurrency(amount: number) {
+function formatCurrency(amount?: number) {
+  if (amount === undefined || amount === null) return "0 ₫";
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(amount);
-}
-
-interface MyOrderItem {
-  id: string;
-  order_number: string;
-  created_at: string;
-  status: string;
-  payment_status: string;
-  total_amount: number;
-  shipping_name: string;
-  shipping_phone: string;
-  shipping_address: string;
-  customer_note?: string;
-  items?: Array<{
-    id: string;
-    product_name: string;
-    product_sku: string;
-    quantity: number;
-    unit_price: number;
-    line_total: number;
-  }>;
 }
 
 interface MyRentalItem {
@@ -57,26 +37,6 @@ interface MyRentalItem {
   }>;
 }
 
-function getOrderStatusBadge(status: string) {
-  const st = status.toLowerCase();
-  switch (st) {
-    case "pending":
-      return { label: "Chờ xác nhận", bg: "rgba(234, 179, 8, 0.15)", color: "#facc15" };
-    case "confirmed":
-      return { label: "Đã xác nhận", bg: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" };
-    case "processing":
-      return { label: "Đang chuẩn bị hàng", bg: "rgba(168, 85, 247, 0.15)", color: "#c084fc" };
-    case "shipped":
-      return { label: "Đang giao hàng", bg: "rgba(6, 182, 212, 0.15)", color: "#22d3ee" };
-    case "completed":
-      return { label: "Hoàn thành", bg: "rgba(34, 197, 94, 0.15)", color: "#4ade80" };
-    case "cancelled":
-      return { label: "Đã hủy", bg: "rgba(239, 68, 68, 0.15)", color: "#f87171" };
-    default:
-      return { label: status.toUpperCase(), bg: "rgba(255, 255, 255, 0.1)", color: "#fff" };
-  }
-}
-
 function getRentalStatusBadge(status: string) {
   const st = status.toLowerCase();
   switch (st) {
@@ -99,7 +59,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { user, token, isAuthenticated, isLoading, logout, updateProfile } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<"info" | "orders" | "rentals">("info");
+  const [activeTab, setActiveTab] = useState<"rentals" | "info">("rentals");
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -110,7 +70,6 @@ export default function ProfilePage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Real Database Lists
-  const [myOrders, setMyOrders] = useState<MyOrderItem[]>([]);
   const [myRentals, setMyRentals] = useState<MyRentalItem[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(false);
 
@@ -130,39 +89,28 @@ export default function ProfilePage() {
     }
   }, [user, isAuthenticated, isLoading, router]);
 
-  // Fetch real orders & rental requests
+  // Fetch real rental requests
   useEffect(() => {
-    const fetchUserActivities = async () => {
+    const fetchRentals = async () => {
       if (!token) return;
       setIsDataLoading(true);
       try {
-        const [orderRes, rentRes] = await Promise.all([
-          fetch(`${apiUrl}/orders/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${apiUrl}/rental-requests/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        if (orderRes.ok) {
-          const orderData = await orderRes.json();
-          setMyOrders(orderData.items || []);
-        }
-
-        if (rentRes.ok) {
-          const rentData = await rentRes.json();
+        const res = await fetch(`${apiUrl}/rental-requests/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const rentData = await res.json();
           setMyRentals(rentData.items || []);
         }
       } catch (err) {
-        console.error("Failed to fetch user orders/rentals:", err);
+        console.error("Failed to fetch user rentals:", err);
       } finally {
         setIsDataLoading(false);
       }
     };
 
     if (token) {
-      fetchUserActivities();
+      fetchRentals();
     }
   }, [token, apiUrl]);
 
@@ -218,19 +166,22 @@ export default function ProfilePage() {
               gap: "20px",
               paddingBottom: "32px",
               borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
-              marginBottom: "40px",
+              marginBottom: "36px",
             }}
           >
             <div>
-              <p className="section-kicker" style={{ fontSize: "12px", color: "#a1a1aa", letterSpacing: "0.15em", margin: "0 0 6px 0" }}>
-                TRUNG TÂM TÀI KHOẢN
-              </p>
-              <h1 style={{ fontSize: "clamp(28px, 4vw, 38px)", fontWeight: 800, margin: 0, color: "#fff" }}>
-                Xin chào, {user.full_name || user.email}
+              <span className="section-kicker">HỒ SƠ THÀNH VIÊN</span>
+              <h1
+                style={{
+                  fontSize: "clamp(24px, 3.5vw, 36px)",
+                  fontWeight: 900,
+                  letterSpacing: "-0.03em",
+                  margin: "4px 0 0 0",
+                  color: "#fff",
+                }}
+              >
+                Xin chào, {user.full_name || user.email.split("@")[0]}
               </h1>
-              <p style={{ fontSize: "14px", color: "#71717a", margin: "6px 0 0 0" }}>
-                {user.email} • {user.role === "admin" ? "Quản trị viên (Admin)" : "Khách hàng thân thiết"}
-              </p>
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -247,6 +198,7 @@ export default function ProfilePage() {
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
+                    borderRadius: "2px",
                   }}
                 >
                   👑 Mở Trang Quản Trị (Admin) →
@@ -262,6 +214,7 @@ export default function ProfilePage() {
                   fontSize: "13px",
                   fontWeight: 700,
                   cursor: "pointer",
+                  borderRadius: "2px",
                   transition: "background 180ms ease",
                 }}
               >
@@ -271,56 +224,16 @@ export default function ProfilePage() {
           </div>
 
           {/* Grid Layout: Tabs + Content */}
-          <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "40px" }} className="profile-layout mobile-stack">
+          <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: "36px" }} className="profile-layout mobile-stack">
             {/* Sidebar Navigation */}
             <div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <button
-                  onClick={() => setActiveTab("info")}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "14px 18px",
-                    textAlign: "left",
-                    backgroundColor: activeTab === "info" ? "#ffffff" : "transparent",
-                    color: activeTab === "info" ? "#000000" : "#a1a1aa",
-                    fontWeight: 700,
-                    fontSize: "14px",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 180ms ease",
-                  }}
-                >
-                  <span>👤</span> Thông tin & Địa chỉ
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("orders")}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "14px 18px",
-                    textAlign: "left",
-                    backgroundColor: activeTab === "orders" ? "#ffffff" : "transparent",
-                    color: activeTab === "orders" ? "#000000" : "#a1a1aa",
-                    fontWeight: 700,
-                    fontSize: "14px",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 180ms ease",
-                  }}
-                >
-                  <span>📦</span> Đơn mua hàng ({myOrders.length})
-                </button>
-
                 <button
                   onClick={() => setActiveTab("rentals")}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
+                    justifyContent: "space-between",
                     padding: "14px 18px",
                     textAlign: "left",
                     backgroundColor: activeTab === "rentals" ? "#ffffff" : "transparent",
@@ -329,19 +242,178 @@ export default function ProfilePage() {
                     fontSize: "14px",
                     border: "none",
                     cursor: "pointer",
+                    borderRadius: "4px",
                     transition: "all 180ms ease",
                   }}
                 >
-                  <span>📅</span> Thiết bị thuê ({myRentals.length})
+                  <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span>📅</span> Thiết bị thuê
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      padding: "2px 8px",
+                      borderRadius: "10px",
+                      backgroundColor: activeTab === "rentals" ? "#000" : "rgba(255,255,255,0.1)",
+                      color: activeTab === "rentals" ? "#fff" : "#a1a1aa",
+                    }}
+                  >
+                    {myRentals.length}
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("info")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "14px 18px",
+                    textAlign: "left",
+                    backgroundColor: activeTab === "info" ? "#ffffff" : "transparent",
+                    color: activeTab === "info" ? "#000000" : "#a1a1aa",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    border: "none",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    transition: "all 180ms ease",
+                  }}
+                >
+                  <span>👤</span> Thông tin &amp; Địa chỉ
                 </button>
               </div>
             </div>
 
             {/* Main Tab Content */}
             <div>
-              {/* Tab 1: Profile Info Form */}
+              {/* TAB 1: RENTALS HISTORY */}
+              {activeTab === "rentals" && (
+                <div style={{ backgroundColor: "#111113", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "32px" }}>
+                  <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
+                    Thiết bị &amp; Hợp đồng đang thuê ({myRentals.length})
+                  </h2>
+
+                  {isDataLoading ? (
+                    <div style={{ color: "#a1a1aa", padding: "20px 0" }}>Đang tải hợp đồng thuê thiết bị...</div>
+                  ) : myRentals.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "40px 20px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
+                      <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "16px" }}>
+                        Bạn chưa có yêu cầu thuê thiết bị nào.
+                      </p>
+                      <Link href="/rental" className="button button-primary button-sm">
+                        Thuê thiết bị biểu diễn ngay →
+                      </Link>
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                      {myRentals.map((rent) => {
+                        const badge = getRentalStatusBadge(rent.status);
+                        return (
+                          <div
+                            key={rent.id}
+                            style={{
+                              border: "1px solid #27272a",
+                              padding: "24px",
+                              backgroundColor: "#0a0a0a",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                                gap: "12px",
+                                marginBottom: "16px",
+                                borderBottom: "1px solid #1f1f23",
+                                paddingBottom: "14px",
+                              }}
+                            >
+                              <div>
+                                <strong style={{ color: "#fff", fontSize: "16px", display: "block" }}>
+                                  Hợp đồng thuê #{rent.request_number}
+                                </strong>
+                                <span style={{ fontSize: "13px", color: "#71717a" }}>
+                                  Thời gian thuê: {rent.start_date} → {rent.end_date}
+                                </span>
+                              </div>
+                              <span
+                                style={{
+                                  padding: "6px 12px",
+                                  backgroundColor: badge.bg,
+                                  color: badge.color,
+                                  fontSize: "12px",
+                                  fontWeight: 800,
+                                  textTransform: "uppercase",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {badge.label}
+                              </span>
+                            </div>
+
+                            {/* Rental Items */}
+                            {rent.items && rent.items.length > 0 ? (
+                              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
+                                {rent.items.map((it) => (
+                                  <div
+                                    key={it.id}
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      fontSize: "14px",
+                                      color: "#d4d4d8",
+                                    }}
+                                  >
+                                    <span>
+                                      {it.quantity} x {it.product_name} ({it.number_of_days} ngày)
+                                    </span>
+                                    <strong style={{ color: "#fff" }}>{formatCurrency(it.subtotal)}</strong>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : null}
+
+                            {/* Total & Deposit */}
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "baseline",
+                                flexWrap: "wrap",
+                                gap: "12px",
+                                paddingTop: "12px",
+                                borderTop: "1px solid rgba(255,255,255,0.06)",
+                              }}
+                            >
+                              <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
+                                Địa điểm: {rent.pickup_location}
+                              </span>
+                              <div style={{ display: "flex", gap: "16px", alignItems: "baseline" }}>
+                                <span style={{ fontSize: "13px", color: "#eab308" }}>
+                                  Tiền cọc: <strong>{formatCurrency(rent.deposit_amount)}</strong>
+                                </span>
+                                <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
+                                  Tổng tiền thuê:{" "}
+                                  <strong style={{ color: "#22c55e", fontSize: "16px" }}>
+                                    {formatCurrency(rent.rental_total)}
+                                  </strong>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* TAB 2: PROFILE INFO FORM */}
               {activeTab === "info" && (
-                <div style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "36px" }}>
+                <div style={{ backgroundColor: "#111113", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "32px" }}>
                   <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
                     Thông tin giao hàng mặc định
                   </h2>
@@ -452,7 +524,7 @@ export default function ProfilePage() {
                         type="text"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        placeholder="Số 123 đường Hải Phòng, P. Thạch Thang, Q. Hải Châu"
+                        placeholder="VD: 123 Nguyễn Văn Linh, Phường Nam Dương, Quận Hải Châu"
                         style={{
                           width: "100%",
                           padding: "12px 14px",
@@ -483,245 +555,6 @@ export default function ProfilePage() {
                       {isSaving ? "Đang lưu..." : "Lưu thông tin hồ sơ"}
                     </button>
                   </form>
-                </div>
-              )}
-
-              {/* Tab 2: Orders History */}
-              {activeTab === "orders" && (
-                <div style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "36px" }}>
-                  <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                    Lịch sử đơn hàng ({myOrders.length})
-                  </h2>
-
-                  {isDataLoading ? (
-                    <div style={{ color: "#a1a1aa", padding: "20px 0" }}>Đang tải lịch sử đơn hàng...</div>
-                  ) : myOrders.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "40px 20px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
-                      <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "16px" }}>
-                        Bạn chưa đặt mua đơn hàng nào tại VanBass.
-                      </p>
-                      <Link href="/products" className="button button-primary button-sm">
-                        Khám phá thiết bị DJ ngay →
-                      </Link>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                      {myOrders.map((ord) => {
-                        const badge = getOrderStatusBadge(ord.status);
-                        return (
-                          <div
-                            key={ord.id}
-                            style={{
-                              border: "1px solid #27272a",
-                              padding: "24px",
-                              backgroundColor: "#0a0a0a",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                                gap: "12px",
-                                marginBottom: "16px",
-                                borderBottom: "1px solid #1f1f23",
-                                paddingBottom: "14px",
-                              }}
-                            >
-                              <div>
-                                <strong style={{ color: "#fff", fontSize: "16px", display: "block" }}>
-                                  Đơn hàng #{ord.order_number}
-                                </strong>
-                                <span style={{ fontSize: "13px", color: "#71717a" }}>
-                                  Ngày đặt: {new Date(ord.created_at).toLocaleString("vi-VN")}
-                                </span>
-                              </div>
-                              <span
-                                style={{
-                                  padding: "6px 12px",
-                                  backgroundColor: badge.bg,
-                                  color: badge.color,
-                                  fontSize: "12px",
-                                  fontWeight: 800,
-                                  textTransform: "uppercase",
-                                  borderRadius: "2px",
-                                }}
-                              >
-                                {badge.label}
-                              </span>
-                            </div>
-
-                            {/* Order Items */}
-                            {ord.items && ord.items.length > 0 ? (
-                              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
-                                {ord.items.map((it) => (
-                                  <div
-                                    key={it.id}
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      fontSize: "14px",
-                                      color: "#d4d4d8",
-                                    }}
-                                  >
-                                    <span>
-                                      {it.quantity} x {it.product_name}
-                                    </span>
-                                    <strong style={{ color: "#fff" }}>{formatCurrency(it.line_total)}</strong>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : null}
-
-                            {/* Total Amount & Address */}
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "baseline",
-                                paddingTop: "12px",
-                                borderTop: "1px solid rgba(255,255,255,0.06)",
-                              }}
-                            >
-                              <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                                Giao đến: {ord.shipping_name} ({ord.shipping_phone}) - {ord.shipping_address}
-                              </span>
-                              <div>
-                                <span style={{ fontSize: "12px", color: "#a1a1aa", marginRight: "8px" }}>Tổng thanh toán:</span>
-                                <strong style={{ color: "#22c55e", fontSize: "17px", fontWeight: 800 }}>
-                                  {formatCurrency(ord.total_amount)}
-                                </strong>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Tab 3: Rental History */}
-              {activeTab === "rentals" && (
-                <div style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "36px" }}>
-                  <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                    Thiết bị & Hợp đồng đang thuê ({myRentals.length})
-                  </h2>
-
-                  {isDataLoading ? (
-                    <div style={{ color: "#a1a1aa", padding: "20px 0" }}>Đang tải hợp đồng thuê thiết bị...</div>
-                  ) : myRentals.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "40px 20px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
-                      <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "16px" }}>
-                        Bạn chưa có yêu cầu thuê thiết bị nào.
-                      </p>
-                      <Link href="/rental" className="button button-primary button-sm">
-                        Thuê thiết bị biểu diễn ngay →
-                      </Link>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                      {myRentals.map((rent) => {
-                        const badge = getRentalStatusBadge(rent.status);
-                        return (
-                          <div
-                            key={rent.id}
-                            style={{
-                              border: "1px solid #27272a",
-                              padding: "24px",
-                              backgroundColor: "#0a0a0a",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                                gap: "12px",
-                                marginBottom: "16px",
-                                borderBottom: "1px solid #1f1f23",
-                                paddingBottom: "14px",
-                              }}
-                            >
-                              <div>
-                                <strong style={{ color: "#fff", fontSize: "16px", display: "block" }}>
-                                  Hợp đồng thuê #{rent.request_number}
-                                </strong>
-                                <span style={{ fontSize: "13px", color: "#71717a" }}>
-                                  Thời gian thuê: {rent.start_date} → {rent.end_date}
-                                </span>
-                              </div>
-                              <span
-                                style={{
-                                  padding: "6px 12px",
-                                  backgroundColor: badge.bg,
-                                  color: badge.color,
-                                  fontSize: "12px",
-                                  fontWeight: 800,
-                                  textTransform: "uppercase",
-                                  borderRadius: "2px",
-                                }}
-                              >
-                                {badge.label}
-                              </span>
-                            </div>
-
-                            {/* Rental Items */}
-                            {rent.items && rent.items.length > 0 ? (
-                              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
-                                {rent.items.map((it) => (
-                                  <div
-                                    key={it.id}
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      fontSize: "14px",
-                                      color: "#d4d4d8",
-                                    }}
-                                  >
-                                    <span>
-                                      {it.quantity} x {it.product_name} ({it.number_of_days} ngày)
-                                    </span>
-                                    <strong style={{ color: "#fff" }}>{formatCurrency(it.subtotal)}</strong>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : null}
-
-                            {/* Total & Deposit */}
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "baseline",
-                                flexWrap: "wrap",
-                                gap: "12px",
-                                paddingTop: "12px",
-                                borderTop: "1px solid rgba(255,255,255,0.06)",
-                              }}
-                            >
-                              <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                                Địa điểm: {rent.pickup_location}
-                              </span>
-                              <div style={{ display: "flex", gap: "16px", alignItems: "baseline" }}>
-                                <span style={{ fontSize: "13px", color: "#eab308" }}>
-                                  Tiền cọc: <strong>{formatCurrency(rent.deposit_amount)}</strong>
-                                </span>
-                                <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                                  Tổng tiền thuê:{" "}
-                                  <strong style={{ color: "#22c55e", fontSize: "16px" }}>
-                                    {formatCurrency(rent.rental_total)}
-                                  </strong>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
               )}
             </div>

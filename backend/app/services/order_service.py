@@ -122,12 +122,23 @@ class OrderService:
         order_number = generate_reference_code("VB")
         note = (payload.customer_note or payload.note or "").strip()
 
+        # Determine initial payment status
+        initial_payment_status = PaymentStatus.UNPAID
+        if payload.payment_status == PaymentStatus.PAID:
+            initial_payment_status = PaymentStatus.PAID
+        elif payload.payment_method:
+            norm_method = payload.payment_method.lower().strip()
+            if norm_method in {"vietqr", "banking", "qr", "transfer", "vnpay", "momo", "online", "paid"}:
+                initial_payment_status = PaymentStatus.PAID
+            elif norm_method in {"cod", "cash", "unpaid"}:
+                initial_payment_status = PaymentStatus.UNPAID
+
         order = Order(
             id=uuid.uuid4(),
             user_id=user_id,
             order_number=order_number,
             status=OrderStatus.PENDING,
-            payment_status=PaymentStatus.UNPAID,
+            payment_status=initial_payment_status,
             subtotal=subtotal,
             shipping_fee=shipping_fee,
             total_amount=total_amount,

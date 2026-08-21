@@ -24,6 +24,8 @@ class OrderItemResponse(BaseModel):
     quantity: int
     subtotal: Decimal | None = None
     line_total: Decimal | None = None
+    product_slug: str | None = None
+    product_image: str | None = None
 
     @model_validator(mode="after")
     def populate_fallback_fields(self) -> "OrderItemResponse":
@@ -44,6 +46,8 @@ class OrderCreateRequest(BaseModel):
     shipping_address: str = Field(min_length=1, max_length=1000)
     customer_note: str | None = None
     note: str | None = None
+    payment_method: str | None = None
+    payment_status: PaymentStatus | None = None
     items: list[OrderItemCreate] = Field(min_length=1)
 
 
