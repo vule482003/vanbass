@@ -61,13 +61,29 @@ export default function LanguageSwitcher() {
     triggerGoogleTranslate(code);
   };
 
-  const selectedLabel = languages.find((l) => l.code === currentLang)?.label || "Tiếng Việt";
-
   return (
     <div ref={dropdownRef} className="lang-switcher notranslate">
-      <button type="button" onClick={() => setIsOpen(!isOpen)} className="lang-btn">
-        {selectedLabel}
-        <span style={{ fontSize: "10px", color: "#a1a1aa" }}>▼</span>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="lang-btn"
+        aria-label="Chọn ngôn ngữ"
+        title={currentLang === "vi" ? "Tiếng Việt" : "English"}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
       </button>
 
       {isOpen && (
@@ -80,6 +96,7 @@ export default function LanguageSwitcher() {
               className={`lang-item ${item.code === currentLang ? "active" : ""}`}
             >
               {item.label}
+              {item.code === currentLang && <span>✓</span>}
             </button>
           ))}
         </div>
