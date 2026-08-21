@@ -107,6 +107,25 @@ export default function AdminDashboardPage() {
   const [actionSuccessMsg, setActionSuccessMsg] = useState("");
   const [actionErrorMsg, setActionErrorMsg] = useState("");
 
+  // Auto-dismiss notifications after 3 seconds
+  useEffect(() => {
+    if (actionSuccessMsg) {
+      const timer = setTimeout(() => {
+        setActionSuccessMsg("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [actionSuccessMsg]);
+
+  useEffect(() => {
+    if (actionErrorMsg) {
+      const timer = setTimeout(() => {
+        setActionErrorMsg("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [actionErrorMsg]);
+
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
   // Check auth
@@ -461,13 +480,22 @@ export default function AdminDashboardPage() {
       });
 
       if (res.ok) {
+        setActionErrorMsg("");
         setActionSuccessMsg(`✓ Đã cập nhật trạng thái đơn hàng thành công!`);
         loadAllData();
       } else {
         const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật" }));
-        setActionErrorMsg(err.detail || "Không thể cập nhật trạng thái đơn hàng.");
+        setActionSuccessMsg("");
+        let msg = "Không thể cập nhật trạng thái đơn hàng.";
+        if (typeof err.detail === "string") {
+          msg = err.detail;
+        } else if (Array.isArray(err.detail)) {
+          msg = err.detail.map((d: { msg?: string }) => d.msg || "Lỗi").join(", ");
+        }
+        setActionErrorMsg(msg);
       }
     } catch {
+      setActionSuccessMsg("");
       setActionErrorMsg("Lỗi kết nối đến máy chủ.");
     }
   };
@@ -488,13 +516,22 @@ export default function AdminDashboardPage() {
       });
 
       if (res.ok) {
+        setActionErrorMsg("");
         setActionSuccessMsg(`✓ Đã cập nhật trạng thái hợp đồng thuê thành công!`);
         loadAllData();
       } else {
         const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật" }));
-        setActionErrorMsg(err.detail || "Không thể cập nhật trạng thái hợp đồng thuê.");
+        setActionSuccessMsg("");
+        let msg = "Không thể cập nhật trạng thái hợp đồng thuê.";
+        if (typeof err.detail === "string") {
+          msg = err.detail;
+        } else if (Array.isArray(err.detail)) {
+          msg = err.detail.map((d: { msg?: string }) => d.msg || "Lỗi").join(", ");
+        }
+        setActionErrorMsg(msg);
       }
     } catch {
+      setActionSuccessMsg("");
       setActionErrorMsg("Lỗi kết nối đến máy chủ.");
     }
   };
@@ -673,15 +710,73 @@ export default function AdminDashboardPage() {
 
         {/* Content Area */}
         <main className="mobile-page-content" style={{ padding: "32px 40px", backgroundColor: "#090909" }}>
-          {/* Notifications */}
+          {/* Notifications (Auto-dismiss in 3s) */}
           {actionSuccessMsg && (
-            <div style={{ padding: "14px 20px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "24px" }}>
-              {actionSuccessMsg}
+            <div
+              style={{
+                padding: "14px 20px",
+                backgroundColor: "rgba(34, 197, 94, 0.15)",
+                border: "1px solid #22c55e",
+                color: "#4ade80",
+                fontSize: "14px",
+                marginBottom: "24px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                animation: "fadeIn 0.25s ease",
+              }}
+            >
+              <span>{actionSuccessMsg}</span>
+              <button
+                onClick={() => setActionSuccessMsg("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#4ade80",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  padding: "0 4px",
+                  lineHeight: 1,
+                }}
+                title="Đóng thông báo"
+              >
+                ×
+              </button>
             </div>
           )}
           {actionErrorMsg && (
-            <div style={{ padding: "14px 20px", backgroundColor: "rgba(239, 68, 68, 0.15)", border: "1px solid #ef4444", color: "#fca5a5", fontSize: "14px", marginBottom: "24px" }}>
-              {actionErrorMsg}
+            <div
+              style={{
+                padding: "14px 20px",
+                backgroundColor: "rgba(239, 68, 68, 0.15)",
+                border: "1px solid #ef4444",
+                color: "#fca5a5",
+                fontSize: "14px",
+                marginBottom: "24px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                animation: "fadeIn 0.25s ease",
+              }}
+            >
+              <span>{actionErrorMsg}</span>
+              <button
+                onClick={() => setActionErrorMsg("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#fca5a5",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  padding: "0 4px",
+                  lineHeight: 1,
+                }}
+                title="Đóng thông báo"
+              >
+                ×
+              </button>
             </div>
           )}
 
