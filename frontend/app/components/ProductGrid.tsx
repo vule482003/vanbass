@@ -13,10 +13,10 @@ export default function ProductGrid() {
     const fetchLiveProducts = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-        const res = await fetch(`${apiUrl}/products`);
+        const res = await fetch(`${apiUrl}/products?_t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const liveData = await res.json();
-          if (Array.isArray(liveData) && liveData.length > 0) {
+          if (Array.isArray(liveData)) {
             setProducts(liveData.slice(0, 10));
           }
         }

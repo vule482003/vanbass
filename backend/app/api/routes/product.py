@@ -3,12 +3,14 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import RedirectResponse
-from sqlalchemy import or_, select
+from sqlalchemy import delete, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.dependencies import get_db, require_admin
+from app.models.cart_item import CartItem
 from app.models.category import Category
 from app.models.product import Product
+from app.models.product_image import ProductImage
 from app.models.slug_redirect import SlugRedirect
 from app.models.user import User
 from app.schemas.product import (
@@ -42,8 +44,8 @@ def list_products(
             detail="sale_only and rental_only cannot both be true",
         )
 
-    # SEO Cache-Control: Cache for 60s, background revalidate for 300s
-    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
+    # Real-time fresh data: disable aggressive browser caching
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
 
     query = (
         select(Product)
@@ -98,9 +100,7 @@ def get_product_by_slug(
     ).scalar_one_or_none()
 
     if product is not None:
-        response.headers["Cache-Control"] = (
-            "public, max-age=120, stale-while-revalidate=600"
-        )
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
         return product
 
     # Check 301 Redirect history
@@ -300,5 +300,20 @@ def delete_product(
             detail="Product not found",
         )
 
-    product.is_active = False
-    db.commit()
+    # 1. Clean up cart items for this product
+    db.execute(delete(CartItem).where(CartItem.product_id == product_id))
+
+    # 2. Clean up product images
+    db.execute(delete(ProductImage).where(ProductImage.product_id == product_id))
+
+    # 3. Permanently hard delete product from DB
+    try:
+        db.delete(product)
+        db.commit()
+    except Exception:
+        # Fallback to soft delete if existing order history references foreign key
+        db.rollback()
+        product = db.get(Product, product_id)
+        if product:
+            product.is_active = False
+            db.commit()

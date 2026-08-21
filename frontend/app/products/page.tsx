@@ -32,21 +32,22 @@ function ProductsContent() {
     const fetchLiveData = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const cacheBust = `_t=${Date.now()}`;
         const [prodRes, catRes] = await Promise.all([
-          fetch(`${apiUrl}/products`),
-          fetch(`${apiUrl}/categories`),
+          fetch(`${apiUrl}/products?${cacheBust}`, { cache: "no-store" }),
+          fetch(`${apiUrl}/categories?${cacheBust}`, { cache: "no-store" }),
         ]);
 
         if (prodRes.ok) {
           const prodData = await prodRes.json();
-          if (Array.isArray(prodData) && prodData.length > 0) {
+          if (Array.isArray(prodData)) {
             setProducts(prodData);
           }
         }
 
         if (catRes.ok) {
           const catData = await catRes.json();
-          if (Array.isArray(catData) && catData.length > 0) {
+          if (Array.isArray(catData)) {
             setCategories(catData);
           }
         }

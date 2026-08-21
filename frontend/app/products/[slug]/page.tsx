@@ -39,14 +39,17 @@ export default function ProductDetailPage() {
     const fetchLiveProduct = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const cacheBust = `_t=${Date.now()}`;
         const [singleRes, allRes] = await Promise.all([
-          fetch(`${apiUrl}/products/by-slug/${slug}`),
-          fetch(`${apiUrl}/products`),
+          fetch(`${apiUrl}/products/by-slug/${slug}?${cacheBust}`, { cache: "no-store" }),
+          fetch(`${apiUrl}/products?${cacheBust}`, { cache: "no-store" }),
         ]);
 
         if (singleRes.ok) {
           const liveProduct = await singleRes.json();
           setProduct(liveProduct);
+        } else if (singleRes.status === 404) {
+          setProduct(null);
         }
 
         if (allRes.ok) {

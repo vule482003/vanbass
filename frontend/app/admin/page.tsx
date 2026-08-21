@@ -117,6 +117,12 @@ interface StatusConfirmModalState {
   newPaymentStatus?: string;
 }
 
+interface DeleteProductConfirmState {
+  id: string;
+  name: string;
+  sku?: string;
+}
+
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "0 ₫";
   return new Intl.NumberFormat("vi-VN", {
@@ -166,6 +172,8 @@ export default function AdminDashboardPage() {
   const [actionSuccessMsg, setActionSuccessMsg] = useState("");
   const [actionErrorMsg, setActionErrorMsg] = useState("");
   const [statusConfirmModal, setStatusConfirmModal] = useState<StatusConfirmModalState | null>(null);
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState<DeleteProductConfirmState | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [selectedOrderDetail, setSelectedOrderDetail] = useState<OrderItem | null>(null);
 
   // Auto-dismiss notifications after 3 seconds
@@ -201,8 +209,9 @@ export default function AdminDashboardPage() {
   const loadAllData = useCallback(async () => {
     setIsDataLoading(true);
     try {
+      const cacheBust = `_t=${Date.now()}`;
       // 1. Fetch categories
-      const catRes = await fetch(`${apiUrl}/categories`);
+      const catRes = await fetch(`${apiUrl}/categories?${cacheBust}`, { cache: "no-store" });
       if (catRes.ok) {
         const catData = await catRes.json();
         setCategories(catData);
@@ -211,8 +220,11 @@ export default function AdminDashboardPage() {
         }
       }
 
-      // 2. Fetch products
-      const prodRes = await fetch(`${apiUrl}/products`);
+      // 2. Fetch products (cache: no-store to bypass browser 60s max-age cache)
+      const prodRes = await fetch(`${apiUrl}/products?${cacheBust}`, {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (prodRes.ok) {
         const prodData = await prodRes.json();
         setProducts(prodData);
@@ -220,7 +232,8 @@ export default function AdminDashboardPage() {
 
       // 3. Fetch orders (with admin auth token)
       if (token) {
-        const orderRes = await fetch(`${apiUrl}/orders`, {
+        const orderRes = await fetch(`${apiUrl}/orders?${cacheBust}`, {
+          cache: "no-store",
           headers: { Authorization: `Bearer ${token}` },
         });
         if (orderRes.ok) {
@@ -229,7 +242,8 @@ export default function AdminDashboardPage() {
         }
 
         // 4. Fetch rental requests
-        const rentRes = await fetch(`${apiUrl}/rental-requests`, {
+        const rentRes = await fetch(`${apiUrl}/rental-requests?${cacheBust}`, {
+          cache: "no-store",
           headers: { Authorization: `Bearer ${token}` },
         });
         if (rentRes.ok) {
@@ -507,21 +521,39 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleDeleteProduct = async (id: string, prodName: string) => {
-    if (!confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${prodName}" khỏi hệ thống?`)) {
-      return;
-    }
+  const handleDeleteProduct = (id: string, prodName: string, prodSku?: string) => {
+    setDeleteConfirmModal({ id, name: prodName, sku: prodSku });
+  };
+
+  const handleConfirmDeleteProduct = async () => {
+    if (!deleteConfirmModal) return;
+    const { id, name: prodName } = deleteConfirmModal;
+    setIsDeleting(true);
+    setActionErrorMsg("");
+    setActionSuccessMsg("");
+
     try {
       const res = await fetch(`${apiUrl}/products/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) {
-        setActionSuccessMsg(`Đã gỡ sản phẩm "${prodName}"`);
-        loadAllData();
+
+      if (res.ok || res.status === 204) {
+        // Optimistically remove from state immediately
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        setActionSuccessMsg(`✓ Đã xóa thành công sản phẩm "${prodName}" khỏi hệ thống!`);
+        setDeleteConfirmModal(null);
+        // Refresh with cache bust
+        void loadAllData();
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Không thể xóa sản phẩm." }));
+        setActionErrorMsg(err.detail || "Không thể xóa sản phẩm này. Có thể sản phẩm đang thuộc các đơn hàng hiện có.");
       }
-    } catch {
-      alert("Không thể xóa sản phẩm.");
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      setActionErrorMsg("Lỗi kết nối máy chủ khi thực hiện xóa sản phẩm.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -975,18 +1007,19 @@ export default function AdminDashboardPage() {
                               ✏️ Sửa
                             </button>
                             <button
-                              onClick={() => handleDeleteProduct(p.id, p.name)}
+                              onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
                               style={{
                                 padding: "6px 12px",
-                                backgroundColor: "transparent",
+                                backgroundColor: "rgba(239, 68, 68, 0.1)",
                                 border: "1px solid rgba(239, 68, 68, 0.4)",
                                 color: "#f87171",
                                 fontSize: "12px",
+                                fontWeight: 700,
                                 borderRadius: "3px",
                                 cursor: "pointer",
                                 transition: "all 0.15s ease",
                               }}
-                              title="Xóa sản phẩm"
+                              title="Xóa sản phẩm khỏi hệ thống"
                             >
                               Xóa
                             </button>
@@ -1944,6 +1977,137 @@ export default function AdminDashboardPage() {
                 }}
               >
                 Xác nhận cập nhật
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: DELETE PRODUCT CONFIRMATION */}
+      {deleteConfirmModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => !isDeleting && setDeleteConfirmModal(null)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "480px",
+              backgroundColor: "#141416",
+              border: "1px solid rgba(239, 68, 68, 0.35)",
+              borderRadius: "8px",
+              padding: "28px",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(239, 68, 68, 0.15)",
+              boxSizing: "border-box",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(239, 68, 68, 0.15)",
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "22px",
+                  flexShrink: 0,
+                }}
+              >
+                🗑️
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 800, color: "#ffffff" }}>
+                  Xác nhận xóa sản phẩm
+                </h3>
+                <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#f87171" }}>
+                  Hành động này không thể hoàn tác
+                </p>
+              </div>
+            </div>
+
+            {/* Product Details Box */}
+            <div
+              style={{
+                backgroundColor: "#0d0e0f",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "6px",
+                padding: "16px",
+                marginBottom: "20px",
+              }}
+            >
+              <div style={{ fontSize: "11px", color: "#a1a1aa", textTransform: "uppercase", fontWeight: 700, marginBottom: "6px", letterSpacing: "0.06em" }}>
+                Sản phẩm sẽ bị gỡ bỏ:
+              </div>
+              <div style={{ fontSize: "15px", fontWeight: 800, color: "#ffffff", marginBottom: "4px" }}>
+                {deleteConfirmModal.name}
+              </div>
+              {deleteConfirmModal.sku && (
+                <div style={{ fontSize: "12px", color: "#71717a" }}>
+                  Mã SKU: <span style={{ color: "#d4d4d8" }}>{deleteConfirmModal.sku}</span>
+                </div>
+              )}
+            </div>
+
+            <p style={{ margin: "0 0 24px 0", fontSize: "13.5px", color: "#cbd5e1", lineHeight: 1.5 }}>
+              Sản phẩm này sẽ được gỡ khỏi danh sách bán hàng và cho thuê trên toàn bộ hệ thống website. Bạn có chắc chắn muốn xóa không?
+            </p>
+
+            {/* Actions */}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setDeleteConfirmModal(null)}
+                style={{
+                  padding: "10px 18px",
+                  backgroundColor: "#27272a",
+                  color: "#e4e4e7",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  cursor: isDeleting ? "not-allowed" : "pointer",
+                  opacity: isDeleting ? 0.6 : 1,
+                  transition: "background 0.15s ease",
+                }}
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleConfirmDeleteProduct}
+                style={{
+                  padding: "10px 22px",
+                  backgroundColor: "#ef4444",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                  fontWeight: 800,
+                  cursor: isDeleting ? "not-allowed" : "pointer",
+                  opacity: isDeleting ? 0.7 : 1,
+                  transition: "background 0.15s ease",
+                  boxShadow: "0 2px 10px rgba(239, 68, 68, 0.4)",
+                }}
+              >
+                {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
               </button>
             </div>
           </div>
