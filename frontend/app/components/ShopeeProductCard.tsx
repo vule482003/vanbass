@@ -139,13 +139,11 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
           </div>
         </div>
 
-        {/* Footer info: Rating, sold count, location */}
+        {/* Footer info: Rating, location */}
         <div className="shopee-card-footer">
           <div className="shopee-rating">
             <span>★</span>
             <span>5.0</span>
-            <span style={{ color: "#cbd5e1", margin: "0 2px" }}>•</span>
-            <span style={{ color: "#64748b" }}>Đã bán {product.stock_quantity > 0 ? (12 + (product.stock_quantity % 10)) : 0}</span>
           </div>
           <span className="shopee-location">Đà Nẵng</span>
         </div>

@@ -58,6 +58,47 @@ interface RentalRequestItem {
   items?: Array<{ product_name: string; quantity: number; daily_rate: number }>;
 }
 
+const ORDER_STATUS_LABELS: Record<string, string> = {
+  pending: "⏳ Chờ xử lý",
+  confirmed: "✓ Đã xác nhận",
+  processing: "📦 Đang chuẩn bị",
+  shipped: "🚚 Đang giao hàng",
+  completed: "🎉 Hoàn thành",
+  cancelled: "✕ Đã hủy",
+};
+
+const ORDER_PAYMENT_STATUS_LABELS: Record<string, string> = {
+  unpaid: "Chưa thanh toán",
+  paid: "Đã thanh toán",
+  refunded: "Đã hoàn tiền",
+};
+
+const RENTAL_STATUS_LABELS: Record<string, string> = {
+  pending: "⏳ Chờ liên hệ",
+  contacted: "📞 Đã liên hệ",
+  confirmed: "✓ Đã xác nhận",
+  completed: "🎉 Đã trả máy",
+  cancelled: "✕ Đã hủy",
+};
+
+const RENTAL_PAYMENT_STATUS_LABELS: Record<string, string> = {
+  unpaid: "Chưa cọc",
+  partially_paid: "Đã cọc 1 phần",
+  paid: "Đã cọc đủ",
+  refunded: "Đã hoàn cọc",
+};
+
+interface StatusConfirmModalState {
+  type: "order_status" | "order_payment" | "rental_status" | "rental_payment";
+  id: string;
+  itemCode: string;
+  title: string;
+  currentLabel: string;
+  newLabel: string;
+  newStatus?: string;
+  newPaymentStatus?: string;
+}
+
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "0 ₫";
   return new Intl.NumberFormat("vi-VN", {
@@ -106,6 +147,7 @@ export default function AdminDashboardPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [actionSuccessMsg, setActionSuccessMsg] = useState("");
   const [actionErrorMsg, setActionErrorMsg] = useState("");
+  const [statusConfirmModal, setStatusConfirmModal] = useState<StatusConfirmModalState | null>(null);
 
   // Auto-dismiss notifications after 3 seconds
   useEffect(() => {
@@ -464,7 +506,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleUpdateOrderStatus = async (orderId: string, newStatus: string, newPaymentStatus?: string) => {
+  const handleUpdateOrderStatus = async (orderId: string, newStatus?: string, newPaymentStatus?: string) => {
     try {
       const payload: Record<string, string> = {};
       if (newStatus) payload.status = newStatus;
@@ -500,7 +542,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleUpdateRentalStatus = async (rentalId: string, newStatus: string, newPaymentStatus?: string) => {
+  const handleUpdateRentalStatus = async (rentalId: string, newStatus?: string, newPaymentStatus?: string) => {
     try {
       const payload: Record<string, string> = {};
       if (newStatus) payload.status = newStatus;
@@ -533,6 +575,22 @@ export default function AdminDashboardPage() {
     } catch {
       setActionSuccessMsg("");
       setActionErrorMsg("Lỗi kết nối đến máy chủ.");
+    }
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (!statusConfirmModal) return;
+    const { type, id, newStatus, newPaymentStatus } = statusConfirmModal;
+    setStatusConfirmModal(null);
+
+    if (type === "order_status") {
+      await handleUpdateOrderStatus(id, newStatus);
+    } else if (type === "order_payment") {
+      await handleUpdateOrderStatus(id, undefined, newPaymentStatus);
+    } else if (type === "rental_status") {
+      await handleUpdateRentalStatus(id, newStatus);
+    } else if (type === "rental_payment") {
+      await handleUpdateRentalStatus(id, undefined, newPaymentStatus);
     }
   };
 
@@ -962,7 +1020,19 @@ export default function AdminDashboardPage() {
                           <td style={{ padding: "16px" }}>
                             <select
                               value={o.status}
-                              onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === o.status) return;
+                                setStatusConfirmModal({
+                                  type: "order_status",
+                                  id: o.id,
+                                  itemCode: o.order_number,
+                                  title: "Xác nhận cập nhật trạng thái Đơn hàng",
+                                  currentLabel: ORDER_STATUS_LABELS[o.status] || o.status,
+                                  newLabel: ORDER_STATUS_LABELS[val] || val,
+                                  newStatus: val,
+                                });
+                              }}
                               style={{
                                 padding: "6px 10px",
                                 backgroundColor: "#1e1e24",
@@ -984,7 +1054,20 @@ export default function AdminDashboardPage() {
                           <td style={{ padding: "16px" }}>
                             <select
                               value={o.payment_status || "unpaid"}
-                              onChange={(e) => handleUpdateOrderStatus(o.id, o.status, e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                const current = o.payment_status || "unpaid";
+                                if (val === current) return;
+                                setStatusConfirmModal({
+                                  type: "order_payment",
+                                  id: o.id,
+                                  itemCode: o.order_number,
+                                  title: "Xác nhận cập nhật thanh toán Đơn hàng",
+                                  currentLabel: ORDER_PAYMENT_STATUS_LABELS[current] || current,
+                                  newLabel: ORDER_PAYMENT_STATUS_LABELS[val] || val,
+                                  newPaymentStatus: val,
+                                });
+                              }}
                               style={{
                                 padding: "6px 10px",
                                 backgroundColor: o.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "#1e1e24",
@@ -1046,7 +1129,19 @@ export default function AdminDashboardPage() {
                           <td style={{ padding: "16px" }}>
                             <select
                               value={r.status}
-                              onChange={(e) => handleUpdateRentalStatus(r.id, e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === r.status) return;
+                                setStatusConfirmModal({
+                                  type: "rental_status",
+                                  id: r.id,
+                                  itemCode: r.request_number,
+                                  title: "Xác nhận cập nhật trạng thái Hợp đồng thuê",
+                                  currentLabel: RENTAL_STATUS_LABELS[r.status] || r.status,
+                                  newLabel: RENTAL_STATUS_LABELS[val] || val,
+                                  newStatus: val,
+                                });
+                              }}
                               style={{
                                 padding: "6px 10px",
                                 backgroundColor: "#1e1e24",
@@ -1067,7 +1162,20 @@ export default function AdminDashboardPage() {
                           <td style={{ padding: "16px" }}>
                             <select
                               value={r.payment_status || "unpaid"}
-                              onChange={(e) => handleUpdateRentalStatus(r.id, r.status, e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                const current = r.payment_status || "unpaid";
+                                if (val === current) return;
+                                setStatusConfirmModal({
+                                  type: "rental_payment",
+                                  id: r.id,
+                                  itemCode: r.request_number,
+                                  title: "Xác nhận cập nhật cọc / thanh toán Thuê máy",
+                                  currentLabel: RENTAL_PAYMENT_STATUS_LABELS[current] || current,
+                                  newLabel: RENTAL_PAYMENT_STATUS_LABELS[val] || val,
+                                  newPaymentStatus: val,
+                                });
+                              }}
                               style={{
                                 padding: "6px 10px",
                                 backgroundColor: r.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "#1e1e24",
@@ -1655,6 +1763,150 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CONFIRM STATUS UPDATE */}
+      {statusConfirmModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.82)",
+            backdropFilter: "blur(6px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => setStatusConfirmModal(null)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "460px",
+              backgroundColor: "#161819",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              borderRadius: "8px",
+              padding: "28px 24px",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.9)",
+              boxSizing: "border-box",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Title */}
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "18px" }}>
+              <div
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(234, 179, 8, 0.15)",
+                  border: "1px solid rgba(234, 179, 8, 0.3)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "20px",
+                  flexShrink: 0,
+                }}
+              >
+                ⚠️
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "17px", fontWeight: 800, color: "#ffffff" }}>
+                  {statusConfirmModal.title}
+                </h3>
+                <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#a1a1aa" }}>
+                  Mã tham chiếu: <strong style={{ color: "#fff" }}>{statusConfirmModal.itemCode}</strong>
+                </p>
+              </div>
+            </div>
+
+            {/* Change details box */}
+            <div
+              style={{
+                backgroundColor: "#0d0e0f",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "6px",
+                padding: "16px",
+                marginBottom: "20px",
+              }}
+            >
+              <div style={{ fontSize: "11px", color: "#a1a1aa", textTransform: "uppercase", fontWeight: 700, marginBottom: "8px", letterSpacing: "0.06em" }}>
+                Thay đổi trạng thái:
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", fontSize: "13px" }}>
+                <span
+                  style={{
+                    padding: "4px 10px",
+                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                    borderRadius: "4px",
+                    color: "#d4d4d8",
+                    fontWeight: 600,
+                  }}
+                >
+                  {statusConfirmModal.currentLabel}
+                </span>
+                <span style={{ color: "#22c55e", fontWeight: 800, fontSize: "16px" }}>➔</span>
+                <span
+                  style={{
+                    padding: "4px 10px",
+                    backgroundColor: "rgba(34, 197, 94, 0.18)",
+                    border: "1px solid rgba(34, 197, 94, 0.4)",
+                    borderRadius: "4px",
+                    color: "#4ade80",
+                    fontWeight: 800,
+                  }}
+                >
+                  {statusConfirmModal.newLabel}
+                </span>
+              </div>
+            </div>
+
+            <p style={{ margin: "0 0 24px 0", fontSize: "13.5px", color: "#cbd5e1", lineHeight: 1.5 }}>
+              Bạn có chắc chắn muốn xác nhận cập nhật trạng thái mới cho mục này không?
+            </p>
+
+            {/* Actions */}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+              <button
+                type="button"
+                onClick={() => setStatusConfirmModal(null)}
+                style={{
+                  padding: "10px 18px",
+                  backgroundColor: "#27272a",
+                  color: "#e4e4e7",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmStatusChange}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#22c55e",
+                  color: "#000000",
+                  border: "none",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                  fontWeight: 800,
+                  cursor: "pointer",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                Xác nhận cập nhật
+              </button>
+            </div>
           </div>
         </div>
       )}

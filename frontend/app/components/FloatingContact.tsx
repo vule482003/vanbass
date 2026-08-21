@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const PHONE_NUMBER = "0706067799";
 const PHONE_DISPLAY = "0706.067.799";
@@ -9,7 +10,13 @@ const FACEBOOK_URL = "https://www.facebook.com/vanbassmusiccenterdanangvietnam?l
 const MAPS_URL = "https://www.google.com/maps?cid=3481175637981139835";
 
 export default function FloatingContact() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
+
+  // Không hiển thị widget liên hệ trên trang quản trị Admin
+  if (pathname && pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <aside className="floating-contact-wrapper" aria-label="Kênh liên hệ hỗ trợ nhanh">
