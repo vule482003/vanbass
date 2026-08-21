@@ -26,6 +26,18 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AUTH_REQUEST_TIMEOUT_MS = 10000;
+
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), AUTH_REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -195,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetchWithTimeout(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password }),
@@ -212,7 +224,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Try fetching customer profile
         try {
-          const profileRes = await fetch(`${apiUrl}/customers/me/profile`, {
+          const profileRes = await fetchWithTimeout(`${apiUrl}/customers/me/profile`, {
             headers: { Authorization: `Bearer ${data.access_token}` },
           });
           if (profileRes.ok) {
