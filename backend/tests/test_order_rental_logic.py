@@ -213,9 +213,9 @@ def test_order_cancel_restocks_inventory():
         db=mock_db,
     )
 
-    assert cancelled_order.status == OrderStatus.CANCELLED
     # Stock was 3, restored +2 -> 5
     assert fake_product.stock_quantity == 5
+    mock_db.delete.assert_called_once_with(fake_order)
     assert mock_db.commit.called
 
 
@@ -405,7 +405,8 @@ def test_rate_limiter_fallback_in_memory():
 
 
 def test_order_response_and_list_response_serialization():
-    from datetime import datetime, UTC
+    from datetime import UTC, datetime
+
     from app.schemas.order import OrderListResponse, OrderResponse
 
     prod_id = uuid.uuid4()

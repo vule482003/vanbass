@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -19,9 +20,24 @@ from app.schemas.order import (
 from app.services.order_service import OrderService
 from app.services.user_service import UserService
 
+
 class OrderPayRequest(BaseModel):
     payment_method: str | None = "vietqr"
     transaction_ref: str | None = None
+
+
+class BankWebhookPayload(BaseModel):
+    id: int | str | None = None
+    content: str | None = None
+    description: str | None = None
+    order_number: str | None = None
+    code: str | None = None
+    amount: Decimal | None = None
+    transferAmount: Decimal | None = None
+    transferType: str | None = "in"
+    accountNumber: str | None = None
+    gateway: str | None = "MBBank"
+
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -175,6 +191,42 @@ def pay_order(
     db.commit()
     db.refresh(order)
     return order
+
+
+@router.post(
+    "/webhook/bank-transfer",
+    response_model=OrderResponse,
+)
+def bank_transfer_webhook(
+    payload: BankWebhookPayload,
+    db: Session = Depends(get_db),
+) -> Order:
+    text_content = (payload.content or payload.description or payload.code or "").strip()
+
+    target_order = None
+    if payload.order_number:
+        clean_num = payload.order_number.strip().replace("#", "")
+        target_order = db.execute(
+            select(Order).where(Order.order_number.ilike(f"%{clean_num}%"))
+        ).scalars().first()
+
+    if not target_order and text_content:
+        unpaid_orders = db.execute(
+            select(Order).where(Order.payment_status == PaymentStatus.UNPAID)
+        ).scalars().all()
+        for ord in unpaid_orders:
+            clean_ord_num = ord.order_number.replace("-", "").replace("#", "").upper()
+            clean_text = text_content.replace("-", "").replace("#", "").upper()
+            if ord.order_number.upper() in text_content.upper() or clean_ord_num in clean_text:
+                target_order = ord
+                break
+
+    if not target_order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy đơn hàng tương ứng với nội dung chuyển khoản",
+        )
+
     target_order.payment_status = PaymentStatus.PAID
     target_order.payment_method = payload.gateway or "vietqr"
     if target_order.status == OrderStatus.PENDING:

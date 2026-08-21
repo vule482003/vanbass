@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy import delete, or_, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.dependencies import get_db, require_admin
@@ -318,7 +319,7 @@ def delete_product(
     try:
         db.delete(product)
         db.commit()
-    except Exception:
+    except SQLAlchemyError:
         # Fallback to soft delete if existing order history references foreign key
         db.rollback()
         product = db.get(Product, product_id)

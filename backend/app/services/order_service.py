@@ -232,11 +232,6 @@ class OrderService:
                     detail=f"Đơn hàng đang ở trạng thái '{order.status.value}', không thể tự hủy.",
                 )
 
-        actor = "Admin" if is_admin else "Khách hàng"
-        cancel_note = f"Hủy bởi {actor}" + (
-            f": {reason.strip()}" if reason and reason.strip() else ""
-        )
-
         # 1. Restock items back to inventory safely
         cls._restock_order_items(order, db)
 
