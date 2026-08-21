@@ -93,24 +93,30 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchRentals = async () => {
       if (!token) return;
-      setIsDataLoading(true);
+      startTransition(() => {
+        setIsDataLoading(true);
+      });
       try {
         const res = await fetch(`${apiUrl}/rental-requests/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
           const rentData = await res.json();
-          setMyRentals(rentData.items || []);
+          startTransition(() => {
+            setMyRentals(rentData.items || []);
+          });
         }
       } catch (err) {
         console.error("Failed to fetch user rentals:", err);
       } finally {
-        setIsDataLoading(false);
+        startTransition(() => {
+          setIsDataLoading(false);
+        });
       }
     };
 
     if (token) {
-      fetchRentals();
+      void fetchRentals();
     }
   }, [token, apiUrl]);
 

@@ -158,25 +158,31 @@ export default function CartPage() {
   // Load orders history
   const fetchMyOrders = useCallback(async () => {
     if (!token) return;
-    setIsHistoryLoading(true);
+    startTransition(() => {
+      setIsHistoryLoading(true);
+    });
     try {
       const res = await fetch(`${apiUrl}/orders/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
-        setMyOrders(data.items || []);
+        startTransition(() => {
+          setMyOrders(data.items || []);
+        });
       }
     } catch (e) {
       console.error("Failed to load cart orders history:", e);
     } finally {
-      setIsHistoryLoading(false);
+      startTransition(() => {
+        setIsHistoryLoading(false);
+      });
     }
   }, [token, apiUrl]);
 
   useEffect(() => {
     if (token) {
-      fetchMyOrders();
+      void fetchMyOrders();
     }
   }, [token, fetchMyOrders]);
 
