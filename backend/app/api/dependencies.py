@@ -1,21 +1,36 @@
 from collections.abc import Generator
 
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Depends, Header, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+from app.core.i18n import translate
 from app.core.security import decode_access_token
 from app.db.session import SessionLocal
 from app.models.user import User, UserRole
 
-
 bearer_scheme = HTTPBearer()
 optional_bearer_scheme = HTTPBearer(auto_error=False)
+
+SUPPORTED_LANGUAGES = {"vi", "en"}
+DEFAULT_LANGUAGE = "vi"
+
+
+def get_language(
+    accept_language: str | None = Header(default=None, alias="Accept-Language"),
+    lang: str | None = Query(default=None),
+) -> str:
+    if lang and lang.lower() in SUPPORTED_LANGUAGES:
+        return lang.lower()
+    if accept_language:
+        primary_lang = accept_language.split(",")[0].split("-")[0].lower()
+        if primary_lang in SUPPORTED_LANGUAGES:
+            return primary_lang
+    return DEFAULT_LANGUAGE
 
 
 def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
-
     try:
         yield db
     finally:
@@ -44,13 +59,14 @@ def get_optional_current_user(
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     db: Session = Depends(get_db),
+    lang: str = Depends(get_language),
 ) -> User:
     try:
         user_id = decode_access_token(credentials.credentials)
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.",
+            detail=translate("session_expired", lang),
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -59,14 +75,14 @@ def get_current_user(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
+            detail=translate("user_not_found", lang),
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User account is inactive",
+            detail=translate("account_inactive", lang),
         )
 
     return user
@@ -74,11 +90,12 @@ def get_current_user(
 
 def require_admin(
     current_user: User = Depends(get_current_user),
- ) -> User:
+    lang: str = Depends(get_language),
+) -> User:
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin access required",
+            detail=translate("admin_required", lang),
         )
 
     return current_user
@@ -92,4 +109,4 @@ def get_cart_id(
         return f"user:{current_user.id}"
     if x_session_id and x_session_id.strip():
         return f"guest:{x_session_id.strip()}"
-    return "guest:anonymous"
+    return "guest:anonymous"
