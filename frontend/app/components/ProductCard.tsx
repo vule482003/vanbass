@@ -7,7 +7,7 @@ import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
 
-interface ShopeeProductCardProps {
+interface ProductCardProps {
   product: Product;
 }
 
@@ -22,7 +22,7 @@ function formatVND(amount?: number) {
 const FACEBOOK_RENTAL_URL =
   "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN";
 
-export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
@@ -59,14 +59,15 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
   const showImage = Boolean(primaryImage && !imageError);
 
   return (
-    <article className="shopee-card">
+    <article className="vb-product-card">
       {/* Top Image + Badges */}
-      <div className="shopee-card-image-wrap">
+      <div className="vb-card-image-wrap">
         <Link
           href={`/products/${product.slug}`}
           style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           {showImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={primaryImage!}
               alt={product.name}
@@ -89,40 +90,40 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
 
         {/* Out of Stock Badge (Hiển thị khi sản phẩm có tồn kho bằng 0) */}
         {product.stock_quantity <= 0 && (
-          <span className="shopee-badge-soldout">Hết hàng</span>
+          <span className="vb-badge-soldout">Hết hàng</span>
         )}
 
         {/* Rental tag badge if rental enabled */}
         {product.rental_enabled && (
-          <span className="shopee-badge-rental">Cho thuê</span>
+          <span className="vb-badge-rental">Cho thuê</span>
         )}
       </div>
 
       {/* Card Content Body */}
-      <div className="shopee-card-body">
+      <div className="vb-card-body">
         <div>
           {/* Title */}
-          <Link href={`/products/${product.slug}`} className="shopee-product-title" title={product.name}>
+          <Link href={`/products/${product.slug}`} className="vb-product-title" title={product.name}>
             {product.name}
           </Link>
 
           {/* Tags */}
-          <div className="shopee-tags-row">
-            {product.brand && <span className="shopee-tag-brand">{product.brand}</span>}
-            <span className="shopee-tag-item">Bảo hành 12T</span>
+          <div className="vb-tags-row">
+            {product.brand && <span className="vb-tag-brand">{product.brand}</span>}
+            <span className="vb-tag-item">Bảo hành 12T</span>
             {product.stock_quantity > 0 ? (
-              <span className="shopee-tag-item">Sẵn hàng</span>
+              <span className="vb-tag-item">Sẵn hàng</span>
             ) : (
-              <span className="shopee-tag-item" style={{ color: "#f87171", borderColor: "rgba(239, 68, 68, 0.3)" }}>
+              <span className="vb-tag-item" style={{ color: "#f87171", borderColor: "rgba(239, 68, 68, 0.3)" }}>
                 Hết hàng
               </span>
             )}
           </div>
 
           {/* Price Section */}
-          <div className="shopee-price-row">
+          <div className="vb-price-row">
             {product.sale_enabled && product.sale_price ? (
-              <div className="shopee-sale-price">
+              <div className="vb-sale-price">
                 <small>₫</small>
                 {new Intl.NumberFormat("vi-VN").format(product.sale_price)}
               </div>
@@ -131,8 +132,8 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
             )}
 
             {product.rental_enabled && product.rental_price ? (
-              <div className="shopee-rental-price" title="Giá thuê theo ngày">
-                <span className="shopee-rental-label">Thuê / ngày</span>
+              <div className="vb-rental-price" title="Giá thuê theo ngày">
+                <span className="vb-rental-label">Thuê / ngày</span>
                 <strong>{formatVND(product.rental_price)}</strong>
               </div>
             ) : null}
@@ -140,22 +141,22 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
         </div>
 
         {/* Footer info: Rating, location */}
-        <div className="shopee-card-footer">
-          <div className="shopee-rating">
+        <div className="vb-card-footer">
+          <div className="vb-rating">
             <span>★</span>
             <span>5.0</span>
           </div>
-          <span className="shopee-location">Đà Nẵng</span>
+          <span className="vb-location">Đà Nẵng</span>
         </div>
       </div>
 
-      {/* Shopee Bottom Actions Drawer (Xuất hiện bên dưới thẻ khi hover - chuẩn ảnh 2) */}
-      <div className="shopee-card-bottom-actions">
+      {/* Bottom Actions Drawer (Xuất hiện bên dưới thẻ khi hover) */}
+      <div className="vb-card-bottom-actions">
         {/* Nút 1: Thêm vào giỏ hàng / Tạm hết hàng */}
         {product.stock_quantity > 0 ? (
           <button
             type="button"
-            className="shopee-btn-cart"
+            className="vb-btn-cart"
             onClick={handleAddToCart}
             title="Thêm sản phẩm này vào giỏ hàng"
           >
@@ -179,7 +180,7 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
         ) : (
           <button
             type="button"
-            className="shopee-btn-cart"
+            className="vb-btn-cart"
             disabled
             style={{
               opacity: 0.55,
@@ -213,7 +214,7 @@ export default function ShopeeProductCard({ product }: ShopeeProductCardProps) {
           href={FACEBOOK_RENTAL_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="shopee-btn-rental"
+          className="vb-btn-rental"
           onClick={handleRentProduct}
           title="Liên hệ tư vấn thuê sản phẩm qua Facebook VanBass"
         >

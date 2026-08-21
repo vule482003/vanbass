@@ -820,11 +820,11 @@ export default function CartPage() {
           )}
 
           {/* ========================================================
-              VIEW 2: SHOPEE ORDER HISTORY TAB
+              VIEW 2: ORDER HISTORY TAB
              ======================================================== */}
           {activeTab === "history" && (
             <div>
-              {/* Shopee-style Status Filter Tabs */}
+              {/* Order Status Filter Tabs */}
               <div
                 style={{
                   display: "flex",
@@ -950,7 +950,7 @@ export default function CartPage() {
                           boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
                         }}
                       >
-                        {/* Shopee Card Header */}
+                        {/* Order Card Header */}
                         <div
                           style={{
                             display: "flex",
@@ -1244,7 +1244,7 @@ export default function CartPage() {
         </div>
       </main>
 
-      {/* MODAL: SHOPEE CANCEL ORDER DIALOG */}
+      {/* MODAL: CANCEL ORDER DIALOG */}
       {cancelModal && (
         <div
           style={{

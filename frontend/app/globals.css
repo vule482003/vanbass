@@ -1325,30 +1325,30 @@ a {
 }
 
 /* =========================================================
-   SHOPEE-STYLE PRODUCTS & GRID
+   VANBASS PRODUCTS & GRID
    ========================================================= */
 
-.shopee-product-grid {
+.vb-product-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 
 @media (max-width: 1200px) {
-  .shopee-product-grid {
+  .vb-product-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 900px) {
-  .shopee-product-grid {
+  .vb-product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
   }
 }
 
 @media (max-width: 640px) {
-  .shopee-product-grid {
+  .vb-product-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
@@ -1376,7 +1376,7 @@ a {
   }
 }
 
-.shopee-card {
+.vb-product-card {
   position: relative;
   background: #121215;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1388,7 +1388,7 @@ a {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-.shopee-card:hover {
+.vb-product-card:hover {
   transform: translateY(-4px);
   border-color: rgba(34, 197, 94, 0.6);
   border-bottom-left-radius: 0;
@@ -1397,7 +1397,7 @@ a {
   z-index: 40;
 }
 
-.shopee-card-image-wrap {
+.vb-card-image-wrap {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -1411,7 +1411,7 @@ a {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.shopee-card-image-wrap img {
+.vb-card-image-wrap img {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -1420,12 +1420,12 @@ a {
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
 }
 
-.shopee-card:hover .shopee-card-image-wrap img {
+.vb-product-card:hover .vb-card-image-wrap img {
   transform: scale(1.06);
   filter: drop-shadow(0 10px 20px rgba(34, 197, 94, 0.2));
 }
 
-.shopee-badge-mall {
+.vb-badge-mall {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -1444,7 +1444,7 @@ a {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-.shopee-badge-soldout {
+.vb-badge-soldout {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -1463,7 +1463,7 @@ a {
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
 }
 
-.shopee-badge-rental {
+.vb-badge-rental {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -1481,7 +1481,7 @@ a {
   box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
 }
 
-.shopee-card-bottom-actions {
+.vb-card-bottom-actions {
   position: absolute;
   top: 100%;
   left: -1px;
@@ -1504,14 +1504,14 @@ a {
   z-index: 50;
 }
 
-.shopee-card:hover .shopee-card-bottom-actions {
+.vb-product-card:hover .vb-card-bottom-actions {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
 }
 
-.shopee-btn-cart {
+.vb-btn-cart {
   width: 100%;
   height: 36px;
   padding: 0 12px;
@@ -1531,12 +1531,12 @@ a {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
 }
 
-.shopee-btn-cart:hover {
+.vb-btn-cart:hover {
   background: #e4e4e7;
   transform: translateY(-1px);
 }
 
-.shopee-btn-rental {
+.vb-btn-rental {
   width: 100%;
   height: 36px;
   padding: 0 12px;
@@ -1555,7 +1555,7 @@ a {
   text-decoration: none;
 }
 
-.shopee-btn-rental:hover {
+.vb-btn-rental:hover {
   background: #22c55e;
   color: #000000;
   border-color: #22c55e;
@@ -1563,7 +1563,7 @@ a {
   box-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
 }
 
-.shopee-card-body {
+.vb-card-body {
   padding: 14px;
   display: flex;
   flex-direction: column;
@@ -1574,7 +1574,7 @@ a {
   border-bottom-right-radius: 7px;
 }
 
-.shopee-product-title {
+.vb-product-title {
   font-size: 13px;
   line-height: 19px;
   height: 38px;
@@ -1590,18 +1590,18 @@ a {
   transition: color 0.18s ease;
 }
 
-.shopee-product-title:hover {
+.vb-product-title:hover {
   color: #22c55e;
 }
 
-.shopee-tags-row {
+.vb-tags-row {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   margin-bottom: 10px;
 }
 
-.shopee-tag-item {
+.vb-tag-item {
   font-size: 10px;
   color: #fbbf24;
   border: 1px solid rgba(245, 158, 11, 0.35);
@@ -1611,7 +1611,7 @@ a {
   font-weight: 600;
 }
 
-.shopee-tag-brand {
+.vb-tag-brand {
   font-size: 10px;
   color: #d4d4d8;
   background: rgba(255, 255, 255, 0.08);
@@ -1623,7 +1623,7 @@ a {
   letter-spacing: 0.03em;
 }
 
-.shopee-price-row {
+.vb-price-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1632,21 +1632,21 @@ a {
   margin-bottom: 6px;
 }
 
-.shopee-sale-price {
+.vb-sale-price {
   font-size: 17px;
   font-weight: 900;
   color: #ffffff;
   letter-spacing: -0.02em;
 }
 
-.shopee-sale-price small {
+.vb-sale-price small {
   font-size: 12px;
   font-weight: 700;
   color: #fbbf24;
   margin-right: 2px;
 }
 
-.shopee-rental-price {
+.vb-rental-price {
   display: flex;
   min-width: 94px;
   flex-direction: column;
@@ -1660,7 +1660,7 @@ a {
   line-height: 1.15;
 }
 
-.shopee-rental-label {
+.vb-rental-label {
   color: #86efac;
   font-size: 9px;
   font-weight: 800;
@@ -1668,14 +1668,14 @@ a {
   text-transform: uppercase;
 }
 
-.shopee-rental-price strong {
+.vb-rental-price strong {
   color: #22c55e;
   font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
 }
 
-.shopee-card-footer {
+.vb-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1686,7 +1686,7 @@ a {
   margin-top: 10px;
 }
 
-.shopee-rating {
+.vb-rating {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1695,7 +1695,7 @@ a {
   font-size: 11px;
 }
 
-.shopee-location {
+.vb-location {
   font-size: 10px;
   color: #71717a;
 }
@@ -2168,7 +2168,7 @@ a {
 }
 
 @media (max-width: 768px) {
-  .shopee-card-bottom-actions {
+  .vb-card-bottom-actions {
     position: static;
     opacity: 1;
     visibility: visible;
@@ -2181,30 +2181,30 @@ a {
     box-shadow: none;
   }
 
-  .shopee-card-image-wrap {
+  .vb-card-image-wrap {
     aspect-ratio: 4 / 3;
   }
 
-  .shopee-card-body {
+  .vb-card-body {
     padding: 16px;
   }
 
-  .shopee-product-title {
+  .vb-product-title {
     height: auto;
     min-height: 38px;
   }
 
-  .shopee-price-row {
+  .vb-price-row {
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
   }
 
-  .shopee-sale-price {
+  .vb-sale-price {
     font-size: 20px;
   }
 
-  .shopee-rental-price {
+  .vb-rental-price {
     margin-left: auto;
     min-width: 108px;
   }

@@ -4,7 +4,7 @@ import { startTransition, useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ShopeeProductCard from "../components/ShopeeProductCard";
+import ProductCard from "../components/ProductCard";
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "../lib/mock-data";
 import { Product, Category } from "../lib/types";
 
@@ -266,9 +266,9 @@ function ProductsContent() {
               </button>
             </div>
           ) : (
-            <div className="shopee-product-grid">
+            <div className="vb-product-grid">
               {filteredProducts.map((product) => (
-                <ShopeeProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}

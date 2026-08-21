@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ShopeeProductCard from "../../components/ShopeeProductCard";
+import ProductCard from "../../components/ProductCard";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
 import { useAuth } from "../../lib/auth-context";
@@ -452,12 +452,12 @@ export default function ProductDetailPage() {
           {/* Related Products */}
           {relatedProducts.length > 0 && (
             <div style={{ marginTop: "40px" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #ee4d2d", paddingBottom: "10px" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #22c55e", paddingBottom: "10px" }}>
                 Thiết Bị Cùng Danh Mục
               </h3>
-              <div className="shopee-product-grid">
+              <div className="vb-product-grid">
                 {relatedProducts.map((p) => (
-                  <ShopeeProductCard key={p.id} product={p} />
+                  <ProductCard key={p.id} product={p} />
                 ))}
               </div>
             </div>

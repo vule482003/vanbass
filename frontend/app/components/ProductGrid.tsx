@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
-import ShopeeProductCard from "./ShopeeProductCard";
+import ProductCard from "./ProductCard";
 
 export default function ProductGrid() {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS.slice(0, 10));
@@ -81,9 +81,9 @@ export default function ProductGrid() {
         </div>
 
         {/* Nightlife Multi-column Grid */}
-        <div className="shopee-product-grid">
+        <div className="vb-product-grid">
           {products.map((product) => (
-            <ShopeeProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>
