@@ -179,6 +179,7 @@ export default function ProductDetailPage() {
 
                   return displayImg ? (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={displayImg}
                         alt={product.name}

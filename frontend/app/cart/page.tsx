@@ -2,7 +2,6 @@
 
 import { startTransition, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../lib/cart-context";
@@ -110,7 +109,6 @@ const CANCEL_REASONS = [
 ];
 
 export default function CartPage() {
-  const router = useRouter();
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart, addItem } = useCart();
   const { user, token, isAuthenticated } = useAuth();
 
