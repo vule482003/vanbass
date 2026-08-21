@@ -2,6 +2,7 @@
 
 import { startTransition, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../lib/cart-context";
@@ -109,6 +110,7 @@ const CANCEL_REASONS = [
 ];
 
 export default function CartPage() {
+  const router = useRouter();
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart, addItem } = useCart();
   const { user, token, isAuthenticated } = useAuth();
 
@@ -124,6 +126,7 @@ export default function CartPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
+  const [createdOrderId, setCreatedOrderId] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
   // Orders History list
@@ -200,7 +203,7 @@ export default function CartPage() {
         shipping_phone: shippingPhone.trim(),
         shipping_address: shippingAddress.trim(),
         payment_method: paymentMethod,
-        payment_status: paymentMethod === "vietqr" ? "paid" : "unpaid",
+        payment_status: "unpaid",
         items: items.map((i) => ({
           product_id: i.product_id,
           quantity: i.quantity,
@@ -223,9 +226,16 @@ export default function CartPage() {
       if (res.ok) {
         const orderData = await res.json();
         setOrderNumber(orderData.order_number);
-        setOrderSuccess(true);
+        setCreatedOrderId(orderData.id);
         clearCart();
         fetchMyOrders();
+
+        if (paymentMethod === "vietqr" || paymentMethod === "online" || paymentMethod === "banking" || paymentMethod === "visa") {
+          // Immediately redirect to payment gateway screen
+          router.push(`/payment?order_id=${orderData.id}`);
+        } else {
+          setOrderSuccess(true);
+        }
       } else {
         const err = await res.json().catch(() => ({ detail: "Không thể tạo đơn hàng" }));
         let msg = "Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.";
@@ -289,8 +299,10 @@ export default function CartPage() {
       });
 
       if (res.ok) {
+        const cancelledId = cancelModal.orderId;
         setCancelModal(null);
-        setCancelSuccessMsg("✓ Đã hủy đơn hàng thành công!");
+        setCancelSuccessMsg("✓ Đã hủy và xóa đơn hàng thành công!");
+        setMyOrders((prev) => prev.filter((o) => o.id !== cancelledId));
         setTimeout(() => setCancelSuccessMsg(""), 3000);
         fetchMyOrders();
       } else {
@@ -494,18 +506,28 @@ export default function CartPage() {
                     .
                   </p>
                   <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
+                    {createdOrderId && (
+                      <button
+                        type="button"
+                        onClick={() => router.push(`/payment?order_id=${createdOrderId}`)}
+                        className="button button-primary"
+                        style={{ cursor: "pointer", backgroundColor: "#22c55e", color: "#000", fontWeight: 800 }}
+                      >
+                        💳 Thanh Toán Online (QR / Thẻ) →
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
                         setOrderSuccess(false);
                         setActiveTab("history");
                       }}
-                      className="button button-primary"
-                      style={{ cursor: "pointer" }}
+                      className="button"
+                      style={{ cursor: "pointer", backgroundColor: "#27272a", color: "#fff" }}
                     >
-                      📦 Xem Trong Lịch Sử Đơn Mua →
+                      📦 Xem Trong Lịch Sử Đơn Mua
                     </button>
-                    <Link href="/products" className="button" style={{ backgroundColor: "#27272a", color: "#fff" }}>
+                    <Link href="/products" className="button" style={{ backgroundColor: "#1e1e24", color: "#a1a1aa" }}>
                       Tiếp tục mua sắm
                     </Link>
                   </div>
@@ -777,9 +799,9 @@ export default function CartPage() {
                                 onChange={(e) => setPaymentMethod(e.target.value)}
                               />
                               <div>
-                                <strong>Chuyển khoản VietQR / Banking</strong>
+                                <strong>Thanh toán trực tuyến (Mã QR MoMo/VietQR/ZaloPay, STK, Thẻ Visa)</strong>
                                 <span style={{ display: "block", fontSize: "11px", color: "#4ade80" }}>
-                                  ✓ Tự động xác nhận &quot;Đã thanh toán&quot;
+                                  ✓ Chuyển sang Cổng thanh toán tiện lợi sau khi bấm Xác nhận
                                 </span>
                               </div>
                             </label>
@@ -840,7 +862,6 @@ export default function CartPage() {
                   { key: "processing", label: "Đang chuẩn bị" },
                   { key: "shipped", label: "Đang giao" },
                   { key: "completed", label: "Hoàn thành" },
-                  { key: "cancelled", label: "Đã hủy" },
                 ].map((tab) => {
                   const count = getFilterCount(tab.key);
                   const isSelected = historyStatusFilter === tab.key;
@@ -1165,7 +1186,31 @@ export default function CartPage() {
                               </strong>
                             </div>
 
-                            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                            <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                              {/* Pay Now Button if Unpaid */}
+                              {ord.payment_status === "unpaid" && ord.status !== "cancelled" && (
+                                <button
+                                  type="button"
+                                  onClick={() => router.push(`/payment?order_id=${ord.id}`)}
+                                  style={{
+                                    padding: "8px 18px",
+                                    backgroundColor: "#22c55e",
+                                    color: "#000000",
+                                    border: "none",
+                                    fontSize: "13px",
+                                    fontWeight: 900,
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    boxShadow: "0 0 14px rgba(34, 197, 94, 0.4)",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                  }}
+                                >
+                                  <span>💳</span> Thanh Toán Ngay
+                                </button>
+                              )}
+
                               {/* Cancel button if pending/confirmed */}
                               {canCancel && (
                                 <button

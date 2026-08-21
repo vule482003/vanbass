@@ -79,6 +79,7 @@ class OrderResponse(BaseModel):
     order_number: str
     status: OrderStatus
     payment_status: PaymentStatus
+    payment_method: str | None = None
     subtotal: Decimal
     shipping_fee: Decimal
     total_amount: Decimal

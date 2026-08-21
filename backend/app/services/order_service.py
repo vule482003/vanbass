@@ -12,9 +12,9 @@ from app.models.order_item import OrderItem
 from app.models.product import Product
 from app.schemas.order import OrderCreateRequest
 
-# Business Constants
-FREE_SHIPPING_THRESHOLD = Decimal("2000000.00")
-STANDARD_SHIPPING_FEE = Decimal("50000.00")
+# Business Constants (VanBass provides 100% Free Shipping nationwide)
+FREE_SHIPPING_THRESHOLD = Decimal("0.00")
+STANDARD_SHIPPING_FEE = Decimal("0.00")
 
 # Order State Machine Transition Matrix
 VALID_ORDER_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
@@ -30,11 +30,7 @@ VALID_ORDER_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
 class OrderService:
     @staticmethod
     def calculate_shipping_fee(subtotal: Decimal) -> Decimal:
-        return (
-            Decimal("0.00")
-            if subtotal >= FREE_SHIPPING_THRESHOLD
-            else STANDARD_SHIPPING_FEE
-        )
+        return Decimal("0.00")
 
     @classmethod
     def create_order(
@@ -122,16 +118,10 @@ class OrderService:
         order_number = generate_reference_code("VB")
         note = (payload.customer_note or payload.note or "").strip()
 
-        # Determine initial payment status
+        # Determine initial payment status (default to UNPAID for new orders until paid via gateway)
         initial_payment_status = PaymentStatus.UNPAID
         if payload.payment_status == PaymentStatus.PAID:
             initial_payment_status = PaymentStatus.PAID
-        elif payload.payment_method:
-            norm_method = payload.payment_method.lower().strip()
-            if norm_method in {"vietqr", "banking", "qr", "transfer", "vnpay", "momo", "online", "paid"}:
-                initial_payment_status = PaymentStatus.PAID
-            elif norm_method in {"cod", "cash", "unpaid"}:
-                initial_payment_status = PaymentStatus.UNPAID
 
         order = Order(
             id=uuid.uuid4(),
@@ -247,12 +237,13 @@ class OrderService:
             f": {reason.strip()}" if reason and reason.strip() else ""
         )
 
-        return cls.update_order_status(
-            order_id=order_id,
-            db=db,
-            new_status=OrderStatus.CANCELLED,
-            admin_note=cancel_note,
-        )
+        # 1. Restock items back to inventory safely
+        cls._restock_order_items(order, db)
+
+        # 2. Hard delete order so it is cleanly removed from order list
+        db.delete(order)
+        db.commit()
+        return order
 
     @classmethod
     def _restock_order_items(cls, order: Order, db: Session) -> None:

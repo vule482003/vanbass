@@ -1,12 +1,13 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_db, get_optional_current_user, require_admin
 from app.core.rate_limit import rate_limit_order
-from app.models.order import Order, OrderStatus
+from app.models.order import Order, OrderStatus, PaymentStatus
 from app.models.user import User, UserRole
 from app.schemas.order import (
     OrderCancelRequest,
@@ -17,6 +18,10 @@ from app.schemas.order import (
 )
 from app.services.order_service import OrderService
 from app.services.user_service import UserService
+
+class OrderPayRequest(BaseModel):
+    payment_method: str | None = "vietqr"
+    transaction_ref: str | None = None
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -71,6 +76,7 @@ def list_my_orders(
     query = (
         select(Order)
         .where(Order.user_id == current_user.id)
+        .where(Order.status != OrderStatus.CANCELLED)
         .order_by(Order.created_at.desc())
     )
     orders = db.execute(query).scalars().all()
@@ -141,3 +147,39 @@ def cancel_order(
         reason=reason,
         db=db,
     )
+
+
+@router.post(
+    "/{order_id}/pay",
+    response_model=OrderResponse,
+)
+def pay_order(
+    order_id: UUID,
+    payload: OrderPayRequest | None = None,
+    current_user: User | None = Depends(get_optional_current_user),
+    db: Session = Depends(get_db),
+) -> Order:
+    order = db.get(Order, order_id)
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy đơn hàng",
+        )
+
+    order.payment_status = PaymentStatus.PAID
+    if payload and payload.payment_method:
+        order.payment_method = payload.payment_method
+    if order.status == OrderStatus.PENDING:
+        order.status = OrderStatus.CONFIRMED
+
+    db.commit()
+    db.refresh(order)
+    return order
+    target_order.payment_status = PaymentStatus.PAID
+    target_order.payment_method = payload.gateway or "vietqr"
+    if target_order.status == OrderStatus.PENDING:
+        target_order.status = OrderStatus.CONFIRMED
+
+    db.commit()
+    db.refresh(target_order)
+    return target_order
