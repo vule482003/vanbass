@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
@@ -11,13 +11,26 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
-  const { login } = useAuth();
+  const { user, isAuthenticated, isLoading: isAuthLoading, login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Auto redirect if already logged in
+  useEffect(() => {
+    if (!isAuthLoading && isAuthenticated && user) {
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else if (redirectUrl && redirectUrl.startsWith("/")) {
+        router.push(redirectUrl);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user, isAuthenticated, isAuthLoading, redirectUrl, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +44,9 @@ function LoginForm() {
     try {
       const res = await login(email, password);
       if (res.success) {
-        if (redirectUrl && redirectUrl.startsWith("/")) {
+        if (res.role === "admin" || res.user?.role === "admin") {
+          router.push("/admin");
+        } else if (redirectUrl && redirectUrl.startsWith("/")) {
           router.push(redirectUrl);
         } else {
           router.push("/");

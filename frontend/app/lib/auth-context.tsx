@@ -18,7 +18,7 @@ interface AuthContextType {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin"; user?: AuthUser }>;
   register: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => Promise<boolean>;
@@ -252,7 +252,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem("vanbass_refresh_token", data.refresh_token);
         }
         localStorage.setItem("vanbass_user", JSON.stringify(loggedUser));
-        return { success: true };
+        return { success: true, role: loggedUser.role, user: loggedUser };
       } else {
         const err = await response.json().catch(() => ({ detail: "Email hoặc mật khẩu không chính xác" }));
         return {
