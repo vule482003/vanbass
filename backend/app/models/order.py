@@ -151,4 +151,5 @@ class Order(Base):
 
     payments: Mapped[list["Payment"]] = relationship(
         back_populates="order",
+        cascade="all, delete-orphan",
     )

@@ -226,6 +226,11 @@ class OrderService:
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="Bạn không có quyền hủy đơn hàng này",
                 )
+            if order.payment_status == PaymentStatus.PAID:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Đơn hàng đã thanh toán thành công không thể tự hủy. Vui lòng liên hệ hotline/hỗ trợ VanBass để được xử lý.",
+                )
             if order.status not in {OrderStatus.PENDING, OrderStatus.CONFIRMED}:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -235,7 +240,11 @@ class OrderService:
         # 1. Restock items back to inventory safely
         cls._restock_order_items(order, db)
 
-        # 2. Hard delete order so it is cleanly removed from order list
+        # 2. Xóa các bản ghi payment liên quan
+        for p in list(order.payments):
+            db.delete(p)
+
+        # 3. Hard delete order so it is cleanly removed from order list
         db.delete(order)
         db.commit()
         return order

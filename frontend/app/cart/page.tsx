@@ -1,8 +1,8 @@
 "use client";
 
-import { startTransition, useState, useEffect, useCallback } from "react";
+import { startTransition, useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../lib/cart-context";
@@ -36,6 +36,7 @@ interface MyOrderItem {
   created_at: string;
   status: string;
   payment_status: string;
+  payment_method?: string;
   subtotal?: number;
   shipping_fee?: number;
   total_amount: number;
@@ -109,8 +110,9 @@ const CANCEL_REASONS = [
   "Lý do khác",
 ];
 
-export default function CartPage() {
+function CartContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart, addItem } = useCart();
   const { user, token, isAuthenticated } = useAuth();
 
@@ -132,6 +134,7 @@ export default function CartPage() {
   // Orders History list
   const [myOrders, setMyOrders] = useState<MyOrderItem[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
 
   // Cancellation Modal
   const [cancelModal, setCancelModal] = useState<{
@@ -181,11 +184,48 @@ export default function CartPage() {
     }
   }, [token, apiUrl]);
 
+  // Handle ?tab=history URL query param
   useEffect(() => {
-    if (token) {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "history") {
+      setActiveTab("history");
+    }
+  }, [searchParams]);
+
+  // Load orders history whenever token or activeTab changes
+  useEffect(() => {
+    if (token || activeTab === "history") {
       void fetchMyOrders();
     }
-  }, [token, fetchMyOrders]);
+  }, [token, activeTab, fetchMyOrders]);
+
+  // Pay directly via VNPAY
+  const handlePayOrderVnpay = async (orderId: string) => {
+    setPayingOrderId(orderId);
+    try {
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`${apiUrl}/orders/${orderId}/vnpay/create-payment`, {
+        method: "POST",
+        headers,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.payment_url) {
+          window.location.href = data.payment_url;
+          return;
+        }
+      }
+      const err = await res.json().catch(() => ({ detail: "Không thể khởi tạo cổng VNPAY" }));
+      alert(err.detail || "Không thể kết nối đến VNPAY. Vui lòng thử lại sau.");
+    } catch (e) {
+      console.error("VNPAY pay error:", e);
+      alert("Lỗi kết nối đến máy chủ thanh toán.");
+    } finally {
+      setPayingOrderId(null);
+    }
+  };
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,9 +270,26 @@ export default function CartPage() {
         clearCart();
         fetchMyOrders();
 
-        if (paymentMethod === "vietqr" || paymentMethod === "online" || paymentMethod === "banking" || paymentMethod === "visa") {
-          // Immediately redirect to payment gateway screen
-          router.push(`/payment?order_id=${orderData.id}`);
+        if (paymentMethod === "vietqr" || paymentMethod === "vnpay" || paymentMethod === "online" || paymentMethod === "banking" || paymentMethod === "visa") {
+          try {
+            // Tự động gọi API VNPAY để tạo payment URL và chuyển hướng ngay lập tức
+            const vnpayRes = await fetch(`${apiUrl}/orders/${orderData.id}/vnpay/create-payment`, {
+              method: "POST",
+              headers,
+            });
+            if (vnpayRes.ok) {
+              const vnpayData = await vnpayRes.json();
+              if (vnpayData.payment_url) {
+                window.location.href = vnpayData.payment_url;
+                return;
+              }
+            }
+          } catch (vnpayErr) {
+            console.error("VNPAY payment initiation error:", vnpayErr);
+          }
+          // Nếu có trục trặc mạng khi mở VNPAY, thông báo để khách thanh toán lại trong lịch sử
+          setActiveTab("history");
+          setErrorMsg("Đơn hàng đã được ghi nhận. Bạn có thể bấm nút 'Thanh Toán VNPAY' bên dưới để thanh toán.");
         } else {
           setOrderSuccess(true);
         }
@@ -287,12 +344,16 @@ export default function CartPage() {
     setCancelError("");
 
     try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${apiUrl}/orders/${cancelModal.orderId}/cancel`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
         body: JSON.stringify({
           reason: cancelModal.reason || "Khách hàng yêu cầu hủy đơn",
         }),
@@ -304,7 +365,7 @@ export default function CartPage() {
         setCancelSuccessMsg("✓ Đã hủy và xóa đơn hàng thành công!");
         setMyOrders((prev) => prev.filter((o) => o.id !== cancelledId));
         setTimeout(() => setCancelSuccessMsg(""), 3000);
-        fetchMyOrders();
+        void fetchMyOrders();
       } else {
         const err = await res.json().catch(() => ({ detail: "Lỗi khi hủy đơn" }));
         let msg = "Không thể hủy đơn hàng này.";
@@ -315,7 +376,8 @@ export default function CartPage() {
         }
         setCancelError(msg);
       }
-    } catch {
+    } catch (err) {
+      console.error("Cancel order network error:", err);
       setCancelError("Không thể kết nối đến máy chủ.");
     } finally {
       setIsCancelling(false);
@@ -500,20 +562,21 @@ export default function CartPage() {
                     Mã đơn hàng chính thức: <strong style={{ color: "#22c55e", fontSize: "18px" }}>#{orderNumber}</strong>
                     <br />
                     Đơn hàng đã được lưu tự động vào hệ thống. Trạng thái thanh toán:{" "}
-                    <strong style={{ color: paymentMethod === "vietqr" ? "#4ade80" : "#facc15" }}>
-                      {paymentMethod === "vietqr" ? "Đã thanh toán (VietQR)" : "Thanh toán khi nhận hàng (COD)"}
+                    <strong style={{ color: paymentMethod === "cod" ? "#facc15" : "#4ade80" }}>
+                      {paymentMethod === "cod" ? "Thanh toán khi nhận hàng (COD)" : "Chờ thanh toán qua VNPAY"}
                     </strong>
                     .
                   </p>
                   <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
-                    {createdOrderId && (
+                    {createdOrderId && paymentMethod !== "cod" && (
                       <button
                         type="button"
-                        onClick={() => router.push(`/payment?order_id=${createdOrderId}`)}
+                        disabled={payingOrderId === createdOrderId}
+                        onClick={() => handlePayOrderVnpay(createdOrderId)}
                         className="button button-primary"
                         style={{ cursor: "pointer", backgroundColor: "#22c55e", color: "#000", fontWeight: 800 }}
                       >
-                        💳 Thanh Toán Online (QR / Thẻ) →
+                        {payingOrderId === createdOrderId ? "⏳ Đang kết nối..." : "⚡ Thanh Toán VNPAY Ngay →"}
                       </button>
                     )}
                     <button
@@ -789,34 +852,39 @@ export default function CartPage() {
                           <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
                             Phương thức thanh toán
                           </label>
-                          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                            <label style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 14px", backgroundColor: paymentMethod === "vietqr" ? "rgba(34,197,94,0.1)" : "#0a0a0c", border: paymentMethod === "vietqr" ? "1px solid #22c55e" : "1px solid #27272a", color: "#fff", fontSize: "13px", cursor: "pointer", borderRadius: "4px" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", padding: "14px 16px", backgroundColor: paymentMethod === "vietqr" ? "rgba(34,197,94,0.08)" : "#0a0a0c", border: paymentMethod === "vietqr" ? "1.5px solid #22c55e" : "1px solid #27272a", color: "#fff", fontSize: "13.5px", cursor: "pointer", borderRadius: "8px" }}>
                               <input
                                 type="radio"
                                 name="payment"
                                 value="vietqr"
                                 checked={paymentMethod === "vietqr"}
                                 onChange={(e) => setPaymentMethod(e.target.value)}
+                                style={{ marginTop: "4px" }}
                               />
                               <div>
-                                <strong>Thanh toán trực tuyến (Mã QR MoMo/VietQR/ZaloPay, STK, Thẻ Visa)</strong>
-                                <span style={{ display: "block", fontSize: "11px", color: "#4ade80" }}>
-                                  ✓ Chuyển sang Cổng thanh toán tiện lợi sau khi bấm Xác nhận
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                                  <strong style={{ fontSize: "14px", color: "#fff" }}>⚡ Cổng Thanh Toán Trực Tuyến VNPAY</strong>
+                                  <span style={{ fontSize: "10.5px", padding: "2px 7px", backgroundColor: "rgba(34,197,94,0.2)", color: "#4ade80", borderRadius: "4px", fontWeight: 700 }}>TỰ ĐỘNG 100%</span>
+                                </div>
+                                <span style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginTop: "4px", lineHeight: 1.5 }}>
+                                  Hỗ trợ Quét QR hơn 40 app ngân hàng & Ví điện tử (VietQR, Momo, ZaloPay), Thẻ ATM nội địa, Thẻ quốc tế Visa/Mastercard/JCB.
                                 </span>
                               </div>
                             </label>
-                            <label style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 14px", backgroundColor: paymentMethod === "cod" ? "rgba(234,179,8,0.1)" : "#0a0a0c", border: paymentMethod === "cod" ? "1px solid #eab308" : "1px solid #27272a", color: "#fff", fontSize: "13px", cursor: "pointer", borderRadius: "4px" }}>
+                            <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", padding: "14px 16px", backgroundColor: paymentMethod === "cod" ? "rgba(234,179,8,0.08)" : "#0a0a0c", border: paymentMethod === "cod" ? "1.5px solid #eab308" : "1px solid #27272a", color: "#fff", fontSize: "13.5px", cursor: "pointer", borderRadius: "8px" }}>
                               <input
                                 type="radio"
                                 name="payment"
                                 value="cod"
                                 checked={paymentMethod === "cod"}
                                 onChange={(e) => setPaymentMethod(e.target.value)}
+                                style={{ marginTop: "4px" }}
                               />
                               <div>
-                                <strong>Thanh toán tiền mặt khi nhận hàng (COD)</strong>
-                                <span style={{ display: "block", fontSize: "11px", color: "#facc15" }}>
-                                  ✓ Trạng thái: &quot;Chưa thanh toán&quot; (thanh toán cho shipper)
+                                <strong style={{ fontSize: "14px", color: "#fff" }}>💵 Thanh toán khi nhận hàng (COD)</strong>
+                                <span style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginTop: "4px", lineHeight: 1.5 }}>
+                                  Kiểm tra hàng và thanh toán tiền mặt trực tiếp cho nhân viên giao hàng khi nhận.
                                 </span>
                               </div>
                             </label>
@@ -955,8 +1023,9 @@ export default function CartPage() {
                   {filteredHistoryOrders.map((ord) => {
                     const badge = getOrderStatusBadge(ord.status);
                     const canCancel =
-                      ord.status.toLowerCase() === "pending" ||
-                      ord.status.toLowerCase() === "confirmed";
+                      (ord.status.toLowerCase() === "pending" ||
+                        ord.status.toLowerCase() === "confirmed") &&
+                      ord.payment_status?.toLowerCase() !== "paid";
 
                     return (
                       <div
@@ -1026,11 +1095,22 @@ export default function CartPage() {
                                 backgroundColor:
                                   ord.payment_status === "paid"
                                     ? "rgba(34,197,94,0.15)"
-                                    : "rgba(234,179,8,0.15)",
-                                color: ord.payment_status === "paid" ? "#4ade80" : "#facc15",
+                                    : ord.payment_method === "cod"
+                                    ? "rgba(234,179,8,0.15)"
+                                    : "rgba(56,189,248,0.15)",
+                                color:
+                                  ord.payment_status === "paid"
+                                    ? "#4ade80"
+                                    : ord.payment_method === "cod"
+                                    ? "#facc15"
+                                    : "#38bdf8",
                               }}
                             >
-                              {ord.payment_status === "paid" ? "ĐÃ THANH TOÁN" : "CHƯA THANH TOÁN (COD)"}
+                              {ord.payment_status === "paid"
+                                ? "ĐÃ THANH TOÁN"
+                                : ord.payment_method === "cod"
+                                ? "CHƯA THANH TOÁN (COD)"
+                                : "CHỜ THANH TOÁN VNPAY"}
                             </span>
                           </div>
                         </div>
@@ -1187,11 +1267,12 @@ export default function CartPage() {
                             </div>
 
                             <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-                              {/* Pay Now Button if Unpaid */}
+                              {/* Pay Now Button via VNPAY if Unpaid */}
                               {ord.payment_status === "unpaid" && ord.status !== "cancelled" && (
                                 <button
                                   type="button"
-                                  onClick={() => router.push(`/payment?order_id=${ord.id}`)}
+                                  disabled={payingOrderId === ord.id}
+                                  onClick={() => handlePayOrderVnpay(ord.id)}
                                   style={{
                                     padding: "8px 18px",
                                     backgroundColor: "#22c55e",
@@ -1200,14 +1281,16 @@ export default function CartPage() {
                                     fontSize: "13px",
                                     fontWeight: 900,
                                     borderRadius: "4px",
-                                    cursor: "pointer",
+                                    cursor: payingOrderId === ord.id ? "not-allowed" : "pointer",
                                     boxShadow: "0 0 14px rgba(34, 197, 94, 0.4)",
                                     display: "inline-flex",
                                     alignItems: "center",
                                     gap: "6px",
+                                    transition: "all 0.2s ease",
                                   }}
                                 >
-                                  <span>💳</span> Thanh Toán Ngay
+                                  <span>{payingOrderId === ord.id ? "⏳" : "⚡"}</span>
+                                  {payingOrderId === ord.id ? "Đang mở VNPAY..." : "Thanh Toán VNPAY"}
                                 </button>
                               )}
 
@@ -1438,5 +1521,19 @@ export default function CartPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#09090b" }}>
+          <p style={{ color: "#a1a1aa" }}>Đang tải...</p>
+        </div>
+      }
+    >
+      <CartContent />
+    </Suspense>
   );
 }

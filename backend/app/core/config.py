@@ -17,6 +17,14 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
 
+    # VNPAY Payment Gateway
+    vnpay_tmn_code: str = ""
+    vnpay_hash_secret: str = ""
+    vnpay_payment_url: str = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+    vnpay_ipn_url: str = "http://localhost:8000/api/orders/vnpay/ipn"
+    vnpay_backend_return_url: str = "http://localhost:8000/api/orders/vnpay/return"
+    vnpay_return_url: str = "http://localhost:3000/payment/result"
+
     cors_origins: list[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",

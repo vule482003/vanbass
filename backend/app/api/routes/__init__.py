@@ -11,6 +11,7 @@ from app.api.routes.rental_payment import router as rental_payment_router
 from app.api.routes.rental_request import router as rental_request_router
 from app.api.routes.store_setting import router as store_settings_router
 from app.api.routes.upload import router as upload_router
+from app.api.routes.vnpay import router as vnpay_router
 
 __all__ = [
     "admin_router",
@@ -26,4 +27,5 @@ __all__ = [
     "rental_request_router",
     "store_settings_router",
     "upload_router",
+    "vnpay_router",
 ]

@@ -20,6 +20,7 @@ from app.api.routes import (
     rental_request_router,
     store_settings_router,
     upload_router,
+    vnpay_router,
 )
 from app.core.config import settings
 from app.db.session import engine
@@ -68,6 +69,7 @@ app.include_router(product_image_router, prefix="/api")
 app.include_router(cart_router, prefix="/api")
 app.include_router(order_router, prefix="/api")
 app.include_router(payment_router, prefix="/api")
+app.include_router(vnpay_router, prefix="/api")
 app.include_router(rental_request_router, prefix="/api")
 app.include_router(rental_payment_router, prefix="/api")
 app.include_router(store_settings_router, prefix="/api")
