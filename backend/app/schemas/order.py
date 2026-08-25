@@ -43,6 +43,8 @@ class OrderItemResponse(BaseModel):
 class OrderCreateRequest(BaseModel):
     shipping_name: str = Field(min_length=1, max_length=255)
     shipping_phone: str = Field(min_length=1, max_length=30)
+    shipping_email: str | None = None
+    customer_email: str | None = None
     shipping_address: str = Field(min_length=1, max_length=1000)
     customer_note: str | None = None
     note: str | None = None

@@ -3,6 +3,7 @@ from app.api.routes.auth import router as auth_router
 from app.api.routes.cart import router as cart_router
 from app.api.routes.category import router as category_router
 from app.api.routes.customer import router as customer_router
+from app.api.routes.email import router as email_router
 from app.api.routes.home_config import router as home_config_router
 from app.api.routes.order import router as order_router
 from app.api.routes.payment import router as payment_router
@@ -20,6 +21,7 @@ __all__ = [
     "cart_router",
     "category_router",
     "customer_router",
+    "email_router",
     "home_config_router",
     "order_router",
     "payment_router",

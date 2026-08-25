@@ -17,6 +17,7 @@ from app.schemas.order import (
     OrderResponse,
     OrderStatusUpdate,
 )
+from app.services.email_service import EmailService
 from app.services.order_service import OrderService
 from app.services.user_service import UserService
 
@@ -58,7 +59,37 @@ def create_order(
         current_user=current_user,
         phone=payload.shipping_phone,
     )
-    return OrderService.create_order(payload=payload, user_id=user_id, db=db)
+    order = OrderService.create_order(payload=payload, user_id=user_id, db=db)
+
+    # Determine customer email from payload or user record
+    customer_email = (
+        payload.customer_email
+        or payload.shipping_email
+        or (current_user.email if current_user else None)
+    )
+    if not customer_email and user_id:
+        user_record = db.get(User, user_id)
+        if (
+            user_record
+            and user_record.email
+            and "@" in user_record.email
+            and not user_record.email.endswith("@vanbass.local")
+        ):
+            customer_email = user_record.email
+
+    # Dispatch email confirmation to customer
+    if customer_email:
+        EmailService.send_order_confirmation_to_customer(
+            order=order,
+            customer_email=customer_email,
+        )
+
+    # Dispatch alert email to shop & staff
+    EmailService.send_order_notification_to_staff(
+        order=order,
+    )
+
+    return order
 
 
 @router.get("", response_model=OrderListResponse)

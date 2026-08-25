@@ -12,6 +12,7 @@ from app.api.routes import (
     cart_router,
     category_router,
     customer_router,
+    email_router,
     home_config_router,
     order_router,
     payment_router,
@@ -83,6 +84,7 @@ app.include_router(rental_request_router, prefix="/api")
 app.include_router(rental_payment_router, prefix="/api")
 app.include_router(store_settings_router, prefix="/api")
 app.include_router(upload_router, prefix="/api")
+app.include_router(email_router, prefix="/api")
 app.include_router(home_config_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 

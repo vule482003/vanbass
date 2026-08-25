@@ -25,6 +25,16 @@ class Settings(BaseSettings):
     vnpay_backend_return_url: str = "http://localhost:8000/api/orders/vnpay/return"
     vnpay_return_url: str = "http://localhost:3000/payment/result"
 
+    # SMTP / Email Notifications
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from_email: str = ""
+    smtp_from_name: str = "VanBass Music Center"
+    smtp_use_tls: bool = True
+    shop_notify_emails: str = "admin@vanbass.vn"
+
     cors_origins: list[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
