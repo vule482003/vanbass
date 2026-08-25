@@ -883,14 +883,15 @@ export default function AdminDashboardPage() {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <span style={{ backgroundColor: "#ffffff", color: "#000000", fontWeight: 900, padding: "4px 8px", fontSize: "14px" }}>
-            VB ADMIN
+        <Link href="/admin" className="brand" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "12px" }}>
+          <span className="brand-mark" style={{ width: "38px", height: "38px", fontSize: "12px" }}>
+            VB
           </span>
-          <span style={{ fontSize: "16px", fontWeight: 800, color: "#fff" }}>
-            VanBass Management Center
+          <span className="brand-text" style={{ fontSize: "18px" }}>
+            VANBASS
+            <small style={{ color: "#22c55e", letterSpacing: "0.22em" }}>ADMIN PANEL</small>
           </span>
-        </div>
+        </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <Link href="/" target="_blank" style={{ fontSize: "13px", color: "#a1a1aa", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -907,14 +908,25 @@ export default function AdminDashboardPage() {
             }}
             style={{
               padding: "6px 14px",
-              backgroundColor: "rgba(239, 68, 68, 0.15)",
-              border: "1px solid #ef4444",
+              backgroundColor: "rgba(239, 68, 68, 0.12)",
+              border: "1px solid rgba(239, 68, 68, 0.4)",
               color: "#fca5a5",
-              fontSize: "12px",
+              fontSize: "12.5px",
               fontWeight: 700,
+              borderRadius: "6px",
               cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              transition: "all 0.18s ease",
             }}
+            title="Đăng xuất khỏi tài khoản Quản trị"
           >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
             Đăng xuất
           </button>
         </div>
@@ -938,95 +950,35 @@ export default function AdminDashboardPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             <button
               onClick={() => setActiveTab("overview")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                textAlign: "left",
-                backgroundColor: activeTab === "overview" ? "#ffffff" : "transparent",
-                color: activeTab === "overview" ? "#000000" : "#a1a1aa",
-                fontWeight: 700,
-                fontSize: "14px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className={`admin-sidebar-btn ${activeTab === "overview" ? "active" : ""}`}
             >
               📊 Tổng quan thống kê
             </button>
 
             <button
               onClick={() => setActiveTab("home_cms")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                textAlign: "left",
-                backgroundColor: activeTab === "home_cms" ? "#ffffff" : "transparent",
-                color: activeTab === "home_cms" ? "#000000" : "#a1a1aa",
-                fontWeight: 700,
-                fontSize: "14px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className={`admin-sidebar-btn ${activeTab === "home_cms" ? "active" : ""}`}
             >
               🎨 Home Page CMS
             </button>
 
             <button
               onClick={() => setActiveTab("products")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                textAlign: "left",
-                backgroundColor: activeTab === "products" ? "#ffffff" : "transparent",
-                color: activeTab === "products" ? "#000000" : "#a1a1aa",
-                fontWeight: 700,
-                fontSize: "14px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className={`admin-sidebar-btn ${activeTab === "products" ? "active" : ""}`}
             >
               📦 Quản lý Sản phẩm ({products.length})
             </button>
 
             <button
               onClick={() => setActiveTab("orders")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                textAlign: "left",
-                backgroundColor: activeTab === "orders" ? "#ffffff" : "transparent",
-                color: activeTab === "orders" ? "#000000" : "#a1a1aa",
-                fontWeight: 700,
-                fontSize: "14px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className={`admin-sidebar-btn ${activeTab === "orders" ? "active" : ""}`}
             >
               🛒 Quản lý Đơn hàng ({orders.length})
             </button>
 
             <button
               onClick={() => setActiveTab("rentals")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                textAlign: "left",
-                backgroundColor: activeTab === "rentals" ? "#ffffff" : "transparent",
-                color: activeTab === "rentals" ? "#000000" : "#a1a1aa",
-                fontWeight: 700,
-                fontSize: "14px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className={`admin-sidebar-btn ${activeTab === "rentals" ? "active" : ""}`}
             >
               📅 Yêu cầu Thuê máy ({rentals.length})
             </button>
@@ -2477,18 +2429,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   onClick={handleOpenAddModal}
-                  style={{
-                    padding: "12px 24px",
-                    backgroundColor: "#ffffff",
-                    color: "#000000",
-                    fontWeight: 800,
-                    fontSize: "13px",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
+                  className="admin-btn-primary"
                 >
                   <span>＋</span> Thêm Sản Phẩm Mới
                 </button>
@@ -2522,43 +2463,60 @@ export default function AdminDashboardPage() {
                           {p.rental_enabled && p.rental_price ? formatCurrency(p.rental_price) : <span style={{ color: "#71717a" }}>Không cho thuê</span>}
                         </td>
                         <td style={{ padding: "16px", color: "#fff" }}>{p.stock_quantity} cái</td>
-                        <td style={{ padding: "16px", textAlign: "right" }}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+                        <td style={{ padding: "16px", textAlign: "right", whiteSpace: "nowrap" }}>
+                          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
                             <button
                               onClick={() => handleOpenEditModal(p)}
                               style={{
-                                padding: "6px 14px",
+                                height: "32px",
+                                padding: "0 14px",
                                 backgroundColor: "rgba(34, 197, 94, 0.12)",
-                                border: "1px solid rgba(34, 197, 94, 0.5)",
+                                border: "1px solid rgba(34, 197, 94, 0.45)",
                                 color: "#4ade80",
                                 fontSize: "12px",
                                 fontWeight: 700,
-                                borderRadius: "3px",
+                                borderRadius: "6px",
                                 cursor: "pointer",
                                 display: "inline-flex",
                                 alignItems: "center",
-                                gap: "4px",
+                                justifyContent: "center",
+                                gap: "6px",
+                                whiteSpace: "nowrap",
                                 transition: "all 0.15s ease",
                               }}
                               title="Chỉnh sửa thông tin, giá bán, giá thuê, kho hàng"
                             >
-                              ✏️ Sửa
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                              Sửa
                             </button>
                             <button
                               onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
                               style={{
-                                padding: "6px 12px",
+                                height: "32px",
+                                padding: "0 14px",
                                 backgroundColor: "rgba(239, 68, 68, 0.1)",
                                 border: "1px solid rgba(239, 68, 68, 0.4)",
                                 color: "#f87171",
                                 fontSize: "12px",
                                 fontWeight: 700,
-                                borderRadius: "3px",
+                                borderRadius: "6px",
                                 cursor: "pointer",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "6px",
+                                whiteSpace: "nowrap",
                                 transition: "all 0.15s ease",
                               }}
                               title="Xóa sản phẩm khỏi hệ thống"
                             >
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                              </svg>
                               Xóa
                             </button>
                           </div>
@@ -3082,14 +3040,15 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={handleCloseAddModal}
-                  style={{ padding: "12px 20px", backgroundColor: "transparent", border: "1px solid #3f3f46", color: "#fff", cursor: "pointer", fontWeight: 600 }}
+                  className="admin-btn-secondary"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  style={{ padding: "12px 28px", backgroundColor: "#fff", color: "#000", fontWeight: 800, border: "none", cursor: isSubmitting ? "not-allowed" : "pointer" }}
+                  className="admin-btn-primary"
+                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
                 >
                   {isSubmitting ? "Đang lưu sản phẩm..." : "Lưu Sản Phẩm"}
                 </button>
@@ -3384,22 +3343,15 @@ export default function AdminDashboardPage() {
                     setShowEditProductModal(false);
                     setEditingProduct(null);
                   }}
-                  style={{ padding: "12px 20px", backgroundColor: "transparent", border: "1px solid #3f3f46", color: "#fff", cursor: "pointer", fontWeight: 600 }}
+                  className="admin-btn-secondary"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  style={{
-                    padding: "12px 28px",
-                    backgroundColor: "#22c55e",
-                    color: "#000000",
-                    fontWeight: 800,
-                    border: "none",
-                    cursor: isSubmitting ? "not-allowed" : "pointer",
-                    boxShadow: "0 0 16px rgba(34, 197, 94, 0.4)",
-                  }}
+                  className="admin-btn-success"
+                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
                 >
                   {isSubmitting ? "Đang lưu thay đổi..." : "Lưu Cập Nhật"}
                 </button>
@@ -3517,34 +3469,14 @@ export default function AdminDashboardPage() {
               <button
                 type="button"
                 onClick={() => setStatusConfirmModal(null)}
-                style={{
-                  padding: "10px 18px",
-                  backgroundColor: "#27272a",
-                  color: "#e4e4e7",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "4px",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  transition: "background 0.15s ease",
-                }}
+                className="admin-btn-secondary"
               >
                 Hủy bỏ
               </button>
               <button
                 type="button"
                 onClick={handleConfirmStatusChange}
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#22c55e",
-                  color: "#000000",
-                  border: "none",
-                  borderRadius: "4px",
-                  fontSize: "13px",
-                  fontWeight: 800,
-                  cursor: "pointer",
-                  transition: "background 0.15s ease",
-                }}
+                className="admin-btn-success"
               >
                 Xác nhận cập nhật
               </button>
@@ -3644,18 +3576,8 @@ export default function AdminDashboardPage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={() => setDeleteConfirmModal(null)}
-                style={{
-                  padding: "10px 18px",
-                  backgroundColor: "#27272a",
-                  color: "#e4e4e7",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "4px",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  cursor: isDeleting ? "not-allowed" : "pointer",
-                  opacity: isDeleting ? 0.6 : 1,
-                  transition: "background 0.15s ease",
-                }}
+                className="admin-btn-secondary"
+                style={{ opacity: isDeleting ? 0.6 : 1, cursor: isDeleting ? "not-allowed" : "pointer" }}
               >
                 Hủy bỏ
               </button>
@@ -3663,19 +3585,8 @@ export default function AdminDashboardPage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={handleConfirmDeleteProduct}
-                style={{
-                  padding: "10px 22px",
-                  backgroundColor: "#ef4444",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: "4px",
-                  fontSize: "13px",
-                  fontWeight: 800,
-                  cursor: isDeleting ? "not-allowed" : "pointer",
-                  opacity: isDeleting ? 0.7 : 1,
-                  transition: "background 0.15s ease",
-                  boxShadow: "0 2px 10px rgba(239, 68, 68, 0.4)",
-                }}
+                className="admin-btn-danger"
+                style={{ opacity: isDeleting ? 0.7 : 1, cursor: isDeleting ? "not-allowed" : "pointer" }}
               >
                 {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
               </button>

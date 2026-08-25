@@ -4,7 +4,6 @@ import Script from "next/script";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import JsonLd from "./components/JsonLd";
-import FloatingContact from "./components/FloatingContact";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -39,19 +38,12 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`h-full antialiased ${montserrat.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&display=swap"
-          rel="stylesheet"
-        />
         <JsonLd />
       </head>
       <body className={`min-h-full flex flex-col ${montserrat.className}`} suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
             {children}
-            <FloatingContact />
           </CartProvider>
         </AuthProvider>
 

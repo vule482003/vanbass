@@ -22,6 +22,14 @@ export default function Header() {
   const [searchCatalog, setSearchCatalog] = useState(MOCK_PRODUCTS);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const navContainerRef = useRef<HTMLElement>(null);
+  const linkRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; opacity: number }>({
+    left: 0,
+    width: 0,
+    opacity: 0,
+  });
+  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -92,6 +100,36 @@ export default function Header() {
     { href: "/contact", label: "Liên hệ" },
   ];
 
+  // Dynamic Sliding Green Underline Logic
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeLink = navLinks.find((l) =>
+        l.href === "/" ? pathname === "/" : pathname.startsWith(l.href)
+      );
+      const targetHref = hoveredHref || activeLink?.href || null;
+
+      if (targetHref && linkRefs.current[targetHref] && navContainerRef.current) {
+        const navRect = navContainerRef.current.getBoundingClientRect();
+        const linkRect = linkRefs.current[targetHref]!.getBoundingClientRect();
+        setIndicatorStyle({
+          left: linkRect.left - navRect.left,
+          width: linkRect.width,
+          opacity: 1,
+        });
+      } else if (!targetHref) {
+        setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    // Run after DOM render
+    const timer = setTimeout(updateIndicator, 50);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [pathname, hoveredHref]);
+
   const searchResults = searchQuery.trim()
     ? searchCatalog
         .filter(
@@ -122,7 +160,7 @@ export default function Header() {
 
   return (
     <header className={`site-header ${headerVisibilityClass} ${headerScrollClass}`}>
-      <div className="container header-inner">
+      <div className="header-inner">
         <Link href="/" className="brand" aria-label="VanBass Music Center">
           <span className="brand-mark">VB</span>
           <span className="brand-text">
@@ -131,24 +169,41 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="desktop-nav" aria-label="Main navigation">
+        <nav
+          ref={navContainerRef}
+          className="desktop-nav"
+          aria-label="Main navigation"
+          onMouseLeave={() => setHoveredHref(null)}
+        >
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isCurrentPage = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            const isHovered = hoveredHref === link.href;
+            const isHighlighted = hoveredHref ? isHovered : isCurrentPage;
+
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={isActive ? "active" : ""}
-                style={{
-                  color: isActive ? "#ffffff" : undefined,
-                  borderBottom: isActive ? "2px solid #22c55e" : undefined,
-                  paddingBottom: isActive ? "4px" : undefined,
+                ref={(el) => {
+                  linkRefs.current[link.href] = el;
                 }}
+                onMouseEnter={() => setHoveredHref(link.href)}
+                className={`nav-link-item ${isHighlighted ? "active" : ""}`}
               >
                 {link.label}
               </Link>
             );
           })}
+
+          {/* Smooth Sliding Green Indicator */}
+          <span
+            className="nav-sliding-indicator"
+            style={{
+              transform: `translateX(${indicatorStyle.left}px)`,
+              width: `${indicatorStyle.width}px`,
+              opacity: indicatorStyle.opacity,
+            }}
+          />
         </nav>
 
         <div ref={searchContainerRef} className="header-search-wrap">
@@ -246,16 +301,17 @@ export default function Header() {
           </Link>
 
           {isAuthenticated ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative" }}>
-              {user?.role === "admin" && (
-                <Link href="/admin" className="header-admin-btn">
-                  👑 Quản Trị
-                </Link>
-              )}
+            <div
+              className="header-user-wrapper"
+              onMouseEnter={() => setUserDropdownOpen(true)}
+              onMouseLeave={() => setUserDropdownOpen(false)}
+              style={{ position: "relative", display: "inline-flex", alignItems: "center" }}
+            >
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                 className="header-user-btn"
                 title={user?.email}
+                aria-label="Tài khoản cá nhân"
               >
                 {user?.full_name?.charAt(0).toUpperCase() || user?.email.charAt(0).toUpperCase() || "U"}
               </button>
@@ -266,26 +322,30 @@ export default function Header() {
                     <Link
                       href="/admin"
                       onClick={() => setUserDropdownOpen(false)}
-                      style={{ display: "block", padding: "10px 16px", color: "#22c55e", fontSize: "13px", fontWeight: 700, borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                      className="header-user-item is-admin"
                     >
-                      👑 Bảng Quản Trị Admin
+                      <span>👑</span>
+                      <span>Bảng Quản Trị Admin</span>
                     </Link>
                   )}
                   <Link
                     href="/profile"
                     onClick={() => setUserDropdownOpen(false)}
-                    style={{ display: "block", padding: "10px 16px", color: "#fff", fontSize: "13px", fontWeight: 600 }}
+                    className="header-user-item"
                   >
-                    👤 Tài khoản của tôi
+                    <span>👤</span>
+                    <span>Tài khoản của tôi</span>
                   </Link>
+                  <div className="header-user-divider" />
                   <button
                     onClick={() => {
                       setUserDropdownOpen(false);
                       logout();
                     }}
-                    style={{ display: "block", width: "100%", padding: "10px 16px", color: "#f87171", fontSize: "13px", fontWeight: 600, textAlign: "left", background: "none", border: "none", borderTop: "1px solid rgba(255,255,255,0.08)", cursor: "pointer" }}
+                    className="header-user-item is-logout"
                   >
-                    🚪 Đăng xuất
+                    <span>🚪</span>
+                    <span>Đăng xuất</span>
                   </button>
                 </div>
               )}

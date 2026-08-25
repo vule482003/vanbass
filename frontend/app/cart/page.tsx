@@ -123,6 +123,7 @@ function CartContent() {
   const [checkoutMode, setCheckoutMode] = useState(false);
   const [shippingName, setShippingName] = useState("");
   const [shippingPhone, setShippingPhone] = useState("");
+  const [shippingEmail, setShippingEmail] = useState("");
   const [shippingAddress, setShippingAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("vietqr");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -154,10 +155,11 @@ function CartContent() {
       startTransition(() => {
         if (!shippingName && user.full_name) setShippingName(user.full_name);
         if (!shippingPhone && user.phone) setShippingPhone(user.phone);
+        if (!shippingEmail && user.email) setShippingEmail(user.email);
         if (!shippingAddress && user.address) setShippingAddress(user.address);
       });
     }
-  }, [user, shippingName, shippingPhone, shippingAddress]);
+  }, [user, shippingName, shippingPhone, shippingEmail, shippingAddress]);
 
   // Load orders history
   const fetchMyOrders = useCallback(async () => {
@@ -233,6 +235,8 @@ function CartContent() {
       const payload = {
         shipping_name: shippingName.trim(),
         shipping_phone: shippingPhone.trim(),
+        shipping_email: shippingEmail.trim() || undefined,
+        customer_email: shippingEmail.trim() || undefined,
         shipping_address: shippingAddress.trim(),
         payment_method: paymentMethod,
         payment_status: "unpaid",
@@ -822,6 +826,19 @@ function CartContent() {
                             value={shippingPhone}
                             onChange={(e) => setShippingPhone(e.target.value)}
                             placeholder="0905 123 456"
+                            style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box", borderRadius: "4px" }}
+                          />
+                        </div>
+
+                        <div style={{ marginBottom: "16px" }}>
+                          <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
+                            Email nhận hóa đơn &amp; xác nhận đơn hàng
+                          </label>
+                          <input
+                            type="email"
+                            value={shippingEmail}
+                            onChange={(e) => setShippingEmail(e.target.value)}
+                            placeholder="khachhang@gmail.com (để nhận hóa đơn tức thì)"
                             style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box", borderRadius: "4px" }}
                           />
                         </div>
