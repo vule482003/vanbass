@@ -2,7 +2,7 @@
 
 import { startTransition, useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../lib/cart-context";
@@ -111,13 +111,13 @@ const CANCEL_REASONS = [
 ];
 
 function CartContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart, addItem } = useCart();
   const { user, token, isAuthenticated } = useAuth();
 
   // Tab: "cart" or "history"
-  const [activeTab, setActiveTab] = useState<"cart" | "history">("cart");
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState<"cart" | "history">(() => (tabParam === "history" ? "history" : "cart"));
   const [historyStatusFilter, setHistoryStatusFilter] = useState<string>("all");
 
   const [checkoutMode, setCheckoutMode] = useState(false);
@@ -183,14 +183,6 @@ function CartContent() {
       });
     }
   }, [token, apiUrl]);
-
-  // Handle ?tab=history URL query param
-  useEffect(() => {
-    const tabParam = searchParams.get("tab");
-    if (tabParam === "history") {
-      setActiveTab("history");
-    }
-  }, [searchParams]);
 
   // Load orders history whenever token or activeTab changes
   useEffect(() => {

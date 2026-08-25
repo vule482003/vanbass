@@ -12,6 +12,7 @@ from app.api.routes import (
     cart_router,
     category_router,
     customer_router,
+    home_config_router,
     order_router,
     payment_router,
     product_image_router,
@@ -23,10 +24,18 @@ from app.api.routes import (
     vnpay_router,
 )
 from app.core.config import settings
+from app.db.base import Base
 from app.db.session import engine
+
+# Ensure tables are created
+Base.metadata.create_all(bind=engine)
 
 # Ensure static/uploads exists
 Path("static/uploads").mkdir(
+    parents=True,
+    exist_ok=True,
+)
+Path("static/uploads/homepage").mkdir(
     parents=True,
     exist_ok=True,
 )
@@ -74,6 +83,7 @@ app.include_router(rental_request_router, prefix="/api")
 app.include_router(rental_payment_router, prefix="/api")
 app.include_router(store_settings_router, prefix="/api")
 app.include_router(upload_router, prefix="/api")
+app.include_router(home_config_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 
 

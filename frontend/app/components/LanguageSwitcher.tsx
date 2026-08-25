@@ -37,13 +37,9 @@ function triggerGoogleTranslate(langCode: "vi" | "en") {
 }
 
 export default function LanguageSwitcher() {
-  const [currentLang, setCurrentLang] = useState<"vi" | "en">("vi");
+  const [currentLang, setCurrentLang] = useState<"vi" | "en">(() => getInitialLanguage());
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setCurrentLang(getInitialLanguage());
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

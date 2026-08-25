@@ -1,9 +1,10 @@
 "use client";
 
-import { startTransition, useState, useEffect, useCallback } from "react";
+import { startTransition, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/auth-context";
+import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
 
 interface ProductItem {
   id: string;
@@ -135,7 +136,21 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const { user, token, isAuthenticated, isLoading, logout } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "rentals">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "home_cms" | "products" | "orders" | "rentals">("overview");
+
+  // Home CMS states
+  const [homeConfig, setHomeConfig] = useState<HomeData>(DEFAULT_HOME_DATA);
+  const [savedHomeConfig, setSavedHomeConfig] = useState<HomeData>(DEFAULT_HOME_DATA);
+  const [, setIsHomeConfigLoading] = useState(false);
+  const [isHomeConfigSaving, setIsHomeConfigSaving] = useState(false);
+  const [activeCmsAccordion, setActiveCmsAccordion] = useState<string>("hero");
+  const [heroSubTab, setHeroSubTab] = useState<"left" | "center" | "right">("center");
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [previewKey, setPreviewKey] = useState(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const leftHeroFileRef = useRef<HTMLInputElement>(null);
+  const centerHeroFileRef = useRef<HTMLInputElement>(null);
+  const rightHeroFileRef = useRef<HTMLInputElement>(null);
 
   // Data states
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -206,6 +221,111 @@ export default function AdminDashboardPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  const sendLiveConfigToIframe = useCallback(() => {
+    if (iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        {
+          type: "VANBASS_LIVE_CONFIG",
+          data: homeConfig,
+        },
+        "*"
+      );
+    }
+  }, [homeConfig]);
+
+  const sendScrollToSection = useCallback((sectionId: string) => {
+    if (iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        {
+          type: "VANBASS_SCROLL_TO",
+          section: sectionId,
+        },
+        "*"
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    sendLiveConfigToIframe();
+  }, [sendLiveConfigToIframe]);
+
+  useEffect(() => {
+    const handleIframeMessage = (e: MessageEvent) => {
+      if (!e.data || typeof e.data !== "object") return;
+      if (e.data.type === "VANBASS_IFRAME_READY") {
+        sendLiveConfigToIframe();
+      }
+    };
+    window.addEventListener("message", handleIframeMessage);
+    return () => window.removeEventListener("message", handleIframeMessage);
+  }, [sendLiveConfigToIframe]);
+
+  const handleSaveHomeConfig = async () => {
+    setIsHomeConfigSaving(true);
+    try {
+      const res = await fetch(`${apiUrl}/home-config`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ data: homeConfig }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setSavedHomeConfig(json.data || homeConfig);
+        setActionSuccessMsg("✓ Đã lưu và xuất bản trang chủ thành công!");
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Lỗi lưu cấu hình" }));
+        setActionErrorMsg(err.detail || "Không thể lưu cấu hình trang chủ.");
+      }
+    } catch (err) {
+      console.error("Error saving home config:", err);
+      setActionErrorMsg("Lỗi kết nối máy chủ khi lưu cấu hình.");
+    } finally {
+      setIsHomeConfigSaving(false);
+    }
+  };
+
+  const handleCancelHomeConfig = () => {
+    setHomeConfig(savedHomeConfig);
+    setActionSuccessMsg("✓ Đã hoàn nguyên về cấu hình đã lưu gần nhất.");
+  };
+
+  const handleResetHomeConfigToDefault = () => {
+    setHomeConfig(DEFAULT_HOME_DATA);
+    setActionSuccessMsg("✓ Đã khôi phục về mẫu cấu hình mặc định ban đầu.");
+  };
+
+  const handleHeroImageUpload = async (panel: "hero_left" | "hero_center" | "hero_right", file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await fetch(`${apiUrl}/home-config/upload-image`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setHomeConfig((prev) => ({
+          ...prev,
+          [panel]: {
+            ...prev[panel],
+            bg_image: json.url,
+          },
+        }));
+        setActionSuccessMsg(`✓ Đã tải ảnh cho ${panel === "hero_left" ? "Banner Trái" : panel === "hero_center" ? "Banner Giữa" : "Banner Phải"} thành công!`);
+      } else {
+        setActionErrorMsg("Không thể tải ảnh lên máy chủ.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối khi tải ảnh.");
+    }
+  };
+
   const loadAllData = useCallback(async () => {
     setIsDataLoading(true);
     try {
@@ -220,7 +340,7 @@ export default function AdminDashboardPage() {
         }
       }
 
-      // 2. Fetch products (cache: no-store to bypass browser 60s max-age cache)
+      // 2. Fetch products
       const prodRes = await fetch(`${apiUrl}/products?${cacheBust}`, {
         cache: "no-store",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -230,7 +350,7 @@ export default function AdminDashboardPage() {
         setProducts(prodData);
       }
 
-      // 3. Fetch orders (with admin auth token)
+      // 3. Fetch orders
       if (token) {
         const orderRes = await fetch(`${apiUrl}/orders?${cacheBust}`, {
           cache: "no-store",
@@ -251,10 +371,35 @@ export default function AdminDashboardPage() {
           setRentals(rentData.items || []);
         }
       }
+
+      // 5. Fetch home configuration
+      setIsHomeConfigLoading(true);
+      const homeRes = await fetch(`${apiUrl}/home-config?${cacheBust}`, { cache: "no-store" });
+      if (homeRes.ok) {
+        const homeJson = await homeRes.json();
+        if (homeJson?.data) {
+          const merged: HomeData = {
+            ...DEFAULT_HOME_DATA,
+            ...homeJson.data,
+            visibility: { ...DEFAULT_HOME_DATA.visibility, ...(homeJson.data.visibility || {}) },
+            hero_left: { ...DEFAULT_HOME_DATA.hero_left, ...(homeJson.data.hero_left || {}) },
+            hero_center: { ...DEFAULT_HOME_DATA.hero_center, ...(homeJson.data.hero_center || {}) },
+            hero_right: { ...DEFAULT_HOME_DATA.hero_right, ...(homeJson.data.hero_right || {}) },
+            categories_highlight: { ...DEFAULT_HOME_DATA.categories_highlight, ...(homeJson.data.categories_highlight || {}) },
+            intro: { ...DEFAULT_HOME_DATA.intro, ...(homeJson.data.intro || {}) },
+            rental: { ...DEFAULT_HOME_DATA.rental, ...(homeJson.data.rental || {}) },
+            local_cta: { ...DEFAULT_HOME_DATA.local_cta, ...(homeJson.data.local_cta || {}) },
+            floating_contacts: { ...DEFAULT_HOME_DATA.floating_contacts, ...(homeJson.data.floating_contacts || {}) },
+          };
+          setHomeConfig(merged);
+          setSavedHomeConfig(merged);
+        }
+      }
     } catch (e) {
       console.error("Failed to fetch admin data:", e);
     } finally {
       setIsDataLoading(false);
+      setIsHomeConfigLoading(false);
     }
   }, [apiUrl, token, categoryId]);
 
@@ -811,6 +956,25 @@ export default function AdminDashboardPage() {
             </button>
 
             <button
+              onClick={() => setActiveTab("home_cms")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                padding: "12px 16px",
+                textAlign: "left",
+                backgroundColor: activeTab === "home_cms" ? "#ffffff" : "transparent",
+                color: activeTab === "home_cms" ? "#000000" : "#a1a1aa",
+                fontWeight: 700,
+                fontSize: "14px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              🎨 Home Page CMS
+            </button>
+
+            <button
               onClick={() => setActiveTab("products")}
               style={{
                 display: "flex",
@@ -971,6 +1135,1328 @@ export default function AdminDashboardPage() {
                   <p style={{ margin: "0 0 8px 0", color: "#a1a1aa", fontSize: "13px", textTransform: "uppercase" }}>Danh Mục Hoạt Động</p>
                   <strong style={{ fontSize: "32px", fontWeight: 900, color: "#a855f7" }}>{categories.length}</strong>
                   <p style={{ margin: "8px 0 0 0", color: "#a1a1aa", fontSize: "12px" }}>DJ, Mixer, Loa, Phụ kiện</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: HOME PAGE CMS */}
+          {activeTab === "home_cms" && (
+            <div>
+              {/* Header Bar */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: "16px",
+                  marginBottom: "24px",
+                  paddingBottom: "18px",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                }}
+              >
+                <div>
+                  <h2 style={{ fontSize: "24px", fontWeight: 900, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span>🎨</span> Home Page CMS
+                    <span style={{ fontSize: "11px", fontWeight: 800, padding: "3px 8px", backgroundColor: "rgba(34, 197, 94, 0.15)", color: "#4ade80", border: "1px solid rgba(34, 197, 94, 0.4)", borderRadius: "4px" }}>
+                      LIVE VISUAL BUILDER
+                    </span>
+                  </h2>
+                  <p style={{ fontSize: "13.5px", color: "#a1a1aa", margin: 0 }}>
+                    Tùy biến nội dung trang chủ trực quan: Gõ chữ hoặc thay ảnh bên trái là màn hình xem trước bên phải đổi ngay lập tức (0s delay).
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <button
+                    type="button"
+                    onClick={handleResetHomeConfigToDefault}
+                    style={{
+                      padding: "9px 16px",
+                      backgroundColor: "rgba(255, 255, 255, 0.06)",
+                      border: "1px solid rgba(255, 255, 255, 0.15)",
+                      color: "#d4d4d8",
+                      fontWeight: 700,
+                      fontSize: "12.5px",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                    title="Khôi phục về mẫu giao diện gốc"
+                  >
+                    <span>🔄</span> Mặc định
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleCancelHomeConfig}
+                    style={{
+                      padding: "9px 16px",
+                      backgroundColor: "rgba(239, 68, 68, 0.1)",
+                      border: "1px solid rgba(239, 68, 68, 0.4)",
+                      color: "#fca5a5",
+                      fontWeight: 700,
+                      fontSize: "12.5px",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                    title="Hủy các thay đổi chưa lưu và khôi phục bản đã lưu gần nhất"
+                  >
+                    <span>↩️</span> Hủy bỏ
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveHomeConfig}
+                    disabled={isHomeConfigSaving}
+                    style={{
+                      padding: "9px 22px",
+                      backgroundColor: "#22c55e",
+                      border: "none",
+                      color: "#000000",
+                      fontWeight: 900,
+                      fontSize: "13px",
+                      borderRadius: "6px",
+                      cursor: isHomeConfigSaving ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      boxShadow: "0 4px 16px rgba(34, 197, 94, 0.4)",
+                    }}
+                  >
+                    {isHomeConfigSaving ? (
+                      <>
+                        <span style={{ display: "inline-block", width: "12px", height: "12px", border: "2px solid #000", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                        <span>Đang xuất bản...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>💾</span>
+                        <span>Lưu Thay Đổi (Publish)</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* 2-COLUMN WORKSPACE */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "430px 1fr",
+                  gap: "24px",
+                  alignItems: "start",
+                  minHeight: "calc(100vh - 200px)",
+                }}
+              >
+                {/* CỘT TRÁI: FORM & ACCORDIONS */}
+                <div
+                  style={{
+                    backgroundColor: "#121214",
+                    border: "1px solid #27272a",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "sticky",
+                    top: "80px",
+                    maxHeight: "calc(100vh - 100px)",
+                    overflowY: "auto",
+                  }}
+                >
+                  {/* ACCORDION 1: BẬT / TẮT KHỐI GIAO DIỆN */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "visibility" ? "" : "visibility"));
+                        sendScrollToSection("visibility");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "visibility" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>👁️</span> 1. Bật / Tắt Khối Giao Diện
+                      </span>
+                      <span>{activeCmsAccordion === "visibility" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "visibility" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#0e0e10" }}>
+                        {[
+                          { key: "show_marquee", label: "Top Bar Chạy Chữ (Marquee Ticker)" },
+                          { key: "show_hero", label: "3 Khối Banner Hero Chính" },
+                          { key: "show_products", label: "Khối Thiết Bị Nổi Bật" },
+                          { key: "show_categories", label: "Khối Danh Mục Khám Phá" },
+                          { key: "show_rental", label: "Khối Dịch Vụ Cho Thuê Thiết Bị" },
+                          { key: "show_intro", label: "Khối Giới Thiệu VanBass & Thống Kê" },
+                          { key: "show_cta", label: "Khối Showroom & Kêu Gọi Hành Động" },
+                          { key: "show_floating_contact", label: "Khối Nút Liên Hệ Nổi Góc Phải (Hotline, Zalo, Fanpage)" },
+                        ].map((item) => {
+                          const isChecked = Boolean(homeConfig.visibility[item.key as keyof typeof homeConfig.visibility]);
+                          return (
+                            <label
+                              key={item.key}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                padding: "8px 12px",
+                                backgroundColor: "#18181b",
+                                border: "1px solid #27272a",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                                fontSize: "13px",
+                                color: isChecked ? "#ffffff" : "#71717a",
+                              }}
+                            >
+                              <span>{item.label}</span>
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={(e) => {
+                                  setHomeConfig((prev) => ({
+                                    ...prev,
+                                    visibility: {
+                                      ...prev.visibility,
+                                      [item.key]: e.target.checked,
+                                    },
+                                  }));
+                                }}
+                                style={{ accentColor: "#22c55e", width: "18px", height: "18px", cursor: "pointer" }}
+                              />
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 2: TOP BAR MARQUEE TICKER */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "marquee" ? "" : "marquee"));
+                        sendScrollToSection("marquee");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "marquee" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>⚡</span> 2. Top Bar Chạy Chữ (Marquee)
+                      </span>
+                      <span>{activeCmsAccordion === "marquee" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "marquee" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "10px", backgroundColor: "#0e0e10" }}>
+                        <p style={{ fontSize: "12px", color: "#a1a1aa", margin: "0 0 6px 0" }}>
+                          Danh sách các thông điệp chạy ngang ở thanh LED trên cùng:
+                        </p>
+                        {homeConfig.marquee_items.map((item, idx) => (
+                          <div key={idx} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                            <span style={{ color: "#71717a", fontSize: "12px", width: "20px" }}>#{idx + 1}</span>
+                            <input
+                              type="text"
+                              value={item}
+                              onChange={(e) => {
+                                const next = [...homeConfig.marquee_items];
+                                next[idx] = e.target.value;
+                                setHomeConfig((prev) => ({ ...prev, marquee_items: next }));
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: "8px 12px",
+                                backgroundColor: "#18181b",
+                                border: "1px solid #27272a",
+                                color: "#fff",
+                                fontSize: "12.5px",
+                                borderRadius: "4px",
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const next = homeConfig.marquee_items.filter((_, i) => i !== idx);
+                                setHomeConfig((prev) => ({ ...prev, marquee_items: next }));
+                              }}
+                              style={{
+                                padding: "8px 10px",
+                                backgroundColor: "rgba(239, 68, 68, 0.15)",
+                                border: "1px solid rgba(239, 68, 68, 0.4)",
+                                color: "#fca5a5",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                              }}
+                              title="Xóa thông điệp này"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setHomeConfig((prev) => ({
+                              ...prev,
+                              marquee_items: [...prev.marquee_items, "THÔNG ĐIỆP MỚI"],
+                            }));
+                          }}
+                          style={{
+                            marginTop: "8px",
+                            padding: "8px",
+                            backgroundColor: "rgba(34, 197, 94, 0.12)",
+                            border: "1px dashed rgba(34, 197, 94, 0.6)",
+                            color: "#4ade80",
+                            fontWeight: 700,
+                            fontSize: "12px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          ＋ Thêm thông điệp chạy chữ
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 3: 3 KHỐI HERO BANNER */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "hero" ? "" : "hero"));
+                        sendScrollToSection("hero");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "hero" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>🎛️</span> 3. 3 Khối Banner Hero
+                      </span>
+                      <span>{activeCmsAccordion === "hero" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "hero" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "16px", backgroundColor: "#0e0e10" }}>
+                        {/* Subtabs for Left / Center / Right */}
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", backgroundColor: "#18181b", padding: "4px", borderRadius: "6px" }}>
+                          {[
+                            { id: "left", label: "Trái (Hardware)" },
+                            { id: "center", label: "Giữa (DJ Rental)" },
+                            { id: "right", label: "Phải (Showroom)" },
+                          ].map((tab) => (
+                            <button
+                              key={tab.id}
+                              type="button"
+                              onClick={() => setHeroSubTab(tab.id as "left" | "center" | "right")}
+                              style={{
+                                padding: "7px 4px",
+                                fontSize: "11.5px",
+                                fontWeight: 700,
+                                textAlign: "center",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                                backgroundColor: heroSubTab === tab.id ? "#22c55e" : "transparent",
+                                color: heroSubTab === tab.id ? "#000000" : "#a1a1aa",
+                              }}
+                            >
+                              {tab.label}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* PANEL 1: HARDWARE (TRÁI) */}
+                        {heroSubTab === "left" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tag Phụ (Kicker):</label>
+                              <input
+                                type="text"
+                                value={homeConfig.hero_left.tag}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_left: { ...prev.hero_left, tag: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Lớn:</label>
+                              <input
+                                type="text"
+                                value={homeConfig.hero_left.title}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_left: { ...prev.hero_left, title: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đoạn Mô Tả Ngắn:</label>
+                              <textarea
+                                rows={2}
+                                value={homeConfig.hero_left.desc}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_left: { ...prev.hero_left, desc: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                              <div>
+                                <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Trên Nút:</label>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_left.button_text}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_left: { ...prev.hero_left, button_text: e.target.value } }))}
+                                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đường Dẫn Link:</label>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_left.link}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_left: { ...prev.hero_left, link: e.target.value } }))}
+                                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Ảnh Nền Banner (URL hoặc Tải lên):</label>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_left.bg_image}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_left: { ...prev.hero_left, bg_image: e.target.value } }))}
+                                  style={{ flex: 1, padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "12px", borderRadius: "4px" }}
+                                />
+                                <input
+                                  type="file"
+                                  ref={leftHeroFileRef}
+                                  accept="image/*"
+                                  style={{ display: "none" }}
+                                  onChange={(e) => {
+                                    if (e.target.files?.[0]) handleHeroImageUpload("hero_left", e.target.files[0]);
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => leftHeroFileRef.current?.click()}
+                                  style={{ padding: "8px 12px", backgroundColor: "#27272a", border: "none", color: "#fff", fontSize: "12px", borderRadius: "4px", cursor: "pointer", whiteSpace: "nowrap" }}
+                                >
+                                  📷 Chọn ảnh
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* PANEL 2: DJ RENTAL (GIỮA) */}
+                        {heroSubTab === "center" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Huy Hiệu (Badge Phát Sáng):</label>
+                              <input
+                                type="text"
+                                value={homeConfig.hero_center.badge}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_center: { ...prev.hero_center, badge: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#4ade80", fontWeight: 700, fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Chính (Headline):</label>
+                              <input
+                                type="text"
+                                value={homeConfig.hero_center.headline}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_center: { ...prev.hero_center, headline: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đoạn Mô Tả Ngắn:</label>
+                              <textarea
+                                rows={2}
+                                value={homeConfig.hero_center.desc}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_center: { ...prev.hero_center, desc: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                              <div>
+                                <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Nút Nổi Bật:</label>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_center.button_text}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_center: { ...prev.hero_center, button_text: e.target.value } }))}
+                                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đường Dẫn Link:</label>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_center.link}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_center: { ...prev.hero_center, link: e.target.value } }))}
+                                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Ảnh Nền Banner (URL hoặc Tải lên):</label>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_center.bg_image}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_center: { ...prev.hero_center, bg_image: e.target.value } }))}
+                                  style={{ flex: 1, padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "12px", borderRadius: "4px" }}
+                                />
+                                <input
+                                  type="file"
+                                  ref={centerHeroFileRef}
+                                  accept="image/*"
+                                  style={{ display: "none" }}
+                                  onChange={(e) => {
+                                    if (e.target.files?.[0]) handleHeroImageUpload("hero_center", e.target.files[0]);
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => centerHeroFileRef.current?.click()}
+                                  style={{ padding: "8px 12px", backgroundColor: "#27272a", border: "none", color: "#fff", fontSize: "12px", borderRadius: "4px", cursor: "pointer", whiteSpace: "nowrap" }}
+                                >
+                                  📷 Chọn ảnh
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* PANEL 3: SHOWROOM (PHẢI) */}
+                        {heroSubTab === "right" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tag Phụ (Kicker):</label>
+                              <input
+                                type="text"
+                                value={homeConfig.hero_right.tag}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_right: { ...prev.hero_right, tag: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Lớn:</label>
+                              <input
+                                type="text"
+                                value={homeConfig.hero_right.title}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_right: { ...prev.hero_right, title: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đoạn Mô Tả Ngắn:</label>
+                              <textarea
+                                rows={2}
+                                value={homeConfig.hero_right.desc}
+                                onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_right: { ...prev.hero_right, desc: e.target.value } }))}
+                                style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                              />
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                              <div>
+                                <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Trên Nút:</label>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_right.button_text}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_right: { ...prev.hero_right, button_text: e.target.value } }))}
+                                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đường Dẫn Link:</label>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_right.link}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_right: { ...prev.hero_right, link: e.target.value } }))}
+                                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Ảnh Nền Banner (URL hoặc Tải lên):</label>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <input
+                                  type="text"
+                                  value={homeConfig.hero_right.bg_image}
+                                  onChange={(e) => setHomeConfig((prev) => ({ ...prev, hero_right: { ...prev.hero_right, bg_image: e.target.value } }))}
+                                  style={{ flex: 1, padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "12px", borderRadius: "4px" }}
+                                />
+                                <input
+                                  type="file"
+                                  ref={rightHeroFileRef}
+                                  accept="image/*"
+                                  style={{ display: "none" }}
+                                  onChange={(e) => {
+                                    if (e.target.files?.[0]) handleHeroImageUpload("hero_right", e.target.files[0]);
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => rightHeroFileRef.current?.click()}
+                                  style={{ padding: "8px 12px", backgroundColor: "#27272a", border: "none", color: "#fff", fontSize: "12px", borderRadius: "4px", cursor: "pointer", whiteSpace: "nowrap" }}
+                                >
+                                  📷 Chọn ảnh
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 4: DANH MỤC KHÁM PHÁ */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "categories" ? "" : "categories"));
+                        sendScrollToSection("categories");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "categories" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>📂</span> 4. Danh Mục Khám Phá
+                      </span>
+                      <span>{activeCmsAccordion === "categories" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "categories" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#0e0e10" }}>
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tag Phụ (Kicker):</label>
+                          <input
+                            type="text"
+                            value={homeConfig.categories_highlight.kicker}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, categories_highlight: { ...prev.categories_highlight, kicker: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Khối:</label>
+                          <input
+                            type="text"
+                            value={homeConfig.categories_highlight.title}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, categories_highlight: { ...prev.categories_highlight, title: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Nút Xem Thêm:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.categories_highlight.button_text}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, categories_highlight: { ...prev.categories_highlight, button_text: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Link:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.categories_highlight.button_link}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, categories_highlight: { ...prev.categories_highlight, button_link: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 5: DỊCH VỤ CHO THUÊ THIẾT BỊ */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "rental" ? "" : "rental"));
+                        sendScrollToSection("rental");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "rental" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>🎚️</span> 5. Dịch Vụ Cho Thuê Thiết Bị
+                      </span>
+                      <span>{activeCmsAccordion === "rental" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "rental" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#0e0e10" }}>
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tag Phụ (Kicker):</label>
+                          <input
+                            type="text"
+                            value={homeConfig.rental.kicker}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, kicker: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Dòng 1:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.rental.headline_top}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, headline_top: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Dòng 2:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.rental.headline_bottom}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, headline_bottom: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đoạn Mô Tả Dịch Vụ Thuê:</label>
+                          <textarea
+                            rows={3}
+                            value={homeConfig.rental.desc}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, desc: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "6px" }}>3 Cam Kết Checklist:</label>
+                          {homeConfig.rental.features.map((feat, idx) => (
+                            <div key={idx} style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "6px" }}>
+                              <span style={{ color: "#22c55e", fontSize: "13px" }}>✓</span>
+                              <input
+                                type="text"
+                                value={feat}
+                                onChange={(e) => {
+                                  const next = [...homeConfig.rental.features];
+                                  next[idx] = e.target.value;
+                                  setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, features: next } }));
+                                }}
+                                style={{ flex: 1, padding: "7px 10px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "12.5px", borderRadius: "4px" }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Nút:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.rental.button_text}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, button_text: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Link Nút:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.rental.button_link}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, rental: { ...prev.rental, button_link: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 6: GIỚI THIỆU VANBASS */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "intro" ? "" : "intro"));
+                        sendScrollToSection("intro");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "intro" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>🏢</span> 6. Giới Thiệu VanBass & Thống Kê
+                      </span>
+                      <span>{activeCmsAccordion === "intro" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "intro" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#0e0e10" }}>
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tag Phụ (Kicker):</label>
+                          <input
+                            type="text"
+                            value={homeConfig.intro.kicker}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, kicker: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Dòng 1:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.intro.headline_top}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, headline_top: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Dòng 2:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.intro.headline_bottom}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, headline_bottom: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đoạn Văn Giới Thiệu:</label>
+                          <textarea
+                            rows={3}
+                            value={homeConfig.intro.desc}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, desc: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "6px" }}>3 Khối Thống Kê Số Liệu:</label>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
+                            {homeConfig.intro.stats.map((st, idx) => (
+                              <div key={idx} style={{ padding: "8px", backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}>
+                                <label style={{ fontSize: "10.5px", color: "#71717a" }}>Số liệu #{idx + 1}</label>
+                                <input
+                                  type="text"
+                                  value={st.value}
+                                  onChange={(e) => {
+                                    const next = [...homeConfig.intro.stats];
+                                    next[idx] = { ...next[idx], value: e.target.value };
+                                    setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, stats: next } }));
+                                  }}
+                                  style={{ width: "100%", padding: "4px 6px", backgroundColor: "#000", border: "1px solid #3f3f46", color: "#22c55e", fontWeight: 800, fontSize: "13px", borderRadius: "3px", boxSizing: "border-box", marginBottom: "4px" }}
+                                />
+                                <label style={{ fontSize: "10.5px", color: "#71717a" }}>Nhãn</label>
+                                <input
+                                  type="text"
+                                  value={st.label}
+                                  onChange={(e) => {
+                                    const next = [...homeConfig.intro.stats];
+                                    next[idx] = { ...next[idx], label: e.target.value };
+                                    setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, stats: next } }));
+                                  }}
+                                  style={{ width: "100%", padding: "4px 6px", backgroundColor: "#000", border: "1px solid #3f3f46", color: "#fff", fontSize: "11px", borderRadius: "3px", boxSizing: "border-box" }}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Nút:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.intro.button_text}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, button_text: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Link Nút:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.intro.button_link}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, intro: { ...prev.intro, button_link: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 7: SHOWROOM & CTA */}
+                  <div style={{ borderBottom: "1px solid #27272a" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "cta" ? "" : "cta"));
+                        sendScrollToSection("cta");
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "cta" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>📍</span> 7. Showroom & Kêu Gọi (CTA)
+                      </span>
+                      <span>{activeCmsAccordion === "cta" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "cta" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#0e0e10" }}>
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tag Phụ (Kicker):</label>
+                          <input
+                            type="text"
+                            value={homeConfig.local_cta.kicker}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, kicker: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Dòng 1:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.local_cta.headline_top}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, headline_top: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Tiêu Đề Dòng 2:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.local_cta.headline_bottom}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, headline_bottom: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đoạn Văn Mô Tả:</label>
+                          <textarea
+                            rows={3}
+                            value={homeConfig.local_cta.desc}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, desc: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Nút Chính (Chữ):</label>
+                            <input
+                              type="text"
+                              value={homeConfig.local_cta.primary_btn_text}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, primary_btn_text: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Nút Chính (Link):</label>
+                            <input
+                              type="text"
+                              value={homeConfig.local_cta.primary_btn_link}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, primary_btn_link: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Nút Phụ (Chữ):</label>
+                            <input
+                              type="text"
+                              value={homeConfig.local_cta.secondary_btn_text}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, secondary_btn_text: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Nút Phụ (Link):</label>
+                            <input
+                              type="text"
+                              value={homeConfig.local_cta.secondary_btn_link}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, local_cta: { ...prev.local_cta, secondary_btn_link: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACCORDION 8: NÚT LIÊN HỆ NỔI GÓC PHẢI */}
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveCmsAccordion((prev) => (prev === "floating" ? "" : "floating"));
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 18px",
+                        backgroundColor: activeCmsAccordion === "floating" ? "#18181b" : "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontWeight: 800,
+                        fontSize: "13.5px",
+                        textAlign: "left",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span>📞</span> 8. Nút Liên Hệ Nổi Góc Phải
+                      </span>
+                      <span>{activeCmsAccordion === "floating" ? "▲" : "▼"}</span>
+                    </button>
+
+                    {activeCmsAccordion === "floating" && (
+                      <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#0e0e10" }}>
+                        <label
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "8px 12px",
+                            backgroundColor: "#18181b",
+                            border: "1px solid #27272a",
+                            borderRadius: "6px",
+                            cursor: "pointer",
+                            fontSize: "13px",
+                            color: homeConfig.floating_contacts.enabled ? "#ffffff" : "#71717a",
+                          }}
+                        >
+                          <span>Kích hoạt cụm nút liên hệ nổi</span>
+                          <input
+                            type="checkbox"
+                            checked={homeConfig.floating_contacts.enabled}
+                            onChange={(e) => {
+                              setHomeConfig((prev) => ({
+                                ...prev,
+                                floating_contacts: {
+                                  ...prev.floating_contacts,
+                                  enabled: e.target.checked,
+                                },
+                              }));
+                            }}
+                            style={{ accentColor: "#22c55e", width: "18px", height: "18px", cursor: "pointer" }}
+                          />
+                        </label>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Số Điện Thoại Gọi (tel:):</label>
+                            <input
+                              type="text"
+                              value={homeConfig.floating_contacts.hotline}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, floating_contacts: { ...prev.floating_contacts, hotline: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Chữ Hiển Thị Hotline:</label>
+                            <input
+                              type="text"
+                              value={homeConfig.floating_contacts.hotline_display}
+                              onChange={(e) => setHomeConfig((prev) => ({ ...prev, floating_contacts: { ...prev.floating_contacts, hotline_display: e.target.value } }))}
+                              style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đường Dẫn Zalo (https://zalo.me/...):</label>
+                          <input
+                            type="text"
+                            value={homeConfig.floating_contacts.zalo_link}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, floating_contacts: { ...prev.floating_contacts, zalo_link: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đường Dẫn Facebook Messenger / Fanpage:</label>
+                          <input
+                            type="text"
+                            value={homeConfig.floating_contacts.messenger_link}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, floating_contacts: { ...prev.floating_contacts, messenger_link: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>Đường Dẫn Google Maps Showroom:</label>
+                          <input
+                            type="text"
+                            value={homeConfig.floating_contacts.maps_link}
+                            onChange={(e) => setHomeConfig((prev) => ({ ...prev, floating_contacts: { ...prev.floating_contacts, maps_link: e.target.value } }))}
+                            style={{ width: "100%", padding: "8px 12px", backgroundColor: "#18181b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "4px", boxSizing: "border-box" }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* CỘT PHẢI: LIVE PREVIEW CANVAS */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "calc(100vh - 100px)",
+                    backgroundColor: "#000000",
+                    border: "1px solid #27272a",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    position: "sticky",
+                    top: "80px",
+                  }}
+                >
+                  {/* Preview Toolbar */}
+                  <div
+                    style={{
+                      padding: "10px 14px",
+                      backgroundColor: "#121214",
+                      borderBottom: "1px solid #27272a",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <div style={{ display: "flex", gap: "5px" }}>
+                        <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#ef4444", display: "inline-block" }}></span>
+                        <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#eab308", display: "inline-block" }}></span>
+                        <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#22c55e", display: "inline-block" }}></span>
+                      </div>
+                      <span style={{ fontSize: "11px", fontWeight: 800, color: "#4ade80", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#22c55e" }}></span>
+                        LIVE PREVIEW (0s DELAY)
+                      </span>
+                    </div>
+
+                    {/* Device Selector */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      {[
+                        { id: "desktop", label: "💻 100%" },
+                        { id: "tablet", label: "📱 Tablet 768px" },
+                        { id: "mobile", label: "📱 Mobile 390px" },
+                      ].map((d) => (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => setPreviewDevice(d.id as "desktop" | "tablet" | "mobile")}
+                          style={{
+                            padding: "4px 8px",
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            borderRadius: "4px",
+                            border: "none",
+                            cursor: "pointer",
+                            backgroundColor: previewDevice === d.id ? "#22c55e" : "#27272a",
+                            color: previewDevice === d.id ? "#000000" : "#d4d4d8",
+                          }}
+                        >
+                          {d.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Reload / Open Tab */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPreviewKey((k) => k + 1);
+                          setTimeout(() => sendLiveConfigToIframe(), 500);
+                        }}
+                        style={{
+                          padding: "4px 8px",
+                          backgroundColor: "#27272a",
+                          border: "none",
+                          color: "#a1a1aa",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          cursor: "pointer",
+                        }}
+                        title="Tải lại khung xem trước"
+                      >
+                        🔄 Tải lại
+                      </button>
+
+                      <Link
+                        href="/"
+                        target="_blank"
+                        style={{
+                          padding: "4px 8px",
+                          backgroundColor: "#27272a",
+                          color: "#a1a1aa",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          textDecoration: "none",
+                        }}
+                        title="Mở trang chủ trên tab mới"
+                      >
+                        ↗ Tab mới
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Device Viewport Canvas */}
+                  <div
+                    style={{
+                      flex: 1,
+                      overflowY: "auto",
+                      backgroundColor: "#050505",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "stretch",
+                      padding: previewDevice === "desktop" ? "0" : "16px",
+                      position: "relative",
+                    }}
+                  >
+                    <iframe
+                      key={previewKey}
+                      ref={iframeRef}
+                      src="/"
+                      title="VanBass Live Homepage Preview"
+                      style={{
+                        width: previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "390px",
+                        height: "100%",
+                        border: previewDevice === "desktop" ? "none" : "1px solid #3f3f46",
+                        borderRadius: previewDevice === "desktop" ? "0" : previewDevice === "tablet" ? "12px" : "20px",
+                        backgroundColor: "#090909",
+                        boxShadow: previewDevice === "desktop" ? "none" : "0 20px 50px rgba(0, 0, 0, 0.8)",
+                        transition: "width 0.3s ease",
+                      }}
+                      onLoad={() => {
+                        sendLiveConfigToIframe();
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

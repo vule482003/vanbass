@@ -1,6 +1,13 @@
 import Link from "next/link";
+import { DEFAULT_HOME_DATA, RentalSectionConfig } from "../types/home_config";
 
-export default function RentalSection() {
+interface RentalSectionProps {
+  config?: RentalSectionConfig;
+}
+
+export default function RentalSection({
+  config = DEFAULT_HOME_DATA.rental,
+}: RentalSectionProps) {
   return (
     <section className="rental-section reveal-on-scroll" id="rental">
       <div className="container rental-grid">
@@ -25,36 +32,27 @@ export default function RentalSection() {
         </div>
 
         <div className="rental-content">
-          <p className="section-kicker">CHO THUÊ THIẾT BỊ</p>
+          <p className="section-kicker">{config.kicker}</p>
 
           <h2>
-            Cần thiết bị DJ
+            {config.headline_top}
             <br />
-            <span>cho sự kiện?</span>
+            <span>{config.headline_bottom}</span>
           </h2>
 
-          <p>
-            Tìm kiếm thiết bị phù hợp cho party, event, wedding, bar,
-            studio hoặc các chương trình biểu diễn tại Đà Nẵng.
-          </p>
+          <p>{config.desc}</p>
 
           <ul className="check-list">
-            <li>
-              <span>✓</span>
-              Thiết bị DJ và âm thanh đa dạng
-            </li>
-            <li>
-              <span>✓</span>
-              Hỗ trợ lựa chọn thiết bị phù hợp
-            </li>
-            <li>
-              <span>✓</span>
-              Tư vấn nhu cầu thuê theo sự kiện
-            </li>
+            {(config.features || []).map((feature, idx) => (
+              <li key={idx}>
+                <span>✓</span>
+                {feature}
+              </li>
+            ))}
           </ul>
 
-          <Link href="/products" className="button button-light" style={{ alignSelf: "flex-start" }}>
-            Xem thiết bị cho thuê
+          <Link href={config.button_link || "/products"} className="button button-light" style={{ alignSelf: "flex-start" }}>
+            {config.button_text || "Xem thiết bị cho thuê"}
             <span>→</span>
           </Link>
         </div>

@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { MOCK_CATEGORIES } from "../lib/mock-data";
+import { CategoriesHighlightConfig, DEFAULT_HOME_DATA } from "../types/home_config";
 
-export default function CategoryGrid() {
+interface CategoryGridProps {
+  config?: CategoriesHighlightConfig;
+}
+
+export default function CategoryGrid({
+  config = DEFAULT_HOME_DATA.categories_highlight,
+}: CategoryGridProps) {
   const categories = MOCK_CATEGORIES;
 
   return (
@@ -10,15 +17,15 @@ export default function CategoryGrid() {
         <div className="section-heading" style={{ marginBottom: "24px" }}>
           <div>
             <p className="section-kicker" style={{ fontSize: "11px", color: "#a1a1aa", letterSpacing: "0.15em", marginBottom: "6px" }}>
-              DANH MỤC SẢN PHẨM
+              {config.kicker || "DANH MỤC SẢN PHẨM"}
             </p>
             <h2 style={{ fontSize: "clamp(26px, 3.2vw, 42px)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-              Khám phá theo danh mục
+              {config.title || "Khám phá theo danh mục"}
             </h2>
           </div>
 
-          <Link href="/products" className="text-link" style={{ fontSize: "12px", fontWeight: 700 }}>
-            Xem toàn bộ <span>→</span>
+          <Link href={config.button_link || "/products"} className="text-link" style={{ fontSize: "12px", fontWeight: 700 }}>
+            {config.button_text || "Xem toàn bộ"} <span>→</span>
           </Link>
         </div>
 
