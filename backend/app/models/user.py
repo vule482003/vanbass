@@ -1,12 +1,19 @@
 import uuid
 from datetime import UTC, datetime
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, DateTime, String, Uuid
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.cart import Cart
+    from app.models.customer_profile import CustomerProfile
+    from app.models.order import Order
+    from app.models.rental_request import RentalRequest
 
 
 class UserRole(str, Enum):

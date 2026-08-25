@@ -37,9 +37,13 @@ function triggerGoogleTranslate(langCode: "vi" | "en") {
 }
 
 export default function LanguageSwitcher() {
-  const [currentLang, setCurrentLang] = useState<"vi" | "en">(getInitialLanguage);
+  const [currentLang, setCurrentLang] = useState<"vi" | "en">("vi");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setCurrentLang(getInitialLanguage());
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -69,6 +73,7 @@ export default function LanguageSwitcher() {
         className="lang-btn"
         aria-label="Chọn ngôn ngữ"
         title={currentLang === "vi" ? "Tiếng Việt" : "English"}
+        suppressHydrationWarning
       >
         <svg
           width="18"
