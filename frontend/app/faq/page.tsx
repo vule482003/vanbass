@@ -40,10 +40,10 @@ export default function FAQPage() {
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "140px", paddingBottom: "100px" }}>
+      <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
         <div className="container">
           <div style={{ maxWidth: "800px", marginBottom: "48px" }}>
-            <p className="section-kicker" style={{ fontSize: "12px", color: "#a1a1aa", letterSpacing: "0.15em", margin: "0 0 8px 0" }}>
+            <p className="section-kicker">
               TRUNG TÂM TRỢ GIÚP
             </p>
             <h1
@@ -63,15 +63,15 @@ export default function FAQPage() {
           </div>
 
           {/* FAQ Accordion / Cards */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "860px", marginBottom: "60px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "860px", marginBottom: "60px" }}>
             {FAQ_LIST.map((item, index) => (
               <article
                 key={index}
                 style={{
-                  backgroundColor: "#111111",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  backgroundColor: "var(--surface)",
+                  border: "1px solid var(--border)",
                   padding: "28px 32px",
-                  borderRadius: "2px",
+                  borderRadius: "10px",
                 }}
               >
                 <h2 style={{ fontSize: "17px", fontWeight: 700, margin: "0 0 12px 0", color: "#ffffff", lineHeight: 1.4 }}>
@@ -90,6 +90,7 @@ export default function FAQPage() {
               padding: "40px",
               backgroundColor: "var(--surface)",
               border: "1px solid var(--border)",
+              borderRadius: "10px",
               maxWidth: "860px",
               display: "flex",
               justifyContent: "space-between",

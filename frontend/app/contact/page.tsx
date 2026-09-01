@@ -53,18 +53,18 @@ export default function ContactPage() {
           >
             {/* Info Cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+              <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
                 <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
                   📍 Showroom & Trung tâm kỹ thuật
                 </h3>
                 <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
                   Thành phố Đà Nẵng, Việt Nam
                   <br />
-                  <span style={{ color: "#888", fontSize: "13px" }}>Mở cửa: 08:30 - 21:00 (Thứ 2 - Chủ Nhật)</span>
+                  <span style={{ color: "#71717a", fontSize: "13px" }}>Mở cửa: 08:30 - 21:00 (Thứ 2 - Chủ Nhật)</span>
                 </p>
               </div>
 
-              <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+              <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
                 <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
                   📞 Hotline tư vấn & Đặt thuê thiết bị
                 </h3>
@@ -76,10 +76,10 @@ export default function ContactPage() {
                     0706 067 799
                   </a>
                 </p>
-                <span style={{ color: "#888", fontSize: "13px" }}>Hỗ trợ kỹ thuật 24/7 cho các sự kiện</span>
+                <span style={{ color: "#71717a", fontSize: "13px" }}>Hỗ trợ kỹ thuật 24/7 cho các sự kiện</span>
               </div>
 
-              <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+              <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
                 <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
                   ✉️ Email hợp tác & Báo giá
                 </h3>
@@ -90,7 +90,7 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Form */}
-            <div style={{ padding: "36px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+            <div style={{ padding: "36px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               {sent ? (
                 <div style={{ textAlign: "center", padding: "40px 20px" }}>
                   <div style={{ fontSize: "40px", marginBottom: "16px" }}>💌</div>
@@ -103,12 +103,12 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: 700, margin: 0 }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: 700, margin: 0, color: "#ffffff" }}>
                     Gửi tin nhắn tư vấn
                   </h3>
 
                   <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginBottom: "6px" }}>
                       Họ và tên:
                     </label>
                     <input
@@ -118,19 +118,21 @@ export default function ContactPage() {
                       onChange={(e) => setName(e.target.value)}
                       style={{
                         width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
+                        padding: "11px 14px",
+                        backgroundColor: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "6px",
                         color: "#fff",
                         fontSize: "13px",
                         outline: "none",
+                        boxSizing: "border-box",
                       }}
                       required
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginBottom: "6px" }}>
                       Số điện thoại liên hệ:
                     </label>
                     <input
@@ -140,19 +142,21 @@ export default function ContactPage() {
                       onChange={(e) => setPhone(e.target.value)}
                       style={{
                         width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
+                        padding: "11px 14px",
+                        backgroundColor: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "6px",
                         color: "#fff",
                         fontSize: "13px",
                         outline: "none",
+                        boxSizing: "border-box",
                       }}
                       required
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginBottom: "6px" }}>
                       Email (không bắt buộc):
                     </label>
                     <input
@@ -162,18 +166,20 @@ export default function ContactPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       style={{
                         width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
+                        padding: "11px 14px",
+                        backgroundColor: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "6px",
                         color: "#fff",
                         fontSize: "13px",
                         outline: "none",
+                        boxSizing: "border-box",
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#888", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginBottom: "6px" }}>
                       Nội dung cần hỗ trợ (mua máy, thuê máy, setup âm thanh...):
                     </label>
                     <textarea
@@ -183,12 +189,15 @@ export default function ContactPage() {
                       onChange={(e) => setMessage(e.target.value)}
                       style={{
                         width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#000",
-                        border: "1px solid var(--border)",
+                        padding: "11px 14px",
+                        backgroundColor: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "6px",
                         color: "#fff",
                         fontSize: "13px",
                         outline: "none",
+                        boxSizing: "border-box",
+                        fontFamily: "inherit",
                       }}
                       required
                     />

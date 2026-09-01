@@ -420,10 +420,10 @@ function CartContent() {
                   }}
                   style={{
                     padding: "10px 20px",
-                    backgroundColor: activeTab === "cart" ? "#ffffff" : "#17171a",
+                    backgroundColor: activeTab === "cart" ? "#ffffff" : "rgba(255, 255, 255, 0.04)",
                     color: activeTab === "cart" ? "#000000" : "#a1a1aa",
                     border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "4px",
+                    borderRadius: "8px",
                     fontSize: "14px",
                     fontWeight: 800,
                     cursor: "pointer",
@@ -457,10 +457,10 @@ function CartContent() {
                   }}
                   style={{
                     padding: "10px 20px",
-                    backgroundColor: activeTab === "history" ? "#ffffff" : "#17171a",
+                    backgroundColor: activeTab === "history" ? "#ffffff" : "rgba(255, 255, 255, 0.04)",
                     color: activeTab === "history" ? "#000000" : "#a1a1aa",
                     border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "4px",
+                    borderRadius: "8px",
                     fontSize: "14px",
                     fontWeight: 800,
                     cursor: "pointer",

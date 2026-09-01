@@ -16,15 +16,15 @@ export default function CategoryGrid({
       <div className="container">
         <div className="section-heading" style={{ marginBottom: "24px" }}>
           <div>
-            <p className="section-kicker" style={{ fontSize: "11px", color: "#a1a1aa", letterSpacing: "0.15em", marginBottom: "6px" }}>
+            <p className="section-kicker" style={{ fontSize: "11px", color: "#a1a1aa", letterSpacing: "0.15em", marginBottom: "6px" }} data-cms-key="categories_highlight.kicker" data-cms-label="Tag Kicker Danh Mục" data-cms-type="text">
               {config.kicker || "DANH MỤC SẢN PHẨM"}
             </p>
-            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 42px)", fontWeight: 800, letterSpacing: "-0.03em" }}>
+            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 42px)", fontWeight: 800, letterSpacing: "-0.03em" }} data-cms-key="categories_highlight.title" data-cms-label="Tiêu Đề Danh Mục" data-cms-type="text">
               {config.title || "Khám phá theo danh mục"}
             </h2>
           </div>
 
-          <Link href={config.button_link || "/products"} className="text-link" style={{ fontSize: "12px", fontWeight: 700 }}>
+          <Link href={config.button_link || "/products"} className="text-link" style={{ fontSize: "12px", fontWeight: 700 }} data-cms-key="categories_highlight.button_text" data-cms-label="Chữ Nút Danh Mục" data-cms-type="text">
             {config.button_text || "Xem toàn bộ"} <span>→</span>
           </Link>
         </div>

@@ -161,6 +161,7 @@ export default function ProductDetailPage() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   aspectRatio: "4/3",
                   display: "flex",
                   alignItems: "center",
@@ -252,6 +253,7 @@ export default function ProductDetailPage() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   padding: "24px",
                   marginBottom: "32px",
                 }}
@@ -350,7 +352,7 @@ export default function ProductDetailPage() {
 
               {/* Direct Rental Link */}
               {product.rental_enabled && (
-                <div style={{ padding: "20px", backgroundColor: "#111111", border: "1px solid rgba(34,197,94,0.2)", marginBottom: "32px" }}>
+                <div style={{ padding: "20px", backgroundColor: "var(--surface)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "10px", marginBottom: "32px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                     <div>
                       <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>Cần thuê thiết bị này cho sự kiện / Show diễn?</strong>
@@ -374,8 +376,8 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "specs" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "specs" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "specs" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "specs" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
@@ -389,8 +391,8 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "desc" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "desc" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "desc" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "desc" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
@@ -404,8 +406,8 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "rental" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "rental" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "rental" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "rental" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
@@ -416,7 +418,7 @@ export default function ProductDetailPage() {
             </div>
 
             {activeTab === "specs" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px" }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
                 {product.specifications && Object.keys(product.specifications).length > 0 ? (
                   <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                     <tbody>
@@ -435,13 +437,13 @@ export default function ProductDetailPage() {
             )}
 
             {activeTab === "desc" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
                 <p>{product.description || "Thiết bị âm thanh và DJ chuyên nghiệp chính hãng tại VanBass Music Center Đà Nẵng."}</p>
               </div>
             )}
 
             {activeTab === "rental" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
                 <h4 style={{ color: "#fff", margin: "0 0 12px 0" }}>Quy trình thuê máy tại VanBass:</h4>
                 <ol style={{ paddingLeft: "20px", margin: "0 0 20px 0" }}>
                   <li>Chọn thiết bị và ngày cần sử dụng máy trên website.</li>

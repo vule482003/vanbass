@@ -130,7 +130,7 @@ export const DEFAULT_HOME_DATA: HomeData = {
     badge: "THIẾT BỊ DJ CHÍNH HÃNG",
     headline: "HỆ THỐNG ÂM THANH & CHO THUÊ DJ",
     desc: "Giải pháp thiết bị biểu diễn sân khấu, party, club & sự kiện hàng đầu miền Trung.",
-    link: "/products",
+    link: "/products?mode=rental",
     button_text: "THUÊ THIẾT BỊ NGAY",
     bg_image: "/images/hero/hero_performance.jpg",
   },
@@ -172,7 +172,7 @@ export const DEFAULT_HOME_DATA: HomeData = {
       "Tư vấn nhu cầu thuê theo sự kiện",
     ],
     button_text: "Xem thiết bị cho thuê",
-    button_link: "/products",
+    button_link: "/products?mode=rental",
   },
   local_cta: {
     kicker: "SHOWROOM & TRẢI NGHIỆM THỰC TẾ",

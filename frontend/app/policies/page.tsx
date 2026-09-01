@@ -13,10 +13,10 @@ export default function PoliciesPage() {
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "140px", paddingBottom: "100px" }}>
+      <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
         <div className="container">
           <div style={{ maxWidth: "800px", marginBottom: "48px" }}>
-            <p className="section-kicker" style={{ fontSize: "12px", color: "#a1a1aa", letterSpacing: "0.15em", margin: "0 0 8px 0" }}>
+            <p className="section-kicker">
               ĐIỀU KHOẢN & QUY ĐỊNH
             </p>
             <h1
@@ -35,9 +35,9 @@ export default function PoliciesPage() {
             </p>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px", maxWidth: "860px", marginBottom: "60px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "860px", marginBottom: "60px" }}>
             {/* Section 1 */}
-            <section style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "32px" }}>
+            <section style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
               <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span>🛡️</span> 1. Chính Sách Bảo Hành Chính Hãng (12 Tháng)
               </h2>
@@ -55,7 +55,7 @@ export default function PoliciesPage() {
             </section>
 
             {/* Section 2 */}
-            <section style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "32px" }}>
+            <section style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
               <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span>🔄</span> 2. Chính Sách Đổi Trả Sản Phẩm (7 Ngày)
               </h2>
@@ -70,7 +70,7 @@ export default function PoliciesPage() {
             </section>
 
             {/* Section 3 */}
-            <section style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "32px" }}>
+            <section style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
               <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span>📅</span> 3. Quy Định Thuê & Đặt Cọc Thiết Bị
               </h2>
@@ -88,7 +88,7 @@ export default function PoliciesPage() {
             </section>
 
             {/* Section 4 */}
-            <section style={{ backgroundColor: "#111111", border: "1px solid rgba(255,255,255,0.1)", padding: "32px" }}>
+            <section style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
               <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span>🔒</span> 4. Chính Sách Bảo Mật Thông Tin Khách Hàng
               </h2>

@@ -11,6 +11,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
+  const isLoggedOut = searchParams.get("logged_out") === "1";
   const { user, isAuthenticated, isLoading: isAuthLoading, login } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -22,9 +23,7 @@ function LoginForm() {
   // Auto redirect if already logged in
   useEffect(() => {
     if (!isAuthLoading && isAuthenticated && user) {
-      if (user.role === "admin") {
-        router.push("/admin");
-      } else if (redirectUrl && redirectUrl.startsWith("/")) {
+      if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/login") {
         router.push(redirectUrl);
       } else {
         router.push("/");
@@ -44,9 +43,7 @@ function LoginForm() {
     try {
       const res = await login(email, password);
       if (res.success) {
-        if (res.role === "admin" || res.user?.role === "admin") {
-          router.push("/admin");
-        } else if (redirectUrl && redirectUrl.startsWith("/")) {
+        if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/login") {
           router.push(redirectUrl);
         } else {
           router.push("/");
@@ -67,7 +64,8 @@ function LoginForm() {
         width: "100%",
         maxWidth: "440px",
         backgroundColor: "var(--surface, #121212)",
-        border: "1px solid rgba(255, 255, 255, 0.12)",
+        border: "1px solid var(--border)",
+        borderRadius: "12px",
         padding: "40px 32px",
         boxShadow: "0 20px 50px rgba(0, 0, 0, 0.5)",
       }}
@@ -87,6 +85,7 @@ function LoginForm() {
             fontSize: "18px",
             letterSpacing: "-0.05em",
             marginBottom: "16px",
+            borderRadius: "8px",
           }}
         >
           VB
@@ -100,6 +99,27 @@ function LoginForm() {
             : "Quản lý đơn hàng và thiết bị DJ cho thuê của bạn"}
         </p>
       </div>
+
+      {/* Logged out notification */}
+      {isLoggedOut && !errorMsg && (
+        <div
+          style={{
+            backgroundColor: "rgba(34, 197, 94, 0.1)",
+            border: "1px solid rgba(34, 197, 94, 0.4)",
+            color: "#86efac",
+            padding: "12px 16px",
+            fontSize: "13px",
+            marginBottom: "24px",
+            borderRadius: "2px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <span>✓</span>
+          <span>Bạn đã đăng xuất tài khoản thành công.</span>
+        </div>
+      )}
 
       {/* Error message */}
       {errorMsg && (
@@ -133,8 +153,9 @@ function LoginForm() {
             style={{
               width: "100%",
               padding: "14px 16px",
-              backgroundColor: "#0d0d0d",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
+              backgroundColor: "rgba(255, 255, 255, 0.04)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              borderRadius: "6px",
               color: "#fff",
               fontSize: "14px",
               outline: "none",
@@ -157,8 +178,9 @@ function LoginForm() {
               style={{
                 width: "100%",
                 padding: "14px 44px 14px 16px",
-                backgroundColor: "#0d0d0d",
-                border: "1px solid rgba(255, 255, 255, 0.15)",
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                borderRadius: "6px",
                 color: "#fff",
                 fontSize: "14px",
                 outline: "none",
@@ -210,19 +232,16 @@ function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
+          className="button button-primary"
           style={{
             width: "100%",
-            padding: "16px",
-            backgroundColor: "#f5f5f0",
-            color: "#0a0a0a",
-            border: "none",
+            padding: "15px",
             fontSize: "14px",
             fontWeight: 800,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            justifyContent: "center",
             cursor: isLoading ? "not-allowed" : "pointer",
             opacity: isLoading ? 0.7 : 1,
-            transition: "background 180ms ease, transform 180ms ease",
           }}
         >
           {isLoading ? "Đang đăng nhập..." : "Đăng nhập ngay"}

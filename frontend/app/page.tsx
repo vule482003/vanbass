@@ -10,13 +10,21 @@ async function getHomeConfig(): Promise<HomeData> {
     if (res.ok) {
       const json = await res.json();
       if (json && json.data) {
+        const sanitizeImg = (url: string | undefined, fallback: string) => {
+          if (!url || !url.trim() || url === "null" || url === "undefined") return fallback;
+          const cleaned = url.replace(/^https?:\/\/(127\.0\.0\.1|localhost):8000/, "");
+          return cleaned.startsWith("http:") || cleaned.startsWith("https:") || cleaned.startsWith("blob:") || cleaned.startsWith("data:")
+            ? cleaned
+            : cleaned.startsWith("/") ? cleaned : `/${cleaned}`;
+        };
+
         return {
           ...DEFAULT_HOME_DATA,
           ...json.data,
           visibility: { ...DEFAULT_HOME_DATA.visibility, ...(json.data.visibility || {}) },
-          hero_left: { ...DEFAULT_HOME_DATA.hero_left, ...(json.data.hero_left || {}) },
-          hero_center: { ...DEFAULT_HOME_DATA.hero_center, ...(json.data.hero_center || {}) },
-          hero_right: { ...DEFAULT_HOME_DATA.hero_right, ...(json.data.hero_right || {}) },
+          hero_left: { ...DEFAULT_HOME_DATA.hero_left, ...(json.data.hero_left || {}), bg_image: sanitizeImg(json.data.hero_left?.bg_image, DEFAULT_HOME_DATA.hero_left.bg_image) },
+          hero_center: { ...DEFAULT_HOME_DATA.hero_center, ...(json.data.hero_center || {}), bg_image: sanitizeImg(json.data.hero_center?.bg_image, DEFAULT_HOME_DATA.hero_center.bg_image) },
+          hero_right: { ...DEFAULT_HOME_DATA.hero_right, ...(json.data.hero_right || {}), bg_image: sanitizeImg(json.data.hero_right?.bg_image, DEFAULT_HOME_DATA.hero_right.bg_image) },
           categories_highlight: { ...DEFAULT_HOME_DATA.categories_highlight, ...(json.data.categories_highlight || {}) },
           intro: { ...DEFAULT_HOME_DATA.intro, ...(json.data.intro || {}) },
           rental: { ...DEFAULT_HOME_DATA.rental, ...(json.data.rental || {}) },

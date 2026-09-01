@@ -19,15 +19,13 @@ interface LiveHomePageClientProps {
 
 export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClientProps) {
   const [homeData, setHomeData] = useState<HomeData>(initialHomeData || DEFAULT_HOME_DATA);
-  const [isInsideIframe] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return window.self !== window.top;
-    }
-    return false;
-  });
+  const [isInsideIframe, setIsInsideIframe] = useState<boolean>(false);
 
   useEffect(() => {
     const inIframe = typeof window !== "undefined" && window.self !== window.top;
+    if (inIframe) {
+      setIsInsideIframe(true);
+    }
 
     const handleMessage = (event: MessageEvent) => {
       if (!event.data || typeof event.data !== "object") return;
@@ -53,10 +51,57 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
         if (targetId) {
           const el = document.getElementById(targetId);
           if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
           }
         }
       }
+    };
+
+    const handleSectionClick = (e: MouseEvent) => {
+      if (!inIframe) return;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const sectionEl = target.closest("section");
+      if (sectionEl?.id) {
+        const idMap: Record<string, string> = {
+          "hero": "hero",
+          "categories": "categories",
+          "rental": "rental",
+          "about-intro": "intro",
+          "contact-cta": "cta",
+        };
+        const mapped = idMap[sectionEl.id];
+        if (mapped) {
+          window.parent.postMessage({ type: "VANBASS_SELECT_SECTION", section: mapped }, "*");
+        }
+      }
+    };
+
+    const handleCmsClick = (e: MouseEvent) => {
+      if (!inIframe) return;
+
+      // Prevent any link navigation or form submit inside iframe CMS canvas
+      const clickableTarget = (e.target as HTMLElement | null)?.closest("a, button, [data-cms-key]");
+      if (clickableTarget) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const target = (e.target as HTMLElement | null)?.closest("[data-cms-key]") as HTMLElement | null;
+      if (!target) return;
+
+      const fieldKey = target.getAttribute("data-cms-key") || "";
+      const label = target.getAttribute("data-cms-label") || "Chỉnh sửa phần tử";
+      const fieldType = target.getAttribute("data-cms-type") || "text";
+      const currentVal = target.innerText?.trim() || "";
+
+      window.parent.postMessage({
+        type: "VANBASS_OPEN_INLINE_EDITOR",
+        fieldKey,
+        label,
+        fieldType,
+        currentVal,
+      }, "*");
     };
 
     window.addEventListener("message", handleMessage);
@@ -64,10 +109,14 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
     // Notify parent admin that iframe is ready to receive live config
     if (inIframe) {
       window.parent.postMessage({ type: "VANBASS_IFRAME_READY" }, "*");
+      window.addEventListener("click", handleCmsClick, true);
     }
 
     return () => {
       window.removeEventListener("message", handleMessage);
+      if (inIframe) {
+        window.removeEventListener("click", handleCmsClick, true);
+      }
     };
   }, []);
 
@@ -75,6 +124,71 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
 
   return (
     <>
+      {isInsideIframe && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          [data-cms-key]:not(.triptych-bg):not(button):not(img) {
+            position: relative !important;
+            transition: outline 0.15s ease, box-shadow 0.15s ease !important;
+          }
+          [data-cms-key]:not(.triptych-bg):not(button):not(img):hover {
+            outline: 2px dashed #22c55e !important;
+            outline-offset: 3px !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.35) !important;
+          }
+          [data-cms-key]:not(.triptych-bg):not(button):not(img):hover::after {
+            content: "✏️ Click sửa";
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #18181b;
+            color: #4ade80;
+            border: 1px solid #22c55e;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 800;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            pointer-events: none;
+          }
+          .triptych-edit-img-btn:hover {
+            background-color: #22c55e !important;
+            color: #000000 !important;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.7) !important;
+            transform: scale(1.05);
+          }
+
+          /* Khóa tĩnh các hiệu ứng banner trong Live Preview để việc click chỉnh sửa không bị giật/lệch */
+          .hero-triptych-container:hover .triptych-panel,
+          .hero-triptych-container:hover .triptych-panel:hover,
+          .triptych-panel {
+            flex: 1 !important;
+            transition: none !important;
+          }
+          .triptych-panel.panel-featured {
+            flex: 1.15 !important;
+          }
+          .triptych-bg,
+          .triptych-panel:hover .triptych-bg {
+            transform: none !important;
+            transition: none !important;
+          }
+          .triptych-content,
+          .triptych-panel:hover .triptych-content {
+            transform: none !important;
+            transition: none !important;
+          }
+          .triptych-overlay,
+          .hero-triptych-container:hover .triptych-panel .triptych-overlay,
+          .triptych-panel:hover .triptych-overlay {
+            opacity: 0.38 !important;
+            transition: none !important;
+          }
+        ` }} />
+      )}
       <Header />
       <ScrollObserver />
 
@@ -88,6 +202,7 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
             heroRight={homeData.hero_right}
             showMarquee={visibility.show_marquee}
             showHero={visibility.show_hero}
+            isInsideIframe={isInsideIframe}
           />
         )}
 

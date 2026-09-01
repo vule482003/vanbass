@@ -334,13 +334,14 @@ export default function Header() {
                     className="header-user-item"
                   >
                     <span>👤</span>
-                    <span>Tài khoản của tôi</span>
+                    <span>Tài khoản &amp; Hồ sơ</span>
                   </Link>
                   <div className="header-user-divider" />
                   <button
                     onClick={() => {
                       setUserDropdownOpen(false);
                       logout();
+                      router.push("/");
                     }}
                     className="header-user-item is-logout"
                   >
@@ -398,13 +399,46 @@ export default function Header() {
             🛒 Giỏ hàng ({totalItems})
           </Link>
           {isAuthenticated ? (
-            <Link
-              href="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
-            >
-              👤 Tài khoản ({user?.full_name || user?.email})
-            </Link>
+            <>
+              {user?.role === "admin" && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{ color: "#22c55e", fontSize: "14px", fontWeight: "700", padding: "10px 0" }}
+                >
+                  👑 Bảng Quản Trị Admin
+                </Link>
+              )}
+              <Link
+                href="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
+              >
+                👤 Tài khoản ({user?.full_name || user?.email})
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                  router.push("/");
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#f87171",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  padding: "10px 0",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                🚪 Đăng xuất
+              </button>
+            </>
           ) : (
             <Link
               href="/login"

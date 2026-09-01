@@ -64,7 +64,7 @@ class RentalSectionConfig(BaseModel):
         ]
     )
     button_text: str = "Xem thiết bị cho thuê"
-    button_link: str = "/products"
+    button_link: str = "/products?mode=rental"
 
 
 class LocalCtaConfig(BaseModel):

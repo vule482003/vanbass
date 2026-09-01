@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push("/login?redirect=/profile");
     }
     if (user) {
       startTransition(() => {
@@ -190,7 +190,7 @@ export default function ProfilePage() {
               </h1>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
               {user.role === "admin" && (
                 <Link
                   href="/admin"
@@ -204,7 +204,7 @@ export default function ProfilePage() {
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
-                    borderRadius: "2px",
+                    borderRadius: "6px",
                   }}
                 >
                   👑 Mở Trang Quản Trị (Admin) →
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                   fontSize: "13px",
                   fontWeight: 700,
                   cursor: "pointer",
-                  borderRadius: "2px",
+                  borderRadius: "6px",
                   transition: "background 180ms ease",
                 }}
               >
@@ -295,7 +295,7 @@ export default function ProfilePage() {
             <div>
               {/* TAB 1: RENTALS HISTORY */}
               {activeTab === "rentals" && (
-                <div style={{ backgroundColor: "#111113", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "32px" }}>
+                <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
                   <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
                     Thiết bị &amp; Hợp đồng đang thuê ({myRentals.length})
                   </h2>
@@ -303,7 +303,7 @@ export default function ProfilePage() {
                   {isDataLoading ? (
                     <div style={{ color: "#a1a1aa", padding: "20px 0" }}>Đang tải hợp đồng thuê thiết bị...</div>
                   ) : myRentals.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "40px 20px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
+                    <div style={{ textAlign: "center", padding: "40px 20px", backgroundColor: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border)", borderRadius: "8px" }}>
                       <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "16px" }}>
                         Bạn chưa có yêu cầu thuê thiết bị nào.
                       </p>
@@ -319,10 +319,10 @@ export default function ProfilePage() {
                           <div
                             key={rent.id}
                             style={{
-                              border: "1px solid #27272a",
+                              border: "1px solid var(--border)",
                               padding: "24px",
-                              backgroundColor: "#0a0a0a",
-                              borderRadius: "4px",
+                              backgroundColor: "rgba(255, 255, 255, 0.02)",
+                              borderRadius: "8px",
                             }}
                           >
                             <div
@@ -419,13 +419,13 @@ export default function ProfilePage() {
 
               {/* TAB 2: PROFILE INFO FORM */}
               {activeTab === "info" && (
-                <div style={{ backgroundColor: "#111113", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", padding: "32px" }}>
+                <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
                   <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
                     Thông tin giao hàng mặc định
                   </h2>
 
                   {saveSuccess && (
-                    <div style={{ padding: "12px 16px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "20px" }}>
+                    <div style={{ padding: "12px 16px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "20px", borderRadius: "6px" }}>
                       ✓ Đã lưu thông tin hồ sơ vào cơ sở dữ liệu thành công!
                     </div>
                   )}
@@ -444,8 +444,9 @@ export default function ProfilePage() {
                           style={{
                             width: "100%",
                             padding: "12px 14px",
-                            backgroundColor: "#000",
-                            border: "1px solid #27272a",
+                            backgroundColor: "rgba(255, 255, 255, 0.04)",
+                            border: "1px solid rgba(255, 255, 255, 0.12)",
+                            borderRadius: "6px",
                             color: "#fff",
                             fontSize: "14px",
                             outline: "none",
@@ -466,8 +467,9 @@ export default function ProfilePage() {
                           style={{
                             width: "100%",
                             padding: "12px 14px",
-                            backgroundColor: "#000",
-                            border: "1px solid #27272a",
+                            backgroundColor: "rgba(255, 255, 255, 0.04)",
+                            border: "1px solid rgba(255, 255, 255, 0.12)",
+                            borderRadius: "6px",
                             color: "#fff",
                             fontSize: "14px",
                             outline: "none",
@@ -489,8 +491,9 @@ export default function ProfilePage() {
                           style={{
                             width: "100%",
                             padding: "12px 14px",
-                            backgroundColor: "#18181b",
-                            border: "1px solid #27272a",
+                            backgroundColor: "rgba(255, 255, 255, 0.02)",
+                            border: "1px solid rgba(255, 255, 255, 0.08)",
+                            borderRadius: "6px",
                             color: "#71717a",
                             fontSize: "14px",
                             cursor: "not-allowed",
@@ -511,8 +514,9 @@ export default function ProfilePage() {
                           style={{
                             width: "100%",
                             padding: "12px 14px",
-                            backgroundColor: "#000",
-                            border: "1px solid #27272a",
+                            backgroundColor: "rgba(255, 255, 255, 0.04)",
+                            border: "1px solid rgba(255, 255, 255, 0.12)",
+                            borderRadius: "6px",
                             color: "#fff",
                             fontSize: "14px",
                             outline: "none",
@@ -534,8 +538,9 @@ export default function ProfilePage() {
                         style={{
                           width: "100%",
                           padding: "12px 14px",
-                          backgroundColor: "#000",
-                          border: "1px solid #27272a",
+                          backgroundColor: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid rgba(255, 255, 255, 0.12)",
+                          borderRadius: "6px",
                           color: "#fff",
                           fontSize: "14px",
                           outline: "none",
@@ -547,14 +552,10 @@ export default function ProfilePage() {
                     <button
                       type="submit"
                       disabled={isSaving}
+                      className="button button-primary"
                       style={{
-                        padding: "14px 28px",
-                        backgroundColor: "#ffffff",
-                        color: "#000000",
-                        fontWeight: 800,
+                        padding: "13px 28px",
                         fontSize: "13px",
-                        textTransform: "uppercase",
-                        border: "none",
                         cursor: isSaving ? "not-allowed" : "pointer",
                       }}
                     >

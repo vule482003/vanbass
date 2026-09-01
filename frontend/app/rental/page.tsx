@@ -212,6 +212,7 @@ function RentalContent() {
               style={{
                 backgroundColor: "var(--surface)",
                 border: "1px solid #22c55e",
+                borderRadius: "10px",
                 padding: "48px 32px",
                 textAlign: "center",
                 maxWidth: "640px",
@@ -268,7 +269,8 @@ function RentalContent() {
                         key={product.id}
                         style={{
                           backgroundColor: "var(--surface)",
-                          border: isSelected ? "1px solid #fff" : "1px solid var(--border)",
+                          border: isSelected ? "1px solid #22c55e" : "1px solid var(--border)",
+                          borderRadius: "10px",
                           padding: "20px",
                           display: "flex",
                           justifyContent: "space-between",
@@ -282,7 +284,7 @@ function RentalContent() {
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => toggleProduct(product.id)}
-                            style={{ width: "18px", height: "18px", accentColor: "#fff", cursor: "pointer" }}
+                            style={{ width: "18px", height: "18px", accentColor: "#22c55e", cursor: "pointer" }}
                           />
                           <div>
                             <span style={{ fontSize: "11px", color: "#71717a", textTransform: "uppercase", fontWeight: 700 }}>
@@ -298,7 +300,7 @@ function RentalContent() {
                         </div>
 
                         {isSelected && (
-                          <div style={{ display: "flex", alignItems: "center", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                          <div style={{ display: "flex", alignItems: "center", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden", backgroundColor: "#000" }}>
                             <button
                               onClick={() => updateQuantity(product.id, -1)}
                               style={{ padding: "6px 12px", background: "none", border: "none", color: "#fff", cursor: "pointer" }}
@@ -327,6 +329,7 @@ function RentalContent() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   padding: "32px",
                 }}
               >
@@ -352,7 +355,7 @@ function RentalContent() {
                         required
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        style={{ width: "100%", padding: "10px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                        style={{ width: "100%", padding: "10px 12px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
                       />
                     </div>
                     <div>
@@ -364,7 +367,7 @@ function RentalContent() {
                         required
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        style={{ width: "100%", padding: "10px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                        style={{ width: "100%", padding: "10px 12px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
                       />
                     </div>
                   </div>
@@ -380,7 +383,7 @@ function RentalContent() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Nguyễn Văn A"
-                      style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                      style={{ width: "100%", padding: "11px 14px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
                     />
                   </div>
 
@@ -395,7 +398,7 @@ function RentalContent() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="0905 123 456"
-                        style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                        style={{ width: "100%", padding: "11px 14px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
                       />
                     </div>
                     <div>
@@ -407,7 +410,7 @@ function RentalContent() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="example@gmail.com"
-                        style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                        style={{ width: "100%", padding: "11px 14px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
                       />
                     </div>
                   </div>
@@ -421,7 +424,7 @@ function RentalContent() {
                       value={pickupLocation}
                       onChange={(e) => setPickupLocation(e.target.value)}
                       placeholder="Showroom VanBass hoặc Địa chỉ sự kiện..."
-                      style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
+                      style={{ width: "100%", padding: "11px 14px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
                     />
                   </div>
 
@@ -434,12 +437,12 @@ function RentalContent() {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Yêu cầu kèm thêm dây cáp, bàn DJ, thời gian nhận máy cụ thể..."
-                      style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box", resize: "vertical" }}
+                      style={{ width: "100%", padding: "11px 14px", backgroundColor: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: "6px", color: "#fff", fontSize: "14px", boxSizing: "border-box", outline: "none", resize: "vertical", fontFamily: "inherit" }}
                     />
                   </div>
 
                   {/* Summary Box */}
-                  <div style={{ padding: "20px", backgroundColor: "#000", border: "1px solid var(--border)", marginBottom: "24px" }}>
+                  <div style={{ padding: "20px", backgroundColor: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border)", borderRadius: "8px", marginBottom: "24px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "13px", color: "#a1a1aa" }}>
                       <span>Tổng thời gian thuê:</span>
                       <strong style={{ color: "#fff" }}>{numberOfDays} ngày</strong>
@@ -457,8 +460,8 @@ function RentalContent() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="button button-primary button-lg"
-                    style={{ width: "100%", cursor: submitting ? "not-allowed" : "pointer" }}
+                    className="button button-primary"
+                    style={{ width: "100%", justifyContent: "center", padding: "14px", fontSize: "14px", cursor: submitting ? "not-allowed" : "pointer" }}
                   >
                     {submitting ? "Đang gửi yêu cầu..." : `Gửi Yêu Cầu Thuê (${formatCurrency(totalRental)})`}
                   </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
@@ -11,7 +11,7 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
-  const { register } = useAuth();
+  const { user, isAuthenticated, isLoading: isAuthLoading, register } = useAuth();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +21,17 @@ function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Auto redirect if already logged in
+  useEffect(() => {
+    if (!isAuthLoading && isAuthenticated && user) {
+      if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/register") {
+        router.push(redirectUrl);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user, isAuthenticated, isAuthLoading, redirectUrl, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,10 +54,10 @@ function RegisterForm() {
     try {
       const res = await register(email, password, fullName);
       if (res.success) {
-        if (redirectUrl && redirectUrl.startsWith("/")) {
+        if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/register") {
           router.push(redirectUrl);
         } else {
-          router.push("/profile");
+          router.push("/");
         }
       } else {
         setErrorMsg(res.error || "Đăng ký không thành công. Email có thể đã tồn tại.");
@@ -64,7 +75,8 @@ function RegisterForm() {
         width: "100%",
         maxWidth: "460px",
         backgroundColor: "var(--surface, #121212)",
-        border: "1px solid rgba(255, 255, 255, 0.12)",
+        border: "1px solid var(--border)",
+        borderRadius: "12px",
         padding: "40px 32px",
         boxShadow: "0 20px 50px rgba(0, 0, 0, 0.5)",
       }}
@@ -84,6 +96,7 @@ function RegisterForm() {
             fontSize: "18px",
             letterSpacing: "-0.05em",
             marginBottom: "16px",
+            borderRadius: "8px",
           }}
         >
           VB
@@ -127,8 +140,9 @@ function RegisterForm() {
             style={{
               width: "100%",
               padding: "14px 16px",
-              backgroundColor: "#0d0d0d",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
+              backgroundColor: "rgba(255, 255, 255, 0.04)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              borderRadius: "6px",
               color: "#fff",
               fontSize: "14px",
               outline: "none",
@@ -150,8 +164,9 @@ function RegisterForm() {
             style={{
               width: "100%",
               padding: "14px 16px",
-              backgroundColor: "#0d0d0d",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
+              backgroundColor: "rgba(255, 255, 255, 0.04)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              borderRadius: "6px",
               color: "#fff",
               fontSize: "14px",
               outline: "none",
@@ -174,8 +189,9 @@ function RegisterForm() {
               style={{
                 width: "100%",
                 padding: "14px 44px 14px 16px",
-                backgroundColor: "#0d0d0d",
-                border: "1px solid rgba(255, 255, 255, 0.15)",
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                borderRadius: "6px",
                 color: "#fff",
                 fontSize: "14px",
                 outline: "none",
@@ -236,8 +252,9 @@ function RegisterForm() {
               style={{
                 width: "100%",
                 padding: "14px 44px 14px 16px",
-                backgroundColor: "#0d0d0d",
-                border: "1px solid rgba(255, 255, 255, 0.15)",
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                borderRadius: "6px",
                 color: "#fff",
                 fontSize: "14px",
                 outline: "none",
@@ -287,19 +304,16 @@ function RegisterForm() {
         <button
           type="submit"
           disabled={isLoading}
+          className="button button-primary"
           style={{
             width: "100%",
-            padding: "16px",
-            backgroundColor: "#f5f5f0",
-            color: "#0a0a0a",
-            border: "none",
+            padding: "15px",
             fontSize: "14px",
             fontWeight: 800,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            justifyContent: "center",
             cursor: isLoading ? "not-allowed" : "pointer",
             opacity: isLoading ? 0.7 : 1,
-            transition: "background 180ms ease",
           }}
         >
           {isLoading ? "Đang tạo tài khoản..." : "Đăng ký thành viên"}

@@ -32,15 +32,15 @@ export default function RentalSection({
         </div>
 
         <div className="rental-content">
-          <p className="section-kicker">{config.kicker}</p>
+          <p className="section-kicker" data-cms-key="rental.kicker" data-cms-label="Tag Kicker Cho Thuê" data-cms-type="text">{config.kicker}</p>
 
           <h2>
-            {config.headline_top}
+            <span data-cms-key="rental.headline_top" data-cms-label="Tiêu Đề Trên Cho Thuê" data-cms-type="text">{config.headline_top}</span>
             <br />
-            <span>{config.headline_bottom}</span>
+            <span data-cms-key="rental.headline_bottom" data-cms-label="Tiêu Đề Nổi Bật Cho Thuê" data-cms-type="text">{config.headline_bottom}</span>
           </h2>
 
-          <p>{config.desc}</p>
+          <p data-cms-key="rental.desc" data-cms-label="Mô Tả Cho Thuê" data-cms-type="textarea">{config.desc}</p>
 
           <ul className="check-list">
             {(config.features || []).map((feature, idx) => (
@@ -51,7 +51,14 @@ export default function RentalSection({
             ))}
           </ul>
 
-          <Link href={config.button_link || "/products"} className="button button-light" style={{ alignSelf: "flex-start" }}>
+          <Link
+            href={!config.button_link || config.button_link === "/products" ? "/products?mode=rental" : config.button_link}
+            className="button button-primary"
+            style={{ alignSelf: "flex-start" }}
+            data-cms-key="rental.button_text"
+            data-cms-label="Chữ Nút Cho Thuê"
+            data-cms-type="text"
+          >
             {config.button_text || "Xem thiết bị cho thuê"}
             <span>→</span>
           </Link>
