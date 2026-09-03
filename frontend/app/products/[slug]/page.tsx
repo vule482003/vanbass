@@ -19,6 +19,9 @@ function formatCurrency(amount?: number) {
   }).format(amount);
 }
 
+const FACEBOOK_RENTAL_URL =
+  "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN";
+
 export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
@@ -358,9 +361,15 @@ export default function ProductDetailPage() {
                       <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>Cần thuê thiết bị này cho sự kiện / Show diễn?</strong>
                       <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Giao máy tận nơi tại Đà Nẵng, hỗ trợ setup âm thanh chuyên nghiệp.</span>
                     </div>
-                    <Link href={`/rental?product=${product.slug}`} className="button button-secondary">
-                      Tính giá thuê ngay →
-                    </Link>
+                    <a
+                      href={FACEBOOK_RENTAL_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="button button-secondary"
+                      style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+                    >
+                      <span>💬</span> Tư vấn thuê qua Facebook →
+                    </a>
                   </div>
                 </div>
               )}
@@ -446,8 +455,8 @@ export default function ProductDetailPage() {
               <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
                 <h4 style={{ color: "#fff", margin: "0 0 12px 0" }}>Quy trình thuê máy tại VanBass:</h4>
                 <ol style={{ paddingLeft: "20px", margin: "0 0 20px 0" }}>
-                  <li>Chọn thiết bị và ngày cần sử dụng máy trên website.</li>
-                  <li>Nhân viên kỹ thuật liên hệ xác nhận thời gian nhận và địa chỉ sự kiện.</li>
+                  <li>Liên hệ tư vấn thuê trực tiếp qua Facebook Fanpage hoặc Hotline để kiểm tra lịch máy.</li>
+                  <li>Nhân viên kỹ thuật xác nhận thời gian nhận máy, địa chỉ sự kiện và hỗ trợ setup.</li>
                   <li>Ký hợp đồng thuê bàn giao thiết bị + Đặt cọc theo quy định.</li>
                   <li>Hỗ trợ hướng dẫn sử dụng và bàn giao đầy đủ phụ kiện, dây cáp âm thanh.</li>
                 </ol>

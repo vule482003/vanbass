@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="footer-column">
           <h3>Khám phá</h3>
           <Link href="/products">Sản phẩm</Link>
-          <Link href="/rental">Cho thuê</Link>
+          <Link href="/products?mode=rental">Thiết bị cho thuê</Link>
           <Link href="/about">Về VanBass</Link>
         </div>
 

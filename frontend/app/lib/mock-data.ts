@@ -10,7 +10,7 @@ export const MOCK_CATEGORIES: Category[] = [
   },
   {
     id: "a0000001-0000-4000-8000-000000000002",
-    name: "Mixer & Bàn trộn",
+    name: "Mixer",
     slug: "mixer",
     number: "02",
     description: "DJ Mixers 2 kênh, 4 kênh, 6 kênh chuẩn club quốc tế và bộ xử lý tín hiệu DSP Marani Pro Audio.",

@@ -53,7 +53,6 @@ export default function ProductCard({
 
   const handleRentProduct = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(FACEBOOK_RENTAL_URL, "_blank", "noopener,noreferrer");
   };
 
   const resolveImageUrl = (url?: string) => {

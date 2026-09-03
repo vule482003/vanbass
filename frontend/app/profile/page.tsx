@@ -7,59 +7,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../lib/auth-context";
 
-function formatCurrency(amount?: number) {
-  if (amount === undefined || amount === null) return "0 ₫";
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount);
-}
-
-interface MyRentalItem {
-  id: string;
-  request_number: string;
-  created_at: string;
-  start_date: string;
-  end_date: string;
-  status: string;
-  payment_status: string;
-  rental_total: number;
-  deposit_amount: number;
-  pickup_location: string;
-  customer_note?: string;
-  items?: Array<{
-    id: string;
-    product_name: string;
-    quantity: number;
-    rental_price: number;
-    number_of_days: number;
-    subtotal: number;
-  }>;
-}
-
-function getRentalStatusBadge(status: string) {
-  const st = status.toLowerCase();
-  switch (st) {
-    case "pending":
-      return { label: "Chờ kỹ thuật liên hệ", bg: "rgba(234, 179, 8, 0.15)", color: "#facc15" };
-    case "contacted":
-      return { label: "Đã liên hệ tư vấn", bg: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" };
-    case "confirmed":
-      return { label: "Đã xác nhận cọc", bg: "rgba(34, 197, 94, 0.15)", color: "#4ade80" };
-    case "completed":
-      return { label: "Đã trả máy", bg: "rgba(113, 113, 122, 0.2)", color: "#a1a1aa" };
-    case "cancelled":
-      return { label: "Đã hủy", bg: "rgba(239, 68, 68, 0.15)", color: "#f87171" };
-    default:
-      return { label: status.toUpperCase(), bg: "rgba(255, 255, 255, 0.1)", color: "#fff" };
-  }
-}
-
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, token, isAuthenticated, isLoading, logout, updateProfile } = useAuth();
-
-  const [activeTab, setActiveTab] = useState<"rentals" | "info">("rentals");
+  const { user, isAuthenticated, isLoading, logout, updateProfile } = useAuth();
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -68,12 +18,6 @@ export default function ProfilePage() {
   const [address, setAddress] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-
-  // Real Database Lists
-  const [myRentals, setMyRentals] = useState<MyRentalItem[]>([]);
-  const [isDataLoading, setIsDataLoading] = useState(false);
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -88,37 +32,6 @@ export default function ProfilePage() {
       });
     }
   }, [user, isAuthenticated, isLoading, router]);
-
-  // Fetch real rental requests
-  useEffect(() => {
-    const fetchRentals = async () => {
-      if (!token) return;
-      startTransition(() => {
-        setIsDataLoading(true);
-      });
-      try {
-        const res = await fetch(`${apiUrl}/rental-requests/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const rentData = await res.json();
-          startTransition(() => {
-            setMyRentals(rentData.items || []);
-          });
-        }
-      } catch (err) {
-        console.error("Failed to fetch user rentals:", err);
-      } finally {
-        startTransition(() => {
-          setIsDataLoading(false);
-        });
-      }
-    };
-
-    if (token) {
-      void fetchRentals();
-    }
-  }, [token, apiUrl]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -229,208 +142,79 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Grid Layout: Tabs + Content */}
+          {/* Grid Layout: Sidebar + Content */}
           <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: "36px" }} className="profile-layout mobile-stack">
             {/* Sidebar Navigation */}
             <div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <button
-                  onClick={() => setActiveTab("rentals")}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "14px 18px",
-                    textAlign: "left",
-                    backgroundColor: activeTab === "rentals" ? "#ffffff" : "transparent",
-                    color: activeTab === "rentals" ? "#000000" : "#a1a1aa",
-                    fontWeight: 700,
-                    fontSize: "14px",
-                    border: "none",
-                    cursor: "pointer",
-                    borderRadius: "4px",
-                    transition: "all 180ms ease",
-                  }}
-                >
-                  <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span>📅</span> Thiết bị thuê
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      padding: "2px 8px",
-                      borderRadius: "10px",
-                      backgroundColor: activeTab === "rentals" ? "#000" : "rgba(255,255,255,0.1)",
-                      color: activeTab === "rentals" ? "#fff" : "#a1a1aa",
-                    }}
-                  >
-                    {myRentals.length}
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("info")}
+                <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: "10px",
                     padding: "14px 18px",
-                    textAlign: "left",
-                    backgroundColor: activeTab === "info" ? "#ffffff" : "transparent",
-                    color: activeTab === "info" ? "#000000" : "#a1a1aa",
+                    backgroundColor: "#ffffff",
+                    color: "#000000",
                     fontWeight: 700,
                     fontSize: "14px",
-                    border: "none",
-                    cursor: "pointer",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <span>👤</span> Thông tin &amp; Địa chỉ
+                </div>
+                <Link
+                  href="/cart"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "14px 18px",
+                    backgroundColor: "transparent",
+                    color: "#a1a1aa",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    textDecoration: "none",
                     borderRadius: "4px",
                     transition: "all 180ms ease",
                   }}
                 >
-                  <span>👤</span> Thông tin &amp; Địa chỉ
-                </button>
+                  <span>🛒</span> Giỏ hàng
+                </Link>
+                <Link
+                  href="/products"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "14px 18px",
+                    backgroundColor: "transparent",
+                    color: "#a1a1aa",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    textDecoration: "none",
+                    borderRadius: "4px",
+                    transition: "all 180ms ease",
+                  }}
+                >
+                  <span>📦</span> Danh mục sản phẩm
+                </Link>
               </div>
             </div>
 
-            {/* Main Tab Content */}
+            {/* Main Content: PROFILE INFO FORM */}
             <div>
-              {/* TAB 1: RENTALS HISTORY */}
-              {activeTab === "rentals" && (
-                <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
-                  <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                    Thiết bị &amp; Hợp đồng đang thuê ({myRentals.length})
-                  </h2>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
+                <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
+                  Thông tin giao hàng mặc định
+                </h2>
 
-                  {isDataLoading ? (
-                    <div style={{ color: "#a1a1aa", padding: "20px 0" }}>Đang tải hợp đồng thuê thiết bị...</div>
-                  ) : myRentals.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "40px 20px", backgroundColor: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border)", borderRadius: "8px" }}>
-                      <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "16px" }}>
-                        Bạn chưa có yêu cầu thuê thiết bị nào.
-                      </p>
-                      <Link href="/rental" className="button button-primary button-sm">
-                        Thuê thiết bị biểu diễn ngay →
-                      </Link>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                      {myRentals.map((rent) => {
-                        const badge = getRentalStatusBadge(rent.status);
-                        return (
-                          <div
-                            key={rent.id}
-                            style={{
-                              border: "1px solid var(--border)",
-                              padding: "24px",
-                              backgroundColor: "rgba(255, 255, 255, 0.02)",
-                              borderRadius: "8px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                                gap: "12px",
-                                marginBottom: "16px",
-                                borderBottom: "1px solid #1f1f23",
-                                paddingBottom: "14px",
-                              }}
-                            >
-                              <div>
-                                <strong style={{ color: "#fff", fontSize: "16px", display: "block" }}>
-                                  Hợp đồng thuê #{rent.request_number}
-                                </strong>
-                                <span style={{ fontSize: "13px", color: "#71717a" }}>
-                                  Thời gian thuê: {rent.start_date} → {rent.end_date}
-                                </span>
-                              </div>
-                              <span
-                                style={{
-                                  padding: "6px 12px",
-                                  backgroundColor: badge.bg,
-                                  color: badge.color,
-                                  fontSize: "12px",
-                                  fontWeight: 800,
-                                  textTransform: "uppercase",
-                                  borderRadius: "2px",
-                                }}
-                              >
-                                {badge.label}
-                              </span>
-                            </div>
+                {saveSuccess && (
+                  <div style={{ padding: "12px 16px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "20px", borderRadius: "6px" }}>
+                    ✓ Đã lưu thông tin hồ sơ vào cơ sở dữ liệu thành công!
+                  </div>
+                )}
 
-                            {/* Rental Items */}
-                            {rent.items && rent.items.length > 0 ? (
-                              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
-                                {rent.items.map((it) => (
-                                  <div
-                                    key={it.id}
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      fontSize: "14px",
-                                      color: "#d4d4d8",
-                                    }}
-                                  >
-                                    <span>
-                                      {it.quantity} x {it.product_name} ({it.number_of_days} ngày)
-                                    </span>
-                                    <strong style={{ color: "#fff" }}>{formatCurrency(it.subtotal)}</strong>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : null}
-
-                            {/* Total & Deposit */}
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "baseline",
-                                flexWrap: "wrap",
-                                gap: "12px",
-                                paddingTop: "12px",
-                                borderTop: "1px solid rgba(255,255,255,0.06)",
-                              }}
-                            >
-                              <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                                Địa điểm: {rent.pickup_location}
-                              </span>
-                              <div style={{ display: "flex", gap: "16px", alignItems: "baseline" }}>
-                                <span style={{ fontSize: "13px", color: "#eab308" }}>
-                                  Tiền cọc: <strong>{formatCurrency(rent.deposit_amount)}</strong>
-                                </span>
-                                <span style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                                  Tổng tiền thuê:{" "}
-                                  <strong style={{ color: "#22c55e", fontSize: "16px" }}>
-                                    {formatCurrency(rent.rental_total)}
-                                  </strong>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TAB 2: PROFILE INFO FORM */}
-              {activeTab === "info" && (
-                <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
-                  <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                    Thông tin giao hàng mặc định
-                  </h2>
-
-                  {saveSuccess && (
-                    <div style={{ padding: "12px 16px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "20px", borderRadius: "6px" }}>
-                      ✓ Đã lưu thông tin hồ sơ vào cơ sở dữ liệu thành công!
-                    </div>
-                  )}
-
-                  <form onSubmit={handleSaveProfile}>
+                <form onSubmit={handleSaveProfile}>
                     <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
                       <div>
                         <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
@@ -563,7 +347,6 @@ export default function ProfilePage() {
                     </button>
                   </form>
                 </div>
-              )}
             </div>
           </div>
         </div>

@@ -64,19 +64,6 @@ interface OrderItem {
   items?: OrderLineItem[];
 }
 
-interface RentalRequestItem {
-  id: string;
-  request_number: string;
-  start_date: string;
-  end_date: string;
-  rental_total: number;
-  deposit_amount: number;
-  status: string;
-  payment_status: string;
-  created_at: string;
-  items?: Array<{ product_name: string; quantity: number; daily_rate: number }>;
-}
-
 const ORDER_STATUS_LABELS: Record<string, string> = {
   pending: "⏳ Chờ xử lý",
   confirmed: "✓ Đã xác nhận",
@@ -92,23 +79,8 @@ const ORDER_PAYMENT_STATUS_LABELS: Record<string, string> = {
   refunded: "Đã hoàn tiền",
 };
 
-const RENTAL_STATUS_LABELS: Record<string, string> = {
-  pending: "⏳ Chờ liên hệ",
-  contacted: "📞 Đã liên hệ",
-  confirmed: "✓ Đã xác nhận",
-  completed: "🎉 Đã trả máy",
-  cancelled: "✕ Đã hủy",
-};
-
-const RENTAL_PAYMENT_STATUS_LABELS: Record<string, string> = {
-  unpaid: "Chưa cọc",
-  partially_paid: "Đã cọc 1 phần",
-  paid: "Đã cọc đủ",
-  refunded: "Đã hoàn cọc",
-};
-
 interface StatusConfirmModalState {
-  type: "order_status" | "order_payment" | "rental_status" | "rental_payment";
+  type: "order_status" | "order_payment";
   id: string;
   itemCode: string;
   title: string;
@@ -132,27 +104,25 @@ function formatCurrency(amount?: number) {
   }).format(amount);
 }
 
+type AdminTab = "overview" | "home_cms" | "products" | "orders";
+
 export default function AdminDashboardPage() {
   const router = useRouter();
   const { user, token, isAuthenticated, isLoading, logout } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<"overview" | "home_cms" | "products" | "orders" | "rentals">("overview");
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Home CMS states
   const [homeConfig, setHomeConfig] = useState<HomeData>(DEFAULT_HOME_DATA);
   const [savedHomeConfig, setSavedHomeConfig] = useState<HomeData>(DEFAULT_HOME_DATA);
-  const [isHomeConfigLoading, setIsHomeConfigLoading] = useState(false);
+  const [, setIsHomeConfigLoading] = useState(false);
   const [isHomeConfigSaving, setIsHomeConfigSaving] = useState(false);
-  const [activeCmsAccordion, setActiveCmsAccordion] = useState<string>("hero");
-  const [previewLayoutMode, setPreviewLayoutMode] = useState<"split" | "full">("split");
-  const [heroSubTab, setHeroSubTab] = useState<"left" | "center" | "right">("center");
+  const [, setActiveCmsAccordion] = useState<string>("hero");
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [previewKey, setPreviewKey] = useState<number>(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const leftHeroFileRef = useRef<HTMLInputElement>(null);
   const centerHeroFileRef = useRef<HTMLInputElement>(null);
-  const rightHeroFileRef = useRef<HTMLInputElement>(null);
 
   const [inlineEditor, setInlineEditor] = useState<{
     isOpen: boolean;
@@ -162,28 +132,31 @@ export default function AdminDashboardPage() {
     currentVal: string;
   } | null>(null);
 
-  const getNestedVal = useCallback((obj: any, path: string) => {
+  const getNestedVal = useCallback((obj: Record<string, unknown> | HomeData, path: string) => {
     if (!obj || !path) return "";
     const parts = path.split(".");
-    let cur = obj;
+    let cur: unknown = obj;
     for (const p of parts) {
-      if (cur == null) return "";
-      cur = cur[p];
+      if (cur == null || typeof cur !== "object") return "";
+      cur = (cur as Record<string, unknown>)[p];
     }
     return typeof cur === "string" ? cur : "";
   }, []);
 
   const updateNestedVal = useCallback((path: string, val: string) => {
-    setHomeConfig((prev: any) => {
-      const next = JSON.parse(JSON.stringify(prev));
+    setHomeConfig((prev) => {
+      const next = JSON.parse(JSON.stringify(prev)) as Record<string, unknown>;
       const parts = path.split(".");
-      let cur = next;
+      let cur: Record<string, unknown> = next;
       for (let i = 0; i < parts.length - 1; i++) {
-        if (!cur[parts[i]]) cur[parts[i]] = {};
-        cur = cur[parts[i]];
+        const part = parts[i];
+        if (!cur[part] || typeof cur[part] !== "object") {
+          cur[part] = {};
+        }
+        cur = cur[part] as Record<string, unknown>;
       }
       cur[parts[parts.length - 1]] = val;
-      return next;
+      return next as unknown as HomeData;
     });
   }, []);
 
@@ -191,7 +164,6 @@ export default function AdminDashboardPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
-  const [rentals, setRentals] = useState<RentalRequestItem[]>([]);
   const [, setIsDataLoading] = useState(true);
 
   // Add Product Modal states
@@ -268,18 +240,6 @@ export default function AdminDashboardPage() {
     }
   }, [homeConfig]);
 
-  const sendScrollToSection = useCallback((sectionId: string) => {
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(
-        {
-          type: "VANBASS_SCROLL_TO",
-          section: sectionId,
-        },
-        "*"
-      );
-    }
-  }, []);
-
   useEffect(() => {
     sendLiveConfigToIframe();
   }, [sendLiveConfigToIframe]);
@@ -345,35 +305,6 @@ export default function AdminDashboardPage() {
     setActionSuccessMsg("✓ Đã khôi phục về mẫu cấu hình mặc định ban đầu.");
   };
 
-  const handleHeroImageUpload = async (panel: "hero_left" | "hero_center" | "hero_right", file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const res = await fetch(`${apiUrl}/home-config/upload-image`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setHomeConfig((prev) => ({
-          ...prev,
-          [panel]: {
-            ...prev[panel],
-            bg_image: json.url,
-          },
-        }));
-        setActionSuccessMsg(`✓ Đã tải ảnh cho ${panel === "hero_left" ? "Banner Trái" : panel === "hero_center" ? "Banner Giữa" : "Banner Phải"} thành công!`);
-      } else {
-        setActionErrorMsg("Không thể tải ảnh lên máy chủ.");
-      }
-    } catch {
-      setActionErrorMsg("Lỗi kết nối khi tải ảnh.");
-    }
-  };
-
   const loadAllData = useCallback(async () => {
     setIsDataLoading(true);
     try {
@@ -408,19 +339,9 @@ export default function AdminDashboardPage() {
           const orderData = await orderRes.json();
           setOrders(orderData.items || []);
         }
-
-        // 4. Fetch rental requests
-        const rentRes = await fetch(`${apiUrl}/rental-requests?${cacheBust}`, {
-          cache: "no-store",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (rentRes.ok) {
-          const rentData = await rentRes.json();
-          setRentals(rentData.items || []);
-        }
       }
 
-      // 5. Fetch home configuration
+      // 4. Fetch home configuration
       setIsHomeConfigLoading(true);
       const homeRes = await fetch(`${apiUrl}/home-config?${cacheBust}`, { cache: "no-store" });
       if (homeRes.ok) {
@@ -846,42 +767,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleUpdateRentalStatus = async (rentalId: string, newStatus?: string, newPaymentStatus?: string) => {
-    try {
-      const payload: Record<string, string> = {};
-      if (newStatus) payload.status = newStatus;
-      if (newPaymentStatus) payload.payment_status = newPaymentStatus;
-
-      const res = await fetch(`${apiUrl}/rental-requests/${rentalId}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.ok) {
-        setActionErrorMsg("");
-        setActionSuccessMsg(`✓ Đã cập nhật trạng thái hợp đồng thuê thành công!`);
-        loadAllData();
-      } else {
-        const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật" }));
-        setActionSuccessMsg("");
-        let msg = "Không thể cập nhật trạng thái hợp đồng thuê.";
-        if (typeof err.detail === "string") {
-          msg = err.detail;
-        } else if (Array.isArray(err.detail)) {
-          msg = err.detail.map((d: { msg?: string }) => d.msg || "Lỗi").join(", ");
-        }
-        setActionErrorMsg(msg);
-      }
-    } catch {
-      setActionSuccessMsg("");
-      setActionErrorMsg("Lỗi kết nối đến máy chủ.");
-    }
-  };
-
   const handleConfirmStatusChange = async () => {
     if (!statusConfirmModal) return;
     const { type, id, newStatus, newPaymentStatus } = statusConfirmModal;
@@ -891,10 +776,6 @@ export default function AdminDashboardPage() {
       await handleUpdateOrderStatus(id, newStatus);
     } else if (type === "order_payment") {
       await handleUpdateOrderStatus(id, undefined, newPaymentStatus);
-    } else if (type === "rental_status") {
-      await handleUpdateRentalStatus(id, newStatus);
-    } else if (type === "rental_payment") {
-      await handleUpdateRentalStatus(id, undefined, newPaymentStatus);
     }
   };
 
@@ -1052,16 +933,15 @@ export default function AdminDashboardPage() {
           </button>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%", overflowY: "auto" }}>
-            {[
+            {([
               { id: "overview", icon: "📊", label: "Tổng quan thống kê", count: null },
               { id: "home_cms", icon: "🎨", label: "Home Page CMS", count: null },
               { id: "products", icon: "📦", label: "Quản lý Sản phẩm", count: products.length },
               { id: "orders", icon: "🛒", label: "Quản lý Đơn hàng", count: orders.length },
-              { id: "rentals", icon: "📅", label: "Yêu cầu Thuê máy", count: rentals.length },
-            ].map((tab) => (
+            ] as const).map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`admin-sidebar-btn ${activeTab === tab.id ? "active" : ""}`}
                 style={{
                   justifyContent: isSidebarCollapsed ? "center" : "space-between",
@@ -1220,9 +1100,9 @@ export default function AdminDashboardPage() {
                     🎧
                   </div>
                   <div>
-                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>YÊU CẦU THUÊ MÁY</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{rentals.length}</strong>
-                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Hợp đồng thuê thiết bị</p>
+                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>SẢN PHẨM CHO THUÊ</p>
+                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{products.filter((p) => p.rental_enabled).length}</strong>
+                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Thiết bị hỗ trợ thuê</p>
                   </div>
                 </div>
 
@@ -1832,115 +1712,6 @@ export default function AdminDashboardPage() {
                             >
                               👁 Xem
                             </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 4: RENTAL REQUESTS MANAGEMENT */}
-          {activeTab === "rentals" && (
-            <div>
-              <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                Danh Sách Yêu Cầu Thuê Thiết Bị ({rentals.length})
-              </h2>
-              {rentals.length === 0 ? (
-                <div style={{ padding: "40px", textAlign: "center", backgroundColor: "#121212", color: "#71717a" }}>
-                  Chưa có yêu cầu thuê thiết bị nào trong hệ thống.
-                </div>
-              ) : (
-                <div className="admin-table-container">
-                  <table className="admin-table">
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#a1a1aa", fontSize: "12px", textTransform: "uppercase" }}>
-                        <th style={{ padding: "16px" }}>Mã Thuê / Ngày</th>
-                        <th style={{ padding: "16px" }}>Thời Gian Thuê</th>
-                        <th style={{ padding: "16px" }}>Tiền Thuê</th>
-                        <th style={{ padding: "16px" }}>Tiền Cọc</th>
-                        <th style={{ padding: "16px" }}>Trạng Thái Thuê</th>
-                        <th style={{ padding: "16px" }}>Tiền Cọc / TT</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rentals.map((r) => (
-                        <tr key={r.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                          <td style={{ padding: "16px" }}>
-                            <strong style={{ color: "#fff" }}>{r.request_number}</strong>
-                          </td>
-                          <td style={{ padding: "16px", color: "#fff" }}>
-                            {r.start_date} → {r.end_date}
-                          </td>
-                          <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>{formatCurrency(r.rental_total)}</td>
-                          <td style={{ padding: "16px", color: "#eab308", fontWeight: 700 }}>{formatCurrency(r.deposit_amount)}</td>
-                          <td style={{ padding: "16px" }}>
-                            <select
-                              value={r.status}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                if (val === r.status) return;
-                                setStatusConfirmModal({
-                                  type: "rental_status",
-                                  id: r.id,
-                                  itemCode: r.request_number,
-                                  title: "Xác nhận cập nhật trạng thái Hợp đồng thuê",
-                                  currentLabel: RENTAL_STATUS_LABELS[r.status] || r.status,
-                                  newLabel: RENTAL_STATUS_LABELS[val] || val,
-                                  newStatus: val,
-                                });
-                              }}
-                              style={{
-                                padding: "6px 10px",
-                                backgroundColor: "#1e1e24",
-                                color: "#fff",
-                                border: "1px solid #3f3f46",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              <option value="pending">⏳ Chờ liên hệ</option>
-                              <option value="contacted">📞 Đã liên hệ</option>
-                              <option value="confirmed">✓ Đã xác nhận</option>
-                              <option value="completed">🎉 Đã trả máy</option>
-                              <option value="cancelled">✕ Đã hủy</option>
-                            </select>
-                          </td>
-                          <td style={{ padding: "16px" }}>
-                            <select
-                              value={r.payment_status || "unpaid"}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                const current = r.payment_status || "unpaid";
-                                if (val === current) return;
-                                setStatusConfirmModal({
-                                  type: "rental_payment",
-                                  id: r.id,
-                                  itemCode: r.request_number,
-                                  title: "Xác nhận cập nhật cọc / thanh toán Thuê máy",
-                                  currentLabel: RENTAL_PAYMENT_STATUS_LABELS[current] || current,
-                                  newLabel: RENTAL_PAYMENT_STATUS_LABELS[val] || val,
-                                  newPaymentStatus: val,
-                                });
-                              }}
-                              style={{
-                                padding: "6px 10px",
-                                backgroundColor: r.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "#1e1e24",
-                                color: r.payment_status === "paid" ? "#4ade80" : "#facc15",
-                                border: "1px solid #3f3f46",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              <option value="unpaid">Chưa cọc</option>
-                              <option value="partially_paid">Đã cọc 1 phần</option>
-                              <option value="paid">Đã cọc đủ</option>
-                              <option value="refunded">Đã hoàn cọc</option>
-                            </select>
                           </td>
                         </tr>
                       ))}

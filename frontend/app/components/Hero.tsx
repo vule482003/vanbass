@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { DEFAULT_HOME_DATA, HeroPanelCenter, HeroPanelLeft, HeroPanelRight } from "../types/home_config";
 
 function VuMeter() {
@@ -33,9 +32,6 @@ export default function Hero({
   showHero = true,
   isInsideIframe = false,
 }: HeroProps) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-  const apiBase = apiUrl.replace(/\/api$/, "");
-
   const resolveImage = (imgUrl: string | undefined, defaultFallback: string) => {
     if (!imgUrl || !imgUrl.trim()) return defaultFallback;
     if (imgUrl.startsWith("http:") || imgUrl.startsWith("https:") || imgUrl.startsWith("blob:") || imgUrl.startsWith("data:")) {

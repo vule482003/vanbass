@@ -8,6 +8,13 @@ import { useAuth } from "../lib/auth-context";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
 import LanguageSwitcher from "./LanguageSwitcher";
 
+const navLinks = [
+  { href: "/", label: "Trang chủ" },
+  { href: "/products", label: "Sản phẩm" },
+  { href: "/about", label: "Về VanBass" },
+  { href: "/contact", label: "Liên hệ" },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -92,13 +99,6 @@ export default function Header() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const navLinks = [
-    { href: "/", label: "Trang chủ" },
-    { href: "/products", label: "Sản phẩm" },
-    { href: "/about", label: "Về VanBass" },
-    { href: "/contact", label: "Liên hệ" },
-  ];
 
   // Dynamic Sliding Green Underline Logic
   useEffect(() => {
