@@ -20,6 +20,7 @@ from app.models.order import Order, OrderStatus, PaymentStatus
 from app.models.payment import Payment, PaymentMethod, PaymentTransactionStatus
 from app.models.user import User
 from app.schemas.vnpay import VnpayCreatePaymentResponse, VnpayIpnResponse
+from app.services.email_service import EmailService
 from app.services.vnpay_service import VnpayService
 
 logger = logging.getLogger(__name__)
@@ -321,6 +322,25 @@ def _confirm_payment(
         "Payment confirmed | order=%s txn=%s bank=%s",
         order.order_number, transaction_id, bank_code,
     )
+
+    # Dispatch email confirmation to customer & notification to staff now that online payment succeeded
+    try:
+        user_record = db.get(User, order.user_id) if order.user_id else None
+        cust_email = (
+            user_record.email
+            if user_record and user_record.email and "@" in user_record.email and not user_record.email.endswith("@vanbass.local")
+            else None
+        )
+        if cust_email:
+            EmailService.send_order_confirmation_to_customer(
+                order=order,
+                customer_email=cust_email,
+            )
+        EmailService.send_order_notification_to_staff(
+            order=order,
+        )
+    except Exception as email_err:
+        logger.warning("VNPAY confirmation email dispatch error: %s", email_err)
 
 
 def _fail_payment(order: Order, db: Session) -> None:

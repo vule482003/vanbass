@@ -77,17 +77,20 @@ def create_order(
         ):
             customer_email = user_record.email
 
-    # Dispatch email confirmation to customer
-    if customer_email:
-        EmailService.send_order_confirmation_to_customer(
+    # Dispatch email confirmation to customer & staff ONLY if COD or already PAID
+    # For online payment, emails are dispatched when online payment succeeds in VNPAY/webhook
+    is_online_payment = (payload.payment_method or "").lower() in [
+        "vietqr", "vnpay", "online", "banking", "card", "bank_transfer"
+    ]
+    if not is_online_payment or order.payment_status == PaymentStatus.PAID:
+        if customer_email:
+            EmailService.send_order_confirmation_to_customer(
+                order=order,
+                customer_email=customer_email,
+            )
+        EmailService.send_order_notification_to_staff(
             order=order,
-            customer_email=customer_email,
         )
-
-    # Dispatch alert email to shop & staff
-    EmailService.send_order_notification_to_staff(
-        order=order,
-    )
 
     return order
 
@@ -100,9 +103,29 @@ def list_orders(
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> OrderListResponse:
+    from app.models.payment import Payment, PaymentMethod
+
     query = select(Order)
     if status_filter:
         query = query.where(Order.status == status_filter)
+
+    # Exclude orders where customer selected online payment but never completed payment
+    # (prevents abandoned/spam checkouts from cluttering admin management)
+    online_unpaid_order_ids = (
+        select(Payment.order_id)
+        .where(
+            Payment.order_id.is_not(None),
+            Payment.payment_method.in_([
+                PaymentMethod.VIETQR,
+                PaymentMethod.BANK_TRANSFER,
+                PaymentMethod.CARD,
+            ]),
+        )
+    )
+    query = query.where(
+        (Order.payment_status == PaymentStatus.PAID)
+        | (~Order.id.in_(online_unpaid_order_ids))
+    )
 
     orders = (
         db.execute(query.order_by(Order.created_at.desc()).offset(skip).limit(limit))

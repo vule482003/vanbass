@@ -23,7 +23,9 @@ function LoginForm() {
   // Auto redirect if already logged in
   useEffect(() => {
     if (!isAuthLoading && isAuthenticated && user) {
-      if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/login") {
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/login") {
         router.push(redirectUrl);
       } else {
         router.push("/");
@@ -43,7 +45,9 @@ function LoginForm() {
     try {
       const res = await login(email, password);
       if (res.success) {
-        if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/login") {
+        if (res.role === "admin" || res.user?.role === "admin") {
+          router.push("/admin");
+        } else if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl !== "/login") {
           router.push(redirectUrl);
         } else {
           router.push("/");
