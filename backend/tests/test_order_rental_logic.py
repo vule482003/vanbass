@@ -205,7 +205,7 @@ def test_order_cancel_restocks_inventory():
     mock_db.execute.return_value.scalars.return_value.all.return_value = [fake_product]
 
     # Cancel order
-    cancelled_order = OrderService.cancel_order(
+    OrderService.cancel_order(
         order_id=order_id,
         current_user_id=fake_order.user_id,
         is_admin=False,
@@ -455,4 +455,3 @@ def test_order_response_and_list_response_serialization():
     assert len(list_resp.items) == 1
     assert list_resp.items[0].items[0].product_sku == "DDJ-FLX4-PIO"
     assert list_resp.items[0].items[0].line_total == Decimal("10000000.00")
-

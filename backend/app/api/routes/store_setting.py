@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -28,10 +28,22 @@ def get_store_settings(
     ).scalar_one_or_none()
 
     if settings is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Store settings not configured",
+        settings = StoreSettings(
+            store_name="VanBass Music Center",
+            phone="0905123456",
+            rental_phone="0905123456",
+            email="contact@vanbass.vn",
+            rental_email="rental@vanbass.vn",
+            address="123 Nguyen Van Linh, Da Nang",
+            city="Da Nang",
+            country="Vietnam",
+            business_hours="08:00 - 21:00 hàng ngày",
+            facebook_page_id="vanbassmusiccenter",
+            rental_information="Hỗ trợ tư vấn thuê âm thanh, ánh sáng, DJ chuyên nghiệp.",
         )
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
 
     return settings
 
@@ -50,10 +62,22 @@ def update_store_settings(
     ).scalar_one_or_none()
 
     if settings is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Store settings not configured",
+        settings = StoreSettings(
+            store_name="VanBass Music Center",
+            phone="0905123456",
+            rental_phone="0905123456",
+            email="contact@vanbass.vn",
+            rental_email="rental@vanbass.vn",
+            address="123 Nguyen Van Linh, Da Nang",
+            city="Da Nang",
+            country="Vietnam",
+            business_hours="08:00 - 21:00 hàng ngày",
+            facebook_page_id="vanbassmusiccenter",
+            rental_information="Hỗ trợ tư vấn thuê âm thanh, ánh sáng, DJ chuyên nghiệp.",
         )
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
 
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(settings, field, value)

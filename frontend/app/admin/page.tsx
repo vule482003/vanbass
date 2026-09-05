@@ -31,6 +31,45 @@ interface CategoryItem {
   id: string;
   name: string;
   slug: string;
+  description?: string;
+  image_url?: string;
+  is_active?: boolean;
+}
+
+interface DashboardData {
+  users: { total: number };
+  products: { total: number; active: number };
+  orders: { total: number };
+  rental_requests: { total: number; pending: number };
+  revenue: { order: number; rental: number; total: number; currency: string };
+  recent_orders: OrderItem[];
+  top_selling_products: Array<{
+    id: string;
+    name: string;
+    sku: string;
+    slug: string;
+    units_sold: number;
+    revenue: number;
+    image_url?: string;
+    sale_price: number;
+    rental_enabled: boolean;
+    stock_quantity: number;
+  }>;
+}
+
+interface StoreSettingsData {
+  id?: string;
+  store_name: string;
+  phone: string;
+  rental_phone?: string;
+  email?: string;
+  rental_email?: string;
+  address: string;
+  city: string;
+  country: string;
+  business_hours?: string;
+  facebook_page_id?: string;
+  rental_information?: string;
 }
 
 interface OrderLineItem {
@@ -96,6 +135,16 @@ interface DeleteProductConfirmState {
   sku?: string;
 }
 
+interface StaffUserItem {
+  id: string;
+  email: string;
+  role: string;
+  is_active: boolean;
+  full_name: string;
+  phone: string;
+  created_at?: string;
+}
+
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "0 ₫";
   return new Intl.NumberFormat("vi-VN", {
@@ -104,7 +153,7 @@ function formatCurrency(amount?: number) {
   }).format(amount);
 }
 
-type AdminTab = "overview" | "home_cms" | "products" | "orders";
+type AdminTab = "overview" | "home_cms" | "products" | "categories" | "orders" | "staff" | "settings";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -112,6 +161,75 @@ export default function AdminDashboardPage() {
 
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Staff / User management states
+  const [staffUsers, setStaffUsers] = useState<StaffUserItem[]>([]);
+  const [isStaffLoading, setIsStaffLoading] = useState(false);
+  const [staffSearchQuery, setStaffSearchQuery] = useState("");
+  const [staffRoleFilter, setStaffRoleFilter] = useState("all");
+  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
+  const [staffEmail, setStaffEmail] = useState("");
+  const [staffPhone, setStaffPhone] = useState("");
+  const [staffFullName, setStaffFullName] = useState("");
+  const [staffPassword, setStaffPassword] = useState("");
+  const [staffRole, setStaffRole] = useState("staff");
+  const [isSubmittingStaff, setIsSubmittingStaff] = useState(false);
+
+  // Tab persistence: initialize from URL query or localStorage
+  useEffect(() => {
+    queueMicrotask(() => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTab = params.get("tab") as AdminTab;
+        const validTabs: AdminTab[] = ["overview", "home_cms", "products", "categories", "orders", "staff", "settings"];
+        if (urlTab && validTabs.includes(urlTab)) {
+          if (user?.role === "staff" && (urlTab === "staff" || urlTab === "settings")) {
+            setActiveTab("overview");
+          } else {
+            setActiveTab(urlTab);
+          }
+        } else {
+          const savedTab = localStorage.getItem("vanbass_admin_tab") as AdminTab;
+          if (savedTab && validTabs.includes(savedTab)) {
+            if (user?.role === "staff" && (savedTab === "staff" || savedTab === "settings")) {
+              setActiveTab("overview");
+            } else {
+              setActiveTab(savedTab);
+              const u = new URL(window.location.href);
+              u.searchParams.set("tab", savedTab);
+              window.history.replaceState(null, "", u.toString());
+            }
+          }
+        }
+      } catch {
+        // Ignore
+      }
+    });
+  }, [user]);
+
+  // Guard activeTab if user role is staff
+  useEffect(() => {
+    if (user?.role === "staff" && (activeTab === "staff" || activeTab === "settings")) {
+      queueMicrotask(() => {
+        setActiveTab("overview");
+      });
+    }
+  }, [user?.role, activeTab]);
+
+  const handleTabChange = useCallback((tab: AdminTab) => {
+    if (user?.role === "staff" && (tab === "staff" || tab === "settings")) {
+      return;
+    }
+    setActiveTab(tab);
+    try {
+      localStorage.setItem("vanbass_admin_tab", tab);
+      const u = new URL(window.location.href);
+      u.searchParams.set("tab", tab);
+      window.history.replaceState(null, "", u.toString());
+    } catch {
+      // Ignore
+    }
+  }, [user]);
 
   // Home CMS states
   const [homeConfig, setHomeConfig] = useState<HomeData>(DEFAULT_HOME_DATA);
@@ -161,10 +279,37 @@ export default function AdminDashboardPage() {
   }, []);
 
   // Data states
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [, setIsDataLoading] = useState(true);
+
+  // Category management states
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [showEditCategoryModal, setShowEditCategoryModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<CategoryItem | null>(null);
+  const [catNameInput, setCatNameInput] = useState("");
+  const [catSlugInput, setCatSlugInput] = useState("");
+  const [catDescInput, setCatDescInput] = useState("");
+  const [isSubmittingCat, setIsSubmittingCat] = useState(false);
+
+  // Store Settings states
+  const [storeSettings, setStoreSettings] = useState<StoreSettingsData>({
+    store_name: "VanBass Music Center",
+    phone: "0905123456",
+    rental_phone: "0905123456",
+    email: "contact@vanbass.vn",
+    rental_email: "rental@vanbass.vn",
+    address: "123 Nguyen Van Linh, Da Nang",
+    city: "Da Nang",
+    country: "Vietnam",
+    business_hours: "08:00 - 21:00 hàng ngày",
+    facebook_page_id: "vanbassmusiccenter",
+    rental_information: "Hỗ trợ tư vấn thuê âm thanh, ánh sáng, DJ chuyên nghiệp.",
+  });
+  const [isStoreSettingsLoading, setIsStoreSettingsLoading] = useState(false);
+  const [isStoreSettingsSaving, setIsStoreSettingsSaving] = useState(false);
 
   // Add Product Modal states
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -224,9 +369,11 @@ export default function AdminDashboardPage() {
     if (!isLoading) {
       if (!isAuthenticated) {
         router.push("/login?redirect=/admin");
+      } else if (user && user.role !== "admin" && user.role !== "staff") {
+        router.push("/");
       }
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, user, router]);
 
   const sendLiveConfigToIframe = useCallback(() => {
     if (iframeRef.current?.contentWindow) {
@@ -305,44 +452,113 @@ export default function AdminDashboardPage() {
     setActionSuccessMsg("✓ Đã khôi phục về mẫu cấu hình mặc định ban đầu.");
   };
 
-  const loadAllData = useCallback(async () => {
-    setIsDataLoading(true);
+  const fetchDashboardData = useCallback(async () => {
+    if (!token) return;
     try {
       const cacheBust = `_t=${Date.now()}`;
-      // 1. Fetch categories
-      const catRes = await fetch(`${apiUrl}/categories?${cacheBust}`, { cache: "no-store" });
-      if (catRes.ok) {
-        const catData = await catRes.json();
-        setCategories(catData);
-        if (catData.length > 0 && !categoryId) {
-          setCategoryId(catData[0].id);
+      const res = await fetch(`${apiUrl}/admin/dashboard?${cacheBust}`, {
+        cache: "no-store",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDashboardData(data);
+      }
+    } catch (err) {
+      console.error("Dashboard fetch error:", err);
+    }
+  }, [apiUrl, token]);
+
+  const fetchCategoriesData = useCallback(async () => {
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/categories?${cacheBust}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data);
+        if (data.length > 0 && !categoryId) {
+          setCategoryId(data[0].id);
         }
       }
+    } catch (err) {
+      console.error("Categories fetch error:", err);
+    }
+  }, [apiUrl, categoryId]);
 
-      // 2. Fetch products
-      const prodRes = await fetch(`${apiUrl}/products?${cacheBust}`, {
+  const fetchProductsData = useCallback(async () => {
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/products?${cacheBust}`, {
         cache: "no-store",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (prodRes.ok) {
-        const prodData = await prodRes.json();
-        setProducts(prodData);
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
       }
+    } catch (err) {
+      console.error("Products fetch error:", err);
+    }
+  }, [apiUrl, token]);
 
-      // 3. Fetch orders
-      if (token) {
-        const orderRes = await fetch(`${apiUrl}/orders?${cacheBust}`, {
-          cache: "no-store",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (orderRes.ok) {
-          const orderData = await orderRes.json();
-          setOrders(orderData.items || []);
-        }
+  const fetchOrdersData = useCallback(async () => {
+    if (!token) return;
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/orders?${cacheBust}`, {
+        cache: "no-store",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data.items || []);
       }
+    } catch (err) {
+      console.error("Orders fetch error:", err);
+    }
+  }, [apiUrl, token]);
 
-      // 4. Fetch home configuration
-      setIsHomeConfigLoading(true);
+  const fetchStaffData = useCallback(async () => {
+    if (!token || user?.role === "staff") return;
+    setIsStaffLoading(true);
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/admin/users?${cacheBust}`, {
+        cache: "no-store",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setStaffUsers(data.items || []);
+      }
+    } catch (err) {
+      console.error("Staff fetch error:", err);
+    } finally {
+      setIsStaffLoading(false);
+    }
+  }, [apiUrl, token, user?.role]);
+
+  const fetchStoreSettingsData = useCallback(async () => {
+    if (!token || user?.role === "staff") return;
+    setIsStoreSettingsLoading(true);
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/store-settings?${cacheBust}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        setStoreSettings(data);
+      }
+    } catch (err) {
+      console.error("Store settings fetch error:", err);
+    } finally {
+      setIsStoreSettingsLoading(false);
+    }
+  }, [apiUrl, token, user?.role]);
+
+  const fetchHomeConfigData = useCallback(async () => {
+    setIsHomeConfigLoading(true);
+    try {
+      const cacheBust = `_t=${Date.now()}`;
       const homeRes = await fetch(`${apiUrl}/home-config?${cacheBust}`, { cache: "no-store" });
       if (homeRes.ok) {
         const homeJson = await homeRes.json();
@@ -368,20 +584,326 @@ export default function AdminDashboardPage() {
             local_cta: { ...DEFAULT_HOME_DATA.local_cta, ...(homeJson.data.local_cta || {}) },
             floating_contacts: { ...DEFAULT_HOME_DATA.floating_contacts, ...(homeJson.data.floating_contacts || {}) },
           };
+
           setHomeConfig(merged);
           setSavedHomeConfig(merged);
         }
       }
     } catch (e) {
+      console.error("Failed to fetch home config:", e);
+    } finally {
+      setIsHomeConfigLoading(false);
+    }
+  }, [apiUrl]);
+
+  const loadAllData = useCallback(async () => {
+    setIsDataLoading(true);
+    try {
+      await Promise.all([
+        fetchDashboardData(),
+        fetchCategoriesData(),
+      ]);
+      fetchProductsData();
+    } catch (e) {
       console.error("Failed to fetch admin data:", e);
     } finally {
       setIsDataLoading(false);
-      setIsHomeConfigLoading(false);
     }
-  }, [apiUrl, token, categoryId]);
+  }, [fetchDashboardData, fetchCategoriesData, fetchProductsData]);
+
+  // Lazy tab data loading
+  useEffect(() => {
+    if (!token) return;
+    startTransition(() => {
+      if (activeTab === "overview") {
+        void fetchDashboardData();
+      } else if (activeTab === "products") {
+        void fetchProductsData();
+      } else if (activeTab === "orders") {
+        void fetchOrdersData();
+      } else if (activeTab === "staff" && user?.role !== "staff") {
+        void fetchStaffData();
+      } else if (activeTab === "settings" && user?.role !== "staff") {
+        void fetchStoreSettingsData();
+      } else if (activeTab === "home_cms") {
+        void fetchHomeConfigData();
+      }
+    });
+  }, [activeTab, token, user?.role, fetchDashboardData, fetchProductsData, fetchOrdersData, fetchStaffData, fetchStoreSettingsData, fetchHomeConfigData]);
+
+  // Category CRUD Handlers
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!catNameInput.trim()) {
+      setActionErrorMsg("Vui lòng nhập tên danh mục.");
+      return;
+    }
+    const slug =
+      catSlugInput.trim() ||
+      catNameInput
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    setIsSubmittingCat(true);
+    try {
+      const res = await fetch(`${apiUrl}/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: catNameInput.trim(),
+          slug,
+          description: catDescInput.trim() || undefined,
+        }),
+      });
+
+      if (res.ok) {
+        const newCat = await res.json();
+        setCategories((prev) => [...prev, newCat]);
+        setShowAddCategoryModal(false);
+        setCatNameInput("");
+        setCatSlugInput("");
+        setCatDescInput("");
+        setActionSuccessMsg(`✓ Đã tạo danh mục "${newCat.name}" thành công!`);
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Lỗi tạo danh mục" }));
+        setActionErrorMsg(err.detail || "Không thể tạo danh mục.");
+      }
+    } catch (err) {
+      console.error(err);
+      setActionErrorMsg("Lỗi kết nối máy chủ khi tạo danh mục.");
+    } finally {
+      setIsSubmittingCat(false);
+    }
+  };
+
+  const handleUpdateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCategory) return;
+    if (!catNameInput.trim()) {
+      setActionErrorMsg("Vui lòng nhập tên danh mục.");
+      return;
+    }
+    const slug =
+      catSlugInput.trim() ||
+      catNameInput
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    setIsSubmittingCat(true);
+    try {
+      const res = await fetch(`${apiUrl}/categories/${editingCategory.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: catNameInput.trim(),
+          slug,
+          description: catDescInput.trim() || undefined,
+        }),
+      });
+
+      if (res.ok) {
+        const updatedCat = await res.json();
+        setCategories((prev) => prev.map((c) => (c.id === updatedCat.id ? updatedCat : c)));
+        setShowEditCategoryModal(false);
+        setEditingCategory(null);
+        setCatNameInput("");
+        setCatSlugInput("");
+        setCatDescInput("");
+        setActionSuccessMsg(`✓ Đã cập nhật danh mục "${updatedCat.name}" thành công!`);
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật danh mục" }));
+        setActionErrorMsg(err.detail || "Không thể cập nhật danh mục.");
+      }
+    } catch (err) {
+      console.error(err);
+      setActionErrorMsg("Lỗi kết nối máy chủ khi cập nhật danh mục.");
+    } finally {
+      setIsSubmittingCat(false);
+    }
+  };
+
+  const handleDeleteCategory = async (cat: CategoryItem) => {
+    if (!confirm(`Bạn có chắc chắn muốn xóa danh mục "${cat.name}"?`)) return;
+    try {
+      const res = await fetch(`${apiUrl}/categories/${cat.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok || res.status === 204) {
+        setCategories((prev) => prev.filter((c) => c.id !== cat.id));
+        setActionSuccessMsg(`✓ Đã xóa danh mục "${cat.name}" thành công.`);
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Không thể xóa danh mục" }));
+        setActionErrorMsg(err.detail || "Không thể xóa danh mục.");
+      }
+    } catch (err) {
+      console.error(err);
+      setActionErrorMsg("Lỗi kết nối máy chủ khi xóa danh mục.");
+    }
+  };
+
+  // Store Settings Handler
+  const handleSaveStoreSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsStoreSettingsSaving(true);
+    try {
+      const res = await fetch(`${apiUrl}/store-settings`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(storeSettings),
+      });
+
+      if (res.ok) {
+        const updated = await res.json();
+        setStoreSettings(updated);
+        setActionSuccessMsg("✓ Đã lưu cài đặt cửa hàng & Facebook Page ID thành công!");
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Lỗi lưu cài đặt" }));
+        setActionErrorMsg(err.detail || "Không thể lưu cài đặt cửa hàng.");
+      }
+    } catch (err) {
+      console.error(err);
+      setActionErrorMsg("Lỗi kết nối máy chủ khi lưu cài đặt cửa hàng.");
+    } finally {
+      setIsStoreSettingsSaving(false);
+    }
+  };
+
+  const handleCreateStaff = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!staffEmail.trim() || !staffPhone.trim() || !staffFullName.trim() || !staffPassword) {
+      setActionErrorMsg("Vui lòng điền đầy đủ Email, Số điện thoại, Họ tên và Mật khẩu.");
+      return;
+    }
+    if (staffPassword.length < 6) {
+      setActionErrorMsg("Mật khẩu phải chứa ít nhất 6 ký tự.");
+      return;
+    }
+    setIsSubmittingStaff(true);
+    setActionErrorMsg("");
+    try {
+      const res = await fetch(`${apiUrl}/admin/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email: staffEmail.trim(),
+          phone: staffPhone.trim(),
+          full_name: staffFullName.trim(),
+          password: staffPassword,
+          role: staffRole,
+        }),
+      });
+
+      if (res.ok) {
+        setActionSuccessMsg(`Đã tạo tài khoản nhân viên "${staffFullName}" thành công!`);
+        setShowAddStaffModal(false);
+        setStaffEmail("");
+        setStaffPhone("");
+        setStaffFullName("");
+        setStaffPassword("");
+        setStaffRole("admin");
+        const reloadRes = await fetch(`${apiUrl}/admin/users?t=${Date.now()}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (reloadRes.ok) {
+          const d = await reloadRes.json();
+          setStaffUsers(d.items || []);
+        }
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Không thể tạo tài khoản nhân viên." }));
+        setActionErrorMsg(err.detail || "Không thể tạo tài khoản nhân viên.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối máy chủ khi tạo tài khoản nhân viên.");
+    } finally {
+      setIsSubmittingStaff(false);
+    }
+  };
+
+  const handleToggleStaffStatus = async (targetUser: StaffUserItem) => {
+    if (targetUser.id === user?.id || targetUser.email === user?.email) {
+      setActionErrorMsg("Không thể tự khóa hoặc xóa chính mình");
+      return;
+    }
+    try {
+      const res = await fetch(`${apiUrl}/admin/users/${targetUser.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          is_active: !targetUser.is_active,
+        }),
+      });
+      if (res.ok) {
+        setActionSuccessMsg(`Đã ${targetUser.is_active ? "khóa" : "kích hoạt"} tài khoản "${targetUser.full_name}"!`);
+        setStaffUsers((prev) =>
+          prev.map((u) => (u.id === targetUser.id ? { ...u, is_active: !u.is_active } : u))
+        );
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Không thể cập nhật trạng thái." }));
+        setActionErrorMsg(err.detail || "Không thể cập nhật trạng thái.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối máy chủ khi cập nhật trạng thái.");
+    }
+  };
+
+  const handleDeleteStaff = async (targetUser: StaffUserItem) => {
+    if (targetUser.id === user?.id || targetUser.email === user?.email) {
+      setActionErrorMsg("Không thể tự khóa hoặc xóa chính mình");
+      return;
+    }
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa tài khoản "${targetUser.full_name}" (${targetUser.email})?`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`${apiUrl}/admin/users/${targetUser.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        setActionSuccessMsg(`Đã xóa tài khoản "${targetUser.full_name}" thành công!`);
+        setStaffUsers((prev) => prev.filter((u) => u.id !== targetUser.id));
+      } else {
+        const err = await res.json().catch(() => ({ detail: "Không thể xóa tài khoản." }));
+        setActionErrorMsg(err.detail || "Không thể xóa tài khoản.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối máy chủ khi xóa tài khoản.");
+    }
+  };
 
   useEffect(() => {
-    if (user?.role === "admin" && token) {
+    if ((user?.role === "admin" || user?.role === "staff") && token) {
       startTransition(() => {
         void loadAllData();
       });
@@ -787,13 +1309,13 @@ export default function AdminDashboardPage() {
     );
   }
 
-  if (user?.role !== "admin") {
+  if (!user || (user.role !== "admin" && user.role !== "staff")) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", backgroundColor: "#090909", color: "#fff", textAlign: "center", padding: "20px" }}>
         <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔒</div>
         <h1 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 12px 0" }}>Truy cập bị từ chối</h1>
         <p style={{ color: "#a1a1aa", maxWidth: "420px", marginBottom: "24px" }}>
-          Tài khoản <strong>{user?.email}</strong> không có quyền Quản trị viên (Admin) để truy cập trang này.
+          Tài khoản <strong>{user?.email}</strong> không có quyền Quản trị viên (Admin) hoặc Nhân viên (Staff) để truy cập trang này.
         </p>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
           <Link href="/profile" style={{ padding: "12px 24px", backgroundColor: "#22c55e", color: "#000", fontWeight: 700, textDecoration: "none", borderRadius: "6px" }}>
@@ -841,8 +1363,8 @@ export default function AdminDashboardPage() {
             🌐 Xem Website Cửa hàng ↗
           </Link>
           <span style={{ fontSize: "13px", color: "#71717a" }}>|</span>
-          <span style={{ fontSize: "13px", color: "#22c55e", fontWeight: 600 }}>
-            ● {user.email} (Admin)
+          <span style={{ fontSize: "13px", color: user.role === "staff" ? "#34d399" : "#22c55e", fontWeight: 600 }}>
+            ● {user.email} ({user.role === "staff" ? "Staff" : "Admin"})
           </span>
           <button
             onClick={() => {
@@ -902,46 +1424,100 @@ export default function AdminDashboardPage() {
             flexDirection: "column",
           }}
         >
-          {/* Arrow Toggle Button floating on right border */}
-          <button
-            type="button"
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          {/* Modern Sleek Header with Sidebar Toggle Button */}
+          <div
             style={{
-              position: "absolute",
-              top: "50%",
-              transform: "translateY(-50%)",
-              right: "-13px",
-              width: "26px",
-              height: "26px",
-              borderRadius: "50%",
-              backgroundColor: "#18181b",
-              border: "1px solid #22c55e",
-              color: "#4ade80",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: 90,
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.7), 0 0 10px rgba(34, 197, 94, 0.3)",
-              fontSize: "12px",
-              fontWeight: 900,
-              transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              justifyContent: isSidebarCollapsed ? "center" : "space-between",
+              padding: "4px 4px 14px 4px",
+              marginBottom: "8px",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
             }}
-            title={isSidebarCollapsed ? "Mở rộng thanh Menu" : "Thu gọn thanh Menu"}
           >
-            {isSidebarCollapsed ? "▶" : "◀"}
-          </button>
+            {!isSidebarCollapsed && (
+              <span
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  color: "#71717a",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Điều hướng
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "32px",
+                height: "32px",
+                borderRadius: "8px",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "#e4e4e7",
+                cursor: "pointer",
+                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+              }}
+              title={isSidebarCollapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(34, 197, 94, 0.15)";
+                e.currentTarget.style.borderColor = "rgba(34, 197, 94, 0.5)";
+                e.currentTarget.style.color = "#4ade80";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.12)";
+                e.currentTarget.style.color = "#e4e4e7";
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <line x1="9" y1="3" x2="9" y2="21" />
+                {isSidebarCollapsed ? (
+                  <path d="M14 9l3 3-3 3" />
+                ) : (
+                  <path d="M17 9l-3 3 3 3" />
+                )}
+              </svg>
+            </button>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%", overflowY: "auto" }}>
             {([
               { id: "overview", icon: "📊", label: "Tổng quan thống kê", count: null },
               { id: "home_cms", icon: "🎨", label: "Home Page CMS", count: null },
-              { id: "products", icon: "📦", label: "Quản lý Sản phẩm", count: products.length },
-              { id: "orders", icon: "🛒", label: "Quản lý Đơn hàng", count: orders.length },
-            ] as const).map((tab) => (
+              { id: "products", icon: "📦", label: "Quản lý Sản phẩm", count: products.length || dashboardData?.products?.total || null },
+              { id: "categories", icon: "🏷️", label: "Quản lý Danh mục", count: categories.length },
+              { id: "orders", icon: "🛒", label: "Quản lý Đơn hàng", count: orders.length || dashboardData?.orders?.total || null },
+              { id: "staff", icon: "👥", label: "Quản lý Tài khoản", count: staffUsers.length || dashboardData?.users?.total || null },
+              { id: "settings", icon: "⚙️", label: "Cài đặt Cửa hàng", count: null },
+            ] as const)
+              .filter((tab) => {
+                if (user?.role === "staff") {
+                  return tab.id !== "staff" && tab.id !== "settings";
+                }
+                return true;
+              })
+              .map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`admin-sidebar-btn ${activeTab === tab.id ? "active" : ""}`}
                 style={{
                   justifyContent: isSidebarCollapsed ? "center" : "space-between",
@@ -1079,7 +1655,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div>
                     <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>TỔNG SẢN PHẨM</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{products.length}</strong>
+                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{dashboardData?.products?.total ?? products.length}</strong>
                     <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Trong kho hàng VanBass</p>
                   </div>
                 </div>
@@ -1090,19 +1666,19 @@ export default function AdminDashboardPage() {
                   </div>
                   <div>
                     <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐƠN MUA HÀNG</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{orders.length}</strong>
+                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{dashboardData?.orders?.total ?? orders.length}</strong>
                     <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Đơn đặt hàng bán mới</p>
                   </div>
                 </div>
 
                 <div className="admin-stat-card">
                   <div className="admin-stat-icon" style={{ backgroundColor: "rgba(234, 179, 8, 0.15)", color: "#eab308" }}>
-                    🎧
+                    💰
                   </div>
                   <div>
-                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>SẢN PHẨM CHO THUÊ</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{products.filter((p) => p.rental_enabled).length}</strong>
-                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Thiết bị hỗ trợ thuê</p>
+                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>DOANH THU ĐÃ THU</p>
+                    <strong style={{ fontSize: "28px", fontWeight: 900, color: "#4ade80" }}>{formatCurrency(dashboardData?.revenue?.total || 0)}</strong>
+                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Đã thanh toán (VND)</p>
                   </div>
                 </div>
 
@@ -1115,6 +1691,402 @@ export default function AdminDashboardPage() {
                     <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{categories.length}</strong>
                     <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Chuyên mục thiết bị</p>
                   </div>
+                </div>
+              </div>
+
+              {/* KHỐI 1: 5 ĐƠN HÀNG GẦN NHẤT */}
+              <div style={{ marginBottom: "40px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span>🛒</span> 5 Đơn Hàng Gần Nhất
+                    </h3>
+                    <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
+                      Các đơn hàng mua sắm gần đây cần theo dõi và xử lý
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange("orders")}
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "rgba(34, 197, 94, 0.12)",
+                      border: "1px solid rgba(34, 197, 94, 0.4)",
+                      color: "#4ade80",
+                      fontSize: "12.5px",
+                      fontWeight: 700,
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    Xem tất cả {orders.length || dashboardData?.orders?.total || 0} đơn hàng →
+                  </button>
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: "#121215",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: "10px",
+                    overflow: "hidden",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#a1a1aa", fontSize: "11.5px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Mã Đơn</th>
+                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Khách Hàng</th>
+                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Ngày Đặt</th>
+                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Tổng Tiền</th>
+                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Thanh Toán</th>
+                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Trạng Thái</th>
+                        <th style={{ padding: "14px 18px", fontWeight: 700, textAlign: "right" }}>Thao Tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(dashboardData?.recent_orders && dashboardData.recent_orders.length > 0 ? dashboardData.recent_orders : orders.slice(0, 5)).map((ord) => (
+                        <tr
+                          key={ord.id}
+                          style={{
+                            borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                            transition: "background 0.15s ease",
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                        >
+                          <td style={{ padding: "14px 18px", fontWeight: 800, color: "#4ade80", fontFamily: "monospace" }}>
+                            #{ord.order_number}
+                          </td>
+                          <td style={{ padding: "14px 18px" }}>
+                            <div style={{ fontWeight: 700, color: "#fff" }}>{ord.shipping_name}</div>
+                            <div style={{ color: "#71717a", fontSize: "12px" }}>{ord.shipping_phone}</div>
+                          </td>
+                          <td style={{ padding: "14px 18px", color: "#a1a1aa" }}>
+                            {new Date(ord.created_at).toLocaleDateString("vi-VN", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
+                          </td>
+                          <td style={{ padding: "14px 18px", fontWeight: 800, color: "#fff" }}>
+                            {formatCurrency(ord.total_amount)}
+                          </td>
+                          <td style={{ padding: "14px 18px" }}>
+                            <span
+                              style={{
+                                display: "inline-block",
+                                padding: "3px 8px",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                backgroundColor:
+                                  ord.payment_status === "paid"
+                                    ? "rgba(34, 197, 94, 0.15)"
+                                    : "rgba(234, 179, 8, 0.15)",
+                                color: ord.payment_status === "paid" ? "#4ade80" : "#fde047",
+                                border:
+                                  ord.payment_status === "paid"
+                                    ? "1px solid rgba(34, 197, 94, 0.4)"
+                                    : "1px solid rgba(234, 179, 8, 0.4)",
+                              }}
+                            >
+                              {ORDER_PAYMENT_STATUS_LABELS[ord.payment_status] || ord.payment_status}
+                            </span>
+                          </td>
+                          <td style={{ padding: "14px 18px" }}>
+                            <span
+                              style={{
+                                display: "inline-block",
+                                padding: "3px 8px",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                                color: "#e4e4e7",
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                              }}
+                            >
+                              {ORDER_STATUS_LABELS[ord.status] || ord.status}
+                            </span>
+                          </td>
+                          <td style={{ padding: "14px 18px", textAlign: "right" }}>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedOrderDetail(ord)}
+                              style={{
+                                padding: "6px 12px",
+                                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                                border: "1px solid rgba(255, 255, 255, 0.12)",
+                                color: "#fff",
+                                borderRadius: "5px",
+                                fontSize: "12px",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                transition: "all 0.15s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "#22c55e";
+                                e.currentTarget.style.color = "#000";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
+                                e.currentTarget.style.color = "#fff";
+                              }}
+                            >
+                              👁 Xem
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {orders.length === 0 && (
+                        <tr>
+                          <td colSpan={7} style={{ padding: "36px", textAlign: "center", color: "#71717a" }}>
+                            Chưa có đơn hàng nào được ghi nhận.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* KHỐI 2: 5 SẢN PHẨM BÁN CHẠY NHẤT */}
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span>🔥</span> Top 5 Sản Phẩm Bán Chạy Nhất
+                    </h3>
+                    <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
+                      Thống kê các thiết bị dẫn đầu doanh số và số lượng xuất kho
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange("products")}
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "rgba(59, 130, 246, 0.12)",
+                      border: "1px solid rgba(59, 130, 246, 0.4)",
+                      color: "#60a5fa",
+                      fontSize: "12.5px",
+                      fontWeight: 700,
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    Quản lý kho hàng ({products.length || dashboardData?.products?.total || 0}) →
+                  </button>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "18px",
+                  }}
+                >
+                  {(() => {
+                    const top5 = (dashboardData?.top_selling_products && dashboardData.top_selling_products.length > 0)
+                      ? dashboardData.top_selling_products.map((item) => ({
+                          product: {
+                            id: item.id,
+                            name: item.name,
+                            slug: item.slug,
+                            sku: item.sku,
+                            category_id: "",
+                            sale_enabled: true,
+                            sale_price: item.sale_price,
+                            rental_enabled: item.rental_enabled,
+                            stock_quantity: item.stock_quantity,
+                            image_url: item.image_url,
+                            brand: "VanBass Pro",
+                            images: item.image_url ? [{ image_url: item.image_url, is_primary: true }] : [],
+                          } as ProductItem,
+                          unitsSold: item.units_sold,
+                          revenue: item.revenue,
+                        }))
+                      : products.slice(0, 5).map((p) => ({
+                          product: p,
+                          unitsSold: 0,
+                          revenue: 0,
+                        }));
+
+                    const rankBadges = [
+                      { label: "🥇 #1 Bestseller", bg: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#000", border: "#f59e0b" },
+                      { label: "🥈 #2 Top Sales", bg: "linear-gradient(135deg, #94a3b8, #64748b)", color: "#000", border: "#94a3b8" },
+                      { label: "🥉 #3 Top Sales", bg: "linear-gradient(135deg, #b45309, #78350f)", color: "#fff", border: "#d97706" },
+                      { label: "#4 Bán chạy", bg: "rgba(255, 255, 255, 0.08)", color: "#e4e4e7", border: "rgba(255, 255, 255, 0.15)" },
+                      { label: "#5 Bán chạy", bg: "rgba(255, 255, 255, 0.08)", color: "#e4e4e7", border: "rgba(255, 255, 255, 0.15)" },
+                    ];
+
+                    return top5.map((item, idx) => {
+                      const rank = rankBadges[idx] || rankBadges[3];
+                      const prod = item.product;
+                      const primaryImg = prod.images?.find((img: { is_primary?: boolean; image_url: string }) => img.is_primary)?.image_url || prod.images?.[0]?.image_url || prod.image_url;
+
+                      return (
+                        <div
+                          key={prod.id || idx}
+                          style={{
+                            backgroundColor: "#121215",
+                            border: "1px solid rgba(255, 255, 255, 0.08)",
+                            borderRadius: "12px",
+                            padding: "18px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            position: "relative",
+                            overflow: "hidden",
+                            boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
+                            transition: "all 0.2s ease",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "translateY(-3px)";
+                            e.currentTarget.style.borderColor = "rgba(34, 197, 94, 0.4)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
+                          }}
+                        >
+                          <div>
+                            {/* Rank Badge */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                              <span
+                                style={{
+                                  background: rank.bg,
+                                  color: rank.color,
+                                  border: `1px solid ${rank.border}`,
+                                  padding: "3px 10px",
+                                  borderRadius: "20px",
+                                  fontSize: "11px",
+                                  fontWeight: 900,
+                                  letterSpacing: "0.04em",
+                                }}
+                              >
+                                {rank.label}
+                              </span>
+                              <span style={{ fontSize: "11px", color: "#71717a", fontFamily: "monospace" }}>
+                                {prod.sku || "VB-PROD"}
+                              </span>
+                            </div>
+
+                            {/* Thumbnail */}
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "130px",
+                                backgroundColor: "#09090b",
+                                borderRadius: "8px",
+                                overflow: "hidden",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginBottom: "14px",
+                                border: "1px solid rgba(255, 255, 255, 0.04)",
+                              }}
+                            >
+                              {primaryImg ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={primaryImg}
+                                  alt={prod.name}
+                                  style={{ width: "100%", height: "100%", objectFit: "contain", padding: "8px" }}
+                                />
+                              ) : (
+                                <span style={{ fontSize: "40px", opacity: 0.4 }}>🎧</span>
+                              )}
+                            </div>
+
+                            {/* Name & Brand */}
+                            <h4
+                              style={{
+                                fontSize: "14px",
+                                fontWeight: 800,
+                                color: "#fff",
+                                margin: "0 0 6px 0",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                                lineHeight: 1.4,
+                              }}
+                              title={prod.name}
+                            >
+                              {prod.name}
+                            </h4>
+
+                            <div style={{ fontSize: "12px", color: "#a1a1aa", marginBottom: "12px" }}>
+                              Thương hiệu: <strong style={{ color: "#e4e4e7" }}>{prod.brand || "VanBass Pro"}</strong>
+                            </div>
+                          </div>
+
+                          {/* Stats and Action */}
+                          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)", paddingTop: "12px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                              <span style={{ fontSize: "12px", color: "#71717a" }}>Giá bán:</span>
+                              <strong style={{ fontSize: "13px", color: "#4ade80" }}>
+                                {formatCurrency(prod.sale_price)}
+                              </strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                              <span style={{ fontSize: "12px", color: "#71717a" }}>Đã bán:</span>
+                              <strong style={{ fontSize: "12px", color: "#fff" }}>
+                                {item.unitsSold} sản phẩm
+                              </strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                              <span style={{ fontSize: "12px", color: "#71717a" }}>Tồn kho:</span>
+                              <span style={{ fontSize: "12px", color: prod.stock_quantity > 0 ? "#a1a1aa" : "#ef4444" }}>
+                                {prod.stock_quantity} cái
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleOpenEditModal(prod);
+                              }}
+                              style={{
+                                width: "100%",
+                                padding: "8px 0",
+                                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                                border: "1px solid rgba(255, 255, 255, 0.12)",
+                                color: "#fff",
+                                borderRadius: "6px",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                cursor: "pointer",
+                                transition: "all 0.15s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "#22c55e";
+                                e.currentTarget.style.color = "#000";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
+                                e.currentTarget.style.color = "#fff";
+                              }}
+                            >
+                              ✏️ Chỉnh sửa sản phẩm
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             </div>
@@ -1325,156 +2297,156 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                    {/* Device Viewport Canvas */}
-                    <div
-                      style={{
-                        flex: 1,
-                        overflowY: "auto",
-                        backgroundColor: "#050505",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "stretch",
-                        padding: previewDevice === "desktop" ? "0" : "16px",
-                        position: "relative",
-                      }}
-                    >
-                      <iframe
-                        key={previewKey}
-                        ref={iframeRef}
-                        src="/"
-                        title="VanBass Live Homepage Preview"
-                        style={{
-                          width: previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "390px",
-                          height: "100%",
-                          border: previewDevice === "desktop" ? "none" : "1px solid #3f3f46",
-                          borderRadius: previewDevice === "desktop" ? "0" : previewDevice === "tablet" ? "12px" : "20px",
-                          backgroundColor: "#090909",
-                          boxShadow: previewDevice === "desktop" ? "none" : "0 20px 50px rgba(0, 0, 0, 0.8)",
-                          transition: "width 0.3s ease",
-                        }}
-                        onLoad={() => {
-                          sendLiveConfigToIframe();
-                        }}
+                {/* Device Viewport Canvas */}
+                <div
+                  style={{
+                    flex: 1,
+                    overflowY: "auto",
+                    backgroundColor: "#050505",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "stretch",
+                    padding: previewDevice === "desktop" ? "0" : "16px",
+                    position: "relative",
+                  }}
+                >
+                  <iframe
+                    key={previewKey}
+                    ref={iframeRef}
+                    src="/"
+                    title="VanBass Live Homepage Preview"
+                    style={{
+                      width: previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "390px",
+                      height: "100%",
+                      border: previewDevice === "desktop" ? "none" : "1px solid #3f3f46",
+                      borderRadius: previewDevice === "desktop" ? "0" : previewDevice === "tablet" ? "12px" : "20px",
+                      backgroundColor: "#090909",
+                      boxShadow: previewDevice === "desktop" ? "none" : "0 20px 50px rgba(0, 0, 0, 0.8)",
+                      transition: "width 0.3s ease",
+                    }}
+                    onLoad={() => {
+                      sendLiveConfigToIframe();
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Floating Quick Inspector Modal / Popover */}
+          {inlineEditor?.isOpen && (
+            <div
+              style={{
+                position: "fixed",
+                bottom: "32px",
+                right: "32px",
+                width: "380px",
+                backgroundColor: "#18181b",
+                border: "1.5px solid #22c55e",
+                borderRadius: "14px",
+                padding: "18px 20px",
+                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.95), 0 0 25px rgba(34, 197, 94, 0.3)",
+                zIndex: 99999,
+                backdropFilter: "blur(12px)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", paddingBottom: "10px" }}>
+                <span style={{ fontSize: "13px", fontWeight: 800, color: "#4ade80", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span>✏️</span> {inlineEditor.label}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setInlineEditor(null)}
+                  style={{ background: "none", border: "none", color: "#a1a1aa", cursor: "pointer", fontSize: "16px", fontWeight: 700 }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {inlineEditor.fieldType === "image" ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {/* Live Image Preview Thumbnail */}
+                  {getNestedVal(homeConfig, inlineEditor.fieldKey) && (
+                    <div style={{ width: "100%", height: "120px", borderRadius: "8px", overflow: "hidden", border: "1px solid #27272a", backgroundColor: "#000", position: "relative" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={getNestedVal(homeConfig, inlineEditor.fieldKey)}
+                        alt="Preview"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     </div>
+                  )}
+                  <label style={{ fontSize: "11.5px", color: "#a1a1aa" }}>Chọn ảnh từ máy tính hoặc dán URL ảnh:</label>
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input
+                      type="text"
+                      value={getNestedVal(homeConfig, inlineEditor.fieldKey)}
+                      onChange={(e) => updateNestedVal(inlineEditor.fieldKey, e.target.value)}
+                      style={{ flex: 1, padding: "8px 12px", backgroundColor: "#09090b", border: "1px solid #27272a", color: "#fff", fontSize: "12px", borderRadius: "6px" }}
+                      placeholder="Dán URL hình ảnh mới..."
+                    />
+                    <input
+                      type="file"
+                      ref={centerHeroFileRef}
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          const file = e.target.files[0];
+                          const reader = new FileReader();
+                          reader.onload = (ev) => {
+                            if (ev.target?.result) {
+                              updateNestedVal(inlineEditor.fieldKey, ev.target.result as string);
+                              setActionSuccessMsg("✓ Đã tải ảnh lên giao diện thành công!");
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => centerHeroFileRef.current?.click()}
+                      style={{ padding: "8px 14px", backgroundColor: "#22c55e", color: "#000", fontWeight: 800, border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", whiteSpace: "nowrap" }}
+                    >
+                      📷 Tải ảnh lên
+                    </button>
                   </div>
                 </div>
-              )}
-
-        {/* Floating Quick Inspector Modal / Popover */}
-        {inlineEditor?.isOpen && (
-          <div
-            style={{
-              position: "fixed",
-              bottom: "32px",
-              right: "32px",
-              width: "380px",
-              backgroundColor: "#18181b",
-              border: "1.5px solid #22c55e",
-              borderRadius: "14px",
-              padding: "18px 20px",
-              boxShadow: "0 20px 50px rgba(0, 0, 0, 0.95), 0 0 25px rgba(34, 197, 94, 0.3)",
-              zIndex: 99999,
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", paddingBottom: "10px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 800, color: "#4ade80", display: "flex", alignItems: "center", gap: "6px" }}>
-                <span>✏️</span> {inlineEditor.label}
-              </span>
-              <button
-                type="button"
-                onClick={() => setInlineEditor(null)}
-                style={{ background: "none", border: "none", color: "#a1a1aa", cursor: "pointer", fontSize: "16px", fontWeight: 700 }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {inlineEditor.fieldType === "image" ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {/* Live Image Preview Thumbnail */}
-                {getNestedVal(homeConfig, inlineEditor.fieldKey) && (
-                  <div style={{ width: "100%", height: "120px", borderRadius: "8px", overflow: "hidden", border: "1px solid #27272a", backgroundColor: "#000", position: "relative" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getNestedVal(homeConfig, inlineEditor.fieldKey)}
-                      alt="Preview"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                  </div>
-                )}
-                <label style={{ fontSize: "11.5px", color: "#a1a1aa" }}>Chọn ảnh từ máy tính hoặc dán URL ảnh:</label>
-                <div style={{ display: "flex", gap: "8px" }}>
+              ) : inlineEditor.fieldType === "textarea" ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <label style={{ fontSize: "11.5px", color: "#a1a1aa" }}>Nội dung đoạn văn / Mô tả:</label>
+                  <textarea
+                    rows={3}
+                    value={getNestedVal(homeConfig, inlineEditor.fieldKey)}
+                    onChange={(e) => updateNestedVal(inlineEditor.fieldKey, e.target.value)}
+                    style={{ width: "100%", padding: "10px 12px", backgroundColor: "#09090b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "6px", resize: "vertical", boxSizing: "border-box" }}
+                  />
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <label style={{ fontSize: "11.5px", color: "#a1a1aa" }}>Nội dung văn bản / Tiêu đề:</label>
                   <input
                     type="text"
                     value={getNestedVal(homeConfig, inlineEditor.fieldKey)}
                     onChange={(e) => updateNestedVal(inlineEditor.fieldKey, e.target.value)}
-                    style={{ flex: 1, padding: "8px 12px", backgroundColor: "#09090b", border: "1px solid #27272a", color: "#fff", fontSize: "12px", borderRadius: "6px" }}
-                    placeholder="Dán URL hình ảnh mới..."
+                    style={{ width: "100%", padding: "8px 12px", backgroundColor: "#09090b", border: "1px solid #27272a", color: "#4ade80", fontWeight: 700, fontSize: "13.5px", borderRadius: "6px", boxSizing: "border-box" }}
                   />
-                  <input
-                    type="file"
-                    ref={centerHeroFileRef}
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      if (e.target.files?.[0]) {
-                        const file = e.target.files[0];
-                        const reader = new FileReader();
-                        reader.onload = (ev) => {
-                          if (ev.target?.result) {
-                            updateNestedVal(inlineEditor.fieldKey, ev.target.result as string);
-                            setActionSuccessMsg("✓ Đã tải ảnh lên giao diện thành công!");
-                          }
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => centerHeroFileRef.current?.click()}
-                    style={{ padding: "8px 14px", backgroundColor: "#22c55e", color: "#000", fontWeight: 800, border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", whiteSpace: "nowrap" }}
-                  >
-                    📷 Tải ảnh lên
-                  </button>
                 </div>
-              </div>
-            ) : inlineEditor.fieldType === "textarea" ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label style={{ fontSize: "11.5px", color: "#a1a1aa" }}>Nội dung đoạn văn / Mô tả:</label>
-                <textarea
-                  rows={3}
-                  value={getNestedVal(homeConfig, inlineEditor.fieldKey)}
-                  onChange={(e) => updateNestedVal(inlineEditor.fieldKey, e.target.value)}
-                  style={{ width: "100%", padding: "10px 12px", backgroundColor: "#09090b", border: "1px solid #27272a", color: "#fff", fontSize: "13px", borderRadius: "6px", resize: "vertical", boxSizing: "border-box" }}
-                />
-              </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label style={{ fontSize: "11.5px", color: "#a1a1aa" }}>Nội dung văn bản / Tiêu đề:</label>
-                <input
-                  type="text"
-                  value={getNestedVal(homeConfig, inlineEditor.fieldKey)}
-                  onChange={(e) => updateNestedVal(inlineEditor.fieldKey, e.target.value)}
-                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#09090b", border: "1px solid #27272a", color: "#4ade80", fontWeight: 700, fontSize: "13.5px", borderRadius: "6px", boxSizing: "border-box" }}
-                />
-              </div>
-            )}
+              )}
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "14px", paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-              <span style={{ fontSize: "11px", color: "#71717a" }}>✨ Cập nhật live...</span>
-              <button
-                type="button"
-                onClick={() => setInlineEditor(null)}
-                style={{ padding: "6px 16px", backgroundColor: "#22c55e", color: "#000", fontWeight: 800, border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px" }}
-              >
-                Xong (Hoàn tất)
-              </button>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "14px", paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ fontSize: "11px", color: "#71717a" }}>✨ Cập nhật live...</span>
+                <button
+                  type="button"
+                  onClick={() => setInlineEditor(null)}
+                  style={{ padding: "6px 16px", backgroundColor: "#22c55e", color: "#000", fontWeight: 800, border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px" }}
+                >
+                  Xong (Hoàn tất)
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
           {/* TAB 2: PRODUCTS MANAGEMENT */}
           {activeTab === "products" && (
@@ -1721,8 +2693,1011 @@ export default function AdminDashboardPage() {
               )}
             </div>
           )}
+
+          {/* TAB 5: STAFF & ACCOUNT MANAGEMENT */}
+          {activeTab === "staff" && user?.role === "admin" && (
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
+                <div>
+                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span>👥</span> Quản Lý Tài Khoản & Nhân Viên
+                  </h2>
+                  <p style={{ margin: 0, color: "#a1a1aa", fontSize: "14px" }}>
+                    Thêm Gmail, Số điện thoại của nhân viên và phân quyền truy cập hệ thống
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAddStaffModal(true)}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#22c55e",
+                    color: "#000",
+                    border: "none",
+                    borderRadius: "6px",
+                    fontWeight: 800,
+                    fontSize: "13px",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  <span style={{ fontSize: "16px" }}>+</span> Thêm nhân sự
+                </button>
+              </div>
+
+              {/* Search & Filter Bar */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "14px",
+                  marginBottom: "24px",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ position: "relative", flex: 1, minWidth: "260px" }}>
+                  <input
+                    type="text"
+                    value={staffSearchQuery}
+                    onChange={(e) => setStaffSearchQuery(e.target.value)}
+                    placeholder="🔍 Tìm theo Gmail, SĐT, Tên nhân viên..."
+                    style={{
+                      width: "100%",
+                      padding: "10px 14px",
+                      backgroundColor: "#121215",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: "6px",
+                      color: "#fff",
+                      fontSize: "13px",
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  {staffSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setStaffSearchQuery("")}
+                      style={{
+                        position: "absolute",
+                        right: "10px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        background: "none",
+                        border: "none",
+                        color: "#71717a",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <select
+                  value={staffRoleFilter}
+                  onChange={(e) => setStaffRoleFilter(e.target.value)}
+                  style={{
+                    padding: "10px 14px",
+                    backgroundColor: "#121215",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontSize: "13px",
+                    cursor: "pointer",
+                    outline: "none",
+                  }}
+                >
+                  <option value="all">Tất cả ({staffUsers.length})</option>
+                  <option value="admin">Admin ({staffUsers.filter((u) => u.role === "admin").length})</option>
+                  <option value="staff">Staff ({staffUsers.filter((u) => u.role === "staff").length})</option>
+                </select>
+              </div>
+
+              {/* Staff Table */}
+              <div
+                style={{
+                  backgroundColor: "#121215",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#a1a1aa", fontSize: "11.5px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Nhân Viên</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Email / Gmail</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Số Điện Thoại (SĐT)</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Vai Trò</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Trạng Thái</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Ngày Tạo</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700, textAlign: "right" }}>Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {staffUsers
+                      .filter((u) => {
+                        const matchRole = staffRoleFilter === "all" || u.role === staffRoleFilter;
+                        const matchSearch =
+                          !staffSearchQuery.trim() ||
+                          u.email.toLowerCase().includes(staffSearchQuery.toLowerCase().trim()) ||
+                          (u.phone && u.phone.includes(staffSearchQuery.trim())) ||
+                          (u.full_name && u.full_name.toLowerCase().includes(staffSearchQuery.toLowerCase().trim()));
+                        return matchRole && matchSearch;
+                      })
+                      .map((u) => {
+                        const isSelf = u.id === user?.id || u.email === user?.email;
+                        return (
+                          <tr
+                            key={u.id}
+                            style={{
+                              borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                              transition: "background 0.15s ease",
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                          >
+                            <td style={{ padding: "14px 18px" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <div
+                                  style={{
+                                    width: "32px",
+                                    height: "32px",
+                                    borderRadius: "50%",
+                                    backgroundColor:
+                                      u.role === "admin"
+                                        ? "rgba(225, 29, 72, 0.2)"
+                                        : u.role === "staff"
+                                        ? "rgba(16, 185, 129, 0.2)"
+                                        : "rgba(59, 130, 246, 0.2)",
+                                    color:
+                                      u.role === "admin"
+                                        ? "#fb7185"
+                                        : u.role === "staff"
+                                        ? "#34d399"
+                                        : "#60a5fa",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontWeight: 800,
+                                    fontSize: "13px",
+                                  }}
+                                >
+                                  {(u.full_name || u.email).charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: 700, color: "#fff" }}>
+                                    {u.full_name || "Chưa đặt tên"}
+                                  </div>
+                                  {isSelf && (
+                                    <span style={{ fontSize: "10.5px", color: "#22c55e", fontWeight: 700 }}>(Tài khoản của bạn)</span>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ padding: "14px 18px", color: "#e4e4e7", fontFamily: "monospace" }}>
+                              {u.email}
+                            </td>
+                            <td style={{ padding: "14px 18px", color: "#a1a1aa" }}>
+                              {u.phone ? (
+                                <span style={{ color: "#4ade80", fontWeight: 700 }}>📞 {u.phone}</span>
+                              ) : (
+                                <span style={{ color: "#71717a", fontStyle: "italic" }}>Chưa cập nhật</span>
+                              )}
+                            </td>
+                            <td style={{ padding: "14px 18px" }}>
+                              <span
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "5px",
+                                  padding: "3px 10px",
+                                  borderRadius: "20px",
+                                  fontSize: "11px",
+                                  fontWeight: 800,
+                                  backgroundColor:
+                                    u.role === "admin"
+                                      ? "rgba(225, 29, 72, 0.15)"
+                                      : u.role === "staff"
+                                      ? "rgba(16, 185, 129, 0.15)"
+                                      : "rgba(59, 130, 246, 0.15)",
+                                  color:
+                                    u.role === "admin"
+                                      ? "#fb7185"
+                                      : u.role === "staff"
+                                      ? "#34d399"
+                                      : "#60a5fa",
+                                  border:
+                                    u.role === "admin"
+                                      ? "1px solid rgba(225, 29, 72, 0.4)"
+                                      : u.role === "staff"
+                                      ? "1px solid rgba(16, 185, 129, 0.4)"
+                                      : "1px solid rgba(59, 130, 246, 0.4)",
+                                }}
+                              >
+                                {u.role === "admin" ? "👑 Admin" : u.role === "staff" ? "⚡ Staff" : "👤 Khách hàng"}
+                              </span>
+                            </td>
+                            <td style={{ padding: "14px 18px" }}>
+                              <span
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "6px",
+                                  padding: "3px 8px",
+                                  borderRadius: "4px",
+                                  fontSize: "11px",
+                                  fontWeight: 700,
+                                  backgroundColor: u.is_active ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)",
+                                  color: u.is_active ? "#4ade80" : "#fca5a5",
+                                  border: u.is_active ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: "6px",
+                                    height: "6px",
+                                    borderRadius: "50%",
+                                    backgroundColor: u.is_active ? "#22c55e" : "#ef4444",
+                                  }}
+                                />
+                                {u.is_active ? "Hoạt động" : "Đã khóa"}
+                              </span>
+                            </td>
+                            <td style={{ padding: "14px 18px", color: "#71717a", fontSize: "12px" }}>
+                              {u.created_at
+                                ? new Date(u.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })
+                                : "—"}
+                            </td>
+                            <td style={{ padding: "14px 18px", textAlign: "right" }}>
+                              {isSelf ? (
+                                <span
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "#71717a",
+                                    fontStyle: "italic",
+                                    padding: "5px 8px",
+                                    display: "inline-block",
+                                  }}
+                                >
+                                  Tài khoản hiện tại
+                                </span>
+                              ) : (
+                                <div style={{ display: "inline-flex", gap: "8px" }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleToggleStaffStatus(u)}
+                                    style={{
+                                      padding: "5px 10px",
+                                      backgroundColor: "rgba(255, 255, 255, 0.05)",
+                                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                                      color: u.is_active ? "#facc15" : "#4ade80",
+                                      borderRadius: "4px",
+                                      fontSize: "12px",
+                                      fontWeight: 600,
+                                      cursor: "pointer",
+                                      transition: "all 0.15s ease",
+                                    }}
+                                    title={u.is_active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                                  >
+                                    {u.is_active ? "🔒 Khóa" : "🔓 Mở"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteStaff(u)}
+                                    style={{
+                                      padding: "5px 10px",
+                                      backgroundColor: "rgba(239, 68, 68, 0.1)",
+                                      border: "1px solid rgba(239, 68, 68, 0.3)",
+                                      color: "#fca5a5",
+                                      borderRadius: "4px",
+                                      fontSize: "12px",
+                                      fontWeight: 600,
+                                      cursor: "pointer",
+                                      transition: "all 0.15s ease",
+                                    }}
+                                    title="Xóa tài khoản vĩnh viễn"
+                                  >
+                                    🗑 Xóa
+                                  </button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    {staffUsers.length === 0 && !isStaffLoading && (
+                      <tr>
+                        <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
+                          Chưa có tài khoản nhân sự nào. Bấm nút &quot;+ Thêm nhân sự&quot; ở góc trên để tạo mới.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: CATEGORIES MANAGEMENT */}
+          {activeTab === "categories" && (
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "24px",
+                  flexWrap: "wrap",
+                  gap: "14px",
+                }}
+              >
+                <div>
+                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff" }}>
+                    Quản lý Danh Mục Sản Phẩm
+                  </h2>
+                  <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
+                    Phân loại thiết bị, hệ thống danh mục âm thanh & DJ cho cửa hàng
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCatNameInput("");
+                    setCatSlugInput("");
+                    setCatDescInput("");
+                    setShowAddCategoryModal(true);
+                  }}
+                  style={{
+                    padding: "10px 18px",
+                    backgroundColor: "#22c55e",
+                    color: "#000",
+                    border: "none",
+                    borderRadius: "6px",
+                    fontWeight: 800,
+                    fontSize: "13px",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  <span style={{ fontSize: "16px" }}>+</span> Thêm danh mục mới
+                </button>
+              </div>
+
+              {/* Table of categories */}
+              <div
+                style={{
+                  backgroundColor: "#121215",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
+                  <thead>
+                    <tr
+                      style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.03)",
+                        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                        color: "#a1a1aa",
+                        fontSize: "11.5px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Tên Danh Mục</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Đường Dẫn (Slug)</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Mô Tả</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Số Sản Phẩm</th>
+                      <th style={{ padding: "14px 18px", fontWeight: 700, textAlign: "right" }}>Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categories.map((cat) => {
+                      const prodCount = products.filter((p) => p.category_id === cat.id).length;
+                      return (
+                        <tr
+                          key={cat.id}
+                          style={{
+                            borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                            transition: "background 0.15s ease",
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                        >
+                          <td style={{ padding: "14px 18px", fontWeight: 700, color: "#fff" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                              <span style={{ fontSize: "18px" }}>🏷️</span>
+                              <span>{cat.name}</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: "14px 18px", color: "#4ade80", fontFamily: "monospace", fontSize: "12px" }}>
+                            /{cat.slug}
+                          </td>
+                          <td style={{ padding: "14px 18px", color: "#a1a1aa", maxWidth: "280px" }}>
+                            <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {cat.description || "—"}
+                            </div>
+                          </td>
+                          <td style={{ padding: "14px 18px" }}>
+                            <span
+                              style={{
+                                display: "inline-block",
+                                padding: "2px 8px",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                backgroundColor: prodCount > 0 ? "rgba(34, 197, 94, 0.12)" : "rgba(255, 255, 255, 0.05)",
+                                color: prodCount > 0 ? "#4ade80" : "#a1a1aa",
+                                border: prodCount > 0 ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(255, 255, 255, 0.1)",
+                              }}
+                            >
+                              {prodCount} sản phẩm
+                            </span>
+                          </td>
+                          <td style={{ padding: "14px 18px", textAlign: "right" }}>
+                            <div style={{ display: "inline-flex", gap: "8px" }}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingCategory(cat);
+                                  setCatNameInput(cat.name);
+                                  setCatSlugInput(cat.slug);
+                                  setCatDescInput(cat.description || "");
+                                  setShowEditCategoryModal(true);
+                                }}
+                                style={{
+                                  padding: "6px 12px",
+                                  backgroundColor: "rgba(59, 130, 246, 0.12)",
+                                  border: "1px solid rgba(59, 130, 246, 0.4)",
+                                  color: "#60a5fa",
+                                  borderRadius: "5px",
+                                  fontSize: "12px",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                  transition: "all 0.15s ease",
+                                }}
+                              >
+                                ✏️ Sửa
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteCategory(cat)}
+                                style={{
+                                  padding: "6px 12px",
+                                  backgroundColor: "rgba(239, 68, 68, 0.12)",
+                                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                                  color: "#fca5a5",
+                                  borderRadius: "5px",
+                                  fontSize: "12px",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                  transition: "all 0.15s ease",
+                                }}
+                              >
+                                🗑 Xóa
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {categories.length === 0 && (
+                      <tr>
+                        <td colSpan={5} style={{ padding: "36px", textAlign: "center", color: "#71717a" }}>
+                          Chưa có danh mục nào. Hãy thêm danh mục đầu tiên!
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 7: STORE SETTINGS */}
+          {activeTab === "settings" && user?.role === "admin" && (
+            <div>
+              <div style={{ marginBottom: "24px" }}>
+                <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff" }}>
+                  Cài Đặt Cửa Hàng & Mạng Xã Hội
+                </h2>
+                <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
+                  Quản lý thông tin liên hệ, hotline thuê thiết bị, giờ hoạt động và Facebook Page ID
+                </p>
+              </div>
+
+              {isStoreSettingsLoading ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#a1a1aa" }}>
+                  Đang tải thông tin cài đặt...
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSaveStoreSettings}
+                  style={{
+                    backgroundColor: "#121215",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: "12px",
+                    padding: "28px",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                    maxWidth: "800px",
+                  }}
+                >
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Tên Cửa Hàng / Doanh Nghiệp *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={storeSettings.store_name}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, store_name: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Facebook Page ID (Dành cho nút Thuê qua Messenger) *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="vanbassmusiccenter"
+                        value={storeSettings.facebook_page_id || ""}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, facebook_page_id: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid #22c55e",
+                          borderRadius: "6px",
+                          color: "#4ade80",
+                          fontWeight: 700,
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                      <small style={{ color: "#71717a", fontSize: "11px", display: "block", marginTop: "4px" }}>
+                        ID hoặc username Fanpage (link Messenger: https://m.me/{"{facebook_page_id}"})
+                      </small>
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Số Điện Thoại Bán Hàng *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={storeSettings.phone}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, phone: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Hotline Thuê Thiết Bị
+                      </label>
+                      <input
+                        type="text"
+                        value={storeSettings.rental_phone || ""}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, rental_phone: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Email Bán Hàng
+                      </label>
+                      <input
+                        type="email"
+                        value={storeSettings.email || ""}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, email: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Email Thuê Thiết Bị
+                      </label>
+                      <input
+                        type="email"
+                        value={storeSettings.rental_email || ""}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, rental_email: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Địa Chỉ Cửa Hàng *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={storeSettings.address}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, address: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                        Thành Phố / Tỉnh
+                      </label>
+                      <input
+                        type="text"
+                        value={storeSettings.city}
+                        onChange={(e) => setStoreSettings({ ...storeSettings, city: e.target.value })}
+                        style={{
+                          width: "100%",
+                          padding: "10px 14px",
+                          backgroundColor: "#18181b",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "13.5px",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "20px" }}>
+                    <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                      Giờ Mở Cửa / Thời Gian Hoạt Động
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="08:00 - 21:00 từ Thứ 2 đến Chủ Nhật"
+                      value={storeSettings.business_hours || ""}
+                      onChange={(e) => setStoreSettings({ ...storeSettings, business_hours: e.target.value })}
+                      style={{
+                        width: "100%",
+                        padding: "10px 14px",
+                        backgroundColor: "#18181b",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "13.5px",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "28px" }}>
+                    <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
+                      Thông Tin Hướng Dẫn Thuê Thiết Bị
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={storeSettings.rental_information || ""}
+                      onChange={(e) => setStoreSettings({ ...storeSettings, rental_information: e.target.value })}
+                      placeholder="Chính sách đặt cọc, giấy tờ tùy thân, giao nhận thiết bị tận nơi..."
+                      style={{
+                        width: "100%",
+                        padding: "10px 14px",
+                        backgroundColor: "#18181b",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "13.5px",
+                        boxSizing: "border-box",
+                        resize: "vertical",
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isStoreSettingsSaving}
+                    style={{
+                      padding: "12px 28px",
+                      backgroundColor: isStoreSettingsSaving ? "#15803d" : "#22c55e",
+                      color: "#000",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontWeight: 800,
+                      fontSize: "14px",
+                      cursor: isStoreSettingsSaving ? "not-allowed" : "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    {isStoreSettingsSaving ? "⏳ Đang lưu cài đặt..." : "💾 Lưu Thay Đổi Cài Đặt"}
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
         </main>
       </div>
+
+      {/* MODAL: ADD CATEGORY */}
+      {showAddCategoryModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.8)",
+            backdropFilter: "blur(4px)",
+            zIndex: 200,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => setShowAddCategoryModal(false)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              backgroundColor: "#121212",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "12px",
+              padding: "28px",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.8)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff" }}>
+                Thêm Danh Mục Mới
+              </h3>
+              <button onClick={() => setShowAddCategoryModal(false)} style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}>
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCategory}>
+              <div style={{ marginBottom: "16px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Tên danh mục *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ví dụ: Bàn DJ All-in-one"
+                  value={catNameInput}
+                  onChange={(e) => setCatNameInput(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "16px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Đường dẫn (Slug) (Để trống sẽ tự động tạo)
+                </label>
+                <input
+                  type="text"
+                  placeholder="ban-dj-all-in-one"
+                  value={catSlugInput}
+                  onChange={(e) => setCatSlugInput(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Mô tả danh mục
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Mô tả tóm tắt về danh mục này..."
+                  value={catDescInput}
+                  onChange={(e) => setCatDescInput(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box", resize: "vertical" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAddCategoryModal(false)}
+                  style={{ padding: "10px 18px", backgroundColor: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "#a1a1aa", borderRadius: "6px", fontWeight: 600, cursor: "pointer" }}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingCat}
+                  style={{ padding: "10px 20px", backgroundColor: "#22c55e", color: "#000", border: "none", borderRadius: "6px", fontWeight: 800, cursor: "pointer" }}
+                >
+                  {isSubmittingCat ? "Đang tạo..." : "Tạo danh mục"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: EDIT CATEGORY */}
+      {showEditCategoryModal && editingCategory && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.8)",
+            backdropFilter: "blur(4px)",
+            zIndex: 200,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => {
+            setShowEditCategoryModal(false);
+            setEditingCategory(null);
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              backgroundColor: "#121212",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "12px",
+              padding: "28px",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.8)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff" }}>
+                Chỉnh Sửa Danh Mục
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditCategoryModal(false);
+                  setEditingCategory(null);
+                }}
+                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateCategory}>
+              <div style={{ marginBottom: "16px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Tên danh mục *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={catNameInput}
+                  onChange={(e) => setCatNameInput(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "16px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Đường dẫn (Slug) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={catSlugInput}
+                  onChange={(e) => setCatSlugInput(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Mô tả danh mục
+                </label>
+                <textarea
+                  rows={3}
+                  value={catDescInput}
+                  onChange={(e) => setCatDescInput(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box", resize: "vertical" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditCategoryModal(false);
+                    setEditingCategory(null);
+                  }}
+                  style={{ padding: "10px 18px", backgroundColor: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "#a1a1aa", borderRadius: "6px", fontWeight: 600, cursor: "pointer" }}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingCat}
+                  style={{ padding: "10px 20px", backgroundColor: "#22c55e", color: "#000", border: "none", borderRadius: "6px", fontWeight: 800, cursor: "pointer" }}
+                >
+                  {isSubmittingCat ? "Đang lưu..." : "Lưu thay đổi"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* MODAL: ADD NEW PRODUCT */}
       {showAddProductModal && (
@@ -2757,6 +4732,209 @@ export default function AdminDashboardPage() {
                 Đóng
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD NEW STAFF ACCOUNT */}
+      {showAddStaffModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.85)",
+            backdropFilter: "blur(6px)",
+            zIndex: 200,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => setShowAddStaffModal(false)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "520px",
+              backgroundColor: "#121215",
+              border: "1px solid rgba(255, 255, 255, 0.18)",
+              borderRadius: "12px",
+              padding: "32px",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.8)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "22px" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>👥</span> Thêm Nhân Sự Mới
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddStaffModal(false)}
+                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateStaff} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                  Họ và tên nhân viên <span style={{ color: "#ef4444" }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={staffFullName}
+                  onChange={(e) => setStaffFullName(e.target.value)}
+                  placeholder="Ví dụ: Nguyễn Văn A"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#09090b",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontSize: "13.5px",
+                    boxSizing: "border-box",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                  Email / Gmail nhân viên <span style={{ color: "#ef4444" }}>*</span>
+                </label>
+                <input
+                  type="email"
+                  value={staffEmail}
+                  onChange={(e) => setStaffEmail(e.target.value)}
+                  placeholder="Ví dụ: nhanvien@gmail.com"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#09090b",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontSize: "13.5px",
+                    boxSizing: "border-box",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                  Số điện thoại (SĐT) <span style={{ color: "#ef4444" }}>*</span>
+                </label>
+                <input
+                  type="tel"
+                  value={staffPhone}
+                  onChange={(e) => setStaffPhone(e.target.value)}
+                  placeholder="Ví dụ: 0905123456"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#09090b",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontSize: "13.5px",
+                    boxSizing: "border-box",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                  Mật khẩu khởi tạo <span style={{ color: "#ef4444" }}>*</span>
+                </label>
+                <input
+                  type="password"
+                  value={staffPassword}
+                  onChange={(e) => setStaffPassword(e.target.value)}
+                  placeholder="Tối thiểu 6 ký tự"
+                  required
+                  minLength={6}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#09090b",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontSize: "13.5px",
+                    boxSizing: "border-box",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                  Vai trò & Quyền hạn
+                </label>
+                <select
+                  value={staffRole}
+                  onChange={(e) => setStaffRole(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    backgroundColor: "#09090b",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontSize: "13.5px",
+                    boxSizing: "border-box",
+                    outline: "none",
+                  }}
+                >
+                  <option value="staff">Staff - Nhân viên vận hành</option>
+                  <option value="admin">Admin - Quản trị viên (Toàn quyền)</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "12px" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAddStaffModal(false)}
+                  style={{
+                    padding: "10px 18px",
+                    backgroundColor: "transparent",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    color: "#a1a1aa",
+                    borderRadius: "6px",
+                    fontWeight: 700,
+                    fontSize: "13px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingStaff}
+                  style={{
+                    padding: "10px 22px",
+                    backgroundColor: "#22c55e",
+                    color: "#000",
+                    border: "none",
+                    borderRadius: "6px",
+                    fontWeight: 800,
+                    fontSize: "13px",
+                    cursor: isSubmittingStaff ? "wait" : "pointer",
+                    boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
+                  }}
+                >
+                  {isSubmittingStaff ? "Đang tạo..." : "✓ Lưu nhân sự"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

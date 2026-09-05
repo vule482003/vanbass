@@ -4,6 +4,7 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.helpers import append_timestamped_note, generate_reference_code
@@ -118,10 +119,8 @@ class OrderService:
         order_number = generate_reference_code("VB")
         note = (payload.customer_note or payload.note or "").strip()
 
-        # Determine initial payment status (default to UNPAID for new orders until paid via gateway)
+        # Initial payment status is strictly UNPAID until verified by payment gateway or delivery
         initial_payment_status = PaymentStatus.UNPAID
-        if payload.payment_status == PaymentStatus.PAID:
-            initial_payment_status = PaymentStatus.PAID
 
         order = Order(
             id=uuid.uuid4(),
@@ -143,6 +142,48 @@ class OrderService:
         db.add(order)
         db.commit()
         db.refresh(order)
+
+        # Create initial Payment record to record payment method (COD or Online)
+        try:
+            from app.models.payment import (
+                Payment,
+                PaymentMethod,
+                PaymentTransactionStatus,
+            )
+
+            raw_method = (payload.payment_method or "cod").lower()
+            if raw_method == "cod":
+                p_method = PaymentMethod.COD
+                p_provider = "cod"
+            elif raw_method in ["vietqr", "vnpay"]:
+                p_method = PaymentMethod.VIETQR
+                p_provider = "vnpay"
+            elif raw_method in ["card", "visa", "mastercard"]:
+                p_method = PaymentMethod.CARD
+                p_provider = "vnpay"
+            else:
+                p_method = PaymentMethod.BANK_TRANSFER
+                p_provider = "bank_transfer"
+
+            p_status = (
+                PaymentTransactionStatus.PAID
+                if initial_payment_status == PaymentStatus.PAID
+                else PaymentTransactionStatus.PENDING
+            )
+
+            initial_payment = Payment(
+                order_id=order.id,
+                payment_method=p_method,
+                provider=p_provider,
+                amount=total_amount,
+                currency="VND",
+                status=p_status,
+            )
+            db.add(initial_payment)
+            db.commit()
+            db.refresh(order)
+        except SQLAlchemyError:
+            db.rollback()
 
         return order
 

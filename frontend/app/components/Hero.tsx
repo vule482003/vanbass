@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { DEFAULT_HOME_DATA, HeroPanelCenter, HeroPanelLeft, HeroPanelRight } from "../types/home_config";
 
 function VuMeter() {
@@ -129,9 +130,15 @@ export default function Hero({
               <div className="triptych-tag" data-cms-key="hero_left.tag" data-cms-label="Tag Phụ Banner Trái" data-cms-type="text">{heroLeft.tag}</div>
               <h2 className="triptych-title" data-cms-key="hero_left.title" data-cms-label="Tiêu Đề Banner Trái" data-cms-type="text">{heroLeft.title}</h2>
               <p className="triptych-desc" data-cms-key="hero_left.desc" data-cms-label="Mô Tả Banner Trái" data-cms-type="textarea">{heroLeft.desc}</p>
-              <span className="triptych-cta-link" data-cms-key="hero_left.button_text" data-cms-label="Chữ Nút Banner Trái" data-cms-type="text">
+              <Link
+                href={heroLeft.link || "/products"}
+                className="triptych-cta-link"
+                data-cms-key="hero_left.button_text"
+                data-cms-label="Chữ Nút Banner Trái"
+                data-cms-type="text"
+              >
                 {heroLeft.button_text || "Khám phá thiết bị"} <span>→</span>
-              </span>
+              </Link>
             </div>
           </div>
 
@@ -197,13 +204,23 @@ export default function Hero({
               <h2 className="triptych-headline" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{heroCenter.headline}</h2>
               <p className="triptych-desc" data-cms-key="hero_center.desc" data-cms-label="Mô Tả Banner Chính" data-cms-type="textarea">{heroCenter.desc}</p>
 
-              <div className="triptych-center-btn" data-cms-key="hero_center.button_text" data-cms-label="Nút Nổi Bật Banner Chính" data-cms-type="text">
+              <Link
+                href={
+                  heroCenter.link
+                    ? heroCenter.link.replace(/^\/rental(\?.*)?$/, "/products?mode=rental")
+                    : "/products?mode=rental"
+                }
+                className="triptych-center-btn"
+                data-cms-key="hero_center.button_text"
+                data-cms-label="Nút Nổi Bật Banner Chính"
+                data-cms-type="text"
+              >
                 <span>{heroCenter.button_text || "THUÊ THIẾT BỊ NGAY"}</span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -265,9 +282,15 @@ export default function Hero({
               <div className="triptych-tag" data-cms-key="hero_right.tag" data-cms-label="Tag Phụ Banner Phải" data-cms-type="text">{heroRight.tag}</div>
               <h2 className="triptych-title" data-cms-key="hero_right.title" data-cms-label="Tiêu Đề Banner Phải" data-cms-type="text">{heroRight.title}</h2>
               <p className="triptych-desc" data-cms-key="hero_right.desc" data-cms-label="Mô Tả Banner Phải" data-cms-type="textarea">{heroRight.desc}</p>
-              <span className="triptych-cta-link" data-cms-key="hero_right.button_text" data-cms-label="Chữ Nút Banner Phải" data-cms-type="text">
+              <Link
+                href={heroRight.link || "/contact"}
+                className="triptych-cta-link"
+                data-cms-key="hero_right.button_text"
+                data-cms-label="Chữ Nút Banner Phải"
+                data-cms-type="text"
+              >
                 {heroRight.button_text || "Ghé thăm showroom"} <span>→</span>
-              </span>
+              </Link>
             </div>
           </div>
         </div>

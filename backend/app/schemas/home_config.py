@@ -1,12 +1,15 @@
 from datetime import datetime
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class HeroPanelLeft(BaseModel):
     tag: str = "01 / HARDWARE & AUDIO"
     title: str = "THIẾT BỊ DJ"
-    desc: str = "Phân phối chính hãng Pioneer DJ, AlphaTheta, Mixer & Loa kiểm âm cao cấp."
+    desc: str = (
+        "Phân phối chính hãng Pioneer DJ, AlphaTheta, Mixer & Loa kiểm âm cao cấp."
+    )
     link: str = "/products"
     button_text: str = "Khám phá thiết bị"
     bg_image: str = "/images/hero/hero_hardware.jpg"
@@ -24,7 +27,9 @@ class HeroPanelCenter(BaseModel):
 class HeroPanelRight(BaseModel):
     tag: str = "03 / SHOWROOM & STUDIO"
     title: str = "TRẢI NGHIỆM"
-    desc: str = "Nghe thử âm thanh trực tiếp tại Showroom Đà Nẵng & hỗ trợ kỹ thuật 24/7."
+    desc: str = (
+        "Nghe thử âm thanh trực tiếp tại Showroom Đà Nẵng & hỗ trợ kỹ thuật 24/7."
+    )
     link: str = "/contact"
     button_text: str = "Ghé thăm showroom"
     bg_image: str = "/images/hero/hero_showroom.jpg"
@@ -90,7 +95,9 @@ class FloatingContactsConfig(BaseModel):
     hotline: str = "0706067799"
     hotline_display: str = "0706.067.799"
     zalo_link: str = "https://zalo.me/0706067799"
-    messenger_link: str = "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN"
+    messenger_link: str = (
+        "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN"
+    )
     maps_link: str = "https://www.google.com/maps?cid=3481175637981139835"
 
 
@@ -121,11 +128,15 @@ class HomeData(BaseModel):
     hero_left: HeroPanelLeft = Field(default_factory=HeroPanelLeft)
     hero_center: HeroPanelCenter = Field(default_factory=HeroPanelCenter)
     hero_right: HeroPanelRight = Field(default_factory=HeroPanelRight)
-    categories_highlight: CategoriesHighlightConfig = Field(default_factory=CategoriesHighlightConfig)
+    categories_highlight: CategoriesHighlightConfig = Field(
+        default_factory=CategoriesHighlightConfig
+    )
     intro: IntroSectionConfig = Field(default_factory=IntroSectionConfig)
     rental: RentalSectionConfig = Field(default_factory=RentalSectionConfig)
     local_cta: LocalCtaConfig = Field(default_factory=LocalCtaConfig)
-    floating_contacts: FloatingContactsConfig = Field(default_factory=FloatingContactsConfig)
+    floating_contacts: FloatingContactsConfig = Field(
+        default_factory=FloatingContactsConfig
+    )
     visibility: VisibilityConfig = Field(default_factory=VisibilityConfig)
 
 

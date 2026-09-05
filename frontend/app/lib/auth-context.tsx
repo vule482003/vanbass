@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 export interface AuthUser {
   id: string;
   email: string;
-  role: "customer" | "admin";
+  role: "customer" | "admin" | "staff";
   full_name?: string;
   phone?: string;
   address?: string;
@@ -18,7 +18,7 @@ interface AuthContextType {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin"; user?: AuthUser }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin" | "staff"; user?: AuthUser }>;
   register: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => Promise<boolean>;
@@ -91,20 +91,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 1. Immediate Hydration on client mount to prevent auth state flash
   useEffect(() => {
-    try {
-      const savedToken = localStorage.getItem("vanbass_token");
-      const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
-      const savedUserStr = localStorage.getItem("vanbass_user");
+    queueMicrotask(() => {
+      try {
+        const savedToken = localStorage.getItem("vanbass_token");
+        const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
+        const savedUserStr = localStorage.getItem("vanbass_user");
 
-      if (savedToken && savedUserStr) {
-        const parsedUser = JSON.parse(savedUserStr);
-        setUser(parsedUser);
-        setToken(savedToken);
-        setRefreshToken(savedRefreshToken);
+        if (savedToken && savedUserStr) {
+          const parsedUser = JSON.parse(savedUserStr);
+          setUser(parsedUser);
+          setToken(savedToken);
+          setRefreshToken(savedRefreshToken);
+        }
+      } catch (e) {
+        console.warn("Error hydrating user session from localStorage:", e);
       }
-    } catch (e) {
-      console.warn("Error hydrating user session from localStorage:", e);
-    }
+    });
   }, []);
 
   // 2. Background Token Validation with Backend

@@ -6,9 +6,8 @@ Tài liệu: https://sandbox.vnpayment.vn/apis/docs/
 import hashlib
 import hmac
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
-from uuid import UUID
 
 from app.core.config import settings
 
@@ -55,7 +54,7 @@ class VnpayService:
         Returns:
             URL đầy đủ để redirect hoặc hiển thị QR.
         """
-        now = datetime.now(timezone.utc).astimezone()
+        now = datetime.now(UTC).astimezone()
 
         params: dict[str, str] = {
             "vnp_Version": "2.1.0",
@@ -67,7 +66,8 @@ class VnpayService:
             "vnp_OrderInfo": order_info,
             "vnp_OrderType": "other",
             "vnp_Locale": locale,
-            "vnp_ReturnUrl": settings.vnpay_backend_return_url or "http://localhost:8000/api/orders/vnpay/return",
+            "vnp_ReturnUrl": settings.vnpay_backend_return_url
+            or "http://localhost:8000/api/orders/vnpay/return",
             "vnp_IpAddr": client_ip,
             "vnp_CreateDate": now.strftime("%Y%m%d%H%M%S"),
         }
@@ -96,7 +96,8 @@ class VnpayService:
 
         # Loại bỏ hash fields trước khi tính lại
         signing_params = {
-            k: v for k, v in params.items()
+            k: v
+            for k, v in params.items()
             if k not in ("vnp_SecureHash", "vnp_SecureHashType")
         }
 
@@ -124,7 +125,7 @@ class VnpayService:
         """
         raw_amount = params.get("vnp_Amount", "0")
         # Chia 100 để về số tiền thực
-        amount = Decimal(raw_amount) / 100 if raw_amount else Decimal("0")
+        amount = Decimal(raw_amount) / 100 if raw_amount else Decimal(0)
 
         return {
             "order_number": params.get("vnp_TxnRef", ""),

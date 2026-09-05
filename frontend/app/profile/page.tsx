@@ -104,7 +104,7 @@ export default function ProfilePage() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-              {user.role === "admin" && (
+              {(user.role === "admin" || user.role === "staff") && (
                 <Link
                   href="/admin"
                   style={{
@@ -180,24 +180,7 @@ export default function ProfilePage() {
                 >
                   <span>🛒</span> Giỏ hàng
                 </Link>
-                <Link
-                  href="/products"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "14px 18px",
-                    backgroundColor: "transparent",
-                    color: "#a1a1aa",
-                    fontWeight: 700,
-                    fontSize: "14px",
-                    textDecoration: "none",
-                    borderRadius: "4px",
-                    transition: "all 180ms ease",
-                  }}
-                >
-                  <span>📦</span> Danh mục sản phẩm
-                </Link>
+                
               </div>
             </div>
 

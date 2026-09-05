@@ -7,7 +7,7 @@ from sqlalchemy import delete, or_, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.dependencies import get_db, require_admin
+from app.api.dependencies import get_db, require_staff_or_admin
 from app.models.cart_item import CartItem
 from app.models.category import Category
 from app.models.product import Product
@@ -101,7 +101,9 @@ def get_product_by_slug(
     ).scalar_one_or_none()
 
     if product is not None:
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Cache-Control"] = (
+            "no-cache, no-store, must-revalidate, max-age=0"
+        )
         return product
 
     # Check 301 Redirect history
@@ -159,7 +161,7 @@ def get_product(
 )
 def create_product(
     data: ProductCreate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> Product:
     category = db.get(Category, data.category_id)
@@ -181,7 +183,11 @@ def create_product(
         )
 
     # Process & ensure unique SKU
-    sku_val = data.sku.strip() if (data.sku and data.sku.strip()) else f"VB-{uuid.uuid4().hex[:6].upper()}"
+    sku_val = (
+        data.sku.strip()
+        if (data.sku and data.sku.strip())
+        else f"VB-{uuid.uuid4().hex[:6].upper()}"
+    )
     existing_sku = db.execute(
         select(Product).where(Product.sku == sku_val)
     ).scalar_one_or_none()
@@ -193,7 +199,12 @@ def create_product(
                 detail="Product SKU already exists",
             )
         # If auto-generated SKU had collision, retry with new random suffix
-        while db.execute(select(Product).where(Product.sku == sku_val)).scalar_one_or_none() is not None:
+        while (
+            db.execute(
+                select(Product).where(Product.sku == sku_val)
+            ).scalar_one_or_none()
+            is not None
+        ):
             sku_val = f"VB-{uuid.uuid4().hex[:6].upper()}"
 
     product_data = data.model_dump()
@@ -214,7 +225,7 @@ def create_product(
 def update_product(
     product_id: UUID,
     data: ProductUpdate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> Product:
     product = db.get(Product, product_id)
@@ -298,7 +309,7 @@ def update_product(
 )
 def delete_product(
     product_id: UUID,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> None:
     product = db.get(Product, product_id)

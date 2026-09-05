@@ -159,4 +159,45 @@ export async function submitOrder(payload: {
   }
 }
 
+export interface StoreSettings {
+  id?: string;
+  store_name: string;
+  phone: string;
+  rental_phone?: string;
+  email?: string;
+  rental_email?: string;
+  address: string;
+  city: string;
+  country: string;
+  business_hours?: string;
+  facebook_page_id?: string;
+  rental_information?: string;
+}
+
+export async function fetchStoreSettings(): Promise<StoreSettings | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/store-settings`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function getMessengerRentalUrl(
+  productName?: string,
+  facebookPageId: string = "vanbassmusiccenter"
+): string {
+  const text = productName
+    ? `Xin chào VanBass, tôi cần tư vấn thuê thiết bị: ${productName}`
+    : "Xin chào VanBass, tôi cần tư vấn thuê thiết bị âm thanh.";
+  const cleanId = (facebookPageId || "vanbassmusiccenter").trim();
+  return `https://m.me/${encodeURIComponent(cleanId)}?text=${encodeURIComponent(text)}`;
+}
+
+
 

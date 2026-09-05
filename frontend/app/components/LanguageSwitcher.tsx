@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useSyncExternalStore } from "react";
 
 const languages = [
   { code: "vi", label: "Tiếng Việt" },
@@ -25,6 +25,15 @@ function getInitialLanguage(): "vi" | "en" {
   return saved === "en" ? "en" : "vi";
 }
 
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getServerSnapshot(): "vi" | "en" {
+  return "vi";
+}
+
 function triggerGoogleTranslate(langCode: "vi" | "en") {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
@@ -37,7 +46,7 @@ function triggerGoogleTranslate(langCode: "vi" | "en") {
 }
 
 export default function LanguageSwitcher() {
-  const [currentLang, setCurrentLang] = useState<"vi" | "en">(() => getInitialLanguage());
+  const currentLang = useSyncExternalStore(subscribe, getInitialLanguage, getServerSnapshot);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +66,6 @@ export default function LanguageSwitcher() {
       return;
     }
     setIsOpen(false);
-    setCurrentLang(code);
     triggerGoogleTranslate(code);
   };
 
@@ -90,7 +98,7 @@ export default function LanguageSwitcher() {
           <line x1="2" y1="12" x2="22" y2="12" />
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
         </svg>
-        <span className="lang-current-label">
+        <span className="lang-current-label" suppressHydrationWarning>
           {currentLang === "vi" ? "Tiếng Việt" : "English"}
         </span>
         <svg

@@ -303,9 +303,9 @@ export const MOCK_PRODUCTS: Product[] = [
   {
     id: "b0000001-0000-4000-8000-000000000011",
     category_id: "a0000001-0000-4000-8000-000000000002",
-    category_name: "Mixer & Bàn trộn",
+    category_name: "Mixer",
     category_slug: "mixer",
-    name: "Bàn trộn âm thanh DJ AlphaTheta DJM-V5",
+    name: "Mixer âm thanh DJ AlphaTheta DJM-V5",
     slug: "alphatheta-djm-v5",
     sku: "DJM-V5-AT",
     brand: "AlphaTheta",
@@ -328,9 +328,9 @@ export const MOCK_PRODUCTS: Product[] = [
   {
     id: "b0000001-0000-4000-8000-000000000012",
     category_id: "a0000001-0000-4000-8000-000000000002",
-    category_name: "Mixer & Bàn trộn",
+    category_name: "Mixer ",
     category_slug: "mixer",
-    name: "Bàn trộn âm thanh DJ Pioneer DJ DJM-A9",
+    name: "Mixer âm thanh DJ Pioneer DJ DJM-A9",
     slug: "pioneer-dj-djm-a9",
     sku: "DJM-A9-PDJ",
     brand: "Pioneer DJ",

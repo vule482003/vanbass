@@ -1,11 +1,12 @@
-import os
+import asyncio
 import uuid
 from pathlib import Path
+
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_db, require_admin
+from app.api.dependencies import get_db, require_staff_or_admin
 from app.models.home_config import HomeConfig
 from app.models.user import User
 from app.schemas.home_config import HomeConfigResponse, HomeConfigUpdate, HomeData
@@ -41,7 +42,7 @@ def get_home_config(
 
     try:
         data = HomeData(**config.data) if isinstance(config.data, dict) else HomeData()
-    except Exception:
+    except (TypeError, ValueError):
         data = HomeData()
 
     return HomeConfigResponse(
@@ -57,7 +58,7 @@ def get_home_config(
 )
 def update_home_config(
     payload: HomeConfigUpdate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> HomeConfigResponse:
     config = db.execute(
@@ -93,7 +94,7 @@ def update_home_config(
 )
 async def upload_homepage_image(
     file: UploadFile,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
 ) -> dict[str, str]:
     if not file.filename:
         raise HTTPException(
@@ -118,8 +119,7 @@ async def upload_homepage_image(
     unique_filename = f"hp_{uuid.uuid4().hex[:12]}{ext}"
     target_path = UPLOAD_DIR / unique_filename
 
-    with open(target_path, "wb") as f:
-        f.write(content)
+    await asyncio.to_thread(target_path.write_bytes, content)
 
     return {
         "url": f"/static/uploads/homepage/{unique_filename}",
@@ -132,7 +132,7 @@ async def upload_homepage_image(
     response_model=HomeConfigResponse,
 )
 def reset_home_config(
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> HomeConfigResponse:
     config = db.execute(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Header from "./Header";
 import Hero from "./Hero";
 import ProductGrid from "./ProductGrid";
@@ -19,13 +19,14 @@ interface LiveHomePageClientProps {
 
 export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClientProps) {
   const [homeData, setHomeData] = useState<HomeData>(initialHomeData || DEFAULT_HOME_DATA);
-  const [isInsideIframe, setIsInsideIframe] = useState<boolean>(false);
+  const isInsideIframe = useSyncExternalStore(
+    () => () => {},
+    () => typeof window !== "undefined" && window.self !== window.top,
+    () => false
+  );
 
   useEffect(() => {
     const inIframe = typeof window !== "undefined" && window.self !== window.top;
-    if (inIframe) {
-      setIsInsideIframe(true);
-    }
 
     const handleMessage = (event: MessageEvent) => {
       if (!event.data || typeof event.data !== "object") return;
@@ -79,6 +80,8 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
 
     const handleCmsClick = (e: MouseEvent) => {
       if (!inIframe) return;
+
+      handleSectionClick(e);
 
       // Prevent any link navigation or form submit inside iframe CMS canvas
       const clickableTarget = (e.target as HTMLElement | null)?.closest("a, button, [data-cms-key]");

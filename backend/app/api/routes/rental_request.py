@@ -5,7 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_db, get_optional_current_user, require_admin
+from app.api.dependencies import (
+    get_db,
+    get_optional_current_user,
+    require_staff_or_admin,
+)
 from app.core.rate_limit import rate_limit_rental
 from app.models.rental_request import RentalRequest, RentalRequestStatus
 from app.models.user import User, UserRole
@@ -80,7 +84,7 @@ def list_rental_requests(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
     status_filter: RentalRequestStatus | None = Query(None, alias="status"),
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> RentalRequestListResponse:
     query = select(RentalRequest)
@@ -124,7 +128,7 @@ def get_rental_request(
 
     if (
         current_user
-        and current_user.role != UserRole.ADMIN
+        and current_user.role not in [UserRole.ADMIN, UserRole.STAFF]
         and rental_req.user_id != current_user.id
     ):
         raise HTTPException(
@@ -139,7 +143,7 @@ def get_rental_request(
 def update_rental_status(
     request_id: UUID,
     payload: RentalStatusUpdate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> RentalRequest:
     return RentalService.update_rental_status(
@@ -162,7 +166,9 @@ def cancel_rental_request(
     current_user: User = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ) -> RentalRequest:
-    is_admin = current_user.role == UserRole.ADMIN if current_user else False
+    is_admin = (
+        current_user.role in [UserRole.ADMIN, UserRole.STAFF] if current_user else False
+    )
     current_user_id = current_user.id if current_user else None
     reason = payload.reason if payload else None
 

@@ -318,7 +318,7 @@ export default function Header() {
 
               {userDropdownOpen && (
                 <div className="header-user-dropdown">
-                  {user?.role === "admin" && (
+                  {(user?.role === "admin" || user?.role === "staff") && (
                     <Link
                       href="/admin"
                       onClick={() => setUserDropdownOpen(false)}
@@ -397,7 +397,7 @@ export default function Header() {
           </Link>
           {isAuthenticated ? (
             <>
-              {user?.role === "admin" && (
+              {(user?.role === "admin" || user?.role === "staff") && (
                 <Link
                   href="/admin"
                   onClick={() => setMobileMenuOpen(false)}

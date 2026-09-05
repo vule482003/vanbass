@@ -52,7 +52,11 @@ export default function RentalSection({
           </ul>
 
           <Link
-            href={!config.button_link || config.button_link === "/products" ? "/products?mode=rental" : config.button_link}
+            href={
+              !config.button_link || config.button_link === "/products" || config.button_link.startsWith("/rental")
+                ? "/products?mode=rental"
+                : config.button_link
+            }
             className="button button-primary"
             style={{ alignSelf: "flex-start" }}
             data-cms-key="rental.button_text"
