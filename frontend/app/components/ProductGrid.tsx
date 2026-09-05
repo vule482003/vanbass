@@ -4,24 +4,24 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
-import ShopeeProductCard from "./ShopeeProductCard";
+import ProductCard from "./ProductCard";
 
 export default function ProductGrid() {
-  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS.slice(0, 10));
+  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS.slice(0, 8));
 
   useEffect(() => {
     const fetchLiveProducts = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-        const res = await fetch(`${apiUrl}/products`);
+        const res = await fetch(`${apiUrl}/products?_t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const liveData = await res.json();
           if (Array.isArray(liveData) && liveData.length > 0) {
-            setProducts(liveData.slice(0, 10));
+            setProducts(liveData.slice(0, 8));
           }
         }
-      } catch (err) {
-        console.error("Failed to fetch live products for ProductGrid:", err);
+      } catch {
+        // Graceful fallback to mock products when backend API is offline
       }
     };
 
@@ -29,10 +29,11 @@ export default function ProductGrid() {
   }, []);
 
   return (
-    <section className="products-section reveal-on-scroll" id="featured-products" style={{ padding: "85px 0", backgroundColor: "#090909" }}>
+    <section className="products-section reveal-on-scroll" id="featured-products" style={{ padding: "85px 0 160px 0", backgroundColor: "#090909", position: "relative", zIndex: 10 }}>
       <div className="container">
         {/* Luxury Nightlife Section Header */}
         <div
+          className="products-section-heading"
           style={{
             display: "flex",
             alignItems: "center",
@@ -80,9 +81,9 @@ export default function ProductGrid() {
         </div>
 
         {/* Nightlife Multi-column Grid */}
-        <div className="shopee-product-grid">
+        <div className="vb-product-grid">
           {products.map((product) => (
-            <ShopeeProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

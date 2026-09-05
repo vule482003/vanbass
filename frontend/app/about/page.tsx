@@ -36,26 +36,26 @@ export default function AboutPage() {
               marginBottom: "80px",
             }}
           >
-            <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+            <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>🎧</span>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px" }}>Thiết bị DJ chính hãng</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7 }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>Thiết bị DJ chính hãng</h3>
+              <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
                 Phân phối chính thức các dòng sản phẩm Pioneer DJ, AlphaTheta từ cơ bản đến cao cấp nhất thế giới.
               </p>
             </div>
 
-            <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+            <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>🔊</span>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px" }}>Giải pháp âm thanh biểu diễn</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7 }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>Giải pháp âm thanh biểu diễn</h3>
+              <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
                 Tư vấn, lắp đặt hệ thống âm thanh cho quán bar, lounge, phòng trà, resort và các sự kiện ngoài trời.
               </p>
             </div>
 
-            <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+            <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>⚡</span>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px" }}>Dịch vụ cho thuê linh hoạt</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7 }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>Dịch vụ cho thuê linh hoạt</h3>
+              <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
                 Cung cấp dàn máy DJ tiêu chuẩn sự kiện quốc tế theo ngày hoặc theo gói trọn gói có kỹ thuật viên túc trực.
               </p>
             </div>
@@ -64,9 +64,10 @@ export default function AboutPage() {
           {/* Showroom CTA */}
           <div
             style={{
-              padding: "48px",
+              padding: "40px",
               backgroundColor: "var(--surface)",
               border: "1px solid var(--border)",
+              borderRadius: "10px",
               display: "flex",
               flexWrap: "wrap",
               alignItems: "center",
@@ -76,7 +77,7 @@ export default function AboutPage() {
           >
             <div>
               <p className="section-kicker" style={{ marginBottom: "8px" }}>TRẢI NGHIỆM TRỰC TIẾP</p>
-              <h2 style={{ fontSize: "26px", margin: "0 0 8px 0" }}>Ghé thăm Showroom VanBass tại Đà Nẵng</h2>
+              <h2 style={{ fontSize: "26px", margin: "0 0 8px 0", color: "#ffffff" }}>Ghé thăm Showroom VanBass tại Đà Nẵng</h2>
               <p style={{ color: "#a1a1aa", margin: 0, fontSize: "15px" }}>
                 Thử máy trực tiếp, nghe thử âm thanh và nhận tư vấn kỹ thuật từ đội ngũ DJ chuyên nghiệp.
               </p>

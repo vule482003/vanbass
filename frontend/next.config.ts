@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "file.hstatic.net" },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/rental",
+        destination: "/products?mode=rental",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

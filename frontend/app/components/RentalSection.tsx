@@ -1,6 +1,13 @@
 import Link from "next/link";
+import { DEFAULT_HOME_DATA, RentalSectionConfig } from "../types/home_config";
 
-export default function RentalSection() {
+interface RentalSectionProps {
+  config?: RentalSectionConfig;
+}
+
+export default function RentalSection({
+  config = DEFAULT_HOME_DATA.rental,
+}: RentalSectionProps) {
   return (
     <section className="rental-section reveal-on-scroll" id="rental">
       <div className="container rental-grid">
@@ -25,36 +32,38 @@ export default function RentalSection() {
         </div>
 
         <div className="rental-content">
-          <p className="section-kicker">CHO THUÊ THIẾT BỊ</p>
+          <p className="section-kicker" data-cms-key="rental.kicker" data-cms-label="Tag Kicker Cho Thuê" data-cms-type="text">{config.kicker}</p>
 
           <h2>
-            Cần thiết bị DJ
+            <span data-cms-key="rental.headline_top" data-cms-label="Tiêu Đề Trên Cho Thuê" data-cms-type="text">{config.headline_top}</span>
             <br />
-            <span>cho sự kiện?</span>
+            <span data-cms-key="rental.headline_bottom" data-cms-label="Tiêu Đề Nổi Bật Cho Thuê" data-cms-type="text">{config.headline_bottom}</span>
           </h2>
 
-          <p>
-            Tìm kiếm thiết bị phù hợp cho party, event, wedding, bar,
-            studio hoặc các chương trình biểu diễn tại Đà Nẵng.
-          </p>
+          <p data-cms-key="rental.desc" data-cms-label="Mô Tả Cho Thuê" data-cms-type="textarea">{config.desc}</p>
 
           <ul className="check-list">
-            <li>
-              <span>✓</span>
-              Thiết bị DJ và âm thanh đa dạng
-            </li>
-            <li>
-              <span>✓</span>
-              Hỗ trợ lựa chọn thiết bị phù hợp
-            </li>
-            <li>
-              <span>✓</span>
-              Tư vấn nhu cầu thuê theo sự kiện
-            </li>
+            {(config.features || []).map((feature, idx) => (
+              <li key={idx}>
+                <span>✓</span>
+                {feature}
+              </li>
+            ))}
           </ul>
 
-          <Link href="/rental" className="button button-light" style={{ alignSelf: "flex-start" }}>
-            Xem thiết bị cho thuê
+          <Link
+            href={
+              !config.button_link || config.button_link === "/products" || config.button_link.startsWith("/rental")
+                ? "/products?mode=rental"
+                : config.button_link
+            }
+            className="button button-primary"
+            style={{ alignSelf: "flex-start" }}
+            data-cms-key="rental.button_text"
+            data-cms-label="Chữ Nút Cho Thuê"
+            data-cms-type="text"
+          >
+            {config.button_text || "Xem thiết bị cho thuê"}
             <span>→</span>
           </Link>
         </div>

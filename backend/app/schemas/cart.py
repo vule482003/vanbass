@@ -6,7 +6,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class CartItemAdd(BaseModel):
     product_id: UUID
-    quantity: int = Field(default=1, ge=1, le=100, description="Quantity to add (1-100)")
+    quantity: int = Field(
+        default=1, ge=1, le=100, description="Quantity to add (1-100)"
+    )
 
 
 class CartItemUpdate(BaseModel):
@@ -29,8 +31,13 @@ class CartItemResponse(BaseModel):
     error_message: str | None = None
 
 
+class CartMergeRequest(BaseModel):
+    items: list[CartItemAdd] = Field(default_factory=list)
+
+
 class CartResponse(BaseModel):
     items: list[CartItemResponse] = []
     total_items: int = 0
     subtotal: Decimal = Decimal("0.00")
     currency: str = "VND"
+    warnings: list[str] = Field(default_factory=list)

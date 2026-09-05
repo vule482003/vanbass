@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -14,7 +14,6 @@ from app.schemas.payment import (
     PaymentResponse,
     PaymentStatusUpdate,
 )
-
 
 router = APIRouter(
     prefix="/payments",
@@ -141,10 +140,7 @@ def list_all_payments(
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> list[Payment]:
-    result = db.execute(
-        select(Payment)
-        .order_by(Payment.created_at.desc())
-    )
+    result = db.execute(select(Payment).order_by(Payment.created_at.desc()))
 
     return list(result.scalars().all())
 
@@ -184,7 +180,7 @@ def update_payment_status(
     new_status = data.status
 
     if new_status == PaymentTransactionStatus.PAID:
-        payment.paid_at = datetime.now(timezone.utc)
+        payment.paid_at = datetime.now(UTC)
         order.payment_status = PaymentStatus.PAID
 
     elif new_status == PaymentTransactionStatus.REFUNDED:

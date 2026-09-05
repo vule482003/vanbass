@@ -1,11 +1,16 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, Header, status
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_cart_id, get_current_user, get_db
 from app.models.user import User
-from app.schemas.cart import CartItemAdd, CartItemUpdate, CartResponse
+from app.schemas.cart import (
+    CartItemAdd,
+    CartItemUpdate,
+    CartMergeRequest,
+    CartResponse,
+)
 from app.services.cart_service import CartService
 
 router = APIRouter(
@@ -98,14 +103,24 @@ def clear_cart(
     summary="Merge guest cart into user cart upon login",
 )
 def merge_guest_cart(
-    x_session_id: str = Header(..., alias="X-Session-ID", description="Guest session ID to merge from"),
+    body: CartMergeRequest | None = None,
+    x_session_id: str | None = Header(
+        default=None, alias="X-Session-ID", description="Guest session ID to merge from"
+    ),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> CartResponse:
-    if not x_session_id.strip():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Session ID header X-Session-ID is required for merging",
-        )
-    CartService.merge_guest_cart(x_session_id.strip(), current_user.id, db)
-    return CartService.get_cart(f"user:{current_user.id}", db)
+    direct_items = (
+        [(item.product_id, item.quantity) for item in body.items]
+        if body and body.items
+        else None
+    )
+    warnings = CartService.merge_guest_cart(
+        guest_session_id=x_session_id.strip() if x_session_id else None,
+        user_id=current_user.id,
+        db=db,
+        direct_items=direct_items,
+    )
+    cart = CartService.get_cart(f"user:{current_user.id}", db)
+    cart.warnings = warnings
+    return cart

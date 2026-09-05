@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ShopeeProductCard from "../../components/ShopeeProductCard";
+import ProductCard from "../../components/ProductCard";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
+import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
+import { fetchStoreSettings, getMessengerRentalUrl } from "../../lib/api";
 
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "Liên hệ";
@@ -19,8 +21,10 @@ function formatCurrency(amount?: number) {
 }
 
 export default function ProductDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const slug = params?.slug as string;
+  const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
 
   const [product, setProduct] = useState<Product | null>(
@@ -30,20 +34,32 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "rental">("specs");
   const [addedNotice, setAddedNotice] = useState(false);
+  const [facebookPageId, setFacebookPageId] = useState("vanbassmusiccenter");
+
+  useEffect(() => {
+    fetchStoreSettings().then((st) => {
+      if (st?.facebook_page_id) {
+        setFacebookPageId(st.facebook_page_id);
+      }
+    });
+  }, []);
 
   // Fetch live product from Backend PostgreSQL
   useEffect(() => {
     const fetchLiveProduct = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const cacheBust = `_t=${Date.now()}`;
         const [singleRes, allRes] = await Promise.all([
-          fetch(`${apiUrl}/products/by-slug/${slug}`),
-          fetch(`${apiUrl}/products`),
+          fetch(`${apiUrl}/products/by-slug/${slug}?${cacheBust}`, { cache: "no-store" }),
+          fetch(`${apiUrl}/products?${cacheBust}`, { cache: "no-store" }),
         ]);
 
         if (singleRes.ok) {
           const liveProduct = await singleRes.json();
           setProduct(liveProduct);
+        } else if (singleRes.status === 404) {
+          setProduct(null);
         }
 
         if (allRes.ok) {
@@ -110,6 +126,10 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      router.push(`/login?redirect=/products/${slug}`);
+      return;
+    }
     if (!product.sale_enabled) return;
     addItem(product, quantity);
     setAddedNotice(true);
@@ -151,6 +171,7 @@ export default function ProductDetailPage() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   aspectRatio: "4/3",
                   display: "flex",
                   alignItems: "center",
@@ -172,6 +193,7 @@ export default function ProductDetailPage() {
 
                   return displayImg ? (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={displayImg}
                         alt={product.name}
@@ -211,7 +233,12 @@ export default function ProductDetailPage() {
                     gap: "8px",
                   }}
                 >
-                  {product.sale_enabled && <span className="badge badge-sale">MUA BÁN</span>}
+                  {product.sale_enabled && product.stock_quantity > 0 && <span className="badge badge-sale">MUA BÁN</span>}
+                  {product.sale_enabled && product.stock_quantity <= 0 && (
+                    <span className="badge" style={{ backgroundColor: "rgba(239,68,68,0.2)", color: "#f87171", border: "1px solid rgba(239,68,68,0.4)" }}>
+                      HẾT HÀNG
+                    </span>
+                  )}
                   {product.rental_enabled && <span className="badge badge-rental">CHO THUÊ</span>}
                 </div>
               </div>
@@ -236,6 +263,7 @@ export default function ProductDetailPage() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   padding: "24px",
                   marginBottom: "32px",
                 }}
@@ -284,33 +312,45 @@ export default function ProductDetailPage() {
               {/* Quantity & Buy Button */}
               {product.sale_enabled && (
                 <div style={{ marginBottom: "24px" }}>
-                  <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                    <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                  {product.stock_quantity > 0 ? (
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                        <button
+                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                          style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        >
+                          -
+                        </button>
+                        <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
+                          {quantity}
+                        </span>
+                        <button
+                          onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
+                          style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        onClick={handleAddToCart}
+                        className="button button-primary button-lg"
+                        style={{ flex: 1 }}
                       >
-                        -
-                      </button>
-                      <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
-                        {quantity}
-                      </span>
-                      <button
-                        onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
-                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
-                      >
-                        +
+                        Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
                       </button>
                     </div>
-
-                    <button
-                      onClick={handleAddToCart}
-                      className="button button-primary button-lg"
-                      style={{ flex: 1 }}
-                    >
-                      Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
-                    </button>
-                  </div>
+                  ) : (
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <button
+                        disabled
+                        className="button button-secondary button-lg"
+                        style={{ flex: 1, opacity: 0.6, cursor: "not-allowed", backgroundColor: "#1f2937", color: "#9ca3af" }}
+                      >
+                        Tạm hết hàng
+                      </button>
+                    </div>
+                  )}
 
                   {addedNotice && (
                     <div style={{ marginTop: "12px", padding: "10px 16px", backgroundColor: "rgba(34,197,94,0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "13px" }}>
@@ -322,15 +362,21 @@ export default function ProductDetailPage() {
 
               {/* Direct Rental Link */}
               {product.rental_enabled && (
-                <div style={{ padding: "20px", backgroundColor: "#111111", border: "1px solid rgba(34,197,94,0.2)", marginBottom: "32px" }}>
+                <div style={{ padding: "20px", backgroundColor: "var(--surface)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "10px", marginBottom: "32px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                     <div>
                       <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>Cần thuê thiết bị này cho sự kiện / Show diễn?</strong>
                       <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Giao máy tận nơi tại Đà Nẵng, hỗ trợ setup âm thanh chuyên nghiệp.</span>
                     </div>
-                    <Link href={`/rental?product=${product.slug}`} className="button button-secondary">
-                      Tính giá thuê ngay →
-                    </Link>
+                    <a
+                      href={getMessengerRentalUrl(product.name, facebookPageId)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="button button-secondary"
+                      style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+                    >
+                      <span>💬</span> Tư vấn thuê qua Messenger →
+                    </a>
                   </div>
                 </div>
               )}
@@ -346,8 +392,8 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "specs" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "specs" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "specs" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "specs" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
@@ -361,8 +407,8 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "desc" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "desc" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "desc" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "desc" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
@@ -376,8 +422,8 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "rental" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "rental" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "rental" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "rental" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
@@ -388,7 +434,7 @@ export default function ProductDetailPage() {
             </div>
 
             {activeTab === "specs" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px" }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
                 {product.specifications && Object.keys(product.specifications).length > 0 ? (
                   <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                     <tbody>
@@ -407,17 +453,17 @@ export default function ProductDetailPage() {
             )}
 
             {activeTab === "desc" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
                 <p>{product.description || "Thiết bị âm thanh và DJ chuyên nghiệp chính hãng tại VanBass Music Center Đà Nẵng."}</p>
               </div>
             )}
 
             {activeTab === "rental" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
                 <h4 style={{ color: "#fff", margin: "0 0 12px 0" }}>Quy trình thuê máy tại VanBass:</h4>
                 <ol style={{ paddingLeft: "20px", margin: "0 0 20px 0" }}>
-                  <li>Chọn thiết bị và ngày cần sử dụng máy trên website.</li>
-                  <li>Nhân viên kỹ thuật liên hệ xác nhận thời gian nhận và địa chỉ sự kiện.</li>
+                  <li>Liên hệ tư vấn thuê trực tiếp qua Facebook Fanpage hoặc Hotline để kiểm tra lịch máy.</li>
+                  <li>Nhân viên kỹ thuật xác nhận thời gian nhận máy, địa chỉ sự kiện và hỗ trợ setup.</li>
                   <li>Ký hợp đồng thuê bàn giao thiết bị + Đặt cọc theo quy định.</li>
                   <li>Hỗ trợ hướng dẫn sử dụng và bàn giao đầy đủ phụ kiện, dây cáp âm thanh.</li>
                 </ol>
@@ -428,12 +474,12 @@ export default function ProductDetailPage() {
           {/* Related Products */}
           {relatedProducts.length > 0 && (
             <div style={{ marginTop: "40px" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #ee4d2d", paddingBottom: "10px" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #22c55e", paddingBottom: "10px" }}>
                 Thiết Bị Cùng Danh Mục
               </h3>
-              <div className="shopee-product-grid">
+              <div className="vb-product-grid">
                 {relatedProducts.map((p) => (
-                  <ShopeeProductCard key={p.id} product={p} />
+                  <ProductCard key={p.id} product={p} />
                 ))}
               </div>
             </div>

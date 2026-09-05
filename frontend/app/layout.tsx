@@ -1,9 +1,17 @@
 import type { Metadata, Viewport } from "next";
+import { Montserrat } from "next/font/google";
+import Script from "next/script";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import JsonLd from "./components/JsonLd";
-import FloatingContact from "./components/FloatingContact";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   themeColor: "#090909",
@@ -20,52 +28,6 @@ export const metadata: Metadata = {
   },
   description:
     "Trung tâm phân phối và cho thuê thiết bị DJ, DJ Controller, Mixer, CDJ, Loa biểu diễn và giải pháp âm thanh sự kiện chuyên nghiệp tại Đà Nẵng, Việt Nam.",
-  keywords: [
-    "VanBass",
-    "Thiết bị DJ Đà Nẵng",
-    "Thuê máy DJ Đà Nẵng",
-    "Pioneer DJ",
-    "AlphaTheta",
-    "DDJ-FLX4",
-    "CDJ-3000",
-    "DJM-A9",
-    "Loa kiểm âm Đà Nẵng",
-    "Âm thanh sự kiện",
-  ],
-  authors: [{ name: "VanBass Music Center" }],
-  creator: "VanBass Music Center",
-  publisher: "VanBass Music Center",
-  formatDetection: {
-    email: true,
-    address: true,
-    telephone: true,
-  },
-  openGraph: {
-    type: "website",
-    locale: "vi_VN",
-    url: "https://vanbass.vn",
-    siteName: "VanBass Music Center",
-    title: "VanBass Music Center | Thiết bị DJ & Âm thanh chuyên nghiệp Đà Nẵng",
-    description:
-      "Phân phối & cho thuê thiết bị DJ, DJ Controller, Mixer, CDJ, Loa sân khấu chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "VanBass Music Center | Thiết bị DJ & Âm thanh chuyên nghiệp Đà Nẵng",
-    description:
-      "Phân phối & cho thuê thiết bị DJ, DJ Controller, Mixer, CDJ, Loa sân khấu chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
 };
 
 export default function RootLayout({
@@ -74,17 +36,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="vi" className={`h-full antialiased ${montserrat.variable}`} suppressHydrationWarning>
       <head>
         <JsonLd />
       </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className={`min-h-full flex flex-col ${montserrat.className}`} suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
             {children}
-            <FloatingContact />
           </CartProvider>
         </AuthProvider>
+
+        <div id="google_translate_element" style={{ display: "none" }} />
+        <Script
+          id="google-translate-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                  pageLanguage: 'vi',
+                  includedLanguages: 'en,vi',
+                  autoDisplay: false
+                }, 'google_translate_element');
+              }
+            `,
+          }}
+        />
+        <Script
+          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

@@ -2,34 +2,57 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.models.order import OrderStatus, PaymentStatus
 
 
 class OrderItemCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     product_id: UUID
     quantity: int = Field(gt=0)
 
 
 class OrderItemResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     id: UUID
     product_id: UUID
     product_name: str
-    product_sku: str
+    sku: str | None = None
+    product_sku: str | None = None
     unit_price: Decimal
     quantity: int
-    line_total: Decimal
+    subtotal: Decimal | None = None
+    line_total: Decimal | None = None
+    product_slug: str | None = None
+    product_image: str | None = None
+
+    @model_validator(mode="after")
+    def populate_fallback_fields(self) -> "OrderItemResponse":
+        if not self.product_sku and self.sku:
+            self.product_sku = self.sku
+        if not self.sku and self.product_sku:
+            self.sku = self.product_sku
+        if self.line_total is None and self.subtotal is not None:
+            self.line_total = self.subtotal
+        if self.subtotal is None and self.line_total is not None:
+            self.subtotal = self.line_total
+        return self
 
 
 class OrderCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     shipping_name: str = Field(min_length=1, max_length=255)
     shipping_phone: str = Field(min_length=1, max_length=30)
+    shipping_email: str | None = None
+    customer_email: str | None = None
     shipping_address: str = Field(min_length=1, max_length=1000)
     customer_note: str | None = None
     note: str | None = None
+    payment_method: str | None = None
     items: list[OrderItemCreate] = Field(min_length=1)
 
 
@@ -61,6 +84,7 @@ class OrderResponse(BaseModel):
     order_number: str
     status: OrderStatus
     payment_status: PaymentStatus
+    payment_method: str | None = None
     subtotal: Decimal
     shipping_fee: Decimal
     total_amount: Decimal
