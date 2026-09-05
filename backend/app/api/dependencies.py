@@ -101,6 +101,19 @@ def require_admin(
     return current_user
 
 
+def require_staff_or_admin(
+    current_user: User = Depends(get_current_user),
+    lang: str = Depends(get_language),
+) -> User:
+    if current_user.role not in [UserRole.ADMIN, UserRole.STAFF]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=translate("admin_required", lang),
+        )
+
+    return current_user
+
+
 def get_cart_id(
     x_session_id: str | None = Header(default=None, alias="X-Session-ID"),
     current_user: User | None = Depends(get_optional_current_user),

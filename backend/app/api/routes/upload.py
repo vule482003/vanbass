@@ -6,7 +6,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from pydantic import BaseModel
 
-from app.api.dependencies import require_admin
+from app.api.dependencies import require_staff_or_admin
 from app.models.user import User
 
 router = APIRouter(prefix="/upload", tags=["Upload"])
@@ -39,7 +39,7 @@ class ImageUploadResponse(BaseModel):
 )
 async def upload_image(
     file: UploadFile = File(...),
-    _: User = Depends(require_admin),
+    _: User = Depends(require_staff_or_admin),
 ) -> ImageUploadResponse:
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXTENSIONS or file.content_type not in ALLOWED_MIME_TYPES:

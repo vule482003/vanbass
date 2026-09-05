@@ -455,4 +455,3 @@ def test_order_response_and_list_response_serialization():
     assert len(list_resp.items) == 1
     assert list_resp.items[0].items[0].product_sku == "DDJ-FLX4-PIO"
     assert list_resp.items[0].items[0].line_total == Decimal("10000000.00")
-

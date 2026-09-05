@@ -88,4 +88,3 @@ class OrderItem(Base):
             if hasattr(self.product, "image_url") and self.product.image_url:
                 return self.product.image_url
         return None
-

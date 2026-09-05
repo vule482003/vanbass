@@ -101,9 +101,7 @@ class EmailService:
             return True
 
         except Exception:
-            logger.exception(
-                f"Failed to send email '{subject}' to {clean_recipients}"
-            )
+            logger.exception(f"Failed to send email '{subject}' to {clean_recipients}")
             return False
 
     @classmethod
@@ -374,7 +372,7 @@ class EmailService:
                 <p style="margin: 4px 0; font-size: 13.5px;"><strong>Khách hàng:</strong> {customer_name}</p>
                 <p style="margin: 4px 0; font-size: 13.5px;"><strong>Điện thoại:</strong> <a href="tel:{phone}" style="color: #4ade80; font-weight: 700;">{phone}</a></p>
                 <p style="margin: 4px 0; font-size: 13.5px;"><strong>Địa chỉ giao:</strong> {address}</p>
-                {f'<p style="margin: 4px 0; font-size: 13.5px; color: #fbbf24;"><strong>Ghi chú:</strong> {customer_note}</p>' if customer_note else ''}
+                {f'<p style="margin: 4px 0; font-size: 13.5px; color: #fbbf24;"><strong>Ghi chú:</strong> {customer_note}</p>' if customer_note else ""}
               </div>
 
               <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #a1a1aa; text-transform: uppercase;">Danh sách sản phẩm cần xuất kho:</h3>

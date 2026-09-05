@@ -66,7 +66,8 @@ class VnpayService:
             "vnp_OrderInfo": order_info,
             "vnp_OrderType": "other",
             "vnp_Locale": locale,
-            "vnp_ReturnUrl": settings.vnpay_backend_return_url or "http://localhost:8000/api/orders/vnpay/return",
+            "vnp_ReturnUrl": settings.vnpay_backend_return_url
+            or "http://localhost:8000/api/orders/vnpay/return",
             "vnp_IpAddr": client_ip,
             "vnp_CreateDate": now.strftime("%Y%m%d%H%M%S"),
         }
@@ -95,7 +96,8 @@ class VnpayService:
 
         # Loại bỏ hash fields trước khi tính lại
         signing_params = {
-            k: v for k, v in params.items()
+            k: v
+            for k, v in params.items()
             if k not in ("vnp_SecureHash", "vnp_SecureHashType")
         }
 

@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 class UserRole(str, Enum):
     ADMIN = "admin"
+    STAFF = "staff"
     CUSTOMER = "customer"
 
 

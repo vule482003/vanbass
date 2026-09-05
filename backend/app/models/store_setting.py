@@ -67,6 +67,12 @@ class StoreSettings(Base):
         nullable=True,
     )
 
+    facebook_page_id: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+        default="vanbassmusiccenter",
+    )
+
     rental_information: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,

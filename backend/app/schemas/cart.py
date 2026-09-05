@@ -31,8 +31,13 @@ class CartItemResponse(BaseModel):
     error_message: str | None = None
 
 
+class CartMergeRequest(BaseModel):
+    items: list[CartItemAdd] = Field(default_factory=list)
+
+
 class CartResponse(BaseModel):
     items: list[CartItemResponse] = []
     total_items: int = 0
     subtotal: Decimal = Decimal("0.00")
     currency: str = "VND"
+    warnings: list[str] = Field(default_factory=list)

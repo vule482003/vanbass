@@ -119,10 +119,8 @@ class OrderService:
         order_number = generate_reference_code("VB")
         note = (payload.customer_note or payload.note or "").strip()
 
-        # Determine initial payment status (default to UNPAID for new orders until paid via gateway)
+        # Initial payment status is strictly UNPAID until verified by payment gateway or delivery
         initial_payment_status = PaymentStatus.UNPAID
-        if payload.payment_status == PaymentStatus.PAID:
-            initial_payment_status = PaymentStatus.PAID
 
         order = Order(
             id=uuid.uuid4(),
@@ -152,6 +150,7 @@ class OrderService:
                 PaymentMethod,
                 PaymentTransactionStatus,
             )
+
             raw_method = (payload.payment_method or "cod").lower()
             if raw_method == "cod":
                 p_method = PaymentMethod.COD

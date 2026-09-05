@@ -35,6 +35,7 @@ router = APIRouter(
 # 1. Tạo URL thanh toán VNPAY
 # ---------------------------------------------------------------------------
 
+
 @router.post(
     "/{order_id}/vnpay/create-payment",
     response_model=VnpayCreatePaymentResponse,
@@ -84,15 +85,21 @@ def create_vnpay_payment(
         )
 
     # Hủy/đánh dấu FAILED các giao dịch PENDING cũ chưa hoàn tất nếu user thử thanh toán lại
-    existing_pendings = db.execute(
-        select(Payment).where(
-            Payment.order_id == order.id,
-            Payment.status.in_([
-                PaymentTransactionStatus.PENDING,
-                PaymentTransactionStatus.PROCESSING,
-            ]),
+    existing_pendings = (
+        db.execute(
+            select(Payment).where(
+                Payment.order_id == order.id,
+                Payment.status.in_(
+                    [
+                        PaymentTransactionStatus.PENDING,
+                        PaymentTransactionStatus.PROCESSING,
+                    ]
+                ),
+            )
         )
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     for old_p in existing_pendings:
         old_p.status = PaymentTransactionStatus.FAILED
     db.flush()
@@ -111,9 +118,8 @@ def create_vnpay_payment(
     db.refresh(payment)
 
     # Lấy IP client (ưu tiên header X-Forwarded-For khi qua proxy/ngrok)
-    client_ip = (
-        request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
-        or (request.client.host if request.client else "127.0.0.1")
+    client_ip = request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or (
+        request.client.host if request.client else "127.0.0.1"
     )
 
     order_info = f"Thanh toan don hang {order.order_number}"
@@ -142,6 +148,7 @@ def create_vnpay_payment(
 # ---------------------------------------------------------------------------
 # 2. IPN — VNPAY gọi về đây server-to-server sau khi thanh toán
 # ---------------------------------------------------------------------------
+
 
 @router.get(
     "/vnpay/ipn",
@@ -178,7 +185,10 @@ def vnpay_ipn(
 
     logger.info(
         "VNPAY IPN received | order=%s txn=%s code=%s amount=%s",
-        order_number, transaction_id, response_code, vnpay_amount,
+        order_number,
+        transaction_id,
+        response_code,
+        vnpay_amount,
     )
 
     # 3. Tìm đơn hàng theo order_number (vnp_TxnRef)
@@ -205,7 +215,9 @@ def vnpay_ipn(
     if abs(vnpay_amount - order.total_amount) > 0:
         logger.error(
             "VNPAY IPN: Amount mismatch | order=%s expected=%s got=%s",
-            order_number, order.total_amount, vnpay_amount,
+            order_number,
+            order.total_amount,
+            vnpay_amount,
         )
         return VnpayIpnResponse(
             RspCode=VnpayService.RESPONSE_INVALID_AMOUNT,
@@ -229,7 +241,8 @@ def vnpay_ipn(
     _fail_payment(order=order, db=db)
     logger.info(
         "VNPAY IPN: Payment failed | order=%s response_code=%s",
-        order_number, response_code,
+        order_number,
+        response_code,
     )
     return VnpayIpnResponse(
         RspCode=VnpayService.RESPONSE_SUCCESS,  # Vẫn trả 00 để VNPAY không retry
@@ -240,6 +253,7 @@ def vnpay_ipn(
 # ---------------------------------------------------------------------------
 # 3. Return URL — VNPAY redirect user về đây sau khi thanh toán xong
 # ---------------------------------------------------------------------------
+
 
 @router.get(
     "/vnpay/return",
@@ -292,6 +306,7 @@ def vnpay_return(
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+
 def _confirm_payment(
     order: Order,
     transaction_id: str,
@@ -306,10 +321,12 @@ def _confirm_payment(
 
     # Tìm Payment PENDING gần nhất để cập nhật
     pending_payment = db.execute(
-        select(Payment).where(
+        select(Payment)
+        .where(
             Payment.order_id == order.id,
             Payment.status == PaymentTransactionStatus.PENDING,
-        ).order_by(Payment.created_at.desc())
+        )
+        .order_by(Payment.created_at.desc())
     ).scalar_one_or_none()
 
     if pending_payment:
@@ -320,7 +337,9 @@ def _confirm_payment(
     db.commit()
     logger.info(
         "Payment confirmed | order=%s txn=%s bank=%s",
-        order.order_number, transaction_id, bank_code,
+        order.order_number,
+        transaction_id,
+        bank_code,
     )
 
     # Dispatch email confirmation to customer & notification to staff now that online payment succeeded
@@ -328,7 +347,10 @@ def _confirm_payment(
         user_record = db.get(User, order.user_id) if order.user_id else None
         cust_email = (
             user_record.email
-            if user_record and user_record.email and "@" in user_record.email and not user_record.email.endswith("@vanbass.local")
+            if user_record
+            and user_record.email
+            and "@" in user_record.email
+            and not user_record.email.endswith("@vanbass.local")
             else None
         )
         if cust_email:
@@ -346,10 +368,12 @@ def _confirm_payment(
 def _fail_payment(order: Order, db: Session) -> None:
     """Đánh dấu Payment FAILED khi VNPAY báo giao dịch thất bại."""
     pending_payment = db.execute(
-        select(Payment).where(
+        select(Payment)
+        .where(
             Payment.order_id == order.id,
             Payment.status == PaymentTransactionStatus.PENDING,
-        ).order_by(Payment.created_at.desc())
+        )
+        .order_by(Payment.created_at.desc())
     ).scalar_one_or_none()
 
     if pending_payment:
