@@ -747,7 +747,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>🔍 "{searchQuery}"</span>
+                <span>🔍 &quot;{searchQuery}&quot;</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}

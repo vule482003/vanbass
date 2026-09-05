@@ -138,24 +138,26 @@ export default function AdminDashboardPage() {
 
   // Tab persistence: initialize from URL query or localStorage
   useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const urlTab = params.get("tab") as AdminTab;
-      const validTabs: AdminTab[] = ["overview", "home_cms", "products", "orders", "staff"];
-      if (urlTab && validTabs.includes(urlTab)) {
-        setActiveTab(urlTab);
-      } else {
-        const savedTab = localStorage.getItem("vanbass_admin_tab") as AdminTab;
-        if (savedTab && validTabs.includes(savedTab)) {
-          setActiveTab(savedTab);
-          const u = new URL(window.location.href);
-          u.searchParams.set("tab", savedTab);
-          window.history.replaceState(null, "", u.toString());
+    queueMicrotask(() => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTab = params.get("tab") as AdminTab;
+        const validTabs: AdminTab[] = ["overview", "home_cms", "products", "orders", "staff"];
+        if (urlTab && validTabs.includes(urlTab)) {
+          setActiveTab(urlTab);
+        } else {
+          const savedTab = localStorage.getItem("vanbass_admin_tab") as AdminTab;
+          if (savedTab && validTabs.includes(savedTab)) {
+            setActiveTab(savedTab);
+            const u = new URL(window.location.href);
+            u.searchParams.set("tab", savedTab);
+            window.history.replaceState(null, "", u.toString());
+          }
         }
+      } catch {
+        // Ignore
       }
-    } catch {
-      // Ignore
-    }
+    });
   }, []);
 
   const handleTabChange = useCallback((tab: AdminTab) => {
@@ -399,6 +401,7 @@ export default function AdminDashboardPage() {
 
         // Fetch staff / accounts
         try {
+          setIsStaffLoading(true);
           const usersRes = await fetch(`${apiUrl}/admin/users?${cacheBust}`, {
             cache: "no-store",
             headers: { Authorization: `Bearer ${token}` },
@@ -409,6 +412,8 @@ export default function AdminDashboardPage() {
           }
         } catch {
           // Ignore staff fetch error
+        } finally {
+          setIsStaffLoading(false);
         }
       }
 
@@ -1577,7 +1582,7 @@ export default function AdminDashboardPage() {
                       });
                     });
 
-                    let list = Object.values(salesMap).sort((a, b) => b.unitsSold - a.unitsSold);
+                    const list = Object.values(salesMap).sort((a, b) => b.unitsSold - a.unitsSold);
                     if (list.length < 5) {
                       const existingIds = new Set(list.map((it) => it.product.id));
                       const remaining = products.filter((p) => !existingIds.has(p.id));
@@ -2642,7 +2647,7 @@ export default function AdminDashboardPage() {
                     {staffUsers.length === 0 && !isStaffLoading && (
                       <tr>
                         <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
-                          Chưa có tài khoản nhân viên nào. Bấm nút "+ Thêm tài khoản nhân viên" ở góc trên để tạo mới.
+                          Chưa có tài khoản nhân viên nào. Bấm nút &quot;+ Thêm tài khoản nhân viên&quot; ở góc trên để tạo mới.
                         </td>
                       </tr>
                     )}

@@ -1,6 +1,7 @@
-import os
+import asyncio
 import uuid
 from pathlib import Path
+
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -41,7 +42,7 @@ def get_home_config(
 
     try:
         data = HomeData(**config.data) if isinstance(config.data, dict) else HomeData()
-    except Exception:
+    except (TypeError, ValueError):
         data = HomeData()
 
     return HomeConfigResponse(
@@ -118,8 +119,7 @@ async def upload_homepage_image(
     unique_filename = f"hp_{uuid.uuid4().hex[:12]}{ext}"
     target_path = UPLOAD_DIR / unique_filename
 
-    with open(target_path, "wb") as f:
-        f.write(content)
+    await asyncio.to_thread(target_path.write_bytes, content)
 
     return {
         "url": f"/static/uploads/homepage/{unique_filename}",

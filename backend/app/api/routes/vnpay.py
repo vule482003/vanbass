@@ -339,7 +339,7 @@ def _confirm_payment(
         EmailService.send_order_notification_to_staff(
             order=order,
         )
-    except Exception as email_err:
+    except Exception as email_err:  # noqa: BLE001
         logger.warning("VNPAY confirmation email dispatch error: %s", email_err)
 
 

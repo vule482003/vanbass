@@ -91,20 +91,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 1. Immediate Hydration on client mount to prevent auth state flash
   useEffect(() => {
-    try {
-      const savedToken = localStorage.getItem("vanbass_token");
-      const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
-      const savedUserStr = localStorage.getItem("vanbass_user");
+    queueMicrotask(() => {
+      try {
+        const savedToken = localStorage.getItem("vanbass_token");
+        const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
+        const savedUserStr = localStorage.getItem("vanbass_user");
 
-      if (savedToken && savedUserStr) {
-        const parsedUser = JSON.parse(savedUserStr);
-        setUser(parsedUser);
-        setToken(savedToken);
-        setRefreshToken(savedRefreshToken);
+        if (savedToken && savedUserStr) {
+          const parsedUser = JSON.parse(savedUserStr);
+          setUser(parsedUser);
+          setToken(savedToken);
+          setRefreshToken(savedRefreshToken);
+        }
+      } catch (e) {
+        console.warn("Error hydrating user session from localStorage:", e);
       }
-    } catch (e) {
-      console.warn("Error hydrating user session from localStorage:", e);
-    }
+    });
   }, []);
 
   // 2. Background Token Validation with Backend

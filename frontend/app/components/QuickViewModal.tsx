@@ -19,7 +19,7 @@ function formatVND(amount?: number) {
 
 const FACEBOOK_RENTAL_URL = "https://facebook.com";
 
-export default function QuickViewModal({ product, onClose, currentMode = "all" }: QuickViewModalProps) {
+export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const { addItem } = useCart();
   const [addedNotice, setAddedNotice] = useState(false);
   const [activeImgIndex, setActiveImgIndex] = useState(0);

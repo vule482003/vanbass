@@ -15,12 +15,12 @@ logger = logging.getLogger("email_service")
 email_executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix="email_worker")
 
 
-def format_currency(val: Decimal | float | int | None) -> str:
+def format_currency(val: Decimal | float | None) -> str:
     if val is None:
         return "0 ₫"
     try:
         return f"{int(val):,}".replace(",", ".") + " ₫"
-    except Exception:
+    except (ValueError, TypeError, OverflowError):
         return f"{val} ₫"
 
 
@@ -100,10 +100,9 @@ class EmailService:
             )
             return True
 
-        except Exception as e:
-            logger.error(
-                f"Failed to send email '{subject}' to {clean_recipients}: {str(e)}",
-                exc_info=True,
+        except Exception:
+            logger.exception(
+                f"Failed to send email '{subject}' to {clean_recipients}"
             )
             return False
 

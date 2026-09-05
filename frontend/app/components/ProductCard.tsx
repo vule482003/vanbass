@@ -73,6 +73,7 @@ export default function ProductCard({
       <div className="vb-card-image-wrap">
         <Link href={`/products/${product.slug}`} className="vb-image-link">
           {showImage ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={primaryImage!}
               alt={product.name}

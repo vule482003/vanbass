@@ -4,6 +4,7 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.helpers import append_timestamped_note, generate_reference_code
@@ -146,7 +147,11 @@ class OrderService:
 
         # Create initial Payment record to record payment method (COD or Online)
         try:
-            from app.models.payment import Payment, PaymentMethod, PaymentTransactionStatus
+            from app.models.payment import (
+                Payment,
+                PaymentMethod,
+                PaymentTransactionStatus,
+            )
             raw_method = (payload.payment_method or "cod").lower()
             if raw_method == "cod":
                 p_method = PaymentMethod.COD
@@ -178,7 +183,7 @@ class OrderService:
             db.add(initial_payment)
             db.commit()
             db.refresh(order)
-        except Exception:
+        except SQLAlchemyError:
             db.rollback()
 
         return order
