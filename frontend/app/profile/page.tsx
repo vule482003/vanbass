@@ -104,7 +104,7 @@ export default function ProfilePage() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-              {user.role === "admin" && (
+              {(user.role === "admin" || user.role === "staff") && (
                 <Link
                   href="/admin"
                   style={{

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
+import { getMessengerRentalUrl } from "../lib/api";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -16,8 +17,6 @@ function formatVND(amount?: number) {
   if (!amount || isNaN(amount)) return "Liên hệ báo giá";
   return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
 }
-
-const FACEBOOK_RENTAL_URL = "https://facebook.com";
 
 export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const { addItem } = useCart();
@@ -362,7 +361,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
               {product.rental_enabled && (
                 <a
-                  href={FACEBOOK_RENTAL_URL}
+                  href={getMessengerRentalUrl(product.name)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="button button-outline"

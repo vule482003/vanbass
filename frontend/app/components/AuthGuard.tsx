@@ -7,7 +7,7 @@ import { useAuth } from "../lib/auth-context";
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  allowedRoles?: ("admin" | "customer")[];
+  allowedRoles?: ("admin" | "staff" | "customer")[];
   fallbackUrl?: string;
 }
 

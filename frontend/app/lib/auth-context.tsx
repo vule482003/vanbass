@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 export interface AuthUser {
   id: string;
   email: string;
-  role: "customer" | "admin";
+  role: "customer" | "admin" | "staff";
   full_name?: string;
   phone?: string;
   address?: string;
@@ -18,7 +18,7 @@ interface AuthContextType {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin"; user?: AuthUser }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin" | "staff"; user?: AuthUser }>;
   register: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => Promise<boolean>;

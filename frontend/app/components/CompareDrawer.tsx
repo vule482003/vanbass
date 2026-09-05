@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../lib/types";
+import { getMessengerRentalUrl } from "../lib/api";
 
 interface CompareDrawerProps {
   products: Product[];
@@ -15,8 +16,6 @@ function formatVND(amount?: number) {
   if (!amount || isNaN(amount)) return "Liên hệ";
   return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
 }
-
-const FACEBOOK_RENTAL_URL = "https://facebook.com";
 
 export default function CompareDrawer({ products, onRemoveProduct, onClearAll }: CompareDrawerProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -296,7 +295,7 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                             Xem chi tiết
                           </Link>
                           {prod.rental_enabled && (
-                            <a href={FACEBOOK_RENTAL_URL} target="_blank" rel="noopener noreferrer" className="button button-outline button-sm" style={{ width: "100%", justifyContent: "center", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
+                            <a href={getMessengerRentalUrl(prod.name)} target="_blank" rel="noopener noreferrer" className="button button-outline button-sm" style={{ width: "100%", justifyContent: "center", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
                               Thuê máy ngay
                             </a>
                           )}

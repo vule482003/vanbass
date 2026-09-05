@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
+import { getMessengerRentalUrl } from "../lib/api";
 
 interface ProductCardProps {
   product: Product;
@@ -22,9 +23,6 @@ function formatVND(amount?: number) {
     currency: "VND",
   }).format(amount);
 }
-
-const FACEBOOK_RENTAL_URL =
-  "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN";
 
 export default function ProductCard({
   product,
@@ -279,13 +277,13 @@ export default function ProductCard({
         {currentMode === "rental" ? (
           /* Khi ở chế độ Cho thuê, nút Thuê sản phẩm hiển thị rộng đầy đủ */
           <a
-            href={FACEBOOK_RENTAL_URL}
+            href={getMessengerRentalUrl(product.name)}
             target="_blank"
             rel="noopener noreferrer"
             className="vb-btn-rental"
             onClick={handleRentProduct}
             style={{ width: "100%", justifyContent: "center" }}
-            title="Liên hệ tư vấn thuê sản phẩm qua Facebook VanBass"
+            title="Liên hệ tư vấn thuê sản phẩm qua Messenger VanBass"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -361,15 +359,15 @@ export default function ProductCard({
               </button>
             )}
 
-            {/* Nút 2: Thuê sản phẩm -> Link sang Facebook fanpage VanBass */}
+            {/* Nút 2: Thuê sản phẩm -> Link sang Facebook Messenger VanBass */}
             {product.rental_enabled && (
               <a
-                href={FACEBOOK_RENTAL_URL}
+                href={getMessengerRentalUrl(product.name)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="vb-btn-rental"
                 onClick={handleRentProduct}
-                title="Liên hệ tư vấn thuê sản phẩm qua Facebook VanBass"
+                title="Liên hệ tư vấn thuê sản phẩm qua Messenger VanBass"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

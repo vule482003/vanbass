@@ -10,6 +10,7 @@ import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
 import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
+import { fetchStoreSettings, getMessengerRentalUrl } from "../../lib/api";
 
 function formatCurrency(amount?: number) {
   if (amount === undefined || amount === null) return "Liên hệ";
@@ -18,9 +19,6 @@ function formatCurrency(amount?: number) {
     currency: "VND",
   }).format(amount);
 }
-
-const FACEBOOK_RENTAL_URL =
-  "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN";
 
 export default function ProductDetailPage() {
   const router = useRouter();
@@ -36,6 +34,15 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "rental">("specs");
   const [addedNotice, setAddedNotice] = useState(false);
+  const [facebookPageId, setFacebookPageId] = useState("vanbassmusiccenter");
+
+  useEffect(() => {
+    fetchStoreSettings().then((st) => {
+      if (st?.facebook_page_id) {
+        setFacebookPageId(st.facebook_page_id);
+      }
+    });
+  }, []);
 
   // Fetch live product from Backend PostgreSQL
   useEffect(() => {
@@ -362,13 +369,13 @@ export default function ProductDetailPage() {
                       <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Giao máy tận nơi tại Đà Nẵng, hỗ trợ setup âm thanh chuyên nghiệp.</span>
                     </div>
                     <a
-                      href={FACEBOOK_RENTAL_URL}
+                      href={getMessengerRentalUrl(product.name, facebookPageId)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="button button-secondary"
                       style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                     >
-                      <span>💬</span> Tư vấn thuê qua Facebook →
+                      <span>💬</span> Tư vấn thuê qua Messenger →
                     </a>
                   </div>
                 </div>
