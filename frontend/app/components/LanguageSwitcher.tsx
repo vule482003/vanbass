@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useSyncExternalStore } from "react";
 
 const languages = [
   { code: "vi", label: "Tiếng Việt" },
@@ -25,6 +25,15 @@ function getInitialLanguage(): "vi" | "en" {
   return saved === "en" ? "en" : "vi";
 }
 
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getServerSnapshot(): "vi" | "en" {
+  return "vi";
+}
+
 function triggerGoogleTranslate(langCode: "vi" | "en") {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
@@ -37,17 +46,9 @@ function triggerGoogleTranslate(langCode: "vi" | "en") {
 }
 
 export default function LanguageSwitcher() {
-  const [currentLang, setCurrentLang] = useState<"vi" | "en">("vi");
+  const currentLang = useSyncExternalStore(subscribe, getInitialLanguage, getServerSnapshot);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Đồng bộ ngôn ngữ đã lưu sau khi client hydrate xong để tránh mismatch giữa Server và Client
-    const savedLang = getInitialLanguage();
-    if (savedLang !== "vi") {
-      setCurrentLang(savedLang);
-    }
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -65,7 +66,6 @@ export default function LanguageSwitcher() {
       return;
     }
     setIsOpen(false);
-    setCurrentLang(code);
     triggerGoogleTranslate(code);
   };
 
