@@ -324,7 +324,6 @@ export default function Header() {
                       onClick={() => setUserDropdownOpen(false)}
                       className="header-user-item is-admin"
                     >
-                      <span>👑</span>
                       <span>Bảng Quản Trị Admin</span>
                     </Link>
                   )}
@@ -333,7 +332,6 @@ export default function Header() {
                     onClick={() => setUserDropdownOpen(false)}
                     className="header-user-item"
                   >
-                    <span>👤</span>
                     <span>Tài khoản &amp; Hồ sơ</span>
                   </Link>
                   <div className="header-user-divider" />
@@ -345,7 +343,6 @@ export default function Header() {
                     }}
                     className="header-user-item is-logout"
                   >
-                    <span>🚪</span>
                     <span>Đăng xuất</span>
                   </button>
                 </div>
@@ -396,7 +393,7 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(false)}
             style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
           >
-            🛒 Giỏ hàng ({totalItems})
+            Giỏ hàng ({totalItems})
           </Link>
           {isAuthenticated ? (
             <>
@@ -404,9 +401,9 @@ export default function Header() {
                 <Link
                   href="/admin"
                   onClick={() => setMobileMenuOpen(false)}
-                  style={{ color: "#22c55e", fontSize: "14px", fontWeight: "700", padding: "10px 0" }}
+                  style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
                 >
-                  👑 Bảng Quản Trị Admin
+                  Bảng Quản Trị Admin
                 </Link>
               )}
               <Link
@@ -414,7 +411,7 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
                 style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
               >
-                👤 Tài khoản ({user?.full_name || user?.email})
+                Tài khoản ({user?.full_name || user?.email})
               </Link>
               <button
                 onClick={() => {
@@ -436,7 +433,7 @@ export default function Header() {
                   gap: "6px",
                 }}
               >
-                🚪 Đăng xuất
+                Đăng xuất
               </button>
             </>
           ) : (
@@ -445,7 +442,7 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
             >
-              🔑 Đăng nhập / Đăng ký
+              Đăng nhập / Đăng ký
             </Link>
           )}
         </div>

@@ -449,17 +449,17 @@ a {
   transform: translateX(4px);
 }
 
-/* Admin item hover */
+/* Admin item */
 .header-user-item.is-admin {
-  color: #4ade80;
-  font-weight: 700;
+  color: #e4e4e7;
+  font-weight: 600;
 }
 
 .header-user-item.is-admin:hover {
-  background-color: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.35);
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
   border-radius: 8px;
-  color: #22c55e;
+  color: #ffffff;
 }
 
 /* Logout item hover */
