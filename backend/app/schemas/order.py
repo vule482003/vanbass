@@ -8,7 +8,7 @@ from app.models.order import OrderStatus, PaymentStatus
 
 
 class OrderItemCreate(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
 
     product_id: UUID
     quantity: int = Field(gt=0)
@@ -43,7 +43,7 @@ class OrderItemResponse(BaseModel):
 
 
 class OrderCreateRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
 
     shipping_name: str = Field(min_length=1, max_length=255)
     shipping_phone: str = Field(min_length=1, max_length=30)
@@ -53,6 +53,7 @@ class OrderCreateRequest(BaseModel):
     customer_note: str | None = None
     note: str | None = None
     payment_method: str | None = None
+    payment_status: str | None = None
     items: list[OrderItemCreate] = Field(min_length=1)
 
 

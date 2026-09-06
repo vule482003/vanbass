@@ -249,7 +249,6 @@ function CartContent() {
         customer_email: shippingEmail.trim() || undefined,
         shipping_address: shippingAddress.trim(),
         payment_method: paymentMethod,
-        payment_status: "unpaid",
         items: items.map((i) => ({
           product_id: i.product_id,
           quantity: i.quantity,
@@ -303,7 +302,12 @@ function CartContent() {
         if (typeof err.detail === "string") {
           msg = err.detail;
         } else if (Array.isArray(err.detail)) {
-          msg = err.detail.map((d: { msg?: string }) => d.msg || "Lỗi dữ liệu").join(", ");
+          msg = err.detail
+            .map((d: { msg?: string; loc?: (string | number)[] }) => {
+              const field = d.loc ? d.loc[d.loc.length - 1] : "";
+              return field ? `${field}: ${d.msg}` : (d.msg || "Lỗi dữ liệu");
+            })
+            .join(", ");
         } else if (typeof err.detail === "object" && err.detail !== null) {
           msg = JSON.stringify(err.detail);
         }
