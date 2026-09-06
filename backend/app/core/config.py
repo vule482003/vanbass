@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = True
     shop_notify_emails: str = "admin@vanbass.vn"
 
-    cors_origins: list[str] = [
+    cors_origins: Any = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
@@ -60,14 +60,14 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             clean_v = v.strip()
             if clean_v.startswith("[") and clean_v.endswith("]"):
-                import json
-                try:
-                    return json.loads(clean_v)
-                except Exception:
-                    pass
-            return [i.strip() for i in clean_v.split(",") if i.strip()]
-        if isinstance(v, (list, tuple)):
-            return list(v)
+                clean_v = clean_v[1:-1]
+            return [
+                item.strip().strip('"').strip("'")
+                for item in clean_v.split(",")
+                if item.strip().strip('"').strip("'")
+            ]
+        if isinstance(v, (list, tuple, set)):
+            return [str(item) for item in v]
         return []
 
     model_config = SettingsConfigDict(
