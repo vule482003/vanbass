@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 export interface AuthUser {
   id: string;
   email: string;
-  role: "customer" | "admin";
+  role: "customer" | "admin" | "staff";
   full_name?: string;
   phone?: string;
   address?: string;
@@ -18,7 +18,7 @@ interface AuthContextType {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin" | "staff"; user?: AuthUser }>;
   register: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => Promise<boolean>;
@@ -26,6 +26,18 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AUTH_REQUEST_TIMEOUT_MS = 30000; // 30s — Argon2id co the cham trong Docker/Windows
+
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), AUTH_REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -77,15 +89,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [apiUrl, logout]);
 
-  // Strict Token Validation on App Load
+  // 1. Immediate Hydration on client mount to prevent auth state flash
   useEffect(() => {
+    queueMicrotask(() => {
+      try {
+        const savedToken = localStorage.getItem("vanbass_token");
+        const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
+        const savedUserStr = localStorage.getItem("vanbass_user");
+
+        if (savedToken && savedUserStr) {
+          const parsedUser = JSON.parse(savedUserStr);
+          setUser(parsedUser);
+          setToken(savedToken);
+          setRefreshToken(savedRefreshToken);
+        }
+      } catch (e) {
+        console.warn("Error hydrating user session from localStorage:", e);
+      }
+    });
+  }, []);
+
+  // 2. Background Token Validation with Backend
+  useEffect(() => {
+    let isMounted = true;
+
     const validateExistingSession = async () => {
       try {
         const savedToken = localStorage.getItem("vanbass_token");
         const savedRefreshToken = localStorage.getItem("vanbass_refresh_token");
 
         if (!savedToken) {
-          setIsLoading(false);
+          if (isMounted) setIsLoading(false);
           return;
         }
 
@@ -124,78 +158,94 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // Ignore profile fetch failure
           }
 
-          setToken(savedToken);
-          setRefreshToken(savedRefreshToken);
-          setUser(validUser);
+          if (isMounted) {
+            setToken(savedToken);
+            setRefreshToken(savedRefreshToken);
+            setUser(validUser);
+          }
           localStorage.setItem("vanbass_user", JSON.stringify(validUser));
-        } else {
+        } else if (res.status === 401 || res.status === 403) {
           // Access token invalid or expired -> attempt refresh with refresh_token
           if (savedRefreshToken) {
-            const refreshRes = await fetch(`${apiUrl}/auth/refresh`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refresh_token: savedRefreshToken }),
-            });
+            try {
+              const refreshRes = await fetch(`${apiUrl}/auth/refresh`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh_token: savedRefreshToken }),
+              });
 
-            if (refreshRes.ok) {
-              const data = await refreshRes.json();
-              let validUser: AuthUser = {
-                id: data.user.id,
-                email: data.user.email,
-                role: data.user.role || "customer",
-                full_name: data.user.email.split("@")[0],
-              };
+              if (refreshRes.ok) {
+                const data = await refreshRes.json();
+                let validUser: AuthUser = {
+                  id: data.user.id,
+                  email: data.user.email,
+                  role: data.user.role || "customer",
+                  full_name: data.user.email.split("@")[0],
+                };
 
-              try {
-                const profileRes = await fetch(`${apiUrl}/customers/me/profile`, {
-                  headers: { Authorization: `Bearer ${data.access_token}` },
-                });
-                if (profileRes.ok) {
-                  const profileData = await profileRes.json();
-                  if (profileData.profile) {
-                    validUser = {
-                      ...validUser,
-                      full_name: profileData.profile.full_name || validUser.full_name,
-                      phone: profileData.profile.phone,
-                      address: profileData.profile.address,
-                      city: profileData.profile.city,
-                    };
+                try {
+                  const profileRes = await fetch(`${apiUrl}/customers/me/profile`, {
+                    headers: { Authorization: `Bearer ${data.access_token}` },
+                  });
+                  if (profileRes.ok) {
+                    const profileData = await profileRes.json();
+                    if (profileData.profile) {
+                      validUser = {
+                        ...validUser,
+                        full_name: profileData.profile.full_name || validUser.full_name,
+                        phone: profileData.profile.phone,
+                        address: profileData.profile.address,
+                        city: profileData.profile.city,
+                      };
+                    }
                   }
+                } catch {
+                  // Ignore
                 }
-              } catch {
-                // Ignore
-              }
 
-              setToken(data.access_token);
-              setRefreshToken(data.refresh_token);
-              setUser(validUser);
-              localStorage.setItem("vanbass_token", data.access_token);
-              if (data.refresh_token) {
-                localStorage.setItem("vanbass_refresh_token", data.refresh_token);
+                if (isMounted) {
+                  setToken(data.access_token);
+                  setRefreshToken(data.refresh_token);
+                  setUser(validUser);
+                }
+                localStorage.setItem("vanbass_token", data.access_token);
+                if (data.refresh_token) {
+                  localStorage.setItem("vanbass_refresh_token", data.refresh_token);
+                }
+                localStorage.setItem("vanbass_user", JSON.stringify(validUser));
+                return;
               }
-              localStorage.setItem("vanbass_user", JSON.stringify(validUser));
-              setIsLoading(false);
-              return;
+            } catch (err) {
+              console.warn("Failed refreshing token:", err);
             }
           }
 
-          // If both fail: purge invalid/old mock session
-          logout();
+          // If backend confirmed token is invalid/expired and refresh failed: purge session
+          if (isMounted) {
+            logout();
+          }
         }
       } catch (e) {
-        console.error("Auth validation error:", e);
-        logout();
+        // Network error (e.g. backend temporarily starting or network hiccup)
+        // Keep cached session in localStorage rather than logging the user out!
+        console.warn("Auth validation network issue, maintaining cached session:", e);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     validateExistingSession();
+
+    return () => {
+      isMounted = false;
+    };
   }, [apiUrl, logout]);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetchWithTimeout(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password }),
@@ -212,7 +262,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Try fetching customer profile
         try {
-          const profileRes = await fetch(`${apiUrl}/customers/me/profile`, {
+          const profileRes = await fetchWithTimeout(`${apiUrl}/customers/me/profile`, {
             headers: { Authorization: `Bearer ${data.access_token}` },
           });
           if (profileRes.ok) {
@@ -240,7 +290,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem("vanbass_refresh_token", data.refresh_token);
         }
         localStorage.setItem("vanbass_user", JSON.stringify(loggedUser));
-        return { success: true };
+        return { success: true, role: loggedUser.role, user: loggedUser };
       } else {
         const err = await response.json().catch(() => ({ detail: "Email hoặc mật khẩu không chính xác" }));
         return {

@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from pathlib import Path
@@ -5,7 +6,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from pydantic import BaseModel
 
-from app.api.dependencies import require_admin
+from app.api.dependencies import require_staff_or_admin
 from app.models.user import User
 
 router = APIRouter(prefix="/upload", tags=["Upload"])
@@ -38,7 +39,7 @@ class ImageUploadResponse(BaseModel):
 )
 async def upload_image(
     file: UploadFile = File(...),
-    _: User = Depends(require_admin),
+    _: User = Depends(require_staff_or_admin),
 ) -> ImageUploadResponse:
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXTENSIONS or file.content_type not in ALLOWED_MIME_TYPES:
@@ -58,8 +59,7 @@ async def upload_image(
     unique_filename = f"{uuid.uuid4().hex}{ext}"
     file_path = UPLOAD_DIR / unique_filename
 
-    with open(file_path, "wb") as f:
-        f.write(content)
+    await asyncio.to_thread(file_path.write_bytes, content)
 
     return ImageUploadResponse(
         url=f"/static/uploads/{unique_filename}",

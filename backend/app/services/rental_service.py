@@ -1,5 +1,5 @@
 import uuid
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID
 
@@ -80,7 +80,9 @@ class RentalService:
         """
         stmt = (
             select(RentalRequestItem, RentalRequest)
-            .join(RentalRequest, RentalRequestItem.rental_request_id == RentalRequest.id)
+            .join(
+                RentalRequest, RentalRequestItem.rental_request_id == RentalRequest.id
+            )
             .where(
                 RentalRequestItem.product_id == product_id,
                 RentalRequest.status.in_(ACTIVE_RENTAL_STATUSES),
@@ -121,7 +123,9 @@ class RentalService:
         Get availability calendar for a product across a date range.
         """
         product = ProductService.get_active_rental_product(db, product_id)
-        booked_map = cls.check_and_get_booked_quantities(product.id, start_date, end_date, db)
+        booked_map = cls.check_and_get_booked_quantities(
+            product.id, start_date, end_date, db
+        )
 
         calendar_days: list[DayAvailability] = []
         curr = start_date
@@ -160,7 +164,7 @@ class RentalService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Ngày trả nhạc cụ phải sau hoặc bằng ngày nhận",
             )
-        if payload.start_date < date.today():
+        if payload.start_date < datetime.now(UTC).date():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Ngày nhận nhạc cụ không được ở trong quá khứ",
@@ -201,7 +205,9 @@ class RentalService:
             discounted_daily_rate = base_daily_rate * tier_multiplier
             line_rental_total = discounted_daily_rate * rental_days * item_in.quantity
 
-            deposit_unit = (product.sale_price or (base_daily_rate * 5)) * Decimal("0.30")
+            deposit_unit = (product.sale_price or (base_daily_rate * 5)) * Decimal(
+                "0.30"
+            )
             line_deposit = deposit_unit * item_in.quantity
 
             rental_total += line_rental_total
@@ -225,10 +231,16 @@ class RentalService:
             f"Họ tên: {payload.customer_name}" if payload.customer_name else None,
             f"SĐT: {payload.customer_phone}" if payload.customer_phone else None,
             f"Email: {payload.customer_email}" if payload.customer_email else None,
-            f"Ghi chú: {payload.note or payload.customer_note}" if (payload.note or payload.customer_note) else None,
+            f"Ghi chú: {payload.note or payload.customer_note}"
+            if (payload.note or payload.customer_note)
+            else None,
         ]
         customer_note_str = " | ".join([p for p in info_parts if p]) or None
-        pickup_loc = payload.delivery_address or payload.pickup_location or "Showroom VanBass - Đà Nẵng"
+        pickup_loc = (
+            payload.delivery_address
+            or payload.pickup_location
+            or "Showroom VanBass - Đà Nẵng"
+        )
 
         rental_req = RentalRequest(
             id=rental_req_id,
@@ -288,7 +300,9 @@ class RentalService:
             rental_req.payment_status = new_payment_status
 
         if admin_note:
-            rental_req.admin_note = append_timestamped_note(rental_req.admin_note, admin_note)
+            rental_req.admin_note = append_timestamped_note(
+                rental_req.admin_note, admin_note
+            )
 
         db.commit()
         db.refresh(rental_req)
@@ -319,14 +333,19 @@ class RentalService:
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="Bạn không có quyền hủy yêu cầu thuê này",
                 )
-            if rental_req.status not in {RentalRequestStatus.PENDING, RentalRequestStatus.CONTACTED}:
+            if rental_req.status not in {
+                RentalRequestStatus.PENDING,
+                RentalRequestStatus.CONTACTED,
+            }:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Yêu cầu thuê đang ở trạng thái '{rental_req.status.value}', không thể tự hủy.",
                 )
 
         actor = "Admin" if is_admin else "Khách hàng"
-        cancel_note = f"Hủy bởi {actor}" + (f": {reason.strip()}" if reason and reason.strip() else "")
+        cancel_note = f"Hủy bởi {actor}" + (
+            f": {reason.strip()}" if reason and reason.strip() else ""
+        )
 
         return cls.update_rental_status(
             request_id=request_id,

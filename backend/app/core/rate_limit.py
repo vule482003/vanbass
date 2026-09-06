@@ -45,7 +45,9 @@ class RedisDistributedRateLimiter:
         now = time.time()
         window_start = now - self.window
         with self._fallback_lock:
-            valid_timestamps = [t for t in self._fallback_records[key] if t > window_start]
+            valid_timestamps = [
+                t for t in self._fallback_records[key] if t > window_start
+            ]
             if len(valid_timestamps) >= self.limit:
                 self._fallback_records[key] = valid_timestamps
                 return True
@@ -62,10 +64,18 @@ class RedisDistributedRateLimiter:
 
 
 # Pre-configured Distributed Rate Limiters
-auth_rate_limiter = RedisDistributedRateLimiter(requests_limit=15, window_seconds=60, prefix="rl:auth")
-order_rate_limiter = RedisDistributedRateLimiter(requests_limit=20, window_seconds=60, prefix="rl:order")
-rental_rate_limiter = RedisDistributedRateLimiter(requests_limit=20, window_seconds=60, prefix="rl:rental")
-public_rate_limiter = RedisDistributedRateLimiter(requests_limit=150, window_seconds=60, prefix="rl:public")
+auth_rate_limiter = RedisDistributedRateLimiter(
+    requests_limit=15, window_seconds=60, prefix="rl:auth"
+)
+order_rate_limiter = RedisDistributedRateLimiter(
+    requests_limit=20, window_seconds=60, prefix="rl:order"
+)
+rental_rate_limiter = RedisDistributedRateLimiter(
+    requests_limit=20, window_seconds=60, prefix="rl:rental"
+)
+public_rate_limiter = RedisDistributedRateLimiter(
+    requests_limit=150, window_seconds=60, prefix="rl:public"
+)
 
 
 def get_client_ip(request: Request) -> str:

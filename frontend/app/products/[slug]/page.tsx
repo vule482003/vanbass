@@ -1,27 +1,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ShopeeProductCard from "../../components/ShopeeProductCard";
+import ProductCard from "../../components/ProductCard";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
+import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
+import { fetchStoreSettings, getMessengerRentalUrl } from "../../lib/api";
+import { useLanguage } from "../../lib/language-context";
+import { getTranslatedProductName, getTranslatedProductDesc, getTranslatedSpecKey } from "../../lib/product-i18n";
 
-function formatCurrency(amount?: number) {
-  if (amount === undefined || amount === null) return "Liên hệ";
-  return new Intl.NumberFormat("vi-VN", {
+function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
+  if (amount === undefined || amount === null) return lang === "en" ? "Contact" : "Liên hệ";
+  return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(amount);
 }
 
 export default function ProductDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const slug = params?.slug as string;
+  const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
+  const { t, lang } = useLanguage();
 
   const [product, setProduct] = useState<Product | null>(
     MOCK_PRODUCTS.find((p) => p.slug === slug) || null
@@ -30,20 +37,32 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "rental">("specs");
   const [addedNotice, setAddedNotice] = useState(false);
+  const [facebookPageId, setFacebookPageId] = useState("vanbassmusiccenter");
+
+  useEffect(() => {
+    fetchStoreSettings().then((st) => {
+      if (st?.facebook_page_id) {
+        setFacebookPageId(st.facebook_page_id);
+      }
+    });
+  }, []);
 
   // Fetch live product from Backend PostgreSQL
   useEffect(() => {
     const fetchLiveProduct = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const cacheBust = `_t=${Date.now()}`;
         const [singleRes, allRes] = await Promise.all([
-          fetch(`${apiUrl}/products/by-slug/${slug}`),
-          fetch(`${apiUrl}/products`),
+          fetch(`${apiUrl}/products/by-slug/${slug}?${cacheBust}`, { cache: "no-store" }),
+          fetch(`${apiUrl}/products?${cacheBust}`, { cache: "no-store" }),
         ]);
 
         if (singleRes.ok) {
           const liveProduct = await singleRes.json();
           setProduct(liveProduct);
+        } else if (singleRes.status === 404) {
+          setProduct(null);
         }
 
         if (allRes.ok) {
@@ -67,10 +86,10 @@ export default function ProductDetailPage() {
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
         <Header />
         <div className="container" style={{ flex: 1, paddingTop: "140px", textAlign: "center" }}>
-          <h2 style={{ color: "#fff" }}>Sản phẩm không tồn tại</h2>
-          <p style={{ color: "#a1a1aa", marginTop: "12px" }}>Thiết bị bạn tìm kiếm không có hoặc đã ngừng kinh doanh.</p>
+          <h2 style={{ color: "#fff" }}>{t.productDetail.notFoundTitle}</h2>
+          <p style={{ color: "#a1a1aa", marginTop: "12px" }}>{t.productDetail.notFoundDesc}</p>
           <Link href="/products" className="button button-primary" style={{ marginTop: "24px" }}>
-            Quay lại danh mục sản phẩm
+            {t.productDetail.backToProducts}
           </Link>
         </div>
         <Footer />
@@ -82,12 +101,15 @@ export default function ProductDetailPage() {
     .filter((p) => p.category_id === product.category_id && p.id !== product.id)
     .slice(0, 3);
 
+  const displayName = getTranslatedProductName(product, lang);
+  const displayDesc = getTranslatedProductDesc(product, lang);
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": product.name,
+    "name": displayName,
     "image": product.images?.[0]?.image_url || "https://vanbass.vn/placeholder.png",
-    "description": product.description,
+    "description": displayDesc,
     "sku": product.sku || product.slug,
     "brand": {
       "@type": "Brand",
@@ -110,6 +132,10 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      router.push(`/login?redirect=/products/${slug}`);
+      return;
+    }
     if (!product.sale_enabled) return;
     addItem(product, quantity);
     setAddedNotice(true);
@@ -128,11 +154,11 @@ export default function ProductDetailPage() {
         <div className="container">
           {/* Breadcrumb */}
           <nav style={{ marginBottom: "32px", fontSize: "13px", color: "#71717a" }} aria-label="Breadcrumb">
-            <Link href="/" style={{ color: "#a1a1aa", textDecoration: "none" }}>Trang chủ</Link>
+            <Link href="/" style={{ color: "#a1a1aa", textDecoration: "none" }}>{t.productDetail.breadcrumbHome}</Link>
             <span style={{ margin: "0 8px" }}>/</span>
-            <Link href="/products" style={{ color: "#a1a1aa", textDecoration: "none" }}>Thiết bị</Link>
+            <Link href="/products" style={{ color: "#a1a1aa", textDecoration: "none" }}>{t.productDetail.breadcrumbProducts}</Link>
             <span style={{ margin: "0 8px" }}>/</span>
-            <span style={{ color: "#f5f5f0" }}>{product.name}</span>
+            <span style={{ color: "#f5f5f0" }}>{displayName}</span>
           </nav>
 
           {/* Product Detail Layout */}
@@ -151,6 +177,7 @@ export default function ProductDetailPage() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   aspectRatio: "4/3",
                   display: "flex",
                   alignItems: "center",
@@ -172,9 +199,10 @@ export default function ProductDetailPage() {
 
                   return displayImg ? (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={displayImg}
-                        alt={product.name}
+                        alt={displayName}
                         style={{ maxWidth: "100%", maxHeight: "280px", objectFit: "contain", filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.5))" }}
                         onError={(e) => {
                           (e.currentTarget.parentElement as HTMLElement).style.display = "none";
@@ -211,8 +239,13 @@ export default function ProductDetailPage() {
                     gap: "8px",
                   }}
                 >
-                  {product.sale_enabled && <span className="badge badge-sale">MUA BÁN</span>}
-                  {product.rental_enabled && <span className="badge badge-rental">CHO THUÊ</span>}
+                  {product.sale_enabled && product.stock_quantity > 0 && <span className="badge badge-sale">{t.productDetail.saleBadge}</span>}
+                  {product.sale_enabled && product.stock_quantity <= 0 && (
+                    <span className="badge" style={{ backgroundColor: "rgba(239,68,68,0.2)", color: "#f87171", border: "1px solid rgba(239,68,68,0.4)" }}>
+                      {t.productDetail.outOfStockBadge}
+                    </span>
+                  )}
+                  {product.rental_enabled && <span className="badge badge-rental">{t.productDetail.rentalBadge}</span>}
                 </div>
               </div>
             </div>
@@ -228,7 +261,7 @@ export default function ProductDetailPage() {
               </div>
 
               <h1 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, margin: "0 0 16px 0", color: "#fff", lineHeight: 1.25 }}>
-                {product.name}
+                {displayName}
               </h1>
 
               {/* Pricing Box */}
@@ -236,6 +269,7 @@ export default function ProductDetailPage() {
                 style={{
                   backgroundColor: "var(--surface)",
                   border: "1px solid var(--border)",
+                  borderRadius: "10px",
                   padding: "24px",
                   marginBottom: "32px",
                 }}
@@ -244,38 +278,38 @@ export default function ProductDetailPage() {
                   {/* Sale Price */}
                   <div>
                     <span style={{ fontSize: "11px", color: "#a1a1aa", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
-                      Giá bán chính hãng
+                      {t.productDetail.officialSalePrice}
                     </span>
                     {product.sale_enabled && product.sale_price ? (
                       <div>
                         <span style={{ fontSize: "24px", fontWeight: 900, color: "#fff" }}>
-                          {formatCurrency(product.sale_price)}
+                          {formatCurrency(product.sale_price, lang)}
                         </span>
                         <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginTop: "2px" }}>
-                          (Đã bao gồm VAT & Bảo hành 12 tháng)
+                          {t.productDetail.vatWarrantyNote}
                         </span>
                       </div>
                     ) : (
-                      <span style={{ fontSize: "16px", color: "#71717a" }}>Chỉ áp dụng cho thuê</span>
+                      <span style={{ fontSize: "16px", color: "#71717a" }}>{t.productDetail.rentalOnly}</span>
                     )}
                   </div>
 
                   {/* Rental Price */}
                   <div style={{ borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "24px" }}>
                     <span style={{ fontSize: "11px", color: "#a1a1aa", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
-                      Giá thuê biểu diễn
+                      {t.productDetail.performanceRentalPrice}
                     </span>
                     {product.rental_enabled && product.rental_price ? (
                       <div>
                         <span style={{ fontSize: "24px", fontWeight: 900, color: "#22c55e" }}>
-                          {formatCurrency(product.rental_price)}
+                          {formatCurrency(product.rental_price, lang)}
                         </span>
                         <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginTop: "2px" }}>
-                          / 24 giờ sử dụng
+                          {t.productDetail.per24Hours}
                         </span>
                       </div>
                     ) : (
-                      <span style={{ fontSize: "16px", color: "#71717a" }}>Không cho thuê</span>
+                      <span style={{ fontSize: "16px", color: "#71717a" }}>{t.productDetail.noRental}</span>
                     )}
                   </div>
                 </div>
@@ -284,37 +318,49 @@ export default function ProductDetailPage() {
               {/* Quantity & Buy Button */}
               {product.sale_enabled && (
                 <div style={{ marginBottom: "24px" }}>
-                  <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                    <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                  {product.stock_quantity > 0 ? (
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                        <button
+                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                          style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        >
+                          -
+                        </button>
+                        <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
+                          {quantity}
+                        </span>
+                        <button
+                          onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
+                          style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                        onClick={handleAddToCart}
+                        className="button button-primary button-lg"
+                        style={{ flex: 1 }}
                       >
-                        -
-                      </button>
-                      <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
-                        {quantity}
-                      </span>
-                      <button
-                        onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
-                        style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
-                      >
-                        +
+                        {t.productDetail.addToCartWithPrice} ({formatCurrency((product.sale_price || 0) * quantity, lang)})
                       </button>
                     </div>
-
-                    <button
-                      onClick={handleAddToCart}
-                      className="button button-primary button-lg"
-                      style={{ flex: 1 }}
-                    >
-                      Thêm vào giỏ hàng ({formatCurrency((product.sale_price || 0) * quantity)})
-                    </button>
-                  </div>
+                  ) : (
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <button
+                        disabled
+                        className="button button-secondary button-lg"
+                        style={{ flex: 1, opacity: 0.6, cursor: "not-allowed", backgroundColor: "#1f2937", color: "#9ca3af" }}
+                      >
+                        {t.productDetail.outOfStock}
+                      </button>
+                    </div>
+                  )}
 
                   {addedNotice && (
                     <div style={{ marginTop: "12px", padding: "10px 16px", backgroundColor: "rgba(34,197,94,0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "13px" }}>
-                      ✓ Đã thêm thiết bị vào giỏ hàng! <Link href="/cart" style={{ color: "#fff", fontWeight: 700, marginLeft: "8px", textDecoration: "underline" }}>Xem giỏ hàng →</Link>
+                      {t.productDetail.addedToCartNotice} <Link href="/cart" style={{ color: "#fff", fontWeight: 700, marginLeft: "8px", textDecoration: "underline" }}>{t.productDetail.viewCart}</Link>
                     </div>
                   )}
                 </div>
@@ -322,15 +368,21 @@ export default function ProductDetailPage() {
 
               {/* Direct Rental Link */}
               {product.rental_enabled && (
-                <div style={{ padding: "20px", backgroundColor: "#111111", border: "1px solid rgba(34,197,94,0.2)", marginBottom: "32px" }}>
+                <div style={{ padding: "20px", backgroundColor: "var(--surface)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "10px", marginBottom: "32px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                     <div>
-                      <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>Cần thuê thiết bị này cho sự kiện / Show diễn?</strong>
-                      <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Giao máy tận nơi tại Đà Nẵng, hỗ trợ setup âm thanh chuyên nghiệp.</span>
+                      <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>{t.productDetail.rentalBannerTitle}</strong>
+                      <span style={{ fontSize: "13px", color: "#a1a1aa" }}>{t.productDetail.rentalBannerDesc}</span>
                     </div>
-                    <Link href={`/rental?product=${product.slug}`} className="button button-secondary">
-                      Tính giá thuê ngay →
-                    </Link>
+                    <a
+                      href={getMessengerRentalUrl(displayName, facebookPageId)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="button button-secondary"
+                      style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+                    >
+                      <span>💬</span> {t.productDetail.consultMessenger}
+                    </a>
                   </div>
                 </div>
               )}
@@ -346,14 +398,14 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "specs" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "specs" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "specs" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "specs" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
                 }}
               >
-                Thông số kỹ thuật
+                {t.productDetail.tabSpecs}
               </button>
               <button
                 onClick={() => setActiveTab("desc")}
@@ -361,14 +413,14 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "desc" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "desc" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "desc" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "desc" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
                 }}
               >
-                Mô tả chi tiết
+                {t.productDetail.tabDesc}
               </button>
               <button
                 onClick={() => setActiveTab("rental")}
@@ -376,50 +428,50 @@ export default function ProductDetailPage() {
                   padding: "14px 24px",
                   background: "none",
                   border: "none",
-                  borderBottom: activeTab === "rental" ? "2px solid #fff" : "2px solid transparent",
-                  color: activeTab === "rental" ? "#fff" : "#71717a",
+                  borderBottom: activeTab === "rental" ? "2px solid #22c55e" : "2px solid transparent",
+                  color: activeTab === "rental" ? "#22c55e" : "#71717a",
                   fontWeight: 700,
                   fontSize: "15px",
                   cursor: "pointer",
                 }}
               >
-                Chính sách cho thuê & Đặt cọc
+                {t.productDetail.tabRentalPolicy}
               </button>
             </div>
 
             {activeTab === "specs" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px" }}>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
                 {product.specifications && Object.keys(product.specifications).length > 0 ? (
                   <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                     <tbody>
                       {Object.entries(product.specifications).map(([key, value]) => (
                         <tr key={key} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                          <td style={{ padding: "14px 0", color: "#a1a1aa", width: "30%", fontWeight: 600 }}>{key}</td>
+                          <td style={{ padding: "14px 0", color: "#a1a1aa", width: "30%", fontWeight: 600 }}>{getTranslatedSpecKey(key, lang)}</td>
                           <td style={{ padding: "14px 0", color: "#fff" }}>{String(value)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 ) : (
-                  <p style={{ color: "#a1a1aa" }}>Đang cập nhật thông số kỹ thuật chi tiết từ hãng sản xuất.</p>
+                  <p style={{ color: "#a1a1aa" }}>{t.productDetail.noSpecs}</p>
                 )}
               </div>
             )}
 
             {activeTab === "desc" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
-                <p>{product.description || "Thiết bị âm thanh và DJ chuyên nghiệp chính hãng tại VanBass Music Center Đà Nẵng."}</p>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+                <p>{displayDesc}</p>
               </div>
             )}
 
             {activeTab === "rental" && (
-              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
-                <h4 style={{ color: "#fff", margin: "0 0 12px 0" }}>Quy trình thuê máy tại VanBass:</h4>
+              <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
+                <h4 style={{ color: "#fff", margin: "0 0 12px 0" }}>{t.productDetail.rentalProcessTitle}</h4>
                 <ol style={{ paddingLeft: "20px", margin: "0 0 20px 0" }}>
-                  <li>Chọn thiết bị và ngày cần sử dụng máy trên website.</li>
-                  <li>Nhân viên kỹ thuật liên hệ xác nhận thời gian nhận và địa chỉ sự kiện.</li>
-                  <li>Ký hợp đồng thuê bàn giao thiết bị + Đặt cọc theo quy định.</li>
-                  <li>Hỗ trợ hướng dẫn sử dụng và bàn giao đầy đủ phụ kiện, dây cáp âm thanh.</li>
+                  <li>{t.productDetail.rentalStep1}</li>
+                  <li>{t.productDetail.rentalStep2}</li>
+                  <li>{t.productDetail.rentalStep3}</li>
+                  <li>{t.productDetail.rentalStep4}</li>
                 </ol>
               </div>
             )}
@@ -428,12 +480,12 @@ export default function ProductDetailPage() {
           {/* Related Products */}
           {relatedProducts.length > 0 && (
             <div style={{ marginTop: "40px" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #ee4d2d", paddingBottom: "10px" }}>
-                Thiết Bị Cùng Danh Mục
+              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", marginBottom: "20px", borderBottom: "2px solid #22c55e", paddingBottom: "10px" }}>
+                {t.productDetail.relatedTitle}
               </h3>
-              <div className="shopee-product-grid">
+              <div className="vb-product-grid">
                 {relatedProducts.map((p) => (
-                  <ShopeeProductCard key={p.id} product={p} />
+                  <ProductCard key={p.id} product={p} />
                 ))}
               </div>
             </div>

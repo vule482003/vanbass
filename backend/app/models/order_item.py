@@ -67,3 +67,24 @@ class OrderItem(Base):
     product: Mapped["Product"] = relationship(
         "Product",
     )
+
+    @property
+    def product_sku(self) -> str:
+        return self.sku
+
+    @property
+    def line_total(self) -> Decimal:
+        return self.subtotal
+
+    @property
+    def product_slug(self) -> str | None:
+        return self.product.slug if self.product else None
+
+    @property
+    def product_image(self) -> str | None:
+        if self.product:
+            if hasattr(self.product, "images") and self.product.images:
+                return self.product.images[0].image_url
+            if hasattr(self.product, "image_url") and self.product.image_url:
+                return self.product.image_url
+        return None

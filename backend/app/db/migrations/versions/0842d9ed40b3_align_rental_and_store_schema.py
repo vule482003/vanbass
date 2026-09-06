@@ -5,18 +5,18 @@ Revises: fb171e65b445
 Create Date: 2026-08-13 10:21:58.758202
 
 """
-from typing import Sequence, Union
 
-from alembic import op
+from collections.abc import Sequence
+
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
-
 
 # revision identifiers, used by Alembic.
 revision: str = "0842d9ed40b3"
-down_revision: Union[str, Sequence[str], None] = "fb171e65b445"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "fb171e65b445"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -527,7 +527,7 @@ def downgrade() -> None:
         existing_type=sa.VARCHAR(length=100),
         nullable=False,
     )
-    op.alter_column(       
+    op.alter_column(
         "customer_profiles",
         "district",
         existing_type=sa.VARCHAR(length=100),

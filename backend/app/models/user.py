@@ -1,15 +1,24 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, DateTime, Enum as SQLEnum, String, Uuid
+from sqlalchemy import Boolean, DateTime, String, Uuid
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
+if TYPE_CHECKING:
+    from app.models.cart import Cart
+    from app.models.customer_profile import CustomerProfile
+    from app.models.order import Order
+    from app.models.rental_request import RentalRequest
+
 
 class UserRole(str, Enum):
     ADMIN = "admin"
+    STAFF = "staff"
     CUSTOMER = "customer"
 
 
@@ -49,14 +58,14 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     profile: Mapped["CustomerProfile | None"] = relationship(
@@ -70,9 +79,9 @@ class User(Base):
     )
 
     cart: Mapped["Cart | None"] = relationship(
-    back_populates="user",
-    uselist=False,
-    cascade="all, delete-orphan",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
 
     rental_requests: Mapped[list["RentalRequest"]] = relationship(

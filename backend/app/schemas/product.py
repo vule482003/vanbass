@@ -11,7 +11,7 @@ class ProductCreate(BaseModel):
     category_id: UUID
     name: str = Field(min_length=1, max_length=255)
     slug: str = Field(min_length=1, max_length=255)
-    sku: str = Field(min_length=1, max_length=100)
+    sku: str | None = Field(default=None, max_length=100)
     brand: str | None = Field(default=None, max_length=255)
     description: str | None = None
     specifications: dict | None = None

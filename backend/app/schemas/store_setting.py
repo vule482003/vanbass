@@ -14,6 +14,7 @@ class StoreSettingsUpdate(BaseModel):
     city: str | None = Field(default=None, max_length=100)
     country: str | None = Field(default=None, max_length=100)
     business_hours: str | None = Field(default=None, max_length=500)
+    facebook_page_id: str | None = Field(default=None, max_length=255)
     rental_information: str | None = None
 
 
@@ -30,6 +31,7 @@ class StoreSettingsResponse(BaseModel):
     city: str
     country: str
     business_hours: str | None
+    facebook_page_id: str | None
     rental_information: str | None
     updated_by: UUID | None
     updated_at: datetime

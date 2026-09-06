@@ -1,41 +1,46 @@
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import ProductGrid from "./components/ProductGrid";
-import CategoryGrid from "./components/CategoryGrid";
-import RentalSection from "./components/RentalSection";
-import IntroSection from "./components/IntroSection";
-import LocalCTA from "./components/LocalCTA";
-import Footer from "./components/Footer";
-import ScrollObserver from "./components/ScrollObserver";
+import LiveHomePageClient from "./components/LiveHomePageClient";
+import { DEFAULT_HOME_DATA, HomeData } from "./types/home_config";
 
-export default function Home() {
-  return (
-    <>
-      <Header />
-      <ScrollObserver />
+async function getHomeConfig(): Promise<HomeData> {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+    const res = await fetch(`${apiUrl}/home-config`, {
+      next: { revalidate: 5 },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.data) {
+        const sanitizeImg = (url: string | undefined, fallback: string) => {
+          if (!url || !url.trim() || url === "null" || url === "undefined") return fallback;
+          const cleaned = url.replace(/^https?:\/\/(127\.0\.0\.1|localhost):8000/, "");
+          return cleaned.startsWith("http:") || cleaned.startsWith("https:") || cleaned.startsWith("blob:") || cleaned.startsWith("data:")
+            ? cleaned
+            : cleaned.startsWith("/") ? cleaned : `/${cleaned}`;
+        };
 
-      <main>
-        {/* 1. Hero Banner (THIẾT BỊ • DJ • TRẢI NGHIỆM) */}
-        <Hero />
+        return {
+          ...DEFAULT_HOME_DATA,
+          ...json.data,
+          visibility: { ...DEFAULT_HOME_DATA.visibility, ...(json.data.visibility || {}) },
+          hero_left: { ...DEFAULT_HOME_DATA.hero_left, ...(json.data.hero_left || {}), bg_image: sanitizeImg(json.data.hero_left?.bg_image, DEFAULT_HOME_DATA.hero_left.bg_image) },
+          hero_center: { ...DEFAULT_HOME_DATA.hero_center, ...(json.data.hero_center || {}), bg_image: sanitizeImg(json.data.hero_center?.bg_image, DEFAULT_HOME_DATA.hero_center.bg_image) },
+          hero_right: { ...DEFAULT_HOME_DATA.hero_right, ...(json.data.hero_right || {}), bg_image: sanitizeImg(json.data.hero_right?.bg_image, DEFAULT_HOME_DATA.hero_right.bg_image) },
+          categories_highlight: { ...DEFAULT_HOME_DATA.categories_highlight, ...(json.data.categories_highlight || {}) },
+          intro: { ...DEFAULT_HOME_DATA.intro, ...(json.data.intro || {}) },
+          rental: { ...DEFAULT_HOME_DATA.rental, ...(json.data.rental || {}) },
+          local_cta: { ...DEFAULT_HOME_DATA.local_cta, ...(json.data.local_cta || {}) },
+          floating_contacts: { ...DEFAULT_HOME_DATA.floating_contacts, ...(json.data.floating_contacts || {}) },
+        };
+      }
+    }
+  } catch {
+    // Graceful fallback to static defaults
+  }
+  return DEFAULT_HOME_DATA;
+}
 
-        {/* 2. Thiết bị nổi bật */}
-        <ProductGrid />
+export default async function Home() {
+  const homeData = await getHomeConfig();
 
-        {/* 3. Danh mục sản phẩm */}
-        <CategoryGrid />
-
-        {/* 4. Dịch vụ cho thuê thiết bị */}
-        <RentalSection />
-
-        {/* 5. Giới thiệu VanBass */}
-        <IntroSection />
-
-        {/* 6. Kêu gọi hành động & Showroom */}
-        <LocalCTA />
-      </main>
-
-      {/* Chân trang Footer */}
-      <Footer />
-    </>
-  );
+  return <LiveHomePageClient initialHomeData={homeData} />;
 }

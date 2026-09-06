@@ -3,12 +3,15 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import RedirectResponse
-from sqlalchemy import or_, select
+from sqlalchemy import delete, or_, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.dependencies import get_db, require_admin
+from app.api.dependencies import get_db, require_staff_or_admin
+from app.models.cart_item import CartItem
 from app.models.category import Category
 from app.models.product import Product
+from app.models.product_image import ProductImage
 from app.models.slug_redirect import SlugRedirect
 from app.models.user import User
 from app.schemas.product import (
@@ -42,15 +45,21 @@ def list_products(
             detail="sale_only and rental_only cannot both be true",
         )
 
-    # SEO Cache-Control: Cache for 60s, background revalidate for 300s
-    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
+    # Real-time fresh data: disable aggressive browser caching
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
 
-    query = select(Product).options(selectinload(Product.images)).where(Product.is_active.is_(True))
+    query = (
+        select(Product)
+        .options(selectinload(Product.images))
+        .where(Product.is_active.is_(True))
+    )
 
     if category_id is not None:
         query = query.where(Product.category_id == category_id)
     elif category_slug is not None:
-        cat = db.execute(select(Category).where(Category.slug == category_slug)).scalar_one_or_none()
+        cat = db.execute(
+            select(Category).where(Category.slug == category_slug)
+        ).scalar_one_or_none()
         if cat:
             query = query.where(Product.category_id == cat.id)
 
@@ -92,7 +101,9 @@ def get_product_by_slug(
     ).scalar_one_or_none()
 
     if product is not None:
-        response.headers["Cache-Control"] = "public, max-age=120, stale-while-revalidate=600"
+        response.headers["Cache-Control"] = (
+            "no-cache, no-store, must-revalidate, max-age=0"
+        )
         return product
 
     # Check 301 Redirect history
@@ -137,7 +148,9 @@ def get_product(
             detail="Product not found",
         )
 
-    response.headers["Cache-Control"] = "public, max-age=120, stale-while-revalidate=600"
+    response.headers["Cache-Control"] = (
+        "public, max-age=120, stale-while-revalidate=600"
+    )
     return product
 
 
@@ -148,7 +161,7 @@ def get_product(
 )
 def create_product(
     data: ProductCreate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> Product:
     category = db.get(Category, data.category_id)
@@ -169,17 +182,34 @@ def create_product(
             detail="Product slug already exists",
         )
 
+    # Process & ensure unique SKU
+    sku_val = (
+        data.sku.strip()
+        if (data.sku and data.sku.strip())
+        else f"VB-{uuid.uuid4().hex[:6].upper()}"
+    )
     existing_sku = db.execute(
-        select(Product).where(Product.sku == data.sku)
+        select(Product).where(Product.sku == sku_val)
     ).scalar_one_or_none()
 
     if existing_sku is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Product SKU already exists",
-        )
+        if data.sku and data.sku.strip():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Product SKU already exists",
+            )
+        # If auto-generated SKU had collision, retry with new random suffix
+        while (
+            db.execute(
+                select(Product).where(Product.sku == sku_val)
+            ).scalar_one_or_none()
+            is not None
+        ):
+            sku_val = f"VB-{uuid.uuid4().hex[:6].upper()}"
 
-    product = Product(**data.model_dump())
+    product_data = data.model_dump()
+    product_data["sku"] = sku_val
+    product = Product(**product_data)
 
     db.add(product)
     db.commit()
@@ -195,7 +225,7 @@ def create_product(
 def update_product(
     product_id: UUID,
     data: ProductUpdate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> Product:
     product = db.get(Product, product_id)
@@ -279,7 +309,7 @@ def update_product(
 )
 def delete_product(
     product_id: UUID,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> None:
     product = db.get(Product, product_id)
@@ -290,5 +320,20 @@ def delete_product(
             detail="Product not found",
         )
 
-    product.is_active = False
-    db.commit()
+    # 1. Clean up cart items for this product
+    db.execute(delete(CartItem).where(CartItem.product_id == product_id))
+
+    # 2. Clean up product images
+    db.execute(delete(ProductImage).where(ProductImage.product_id == product_id))
+
+    # 3. Permanently hard delete product from DB
+    try:
+        db.delete(product)
+        db.commit()
+    except SQLAlchemyError:
+        # Fallback to soft delete if existing order history references foreign key
+        db.rollback()
+        product = db.get(Product, product_id)
+        if product:
+            product.is_active = False
+            db.commit()

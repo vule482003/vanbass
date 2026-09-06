@@ -2,10 +2,10 @@
 Test health check endpoints
 Run: uv run pytest tests/test_health.py -v
 """
-import pytest
-from fastapi.testclient import TestClient
-from app.main import app
 
+from fastapi.testclient import TestClient
+
+from app.main import app
 
 client = TestClient(app)
 
@@ -39,19 +39,19 @@ def test_database_health_check():
 
 if __name__ == "__main__":
     print("\n🧪 Testing API Endpoints...\n")
-    
+
     # Test 1: Basic health check
     print("Test 1: GET /health")
     response = client.get("/health")
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
     print()
-    
-    # Test 2: Database health check  
+
+    # Test 2: Database health check
     print("Test 2: GET /health/db")
     response = client.get("/health/db")
     print(f"Status Code: {response.status_code}")
     print(f"Response: {response.json()}")
     print()
-    
+
     print("✅ All tests completed!")

@@ -82,7 +82,11 @@ class CartService:
                 continue
 
             # First image if exists
-            first_image = sorted(product.images, key=lambda img: img.sort_order)[0] if product.images else None
+            first_image = (
+                min(product.images, key=lambda img: img.sort_order)
+                if product.images
+                else None
+            )
             image_url = first_image.image_url if first_image else None
 
             sale_price = product.sale_price or Decimal("0.00")
@@ -160,7 +164,11 @@ class CartService:
                 )
 
             redis_client.hset(key, str(product_id), new_qty)
-            ttl = USER_CART_TTL_SECONDS if cart_id.startswith("user:") else GUEST_CART_TTL_SECONDS
+            ttl = (
+                USER_CART_TTL_SECONDS
+                if cart_id.startswith("user:")
+                else GUEST_CART_TTL_SECONDS
+            )
             redis_client.expire(key, ttl)
         except RedisError as e:
             raise HTTPException(
@@ -204,7 +212,11 @@ class CartService:
 
         try:
             redis_client.hset(key, str(product_id), quantity)
-            ttl = USER_CART_TTL_SECONDS if cart_id.startswith("user:") else GUEST_CART_TTL_SECONDS
+            ttl = (
+                USER_CART_TTL_SECONDS
+                if cart_id.startswith("user:")
+                else GUEST_CART_TTL_SECONDS
+            )
             redis_client.expire(key, ttl)
         except RedisError as e:
             raise HTTPException(
@@ -236,22 +248,83 @@ class CartService:
             pass
 
     @classmethod
-    def merge_guest_cart(cls, guest_session_id: str, user_id: UUID, db: Session) -> None:
-        guest_key = cls._get_cart_key(f"guest:{guest_session_id}")
+    def merge_guest_cart(
+        cls,
+        guest_session_id: str | None,
+        user_id: UUID,
+        db: Session,
+        direct_items: list[tuple[UUID, int]] | None = None,
+    ) -> list[str]:
+        """Gộp giỏ hàng khách vào giỏ người dùng đã đăng nhập với kiểm tra tồn kho & cảnh báo."""
         user_key = cls._get_cart_key(f"user:{user_id}")
+        warnings: list[str] = []
+
+        # 1. Thu thập danh sách sản phẩm từ Redis guest cart hoặc direct_items
+        incoming_items: dict[UUID, int] = {}
+
+        if guest_session_id and guest_session_id.strip():
+            guest_key = cls._get_cart_key(f"guest:{guest_session_id.strip()}")
+            try:
+                guest_raw = redis_client.hgetall(guest_key)
+                for pid_str, qty_str in guest_raw.items():
+                    try:
+                        pid = UUID(pid_str)
+                        qty = int(qty_str)
+                        if qty > 0:
+                            incoming_items[pid] = incoming_items.get(pid, 0) + qty
+                    except (ValueError, TypeError):
+                        continue
+                redis_client.delete(guest_key)
+            except RedisError:
+                pass
+
+        if direct_items:
+            for pid, qty in direct_items:
+                if qty > 0:
+                    incoming_items[pid] = incoming_items.get(pid, 0) + qty
+
+        if not incoming_items:
+            return warnings
+
+        # 2. Kiểm tra trạng thái và tồn kho từ DB
+        for pid, requested_qty in incoming_items.items():
+            product = db.get(Product, pid)
+            if product is None or not product.is_active or not product.sale_enabled:
+                name = product.name if product else str(pid)
+                warnings.append(
+                    f"Sản phẩm '{name}' đã ngừng kinh doanh và được loại khỏi giỏ hàng."
+                )
+                continue
+
+            if product.stock_quantity <= 0:
+                warnings.append(
+                    f"Sản phẩm '{product.name}' hiện đã tạm hết hàng và được loại khỏi giỏ hàng."
+                )
+                continue
+
+            try:
+                current_user_qty_str = redis_client.hget(user_key, str(pid))
+                current_user_qty = (
+                    int(current_user_qty_str) if current_user_qty_str else 0
+                )
+                combined_qty = current_user_qty + requested_qty
+
+                if combined_qty > product.stock_quantity:
+                    final_qty = product.stock_quantity
+                    warnings.append(
+                        f"Sản phẩm '{product.name}' chỉ còn {product.stock_quantity} sản phẩm trong kho, "
+                        f"số lượng đã được tự động điều chỉnh về tồn kho tối đa."
+                    )
+                else:
+                    final_qty = combined_qty
+
+                redis_client.hset(user_key, str(pid), final_qty)
+            except RedisError:
+                pass
+
         try:
-            guest_items = redis_client.hgetall(guest_key)
-            if not guest_items:
-                return
-
-            for pid_str, qty_str in guest_items.items():
-                guest_qty = int(qty_str)
-                user_qty_str = redis_client.hget(user_key, pid_str)
-                user_qty = int(user_qty_str) if user_qty_str else 0
-                combined_qty = user_qty + guest_qty
-                redis_client.hset(user_key, pid_str, combined_qty)
-
             redis_client.expire(user_key, USER_CART_TTL_SECONDS)
-            redis_client.delete(guest_key)
         except RedisError:
             pass
+
+        return warnings

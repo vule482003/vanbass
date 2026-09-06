@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_db, require_admin
+from app.api.dependencies import get_db, require_staff_or_admin
 from app.models.product import Product
 from app.models.product_image import ProductImage
 from app.models.user import User
@@ -13,7 +13,6 @@ from app.schemas.product_image import (
     ProductImageResponse,
     ProductImageUpdate,
 )
-
 
 router = APIRouter(
     prefix="/products/{product_id}/images",
@@ -66,7 +65,7 @@ def list_product_images(
 def create_product_image(
     product_id: UUID,
     data: ProductImageCreate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> ProductImage:
     get_product_or_404(product_id, db)
@@ -93,7 +92,7 @@ def update_product_image(
     product_id: UUID,
     image_id: UUID,
     data: ProductImageUpdate,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> ProductImage:
     get_product_or_404(product_id, db)
@@ -127,7 +126,7 @@ def update_product_image(
 def delete_product_image(
     product_id: UUID,
     image_id: UUID,
-    current_user: User = Depends(require_admin),
+    current_user: User = Depends(require_staff_or_admin),
     db: Session = Depends(get_db),
 ) -> None:
     get_product_or_404(product_id, db)
