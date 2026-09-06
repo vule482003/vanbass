@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
+import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
+import { getTranslatedProductName, getTranslatedProductDesc } from "../lib/product-i18n";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -13,15 +15,16 @@ interface QuickViewModalProps {
   currentMode?: "all" | "sale" | "rental";
 }
 
-function formatVND(amount?: number) {
-  if (!amount || isNaN(amount)) return "Liên hệ báo giá";
-  return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
-}
-
 export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const { addItem } = useCart();
+  const { t, lang } = useLanguage();
   const [addedNotice, setAddedNotice] = useState(false);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
+
+  function formatVND(amount?: number) {
+    if (!amount || isNaN(amount)) return t.products.contactPrice;
+    return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN").format(amount) + " ₫";
+  }
 
   // Close modal on Escape key press
   useEffect(() => {
@@ -33,6 +36,9 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   }, [onClose]);
 
   if (!product) return null;
+
+  const displayName = getTranslatedProductName(product, lang);
+  const displayDesc = getTranslatedProductDesc(product, lang);
 
   const imagesList = product.images && product.images.length > 0
     ? product.images.map((i) => i.image_url)
@@ -137,7 +143,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             {imagesList[activeImgIndex] ? (
               <Image
                 src={imagesList[activeImgIndex]}
-                alt={product.name}
+                alt={displayName}
                 fill
                 style={{ objectFit: "contain", padding: "16px" }}
                 sizes="(max-width: 768px) 100vw, 450px"
@@ -226,7 +232,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   borderRadius: "4px",
                 }}
               >
-                Bảo hành 12 Tháng
+                {t.products.warranty12M}
               </span>
               <span
                 style={{
@@ -239,7 +245,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   borderRadius: "4px",
                 }}
               >
-                {product.stock_quantity > 0 ? `Sẵn hàng (${product.stock_quantity})` : "Tạm hết hàng"}
+                {product.stock_quantity > 0 ? `${t.products.inStock} (${product.stock_quantity})` : t.products.outOfStock}
               </span>
             </div>
 
@@ -252,11 +258,11 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                 lineHeight: "1.3",
               }}
             >
-              {product.name}
+              {displayName}
             </h2>
 
             <p style={{ fontSize: "12px", color: "#71717a", margin: "0 0 16px 0" }}>
-              Mã SKU: <strong style={{ color: "#a1a1aa" }}>{product.sku}</strong>
+              {t.quickViewModal.sku}: <strong style={{ color: "#a1a1aa" }}>{product.sku}</strong>
             </p>
 
             {/* Pricing Box */}
@@ -274,7 +280,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             >
               {product.sale_enabled && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "13px", color: "#a1a1aa", fontWeight: 600 }}>Giá mua mới:</span>
+                  <span style={{ fontSize: "13px", color: "#a1a1aa", fontWeight: 600 }}>{t.products.purchasePriceLabel}</span>
                   <span style={{ fontSize: "22px", fontWeight: 900, color: "#ffffff" }}>
                     {formatVND(product.sale_price)}
                   </span>
@@ -283,7 +289,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
               {product.rental_enabled && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: product.sale_enabled ? "1px solid rgba(255, 255, 255, 0.06)" : "none", paddingTop: product.sale_enabled ? "10px" : "0" }}>
-                  <span style={{ fontSize: "13px", color: "#4ade80", fontWeight: 700 }}>Giá thuê / ngày:</span>
+                  <span style={{ fontSize: "13px", color: "#4ade80", fontWeight: 700 }}>{t.products.rentalPriceLabel} {t.products.perDay}:</span>
                   <span style={{ fontSize: "18px", fontWeight: 800, color: "#22c55e" }}>
                     {formatVND(product.rental_price)}
                   </span>
@@ -292,7 +298,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             </div>
 
             {/* Description excerpt */}
-            {product.description && (
+            {displayDesc && (
               <p
                 style={{
                   fontSize: "13.5px",
@@ -303,7 +309,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   overflowY: "auto",
                 }}
               >
-                {product.description}
+                {displayDesc}
               </p>
             )}
 
@@ -324,7 +330,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   gap: "8px",
                 }}
               >
-                ✓ Đã thêm sản phẩm vào giỏ hàng thành công!
+                ✓ {t.products.addedToCart}!
               </div>
             )}
           </div>
@@ -339,7 +345,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   className="button button-primary"
                   style={{ flex: 1, padding: "13px 20px", fontSize: "13px" }}
                 >
-                  🛒 Thêm vào giỏ hàng
+                  🛒 {t.products.addToCart}
                 </button>
               ) : (
                 <button
@@ -355,13 +361,13 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                     cursor: "not-allowed",
                   }}
                 >
-                  Tạm hết hàng
+                  {t.products.outOfStock}
                 </button>
               )}
 
               {product.rental_enabled && (
                 <a
-                  href={getMessengerRentalUrl(product.name)}
+                  href={getMessengerRentalUrl(displayName)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="button button-outline"
@@ -373,7 +379,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                     borderColor: "rgba(34, 197, 94, 0.4)",
                   }}
                 >
-                  💬 Liên hệ thuê máy
+                  💬 {t.products.rentBtnShort}
                 </a>
               )}
             </div>
@@ -390,7 +396,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                 marginTop: "4px",
               }}
             >
-              Xem trang chi tiết sản phẩm &amp; thông số đầy đủ →
+              {t.quickViewModal.viewFullPage}
             </Link>
           </div>
         </div>

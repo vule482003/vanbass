@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
-import Script from "next/script";
+import { LanguageProvider } from "./lib/language-context";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import JsonLd from "./components/JsonLd";
@@ -41,32 +41,13 @@ export default function RootLayout({
         <JsonLd />
       </head>
       <body className={`min-h-full flex flex-col ${montserrat.className}`} suppressHydrationWarning>
-        <AuthProvider>
-          <CartProvider>
-            {children}
-          </CartProvider>
-        </AuthProvider>
-
-        <div id="google_translate_element" style={{ display: "none" }} />
-        <Script
-          id="google-translate-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              function googleTranslateElementInit() {
-                new google.translate.TranslateElement({
-                  pageLanguage: 'vi',
-                  includedLanguages: 'en,vi',
-                  autoDisplay: false
-                }, 'google_translate_element');
-              }
-            `,
-          }}
-        />
-        <Script
-          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-          strategy="afterInteractive"
-        />
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              {children}
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -6,12 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
   const { user, isAuthenticated, isLoading: isAuthLoading, register } = useAuth();
+  const { t } = useLanguage();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -36,15 +38,15 @@ function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setErrorMsg("Vui lòng điền đầy đủ thông tin.");
+      setErrorMsg(t.auth.authRequiredMsg);
       return;
     }
     if (password.length < 8) {
-      setErrorMsg("Mật khẩu phải có độ dài tối thiểu 8 ký tự.");
+      setErrorMsg(t.auth.passwordShort);
       return;
     }
     if (password !== confirmPassword) {
-      setErrorMsg("Mật khẩu xác nhận không trùng khớp.");
+      setErrorMsg(t.auth.passwordMismatch);
       return;
     }
 
@@ -63,7 +65,7 @@ function RegisterForm() {
         setErrorMsg(res.error || "Đăng ký không thành công. Email có thể đã tồn tại.");
       }
     } catch {
-      setErrorMsg("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.");
+      setErrorMsg(t.common.error);
     } finally {
       setIsLoading(false);
     }
@@ -102,10 +104,10 @@ function RegisterForm() {
           VB
         </div>
         <h1 style={{ fontSize: "26px", fontWeight: 800, margin: "0 0 8px 0", color: "#fff", letterSpacing: "-0.03em" }}>
-          Tạo tài khoản VanBass
+          {t.auth.registerTitle}
         </h1>
         <p style={{ fontSize: "14px", color: "#a1a1aa", margin: 0 }}>
-          Đăng ký để tích điểm mua hàng và nhận ưu đãi thuê máy
+          {t.auth.registerSubtitle}
         </p>
       </div>
 
@@ -130,7 +132,7 @@ function RegisterForm() {
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "18px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Họ và tên
+            {t.auth.fullNameLabel}
           </label>
           <input
             type="text"
@@ -153,7 +155,7 @@ function RegisterForm() {
 
         <div style={{ marginBottom: "18px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Email
+            {t.auth.emailLabel}
           </label>
           <input
             type="email"
@@ -177,7 +179,7 @@ function RegisterForm() {
 
         <div style={{ marginBottom: "18px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Mật khẩu (Tối thiểu 8 ký tự)
+            {t.auth.passwordMinLength}
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             <input
@@ -201,8 +203,7 @@ function RegisterForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-              title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              aria-label={showPassword ? "Hide password" : "Show password"}
               style={{
                 position: "absolute",
                 right: "12px",
@@ -240,7 +241,7 @@ function RegisterForm() {
 
         <div style={{ marginBottom: "26px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Xác nhận mật khẩu
+            {t.auth.confirmPasswordLabel}
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             <input
@@ -264,8 +265,7 @@ function RegisterForm() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              aria-label={showConfirmPassword ? "Ẩn mật khẩu xác nhận" : "Hiện mật khẩu xác nhận"}
-              title={showConfirmPassword ? "Ẩn mật khẩu xác nhận" : "Hiện mật khẩu xác nhận"}
+              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               style={{
                 position: "absolute",
                 right: "12px",
@@ -316,18 +316,18 @@ function RegisterForm() {
             opacity: isLoading ? 0.7 : 1,
           }}
         >
-          {isLoading ? "Đang tạo tài khoản..." : "Đăng ký thành viên"}
+          {isLoading ? t.auth.registering : t.auth.registerBtn}
         </button>
       </form>
 
       {/* Footer Navigation */}
       <div style={{ textAlign: "center", marginTop: "28px", paddingTop: "20px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", fontSize: "14px", color: "#a1a1aa" }}>
-        Đã có tài khoản?{" "}
+        {t.auth.hasAccount}{" "}
         <Link
           href={redirectUrl ? `/login?redirect=${encodeURIComponent(redirectUrl)}` : "/login"}
           style={{ color: "#fff", fontWeight: 700, textDecoration: "underline" }}
         >
-          Đăng nhập tại đây
+          {t.auth.loginHere}
         </Link>
       </div>
     </div>
@@ -335,12 +335,14 @@ function RegisterForm() {
 }
 
 export default function RegisterPage() {
+  const { t } = useLanguage();
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
       <Header />
 
       <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "140px 16px 80px 16px" }}>
-        <Suspense fallback={<div style={{ color: "#fff" }}>Đang tải...</div>}>
+        <Suspense fallback={<div style={{ color: "#fff" }}>{t.common.loading}</div>}>
           <RegisterForm />
         </Suspense>
       </main>

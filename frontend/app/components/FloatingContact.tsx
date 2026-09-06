@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { DEFAULT_HOME_DATA, FloatingContactsConfig } from "../types/home_config";
+import { useLanguage } from "../lib/language-context";
 
 interface FloatingContactProps {
   config?: FloatingContactsConfig;
@@ -15,6 +16,7 @@ export default function FloatingContact({
 }: FloatingContactProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
+  const { lang } = useLanguage();
 
   // Không hiển thị widget liên hệ trên trang quản trị Admin (trừ khi được forceShow trong iframe preview)
   if (!forceShow && pathname && pathname.startsWith("/admin")) {
@@ -32,7 +34,7 @@ export default function FloatingContact({
   const mapsUrl = config.maps_link || "https://www.google.com/maps?cid=3481175637981139835";
 
   return (
-    <aside className="floating-contact-wrapper" aria-label="Kênh liên hệ hỗ trợ nhanh">
+    <aside className="floating-contact-wrapper" aria-label={lang === "en" ? "Quick contact channels" : "Kênh liên hệ hỗ trợ nhanh"}>
       {/* Quick Buttons Stack */}
       <div className={`floating-contact-list ${isOpen ? "is-open" : "is-collapsed"}`}>
         {/* 1. Hotline Gọi Ngay */}
@@ -40,8 +42,8 @@ export default function FloatingContact({
           <a
             href={phoneHref}
             className="floating-btn btn-phone"
-            title={`Gọi Hotline tư vấn miễn phí: ${phoneDisplay}`}
-            aria-label={`Gọi Hotline ${phoneDisplay}`}
+            title={lang === "en" ? `Call 24/7 Hotline: ${phoneDisplay}` : `Gọi Hotline tư vấn miễn phí: ${phoneDisplay}`}
+            aria-label={`Call Hotline ${phoneDisplay}`}
           >
             <div className="floating-btn-icon">
               <span className="btn-pulse-wave" />
@@ -50,7 +52,7 @@ export default function FloatingContact({
               </svg>
             </div>
             <span className="floating-btn-tooltip">
-              <strong>Hotline 24/7</strong>
+              <strong>{lang === "en" ? "24/7 Hotline" : "Hotline 24/7"}</strong>
               <small>{phoneDisplay}</small>
             </span>
           </a>
@@ -63,7 +65,7 @@ export default function FloatingContact({
             target="_blank"
             rel="noopener noreferrer"
             className="floating-btn btn-zalo"
-            title="Chat Zalo tư vấn thiết bị & báo giá thuê ngay"
+            title={lang === "en" ? "Chat Zalo consultation" : "Chat Zalo tư vấn thiết bị & báo giá thuê ngay"}
             aria-label="Chat Zalo"
           >
             <div className="floating-btn-icon">
@@ -73,7 +75,7 @@ export default function FloatingContact({
             </div>
             <span className="floating-btn-tooltip">
               <strong>Chat Zalo</strong>
-              <small>Tư vấn &amp; Báo giá</small>
+              <small>{lang === "en" ? "Consult & Quote" : "Tư vấn & Báo giá"}</small>
             </span>
           </a>
         )}
@@ -85,8 +87,8 @@ export default function FloatingContact({
             target="_blank"
             rel="noopener noreferrer"
             className="floating-btn btn-messenger"
-            title="Nhắn tin Messenger Fanpage VanBass Music Center"
-            aria-label="Nhắn tin Facebook Messenger"
+            title={lang === "en" ? "Message Facebook Fanpage" : "Nhắn tin Messenger Fanpage VanBass Music Center"}
+            aria-label="Message Facebook Messenger"
           >
             <div className="floating-btn-icon">
               <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
@@ -95,7 +97,7 @@ export default function FloatingContact({
             </div>
             <span className="floating-btn-tooltip">
               <strong>Messenger</strong>
-              <small>Fanpage VanBass</small>
+              <small>VanBass Fanpage</small>
             </span>
           </a>
         )}
@@ -107,8 +109,8 @@ export default function FloatingContact({
             target="_blank"
             rel="noopener noreferrer"
             className="floating-btn btn-maps"
-            title="Chỉ đường đến Showroom VanBass Đà Nẵng để test máy trực tiếp"
-            aria-label="Chỉ đường Showroom Đà Nẵng"
+            title={lang === "en" ? "Get directions to Da Nang Showroom" : "Chỉ đường đến Showroom VanBass Đà Nẵng để test máy trực tiếp"}
+            aria-label="Directions Da Nang Showroom"
           >
             <div className="floating-btn-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +120,7 @@ export default function FloatingContact({
             </div>
             <span className="floating-btn-tooltip">
               <strong>Showroom</strong>
-              <small>Test máy Đà Nẵng</small>
+              <small>{lang === "en" ? "Da Nang Studio" : "Test máy Đà Nẵng"}</small>
             </span>
           </a>
         )}
@@ -129,7 +131,7 @@ export default function FloatingContact({
         type="button"
         className={`floating-main-trigger ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
-        title={isOpen ? "Thu nhỏ liên hệ nhanh" : "Mở liên hệ tư vấn nhanh"}
+        title={isOpen ? (lang === "en" ? "Collapse contact" : "Thu nhỏ liên hệ nhanh") : (lang === "en" ? "Open quick contact" : "Mở liên hệ tư vấn nhanh")}
         aria-expanded={isOpen}
       >
         <span className="trigger-pulse" />

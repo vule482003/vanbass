@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
 
 function LoginForm() {
   const router = useRouter();
@@ -13,6 +14,7 @@ function LoginForm() {
   const redirectUrl = searchParams.get("redirect");
   const isLoggedOut = searchParams.get("logged_out") === "1";
   const { user, isAuthenticated, isLoading: isAuthLoading, login } = useAuth();
+  const { t } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +38,7 @@ function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setErrorMsg("Vui lòng điền đầy đủ Email và Mật khẩu.");
+      setErrorMsg(t.auth.authRequiredMsg);
       return;
     }
     setErrorMsg("");
@@ -56,7 +58,7 @@ function LoginForm() {
         setErrorMsg(res.error || "Email hoặc mật khẩu không chính xác.");
       }
     } catch {
-      setErrorMsg("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.");
+      setErrorMsg(t.common.error);
     } finally {
       setIsLoading(false);
     }
@@ -95,12 +97,10 @@ function LoginForm() {
           VB
         </div>
         <h1 style={{ fontSize: "26px", fontWeight: 800, margin: "0 0 8px 0", color: "#fff", letterSpacing: "-0.03em" }}>
-          Đăng nhập VanBass
+          {t.auth.loginTitle}
         </h1>
         <p style={{ fontSize: "14px", color: "#a1a1aa", margin: 0 }}>
-          {redirectUrl
-            ? "Vui lòng đăng nhập để tiếp tục mua hàng & thanh toán"
-            : "Quản lý đơn hàng và thiết bị DJ cho thuê của bạn"}
+          {redirectUrl ? t.auth.loginSubtitleRedirect : t.auth.loginSubtitleDefault}
         </p>
       </div>
 
@@ -121,7 +121,7 @@ function LoginForm() {
           }}
         >
           <span>✓</span>
-          <span>Bạn đã đăng xuất tài khoản thành công.</span>
+          <span>{t.auth.logoutSuccess}</span>
         </div>
       )}
 
@@ -146,7 +146,7 @@ function LoginForm() {
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "20px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Email
+            {t.auth.emailLabel}
           </label>
           <input
             type="email"
@@ -170,7 +170,7 @@ function LoginForm() {
 
         <div style={{ marginBottom: "24px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Mật khẩu
+            {t.auth.passwordLabel}
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             <input
@@ -194,8 +194,7 @@ function LoginForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-              title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              aria-label={showPassword ? "Hide password" : "Show password"}
               style={{
                 position: "absolute",
                 right: "12px",
@@ -215,7 +214,6 @@ function LoginForm() {
               onMouseLeave={(e) => (e.currentTarget.style.color = "#a1a1aa")}
             >
               {showPassword ? (
-                /* Eye Off (gạch chéo) */
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
                   <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
@@ -223,7 +221,6 @@ function LoginForm() {
                   <line x1="2" y1="2" x2="22" y2="22" />
                 </svg>
               ) : (
-                /* Eye Open (con mắt) */
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                   <circle cx="12" cy="12" r="3" />
@@ -248,18 +245,18 @@ function LoginForm() {
             opacity: isLoading ? 0.7 : 1,
           }}
         >
-          {isLoading ? "Đang đăng nhập..." : "Đăng nhập ngay"}
+          {isLoading ? t.auth.loggingIn : t.auth.loginBtn}
         </button>
       </form>
 
       {/* Footer Navigation */}
       <div style={{ textAlign: "center", marginTop: "28px", paddingTop: "20px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", fontSize: "14px", color: "#a1a1aa" }}>
-        Chưa có tài khoản?{" "}
+        {t.auth.noAccount}{" "}
         <Link
           href={redirectUrl ? `/register?redirect=${encodeURIComponent(redirectUrl)}` : "/register"}
           style={{ color: "#fff", fontWeight: 700, textDecoration: "underline" }}
         >
-          Đăng ký ngay
+          {t.auth.registerNow}
         </Link>
       </div>
     </div>
@@ -267,12 +264,14 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const { t } = useLanguage();
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
       <Header />
 
       <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "140px 16px 80px 16px" }}>
-        <Suspense fallback={<div style={{ color: "#fff" }}>Đang tải...</div>}>
+        <Suspense fallback={<div style={{ color: "#fff" }}>{t.common.loading}</div>}>
           <LoginForm />
         </Suspense>
       </main>

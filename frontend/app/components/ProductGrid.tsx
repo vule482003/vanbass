@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
+import { useLanguage } from "../lib/language-context";
 import ProductCard from "./ProductCard";
 
 export default function ProductGrid() {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS.slice(0, 8));
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchLiveProducts = async () => {
@@ -56,10 +58,10 @@ export default function ProductGrid() {
                 letterSpacing: "0.08em",
               }}
             >
-              GỢI Ý THIẾT BỊ
+              {t.products.featuredBadge}
             </span>
             <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff", margin: 0, letterSpacing: "-0.02em" }}>
-              Thiết Bị DJ &amp; Âm Thanh Biểu Diễn Chuyên Nghiệp
+              {t.products.featuredTitle}
             </h2>
           </div>
 
@@ -76,7 +78,7 @@ export default function ProductGrid() {
               transition: "opacity 0.2s ease",
             }}
           >
-            Xem tất cả (50+) <span>→</span>
+            {t.products.viewAllCount} (50+) <span>→</span>
           </Link>
         </div>
 

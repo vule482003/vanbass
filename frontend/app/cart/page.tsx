@@ -7,10 +7,12 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
+import { getTranslatedProductName } from "../lib/product-i18n";
 
-function formatCurrency(amount?: number) {
+function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
   if (amount === undefined || amount === null) return "0 ₫";
-  return new Intl.NumberFormat("vi-VN", {
+  return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(amount);
@@ -47,73 +49,81 @@ interface MyOrderItem {
   items?: MyOrderItemLine[];
 }
 
-const ORDER_STATUS_CONFIG: Record<
-  string,
-  { label: string; bg: string; color: string; stepText: string }
-> = {
-  pending: {
-    label: "Chờ xác nhận",
-    bg: "rgba(234, 179, 8, 0.15)",
-    color: "#facc15",
-    stepText: "⏳ Đang chờ VanBass tiếp nhận",
-  },
-  confirmed: {
-    label: "Đã xác nhận",
-    bg: "rgba(59, 130, 246, 0.15)",
-    color: "#60a5fa",
-    stepText: "✓ Đơn hàng đã được xác nhận",
-  },
-  processing: {
-    label: "Đang chuẩn bị hàng",
-    bg: "rgba(168, 85, 247, 0.15)",
-    color: "#c084fc",
-    stepText: "📦 Kỹ thuật đang đóng gói thiết bị",
-  },
-  shipped: {
-    label: "Đang giao hàng",
-    bg: "rgba(6, 182, 212, 0.15)",
-    color: "#22d3ee",
-    stepText: "🚚 Đang trên đường vận chuyển",
-  },
-  completed: {
-    label: "Hoàn thành",
-    bg: "rgba(34, 197, 94, 0.15)",
-    color: "#4ade80",
-    stepText: "🎉 Giao hàng thành công",
-  },
-  cancelled: {
-    label: "Đã hủy",
-    bg: "rgba(239, 68, 68, 0.15)",
-    color: "#f87171",
-    stepText: "✕ Đơn hàng đã bị hủy",
-  },
-};
-
-function getOrderStatusBadge(status: string) {
-  const st = status.toLowerCase();
-  return (
-    ORDER_STATUS_CONFIG[st] || {
-      label: status.toUpperCase(),
-      bg: "rgba(255, 255, 255, 0.1)",
-      color: "#fff",
-      stepText: "",
-    }
-  );
-}
-
-const CANCEL_REASONS = [
-  "Tôi muốn cập nhật lại địa chỉ nhận hàng",
-  "Tôi muốn đổi phương thức thanh toán",
-  "Tôi đổi ý, không có nhu cầu mua nữa",
-  "Tôi tìm thấy sản phẩm với giá ưu đãi hơn",
-  "Thời gian giao hàng dự kiến quá lâu",
-  "Lý do khác",
-];
-
 function CartContent() {
+  const { t, lang } = useLanguage();
   const searchParams = useSearchParams();
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart, addItem } = useCart();
   const { user, token, isAuthenticated } = useAuth();
+
+  const ORDER_STATUS_CONFIG: Record<
+    string,
+    { label: string; bg: string; color: string; stepText: string }
+  > = {
+    pending: {
+      label: lang === "en" ? "Pending Confirmation" : "Chờ xác nhận",
+      bg: "rgba(234, 179, 8, 0.15)",
+      color: "#facc15",
+      stepText: lang === "en" ? "⏳ Awaiting VanBass confirmation" : "⏳ Đang chờ VanBass tiếp nhận",
+    },
+    confirmed: {
+      label: lang === "en" ? "Confirmed" : "Đã xác nhận",
+      bg: "rgba(59, 130, 246, 0.15)",
+      color: "#60a5fa",
+      stepText: lang === "en" ? "✓ Order confirmed" : "✓ Đơn hàng đã được xác nhận",
+    },
+    processing: {
+      label: lang === "en" ? "Preparing Gear" : "Đang chuẩn bị hàng",
+      bg: "rgba(168, 85, 247, 0.15)",
+      color: "#c084fc",
+      stepText: lang === "en" ? "📦 Technicians packaging equipment" : "📦 Kỹ thuật đang đóng gói thiết bị",
+    },
+    shipped: {
+      label: lang === "en" ? "In Transit" : "Đang giao hàng",
+      bg: "rgba(6, 182, 212, 0.15)",
+      color: "#22d3ee",
+      stepText: lang === "en" ? "🚚 Out for delivery" : "🚚 Đang trên đường vận chuyển",
+    },
+    completed: {
+      label: lang === "en" ? "Completed" : "Hoàn thành",
+      bg: "rgba(34, 197, 94, 0.15)",
+      color: "#4ade80",
+      stepText: lang === "en" ? "🎉 Delivery successful" : "🎉 Giao hàng thành công",
+    },
+    cancelled: {
+      label: lang === "en" ? "Cancelled" : "Đã hủy",
+      bg: "rgba(239, 68, 68, 0.15)",
+      color: "#f87171",
+      stepText: lang === "en" ? "✕ Order has been cancelled" : "✕ Đơn hàng đã bị hủy",
+    },
+  };
+
+  const getOrderStatusBadge = (status: string) => {
+    const st = status.toLowerCase();
+    return (
+      ORDER_STATUS_CONFIG[st] || {
+        label: status.toUpperCase(),
+        bg: "rgba(255, 255, 255, 0.1)",
+        color: "#fff",
+        stepText: "",
+      }
+    );
+  };
+
+  const CANCEL_REASONS = lang === "en" ? [
+    "I want to update delivery address",
+    "I want to change payment method",
+    "I changed my mind / no longer need it",
+    "Found better price elsewhere",
+    "Estimated delivery time too long",
+    "Other reason",
+  ] : [
+    "Tôi muốn cập nhật lại địa chỉ nhận hàng",
+    "Tôi muốn đổi phương thức thanh toán",
+    "Tôi đổi ý, không có nhu cầu mua nữa",
+    "Tôi tìm thấy sản phẩm với giá ưu đãi hơn",
+    "Thời gian giao hàng dự kiến quá lâu",
+    "Lý do khác",
+  ];
 
   // Tab: "cart" or "history"
   const tabParam = searchParams.get("tab");
@@ -224,7 +234,7 @@ function CartContent() {
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!shippingName || !shippingPhone || !shippingAddress) {
-      setErrorMsg("Vui lòng điền đầy đủ họ tên, số điện thoại và địa chỉ nhận hàng.");
+      setErrorMsg(t.checkout.fillRequiredError);
       return;
     }
 
@@ -268,7 +278,6 @@ function CartContent() {
 
         if (paymentMethod === "vietqr" || paymentMethod === "vnpay" || paymentMethod === "online" || paymentMethod === "banking" || paymentMethod === "visa") {
           try {
-            // Tự động gọi API VNPAY để tạo payment URL và chuyển hướng ngay lập tức
             const vnpayRes = await fetch(`${apiUrl}/orders/${orderData.id}/vnpay/create-payment`, {
               method: "POST",
               headers,
@@ -283,9 +292,8 @@ function CartContent() {
           } catch (vnpayErr) {
             console.error("VNPAY payment initiation error:", vnpayErr);
           }
-          // Nếu có trục trặc mạng khi mở VNPAY, thông báo để khách thanh toán lại trong lịch sử
           setActiveTab("history");
-          setErrorMsg("Đơn hàng đã được ghi nhận. Bạn có thể bấm nút 'Thanh Toán VNPAY' bên dưới để thanh toán.");
+          setErrorMsg(lang === "en" ? "Order recorded. You can click 'Pay via VNPay' below." : "Đơn hàng đã được ghi nhận. Bạn có thể bấm nút 'Thanh Toán VNPAY' bên dưới để thanh toán.");
         } else {
           setOrderSuccess(true);
         }
@@ -358,7 +366,7 @@ function CartContent() {
       if (res.ok) {
         const cancelledId = cancelModal.orderId;
         setCancelModal(null);
-        setCancelSuccessMsg("✓ Đã hủy và xóa đơn hàng thành công!");
+        setCancelSuccessMsg(lang === "en" ? "✓ Order cancelled successfully!" : "✓ Đã hủy đơn hàng thành công!");
         setMyOrders((prev) => prev.filter((o) => o.id !== cancelledId));
         setTimeout(() => setCancelSuccessMsg(""), 3000);
         void fetchMyOrders();
@@ -410,7 +418,7 @@ function CartContent() {
             }}
           >
             <div>
-              <p className="section-kicker">MUA SẮM &amp; ĐƠN HÀNG CỦA BẠN</p>
+              <p className="section-kicker">{t.cart.kicker}</p>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
                 <button
                   type="button"
@@ -433,7 +441,7 @@ function CartContent() {
                     transition: "all 150ms ease",
                   }}
                 >
-                  <span>🛒 Giỏ Hàng Hiện Tại</span>
+                  <span>{t.cart.currentCartTab}</span>
                   {totalItems > 0 && (
                     <span
                       style={{
@@ -470,7 +478,7 @@ function CartContent() {
                     transition: "all 150ms ease",
                   }}
                 >
-                  <span>📦 Lịch Sử Đơn Mua Hàng</span>
+                  <span>{t.cart.historyTab}</span>
                   {myOrders.length > 0 && (
                     <span
                       style={{
@@ -490,7 +498,7 @@ function CartContent() {
 
             {isAuthenticated ? (
               <div style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                Tài khoản: <strong style={{ color: "#fff" }}>{user?.email}</strong>
+                {t.cart.accountLabel} <strong style={{ color: "#fff" }}>{user?.email}</strong>
               </div>
             ) : (
               <Link
@@ -502,7 +510,7 @@ function CartContent() {
                   textDecoration: "underline",
                 }}
               >
-                Đăng nhập để xem lịch sử đơn hàng →
+                {t.cart.loginPrompt}
               </Link>
             )}
           </div>
@@ -552,16 +560,12 @@ function CartContent() {
                 >
                   <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎉</div>
                   <h2 style={{ fontSize: "22px", color: "#fff", marginBottom: "12px", fontWeight: 800 }}>
-                    Cảm ơn bạn đã đặt hàng tại VanBass Music Center!
+                    {t.checkout.orderSuccessTitle}
                   </h2>
                   <p style={{ color: "#a1a1aa", lineHeight: 1.7, marginBottom: "28px", fontSize: "14.5px" }}>
-                    Mã đơn hàng chính thức: <strong style={{ color: "#22c55e", fontSize: "18px" }}>#{orderNumber}</strong>
+                    {t.checkout.orderNumberLabel} <strong style={{ color: "#22c55e", fontSize: "18px" }}>#{orderNumber}</strong>
                     <br />
-                    Đơn hàng đã được lưu tự động vào hệ thống. Trạng thái thanh toán:{" "}
-                    <strong style={{ color: paymentMethod === "cod" ? "#facc15" : "#4ade80" }}>
-                      {paymentMethod === "cod" ? "Thanh toán khi nhận hàng (COD)" : "Chờ thanh toán qua VNPAY"}
-                    </strong>
-                    .
+                    {paymentMethod === "cod" ? t.checkout.orderStatusCod : t.checkout.orderStatusVnpay}
                   </p>
                   <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
                     {createdOrderId && paymentMethod !== "cod" && (
@@ -572,7 +576,7 @@ function CartContent() {
                         className="button button-primary"
                         style={{ cursor: "pointer", backgroundColor: "#22c55e", color: "#000", fontWeight: 800 }}
                       >
-                        {payingOrderId === createdOrderId ? "⏳ Đang kết nối..." : "⚡ Thanh Toán VNPAY Ngay →"}
+                        {payingOrderId === createdOrderId ? (lang === "en" ? "⏳ Connecting..." : "⏳ Đang kết nối...") : t.checkout.payVnpayNow}
                       </button>
                     )}
                     <button
@@ -584,10 +588,10 @@ function CartContent() {
                       className="button"
                       style={{ cursor: "pointer", backgroundColor: "#27272a", color: "#fff" }}
                     >
-                      📦 Xem Trong Lịch Sử Đơn Mua
+                      {t.checkout.viewHistoryBtn}
                     </button>
                     <Link href="/products" className="button" style={{ backgroundColor: "#1e1e24", color: "#a1a1aa" }}>
-                      Tiếp tục mua sắm
+                      {t.checkout.continueBtn}
                     </Link>
                   </div>
                 </div>
@@ -605,14 +609,14 @@ function CartContent() {
                   >
                     <div style={{ fontSize: "42px", marginBottom: "12px" }}>🛒</div>
                     <h3 style={{ fontSize: "18px", color: "#fff", margin: "0 0 10px 0", fontWeight: 700 }}>
-                      Giỏ hàng của bạn đang trống
+                      {t.cart.emptyTitle}
                     </h3>
                     <p style={{ color: "#a1a1aa", fontSize: "14.5px", marginBottom: "24px" }}>
-                      Hãy khám phá các thiết bị DJ chính hãng và thêm vào giỏ hàng ngay.
+                      {t.cart.emptySubtitle}
                     </p>
                     <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
                       <Link href="/products" className="button button-primary">
-                        Khám phá thiết bị DJ &amp; Âm thanh ngay <span>→</span>
+                        {t.cart.exploreBtn} <span>→</span>
                       </Link>
                       {myOrders.length > 0 && (
                         <button
@@ -629,7 +633,7 @@ function CartContent() {
                             cursor: "pointer",
                           }}
                         >
-                          📦 Xem lại các đơn đã mua ({myOrders.length})
+                          📦 {t.cart.viewPastOrdersBtn} ({myOrders.length})
                         </button>
                       )}
                     </div>
@@ -687,11 +691,11 @@ function CartContent() {
                             </span>
                             <h3 style={{ fontSize: "15px", fontWeight: 700, margin: "2px 0 6px 0", color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               <Link href={`/products/${item.slug}`} style={{ color: "#fff", textDecoration: "none" }}>
-                                {item.name}
+                                {getTranslatedProductName(item, lang)}
                               </Link>
                             </h3>
                             <span style={{ fontSize: "14px", fontWeight: 800, color: "#fff" }}>
-                              {formatCurrency(item.sale_price)}
+                              {formatCurrency(item.sale_price, lang)}
                             </span>
                           </div>
 
@@ -717,13 +721,13 @@ function CartContent() {
                           {/* Line Total & Remove */}
                           <div style={{ textAlign: "right", minWidth: "90px" }}>
                             <strong style={{ display: "block", color: "#fff", fontSize: "15px", marginBottom: "4px" }}>
-                              {formatCurrency(item.sale_price * item.quantity)}
+                              {formatCurrency(item.sale_price * item.quantity, lang)}
                             </strong>
                             <button
                               onClick={() => removeItem(item.product_id)}
                               style={{ background: "none", border: "none", color: "#ef4444", fontSize: "12px", cursor: "pointer", padding: 0 }}
                             >
-                              Xóa
+                              {t.cart.removeItem}
                             </button>
                           </div>
                         </div>
@@ -735,10 +739,10 @@ function CartContent() {
                         onClick={clearCart}
                         style={{ background: "none", border: "none", color: "#71717a", fontSize: "13px", cursor: "pointer" }}
                       >
-                        Xóa tất cả giỏ hàng
+                        {t.cart.clearCart}
                       </button>
                       <Link href="/products" style={{ color: "#a1a1aa", fontSize: "13px", textDecoration: "none" }}>
-                        ← Chọn thêm thiết bị khác
+                        {t.cart.continueShopping}
                       </Link>
                     </div>
                   </div>
@@ -753,21 +757,21 @@ function CartContent() {
                     }}
                   >
                     <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 20px 0", color: "#fff" }}>
-                      Tóm Tắt Đơn Hàng
+                      {t.cart.summaryTitle}
                     </h3>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px", fontSize: "14px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", color: "#a1a1aa" }}>
-                        <span>Tổng tiền hàng ({totalItems} món)</span>
-                        <span style={{ color: "#fff", fontWeight: 600 }}>{formatCurrency(subtotal)}</span>
+                        <span>{t.cart.itemsSubtotal} ({totalItems} {t.cart.itemsUnit})</span>
+                        <span style={{ color: "#fff", fontWeight: 600 }}>{formatCurrency(subtotal, lang)}</span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", color: "#a1a1aa" }}>
-                        <span>Phí vận chuyển</span>
-                        <span style={{ color: "#22c55e", fontWeight: 600 }}>Miễn phí giao hàng</span>
+                        <span>{t.cart.shippingFee}</span>
+                        <span style={{ color: "#22c55e", fontWeight: 600 }}>{t.cart.shippingFree}</span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", color: "#a1a1aa" }}>
-                        <span>Bảo hành chính hãng</span>
-                        <span style={{ color: "#fff", fontWeight: 600 }}>12 tháng</span>
+                        <span>{t.cart.warrantyOfficial}</span>
+                        <span style={{ color: "#fff", fontWeight: 600 }}>{t.cart.warranty12Months}</span>
                       </div>
                       <div
                         style={{
@@ -780,8 +784,8 @@ function CartContent() {
                           color: "#fff",
                         }}
                       >
-                        <span>Tổng thanh toán</span>
-                        <span style={{ color: "#22c55e" }}>{formatCurrency(subtotal)}</span>
+                        <span>{t.cart.total}</span>
+                        <span style={{ color: "#22c55e" }}>{formatCurrency(subtotal, lang)}</span>
                       </div>
                     </div>
 
@@ -798,13 +802,13 @@ function CartContent() {
                         className="button button-primary button-lg"
                         style={{ width: "100%", cursor: "pointer" }}
                       >
-                        Tiến hành Đặt hàng →
+                        {t.cart.proceedCheckout}
                       </button>
                     ) : (
                       <form onSubmit={handleCheckoutSubmit}>
                         <div style={{ marginBottom: "16px" }}>
                           <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                            Họ và tên người nhận *
+                            {t.checkout.fullName}
                           </label>
                           <input
                             type="text"
@@ -818,7 +822,7 @@ function CartContent() {
 
                         <div style={{ marginBottom: "16px" }}>
                           <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                            Số điện thoại nhận hàng *
+                            {t.checkout.phone}
                           </label>
                           <input
                             type="tel"
@@ -832,20 +836,20 @@ function CartContent() {
 
                         <div style={{ marginBottom: "16px" }}>
                           <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                            Email nhận hóa đơn &amp; xác nhận đơn hàng
+                            {t.checkout.email}
                           </label>
                           <input
                             type="email"
                             value={shippingEmail}
                             onChange={(e) => setShippingEmail(e.target.value)}
-                            placeholder="khachhang@gmail.com (để nhận hóa đơn tức thì)"
+                            placeholder="khachhang@gmail.com"
                             style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box", borderRadius: "4px" }}
                           />
                         </div>
 
                         <div style={{ marginBottom: "20px" }}>
                           <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                            Địa chỉ nhận hàng (Đà Nẵng &amp; Toàn quốc) *
+                            {t.checkout.address}
                           </label>
                           <input
                             type="text"
@@ -859,7 +863,7 @@ function CartContent() {
 
                         <div style={{ marginBottom: "24px" }}>
                           <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
-                            Phương thức thanh toán
+                            {t.checkout.paymentMethod}
                           </label>
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                             <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", padding: "14px 16px", backgroundColor: paymentMethod === "vietqr" ? "rgba(34,197,94,0.08)" : "#0a0a0c", border: paymentMethod === "vietqr" ? "1.5px solid #22c55e" : "1px solid #27272a", color: "#fff", fontSize: "13.5px", cursor: "pointer", borderRadius: "8px" }}>
@@ -873,11 +877,11 @@ function CartContent() {
                               />
                               <div>
                                 <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                                  <strong style={{ fontSize: "14px", color: "#fff" }}>⚡ Cổng Thanh Toán Trực Tuyến VNPAY</strong>
-                                  <span style={{ fontSize: "10.5px", padding: "2px 7px", backgroundColor: "rgba(34,197,94,0.2)", color: "#4ade80", borderRadius: "4px", fontWeight: 700 }}>TỰ ĐỘNG 100%</span>
+                                  <strong style={{ fontSize: "14px", color: "#fff" }}>⚡ {t.checkout.vietqrOnline}</strong>
+                                  <span style={{ fontSize: "10.5px", padding: "2px 7px", backgroundColor: "rgba(34,197,94,0.2)", color: "#4ade80", borderRadius: "4px", fontWeight: 700 }}>100% AUTO</span>
                                 </div>
                                 <span style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginTop: "4px", lineHeight: 1.5 }}>
-                                  Hỗ trợ Quét QR hơn 40 app ngân hàng & Ví điện tử (VietQR, Momo, ZaloPay), Thẻ ATM nội địa, Thẻ quốc tế Visa/Mastercard/JCB.
+                                  {t.checkout.vietqrDesc}
                                 </span>
                               </div>
                             </label>
@@ -891,9 +895,9 @@ function CartContent() {
                                 style={{ marginTop: "4px" }}
                               />
                               <div>
-                                <strong style={{ fontSize: "14px", color: "#fff" }}>💵 Thanh toán khi nhận hàng (COD)</strong>
+                                <strong style={{ fontSize: "14px", color: "#fff" }}>💵 {t.checkout.cod}</strong>
                                 <span style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginTop: "4px", lineHeight: 1.5 }}>
-                                  Kiểm tra hàng và thanh toán tiền mặt trực tiếp cho nhân viên giao hàng khi nhận.
+                                  {t.checkout.codDesc}
                                 </span>
                               </div>
                             </label>
@@ -906,7 +910,7 @@ function CartContent() {
                           className="button button-primary button-lg"
                           style={{ width: "100%", cursor: isSubmitting ? "not-allowed" : "pointer" }}
                         >
-                          {isSubmitting ? "Đang xử lý đơn hàng..." : `Xác Nhận Đặt Hàng (${formatCurrency(subtotal)})`}
+                          {isSubmitting ? t.checkout.submitting : `${t.checkout.confirmOrder} (${formatCurrency(subtotal, lang)})`}
                         </button>
                       </form>
                     )}
@@ -933,12 +937,12 @@ function CartContent() {
                 }}
               >
                 {[
-                  { key: "all", label: "Tất cả" },
-                  { key: "pending", label: "Chờ xác nhận" },
-                  { key: "confirmed", label: "Đã xác nhận" },
-                  { key: "processing", label: "Đang chuẩn bị" },
-                  { key: "shipped", label: "Đang giao" },
-                  { key: "completed", label: "Hoàn thành" },
+                  { key: "all", label: t.orderHistory.filterAll },
+                  { key: "pending", label: t.orderHistory.filterPending },
+                  { key: "confirmed", label: t.orderHistory.filterConfirmed },
+                  { key: "processing", label: t.orderHistory.filterProcessing },
+                  { key: "shipped", label: t.orderHistory.filterShipped },
+                  { key: "completed", label: t.orderHistory.filterCompleted },
                 ].map((tab) => {
                   const count = getFilterCount(tab.key);
                   const isSelected = historyStatusFilter === tab.key;
@@ -984,7 +988,7 @@ function CartContent() {
 
               {isHistoryLoading ? (
                 <div style={{ color: "#a1a1aa", padding: "40px 0", textAlign: "center" }}>
-                  Đang tải lịch sử đơn hàng...
+                  {t.common.loading}
                 </div>
               ) : !isAuthenticated ? (
                 <div
@@ -998,13 +1002,10 @@ function CartContent() {
                 >
                   <div style={{ fontSize: "40px", marginBottom: "12px" }}>🔒</div>
                   <h3 style={{ fontSize: "18px", color: "#fff", margin: "0 0 10px 0", fontWeight: 700 }}>
-                    Vui lòng đăng nhập để xem lịch sử mua hàng
+                    {t.cart.loginPrompt}
                   </h3>
-                  <p style={{ color: "#a1a1aa", fontSize: "14px", marginBottom: "20px" }}>
-                    Đăng nhập tài khoản VanBass để theo dõi quá trình giao hàng và quản lý các đơn đã đặt.
-                  </p>
                   <Link href="/login?redirect=/cart" className="button button-primary">
-                    Đăng Nhập Ngay →
+                    {t.auth.loginBtn} →
                   </Link>
                 </div>
               ) : filteredHistoryOrders.length === 0 ? (
@@ -1019,12 +1020,10 @@ function CartContent() {
                 >
                   <div style={{ fontSize: "40px", marginBottom: "12px" }}>📦</div>
                   <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "18px" }}>
-                    {historyStatusFilter === "all"
-                      ? "Bạn chưa có đơn đặt mua thiết bị nào tại VanBass."
-                      : `Không có đơn hàng nào ở trạng thái này.`}
+                    {t.orderHistory.emptyHistory}
                   </p>
                   <Link href="/products" className="button button-primary button-sm">
-                    Khám phá thiết bị DJ &amp; Âm thanh ngay →
+                    {t.cart.exploreBtn} →
                   </Link>
                 </div>
               ) : (
@@ -1116,10 +1115,10 @@ function CartContent() {
                               }}
                             >
                               {ord.payment_status === "paid"
-                                ? "ĐÃ THANH TOÁN"
+                                ? (lang === "en" ? "PAID" : "ĐÃ THANH TOÁN")
                                 : ord.payment_method === "cod"
-                                ? "CHƯA THANH TOÁN (COD)"
-                                : "CHỜ THANH TOÁN VNPAY"}
+                                ? (lang === "en" ? "UNPAID (COD)" : "CHƯA THANH TOÁN (COD)")
+                                : (lang === "en" ? "AWAITING VNPAY" : "CHỜ THANH TOÁN VNPAY")}
                             </span>
                           </div>
                         </div>
@@ -1163,7 +1162,7 @@ function CartContent() {
                                         // eslint-disable-next-line @next/next/no-img-element
                                         <img
                                           src={it.product_image}
-                                          alt={it.product_name}
+                                          alt={getTranslatedProductName(it.product_name, lang)}
                                           style={{ width: "100%", height: "100%", objectFit: "contain" }}
                                         />
                                       ) : (
@@ -1190,14 +1189,14 @@ function CartContent() {
                                             href={`/products/${it.product_slug}`}
                                             style={{ color: "#fff", textDecoration: "none" }}
                                           >
-                                            {it.product_name}
+                                            {getTranslatedProductName(it.product_name, lang)}
                                           </Link>
                                         ) : (
-                                          it.product_name
+                                          getTranslatedProductName(it.product_name, lang)
                                         )}
                                       </h4>
                                       <div style={{ fontSize: "12px", color: "#71717a" }}>
-                                        Phân loại: {it.product_sku || it.sku || "Chính hãng VanBass"} • Số lượng: x{it.quantity}
+                                        SKU: {it.product_sku || it.sku || "VanBass"} • {lang === "en" ? "Quantity:" : "Số lượng:"} x{it.quantity}
                                       </div>
                                     </div>
                                   </div>
@@ -1205,11 +1204,11 @@ function CartContent() {
                                   {/* Right: Price */}
                                   <div style={{ textAlign: "right" }}>
                                     <div style={{ fontSize: "14px", fontWeight: 700, color: "#fff" }}>
-                                      {formatCurrency(it.line_total || it.subtotal || it.unit_price * it.quantity)}
+                                      {formatCurrency(it.line_total || it.subtotal || it.unit_price * it.quantity, lang)}
                                     </div>
                                     {it.quantity > 1 && (
                                       <span style={{ fontSize: "11px", color: "#71717a" }}>
-                                        ({formatCurrency(it.unit_price)} / cái)
+                                        ({formatCurrency(it.unit_price, lang)} / {lang === "en" ? "pc" : "cái"})
                                       </span>
                                     )}
                                   </div>
@@ -1218,7 +1217,7 @@ function CartContent() {
                             </div>
                           ) : (
                             <div style={{ color: "#71717a", fontSize: "13px" }}>
-                              Chi tiết món hàng đang được xử lý.
+                              {lang === "en" ? "Order details processing." : "Chi tiết món hàng đang được xử lý."}
                             </div>
                           )}
                         </div>
@@ -1247,10 +1246,10 @@ function CartContent() {
                             }}
                           >
                             <div>
-                              📍 Giao tới: <strong style={{ color: "#cbd5e1" }}>{ord.shipping_name} ({ord.shipping_phone})</strong> - {ord.shipping_address}
+                              📍 {t.orderHistory.recipient} <strong style={{ color: "#cbd5e1" }}>{ord.shipping_name} ({ord.shipping_phone})</strong> - {ord.shipping_address}
                             </div>
                             <div>
-                              Ngày đặt: {new Date(ord.created_at).toLocaleString("vi-VN")}
+                              {t.orderHistory.orderDate} {new Date(ord.created_at).toLocaleString(lang === "en" ? "en-US" : "vi-VN")}
                             </div>
                           </div>
 
@@ -1268,10 +1267,10 @@ function CartContent() {
                           >
                             <div>
                               <span style={{ fontSize: "13px", color: "#a1a1aa", marginRight: "8px" }}>
-                                Thành tiền:
+                                {t.orderHistory.totalAmt}
                               </span>
                               <strong style={{ fontSize: "20px", color: "#22c55e", fontWeight: 900 }}>
-                                {formatCurrency(ord.total_amount)}
+                                {formatCurrency(ord.total_amount, lang)}
                               </strong>
                             </div>
 
@@ -1299,7 +1298,7 @@ function CartContent() {
                                   }}
                                 >
                                   <span>{payingOrderId === ord.id ? "⏳" : "⚡"}</span>
-                                  {payingOrderId === ord.id ? "Đang mở VNPAY..." : "Thanh Toán VNPAY"}
+                                  {payingOrderId === ord.id ? (lang === "en" ? "Connecting VNPAY..." : "Đang mở VNPAY...") : t.orderHistory.payNowBtn}
                                 </button>
                               )}
 
@@ -1326,7 +1325,7 @@ function CartContent() {
                                     transition: "all 150ms ease",
                                   }}
                                 >
-                                  Hủy Đơn Hàng
+                                  {t.orderHistory.cancelOrderBtn}
                                 </button>
                               )}
 
@@ -1345,7 +1344,7 @@ function CartContent() {
                                   cursor: "pointer",
                                 }}
                               >
-                                Mua Lại
+                                {t.orderHistory.reorderBtn}
                               </button>
 
                               {/* Contact Shop */}
@@ -1364,7 +1363,7 @@ function CartContent() {
                                   textDecoration: "none",
                                 }}
                               >
-                                Liên hệ Shop
+                                {lang === "en" ? "Contact Support" : "Liên hệ Shop"}
                               </a>
                             </div>
                           </div>
@@ -1428,10 +1427,10 @@ function CartContent() {
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 800, color: "#ffffff" }}>
-                  Hủy Đơn Hàng #{cancelModal.orderNumber}
+                  {t.orderHistory.cancelModalTitle} #{cancelModal.orderNumber}
                 </h3>
                 <p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#a1a1aa" }}>
-                  Vui lòng chọn lý do bạn muốn hủy đơn hàng này
+                  {t.orderHistory.cancelModalReasonLabel}
                 </p>
               </div>
             </div>
@@ -1503,7 +1502,7 @@ function CartContent() {
                   cursor: isCancelling ? "not-allowed" : "pointer",
                 }}
               >
-                Không phải bây giờ
+                {t.orderHistory.cancelModalCloseBtn}
               </button>
               <button
                 type="button"
@@ -1521,7 +1520,7 @@ function CartContent() {
                   opacity: isCancelling ? 0.7 : 1,
                 }}
               >
-                {isCancelling ? "Đang hủy đơn..." : "Xác Nhận Hủy Đơn"}
+                {isCancelling ? (lang === "en" ? "Cancelling..." : "Đang hủy đơn...") : t.orderHistory.cancelModalConfirmBtn}
               </button>
             </div>
           </div>
@@ -1538,7 +1537,7 @@ export default function CartPage() {
     <Suspense
       fallback={
         <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#09090b" }}>
-          <p style={{ color: "#a1a1aa" }}>Đang tải...</p>
+          <p style={{ color: "#a1a1aa" }}>Loading...</p>
         </div>
       }
     >

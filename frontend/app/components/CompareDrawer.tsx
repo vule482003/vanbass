@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { getMessengerRentalUrl } from "../lib/api";
+import { useLanguage } from "../lib/language-context";
+import { getTranslatedProductName } from "../lib/product-i18n";
 
 interface CompareDrawerProps {
   products: Product[];
@@ -12,13 +14,14 @@ interface CompareDrawerProps {
   onClearAll: () => void;
 }
 
-function formatVND(amount?: number) {
-  if (!amount || isNaN(amount)) return "Liên hệ";
-  return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
+function formatVND(amount?: number, lang: "vi" | "en" = "vi") {
+  if (!amount || isNaN(amount)) return lang === "en" ? "Contact" : "Liên hệ";
+  return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN").format(amount) + " ₫";
 }
 
 export default function CompareDrawer({ products, onRemoveProduct, onClearAll }: CompareDrawerProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t, lang } = useLanguage();
 
   if (products.length === 0) return null;
 
@@ -48,58 +51,61 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontSize: "13px", fontWeight: 800, color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span>⚖️</span> So sánh thiết bị ({products.length}/3)
+            <span>⚖️</span> {t.compareDrawer.barTitle} ({products.length}/3)
           </span>
 
           {/* Product Thumbnails */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            {products.map((prod) => (
-              <div
-                key={prod.id}
-                style={{
-                  position: "relative",
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  backgroundColor: "#09090b",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  overflow: "hidden",
-                  flexShrink: 0,
-                }}
-                title={prod.name}
-              >
-                <Image
-                  src={prod.image_url || "/images/placeholder.jpg"}
-                  alt={prod.name}
-                  fill
-                  style={{ objectFit: "contain", padding: "4px" }}
-                  sizes="36px"
-                />
-                <button
-                  onClick={() => onRemoveProduct(prod.id)}
+            {products.map((prod) => {
+              const displayName = getTranslatedProductName(prod, lang);
+              return (
+                <div
+                  key={prod.id}
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    backgroundColor: "rgba(239, 68, 68, 0.85)",
-                    color: "#fff",
-                    border: "none",
-                    fontSize: "12px",
-                    fontWeight: 800,
-                    cursor: "pointer",
-                    opacity: 0,
-                    transition: "opacity 150ms ease",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    position: "relative",
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    backgroundColor: "#09090b",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    overflow: "hidden",
+                    flexShrink: 0,
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "0")}
-                  title="Gỡ khỏi so sánh"
+                  title={displayName}
                 >
-                  ✕
-                </button>
-              </div>
-            ))}
+                  <Image
+                    src={prod.image_url || "/images/placeholder.jpg"}
+                    alt={displayName}
+                    fill
+                    style={{ objectFit: "contain", padding: "4px" }}
+                    sizes="36px"
+                  />
+                  <button
+                    onClick={() => onRemoveProduct(prod.id)}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      backgroundColor: "rgba(239, 68, 68, 0.85)",
+                      color: "#fff",
+                      border: "none",
+                      fontSize: "12px",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      opacity: 0,
+                      transition: "opacity 150ms ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                    onMouseLeave={(e) => (e.currentTarget.style.opacity = "0")}
+                    title={t.compareDrawer.clearBtn}
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -115,7 +121,7 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
               boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
             }}
           >
-            So sánh ngay →
+            {t.compareDrawer.compareBtn}
           </button>
 
           <button
@@ -132,7 +138,7 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
             onMouseEnter={(e) => (e.currentTarget.style.color = "#f87171")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#a1a1aa")}
           >
-            Xóa tất cả
+            {t.compareDrawer.clearBtn}
           </button>
         </div>
       </div>
@@ -175,10 +181,10 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "16px" }}>
               <div>
                 <h2 style={{ fontSize: "22px", fontWeight: 800, margin: 0, color: "#fff" }}>
-                  ⚖️ Bảng So Sánh Thiết Bị DJ VanBass
+                  {t.compareDrawer.compareModalTitle}
                 </h2>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", margin: "4px 0 0 0" }}>
-                  Đối chiếu thông số kỹ thuật và chi phí mua/thuê trực quan giữa các mẫu thiết bị
+                  {t.compareDrawer.compareModalSubtitle}
                 </p>
               </div>
 
@@ -208,41 +214,44 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                 <thead>
                   <tr>
                     <th style={{ width: "200px", padding: "16px", backgroundColor: "rgba(255,255,255,0.03)", color: "#a1a1aa", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-                      Tiêu chí so sánh
+                      {t.compareDrawer.criteriaHeader}
                     </th>
-                    {products.map((prod) => (
-                      <th
-                        key={prod.id}
-                        style={{
-                          padding: "16px",
-                          backgroundColor: "rgba(255,255,255,0.02)",
-                          borderBottom: "1px solid rgba(255,255,255,0.1)",
-                          minWidth: "220px",
-                          verticalAlign: "top",
-                        }}
-                      >
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-                          <div style={{ position: "relative", width: "120px", height: "120px", marginBottom: "12px", borderRadius: "8px", backgroundColor: "#09090b", overflow: "hidden" }}>
-                            <Image src={prod.image_url || "/images/placeholder.jpg"} alt={prod.name} fill style={{ objectFit: "contain", padding: "8px" }} />
+                    {products.map((prod) => {
+                      const displayName = getTranslatedProductName(prod, lang);
+                      return (
+                        <th
+                          key={prod.id}
+                          style={{
+                            padding: "16px",
+                            backgroundColor: "rgba(255,255,255,0.02)",
+                            borderBottom: "1px solid rgba(255,255,255,0.1)",
+                            minWidth: "220px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                            <div style={{ position: "relative", width: "120px", height: "120px", marginBottom: "12px", borderRadius: "8px", backgroundColor: "#09090b", overflow: "hidden" }}>
+                              <Image src={prod.image_url || "/images/placeholder.jpg"} alt={displayName} fill style={{ objectFit: "contain", padding: "8px" }} />
+                            </div>
+                            <Link href={`/products/${prod.slug}`} style={{ color: "#fff", fontWeight: 800, fontSize: "14px", textDecoration: "none", marginBottom: "6px" }}>
+                              {displayName}
+                            </Link>
+                            {prod.brand && <span style={{ fontSize: "11px", color: "#4ade80", fontWeight: 700, textTransform: "uppercase" }}>{prod.brand}</span>}
                           </div>
-                          <Link href={`/products/${prod.slug}`} style={{ color: "#fff", fontWeight: 800, fontSize: "14px", textDecoration: "none", marginBottom: "6px" }}>
-                            {prod.name}
-                          </Link>
-                          {prod.brand && <span style={{ fontSize: "11px", color: "#4ade80", fontWeight: 700, textTransform: "uppercase" }}>{prod.brand}</span>}
-                        </div>
-                      </th>
-                    ))}
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
                   {/* Row: Giá bán mới */}
                   <tr>
                     <td style={{ padding: "14px 16px", color: "#a1a1aa", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 700 }}>
-                      Giá mua mới
+                      {t.compareDrawer.priceField}
                     </td>
                     {products.map((prod) => (
                       <td key={prod.id} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center", fontWeight: 800, color: "#fff", fontSize: "15px" }}>
-                        {prod.sale_enabled && prod.sale_price ? formatVND(prod.sale_price) : "Chỉ cho thuê"}
+                        {prod.sale_enabled && prod.sale_price ? formatVND(prod.sale_price, lang) : t.compareDrawer.rentalOnlyText}
                       </td>
                     ))}
                   </tr>
@@ -250,11 +259,11 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                   {/* Row: Giá thuê / ngày */}
                   <tr>
                     <td style={{ padding: "14px 16px", color: "#4ade80", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 700 }}>
-                      Giá thuê / ngày
+                      {t.compareDrawer.rentalPriceField}
                     </td>
                     {products.map((prod) => (
                       <td key={prod.id} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center", fontWeight: 800, color: "#22c55e", fontSize: "15px" }}>
-                        {prod.rental_enabled && prod.rental_price ? formatVND(prod.rental_price) + " / ngày" : "Không áp dụng thuê"}
+                        {prod.rental_enabled && prod.rental_price ? formatVND(prod.rental_price, lang) + ` ${t.compareDrawer.perDayUnit}` : t.compareDrawer.notForRentText}
                       </td>
                     ))}
                   </tr>
@@ -262,12 +271,12 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                   {/* Row: Tình trạng kho */}
                   <tr>
                     <td style={{ padding: "14px 16px", color: "#a1a1aa", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 600 }}>
-                      Tình trạng
+                      {t.compareDrawer.stockField}
                     </td>
                     {products.map((prod) => (
                       <td key={prod.id} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
                         <span style={{ color: prod.stock_quantity > 0 ? "#4ade80" : "#f87171", fontWeight: 700 }}>
-                          {prod.stock_quantity > 0 ? "✓ Sẵn hàng" : "Tạm hết hàng"}
+                          {prod.stock_quantity > 0 ? t.compareDrawer.inStockText : t.compareDrawer.outOfStockText}
                         </span>
                       </td>
                     ))}
@@ -276,32 +285,35 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                   {/* Row: Bảo hành */}
                   <tr>
                     <td style={{ padding: "14px 16px", color: "#a1a1aa", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 600 }}>
-                      Chế độ bảo hành
+                      {t.compareDrawer.warrantyField}
                     </td>
                     {products.map((prod) => (
                       <td key={prod.id} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center", color: "#d4d4d8" }}>
-                        12 Tháng chính hãng VanBass
+                        {t.compareDrawer.warrantyValue}
                       </td>
                     ))}
                   </tr>
 
                   {/* Row: Thao tác */}
                   <tr>
-                    <td style={{ padding: "16px", color: "#a1a1aa", fontWeight: 600 }}>Thao tác nhanh</td>
-                    {products.map((prod) => (
-                      <td key={prod.id} style={{ padding: "16px", textAlign: "center" }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                          <Link href={`/products/${prod.slug}`} className="button button-primary button-sm" style={{ width: "100%", justifyContent: "center" }}>
-                            Xem chi tiết
-                          </Link>
-                          {prod.rental_enabled && (
-                            <a href={getMessengerRentalUrl(prod.name)} target="_blank" rel="noopener noreferrer" className="button button-outline button-sm" style={{ width: "100%", justifyContent: "center", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
-                              Thuê máy ngay
-                            </a>
-                          )}
-                        </div>
-                      </td>
-                    ))}
+                    <td style={{ padding: "16px", color: "#a1a1aa", fontWeight: 600 }}>{t.compareDrawer.actionField}</td>
+                    {products.map((prod) => {
+                      const displayName = getTranslatedProductName(prod, lang);
+                      return (
+                        <td key={prod.id} style={{ padding: "16px", textAlign: "center" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <Link href={`/products/${prod.slug}`} className="button button-primary button-sm" style={{ width: "100%", justifyContent: "center" }}>
+                              {t.compareDrawer.viewDetailBtn}
+                            </Link>
+                            {prod.rental_enabled && (
+                              <a href={getMessengerRentalUrl(displayName)} target="_blank" rel="noopener noreferrer" className="button button-outline button-sm" style={{ width: "100%", justifyContent: "center", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
+                                {t.compareDrawer.rentNowBtn}
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                      );
+                    })}
                   </tr>
                 </tbody>
               </table>

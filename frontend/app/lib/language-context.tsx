@@ -1,37 +1,51 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { translations, Language, TranslationSchema } from "./translations";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { dictionaries, type Language, type Dictionary } from "../locales/dictionaries";
 
 interface LanguageContextType {
   lang: Language;
   setLang: (lang: Language) => void;
-  t: TranslationSchema;
+  t: Dictionary;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType>({
+  lang: "vi",
+  setLang: () => {},
+  t: dictionaries.vi,
+});
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Language>(() => {
-    if (typeof window !== "undefined") {
-      const saved = window.localStorage.getItem("app_lang") as Language;
-      if (saved && translations[saved]) {
-        return saved;
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLangState] = useState<Language>("vi");
+
+  useEffect(() => {
+    // Read saved language from localStorage on client mount
+    try {
+      const savedLang = localStorage.getItem("app_lang") as Language;
+      if (savedLang === "vi" || savedLang === "en") {
+        setLangState(savedLang);
       }
+    } catch {
+      // Local storage might be blocked or unavailable
     }
-    return "vi";
-  });
+  }, []);
 
   const setLang = (newLang: Language) => {
     setLangState(newLang);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("app_lang", newLang);
-      window.document.cookie = `NEXT_LOCALE=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
+    try {
+      localStorage.setItem("app_lang", newLang);
+      // Clean up legacy google translate cookie if present
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${window.location.hostname}; path=/;`;
+    } catch {
+      // Ignore storage errors
     }
   };
 
+  const t = dictionaries[lang] || dictionaries.vi;
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>
+    <LanguageContext.Provider value={{ lang, setLang, t }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -39,7 +53,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;

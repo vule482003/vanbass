@@ -5,21 +5,24 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
 import LanguageSwitcher from "./LanguageSwitcher";
-
-const navLinks = [
-  { href: "/", label: "Trang chủ" },
-  { href: "/products", label: "Sản phẩm" },
-  { href: "/about", label: "Về VanBass" },
-  { href: "/contact", label: "Liên hệ" },
-];
+import { getTranslatedProductName } from "../lib/product-i18n";
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { totalItems } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
+  const { t, lang } = useLanguage();
+
+  const navLinks = [
+    { href: "/", label: t.nav.home },
+    { href: "/products", label: t.nav.products },
+    { href: "/about", label: t.nav.about },
+    { href: "/contact", label: t.nav.contact },
+  ];
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -132,12 +135,16 @@ export default function Header() {
 
   const searchResults = searchQuery.trim()
     ? searchCatalog
-        .filter(
-          (p) =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (p.sku || "").toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        .filter((p) => {
+          const q = searchQuery.toLowerCase();
+          const trName = getTranslatedProductName(p, lang).toLowerCase();
+          return (
+            p.name.toLowerCase().includes(q) ||
+            trName.includes(q) ||
+            (p.brand || "").toLowerCase().includes(q) ||
+            (p.sku || "").toLowerCase().includes(q)
+          );
+        })
         .slice(0, 6)
     : [];
 
@@ -234,7 +241,7 @@ export default function Header() {
                 setIsSearchDropdownOpen(true);
               }}
               onBlur={() => setIsSearchFocused(false)}
-              placeholder="Tìm kiếm thiết bị DJ, mixer, loa..."
+              placeholder={t.nav.searchPlaceholder}
               className="header-search-input"
             />
             {searchQuery && (
@@ -245,7 +252,7 @@ export default function Header() {
                   setIsSearchDropdownOpen(false);
                 }}
                 className="header-search-clear"
-                title="Xóa tìm kiếm"
+                title="Clear search"
               >
                 ✕
               </button>
@@ -256,7 +263,7 @@ export default function Header() {
             <div className="search-dropdown-menu">
               {searchResults.length === 0 ? (
                 <div style={{ padding: "16px", color: "#a1a1aa", fontSize: "13px", textAlign: "center" }}>
-                  Không tìm thấy thiết bị nào phù hợp với &quot;{searchQuery}&quot;
+                  {t.nav.noResults}
                 </div>
               ) : (
                 <>
@@ -268,19 +275,19 @@ export default function Header() {
                     >
                       <div>
                         <div style={{ fontSize: "13px", fontWeight: 700, color: "#ffffff", marginBottom: "2px" }}>
-                          {item.name}
+                          {getTranslatedProductName(item, lang)}
                         </div>
                         <div style={{ fontSize: "11px", color: "#a1a1aa" }}>
                           {item.brand} • {item.sku}
                         </div>
                       </div>
                       <div style={{ fontSize: "13px", fontWeight: 800, color: "#22c55e", whiteSpace: "nowrap", marginLeft: "12px" }}>
-                        {item.sale_price ? item.sale_price.toLocaleString("vi-VN") + "₫" : "Liên hệ"}
+                        {item.sale_price ? (lang === "en" ? new Intl.NumberFormat("en-US").format(item.sale_price) + "₫" : item.sale_price.toLocaleString("vi-VN") + "₫") : t.products.contactPrice}
                       </div>
                     </div>
                   ))}
                   <div onMouseDown={handleSearchSubmit} className="search-view-all">
-                    Xem tất cả kết quả cho &quot;{searchQuery}&quot; →
+                    {t.nav.viewAllResults} &quot;{searchQuery}&quot; →
                   </div>
                 </>
               )}
@@ -291,7 +298,7 @@ export default function Header() {
         <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           <LanguageSwitcher />
 
-          <Link href="/cart" className="header-cart-btn" aria-label="Xem giỏ hàng">
+          <Link href="/cart" className="header-cart-btn" aria-label={t.nav.cart}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -311,7 +318,7 @@ export default function Header() {
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                 className="header-user-btn"
                 title={user?.email}
-                aria-label="Tài khoản cá nhân"
+                aria-label={t.nav.profile}
               >
                 {user?.full_name?.charAt(0).toUpperCase() || user?.email.charAt(0).toUpperCase() || "U"}
               </button>
@@ -324,7 +331,7 @@ export default function Header() {
                       onClick={() => setUserDropdownOpen(false)}
                       className="header-user-item is-admin"
                     >
-                      <span>Bảng Quản Trị Admin</span>
+                      <span>{t.nav.adminPanel}</span>
                     </Link>
                   )}
                   <Link
@@ -332,7 +339,7 @@ export default function Header() {
                     onClick={() => setUserDropdownOpen(false)}
                     className="header-user-item"
                   >
-                    <span>Tài khoản &amp; Hồ sơ</span>
+                    <span>{t.nav.profile}</span>
                   </Link>
                   <div className="header-user-divider" />
                   <button
@@ -343,14 +350,14 @@ export default function Header() {
                     }}
                     className="header-user-item is-logout"
                   >
-                    <span>Đăng xuất</span>
+                    <span>{t.nav.logout}</span>
                   </button>
                 </div>
               )}
             </div>
           ) : (
             <Link href="/login" className="header-login-btn">
-              Đăng nhập
+              {t.nav.login}
             </Link>
           )}
 
@@ -358,7 +365,7 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="mobile-menu-btn"
             style={{ display: "none", background: "none", border: "none", color: "#fff", fontSize: "22px", cursor: "pointer" }}
-            aria-label="Mở menu điều hướng"
+            aria-label="Toggle navigation menu"
           >
             ☰
           </button>
@@ -393,7 +400,7 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(false)}
             style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
           >
-            Giỏ hàng ({totalItems})
+            {t.nav.cart} ({totalItems})
           </Link>
           {isAuthenticated ? (
             <>
@@ -403,7 +410,7 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
                 >
-                  Bảng Quản Trị Admin
+                  {t.nav.adminPanel}
                 </Link>
               )}
               <Link
@@ -411,7 +418,7 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
                 style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
               >
-                Tài khoản ({user?.full_name || user?.email})
+                {t.nav.profile} ({user?.full_name || user?.email})
               </Link>
               <button
                 onClick={() => {
@@ -433,7 +440,7 @@ export default function Header() {
                   gap: "6px",
                 }}
               >
-                Đăng xuất
+                {t.nav.logout}
               </button>
             </>
           ) : (
@@ -442,7 +449,7 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               style={{ color: "#fff", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}
             >
-              Đăng nhập / Đăng ký
+              {t.nav.login}
             </Link>
           )}
         </div>

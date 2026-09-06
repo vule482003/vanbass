@@ -10,8 +10,11 @@ import QuickViewModal from "../components/QuickViewModal";
 import CompareDrawer from "../components/CompareDrawer";
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "../lib/mock-data";
 import { Product, Category } from "../lib/types";
+import { useLanguage } from "../lib/language-context";
+import { getTranslatedProductName } from "../lib/product-i18n";
 
 function ProductsContent() {
+  const { t, lang } = useLanguage();
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
   const initialSearch = searchParams.get("search") || "";
@@ -39,7 +42,7 @@ function ProductsContent() {
         return prev.filter((p) => p.id !== product.id);
       }
       if (prev.length >= 3) {
-        alert("Bạn chỉ có thể chọn tối đa 3 sản phẩm để so sánh!");
+        alert(t.compareDrawer.maxAlert);
         return prev;
       }
       return [...prev, product];
@@ -159,7 +162,8 @@ function ProductsContent() {
       // Search filter
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
-        const matchName = product.name.toLowerCase().includes(query);
+        const trName = getTranslatedProductName(product, lang).toLowerCase();
+        const matchName = product.name.toLowerCase().includes(query) || trName.includes(query);
         const matchBrand = product.brand?.toLowerCase().includes(query);
         const matchDesc = product.description?.toLowerCase().includes(query);
         const matchSku = product.sku?.toLowerCase().includes(query);
@@ -179,11 +183,13 @@ function ProductsContent() {
         return priceB - priceA;
       }
       if (sortBy === "name") {
-        return a.name.localeCompare(b.name);
+        const nameA = getTranslatedProductName(a, lang);
+        const nameB = getTranslatedProductName(b, lang);
+        return nameA.localeCompare(nameB);
       }
       return 0;
     });
-  }, [products, categories, selectedCategory, filterMode, selectedBrand, priceRange, searchQuery, sortBy]);
+  }, [products, categories, selectedCategory, filterMode, selectedBrand, priceRange, searchQuery, sortBy, lang]);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -193,7 +199,7 @@ function ProductsContent() {
         <div className="container">
           {/* Page Heading */}
           <div style={{ marginBottom: "40px" }}>
-            <p className="section-kicker">DANH MỤC THIẾT BỊ</p>
+            <p className="section-kicker">{t.productsPage.kicker}</p>
             <h1
               style={{
                 fontSize: "clamp(32px, 5vw, 56px)",
@@ -202,10 +208,10 @@ function ProductsContent() {
                 margin: "0 0 12px 0",
               }}
             >
-              Thiết Bị DJ & Âm Thanh Chuyên Nghiệp
+              {t.productsPage.title}
             </h1>
             <p style={{ color: "#a1a1aa", fontSize: "16px", maxWidth: "700px", margin: 0 }}>
-              Cung cấp giải pháp mua bán và cho thuê thiết bị DJ, DJ Controller, CDJ, Mixer, Loa kiểm âm chính hãng tại Đà Nẵng.
+              {t.productsPage.subtitle}
             </p>
           </div>
 
@@ -240,7 +246,7 @@ function ProductsContent() {
               }}
             >
               <p style={{ color: "#a1a1aa", fontSize: "16px", marginBottom: "16px" }}>
-                Không tìm thấy thiết bị nào phù hợp với bộ lọc hiện tại.
+                {t.productsPage.noProducts}
               </p>
               <button
                 className="button button-primary"
@@ -252,7 +258,7 @@ function ProductsContent() {
                   setSearchQuery("");
                 }}
               >
-                Đặt lại bộ lọc
+                {t.productsPage.resetFilters}
               </button>
             </div>
           ) : (
@@ -291,11 +297,13 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
+  const { t } = useLanguage();
+
   return (
     <Suspense
       fallback={
         <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#090909", color: "#fff" }}>
-          Đang tải danh mục thiết bị VanBass...
+          {t.productsPage.loading}
         </div>
       }
     >

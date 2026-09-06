@@ -1,52 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect, useSyncExternalStore } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useLanguage } from "../lib/language-context";
+import { type Language } from "../locales/dictionaries";
 
-const languages = [
-  { code: "vi", label: "Tiếng Việt" },
-  { code: "en", label: "English" },
+const languages: { code: Language; label: string; flag: string }[] = [
+  { code: "vi", label: "Tiếng Việt", flag: "VN" },
+  { code: "en", label: "English", flag: "EN" },
 ];
 
-function getCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? match[2] : null;
-}
-
-function getInitialLanguage(): "vi" | "en" {
-  if (typeof window === "undefined") return "vi";
-
-  const rawCookie = getCookie("googtrans");
-  if (rawCookie && rawCookie.includes("/en")) {
-    return "en";
-  }
-
-  const saved = window.localStorage.getItem("app_lang") as "vi" | "en";
-  return saved === "en" ? "en" : "vi";
-}
-
-function subscribe(callback: () => void) {
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
-}
-
-function getServerSnapshot(): "vi" | "en" {
-  return "vi";
-}
-
-function triggerGoogleTranslate(langCode: "vi" | "en") {
-  if (typeof window === "undefined" || typeof document === "undefined") return;
-
-  const cookieVal = `/vi/${langCode}`;
-  document.cookie = `googtrans=${cookieVal}; path=/`;
-  document.cookie = `googtrans=${cookieVal}; domain=${window.location.hostname}; path=/`;
-  window.localStorage.setItem("app_lang", langCode);
-
-  window.location.reload();
-}
-
 export default function LanguageSwitcher() {
-  const currentLang = useSyncExternalStore(subscribe, getInitialLanguage, getServerSnapshot);
+  const { lang, setLang } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -60,19 +24,15 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelect = (code: "vi" | "en") => {
-    if (code === currentLang) {
-      setIsOpen(false);
-      return;
-    }
+  const handleSelect = (code: Language) => {
+    setLang(code);
     setIsOpen(false);
-    triggerGoogleTranslate(code);
   };
 
   return (
     <div
       ref={dropdownRef}
-      className="lang-switcher notranslate"
+      className="lang-switcher"
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
@@ -81,7 +41,7 @@ export default function LanguageSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className={`lang-btn ${isOpen ? "open" : ""}`}
         aria-label="Chọn ngôn ngữ"
-        title={currentLang === "vi" ? "Tiếng Việt" : "English"}
+        title={lang === "vi" ? "Tiếng Việt" : "English"}
         suppressHydrationWarning
       >
         <svg
@@ -99,7 +59,7 @@ export default function LanguageSwitcher() {
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
         </svg>
         <span className="lang-current-label" suppressHydrationWarning>
-          {currentLang === "vi" ? "Tiếng Việt" : "English"}
+          {lang === "vi" ? "Tiếng Việt" : "English"}
         </span>
         <svg
           width="12"
@@ -122,8 +82,8 @@ export default function LanguageSwitcher() {
             <button
               key={item.code}
               type="button"
-              onClick={() => handleSelect(item.code as "vi" | "en")}
-              className={`lang-item ${item.code === currentLang ? "active" : ""}`}
+              onClick={() => handleSelect(item.code)}
+              className={`lang-item ${item.code === lang ? "active" : ""}`}
             >
               <span>{item.label}</span>
             </button>

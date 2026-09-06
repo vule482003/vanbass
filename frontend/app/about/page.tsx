@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useLanguage } from "../lib/language-context";
 
 export default function AboutPage() {
+  const { t } = useLanguage();
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
@@ -10,7 +15,7 @@ export default function AboutPage() {
       <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
         <div className="container">
           <div style={{ maxWidth: "800px", marginBottom: "60px" }}>
-            <p className="section-kicker">VỀ CHÚNG TÔI</p>
+            <p className="section-kicker">{t.about.kicker}</p>
             <h1
               style={{
                 fontSize: "clamp(36px, 5vw, 54px)",
@@ -20,10 +25,10 @@ export default function AboutPage() {
                 lineHeight: 1.05,
               }}
             >
-              Âm thanh tạo nên cảm xúc. Thiết bị tạo nên đẳng cấp.
+              {t.about.title}
             </h1>
             <p style={{ color: "#a1a1aa", fontSize: "17px", lineHeight: 1.8 }}>
-              VanBass Music Center được thành lập tại Đà Nẵng với sứ mệnh mang đến giải pháp thiết bị DJ và âm thanh chuyên nghiệp hàng đầu miền Trung, từ thiết bị phòng thu, học tập cá nhân đến hệ thống âm thanh sân khấu và sự kiện quy mô lớn.
+              {t.about.desc}
             </p>
           </div>
 
@@ -38,25 +43,25 @@ export default function AboutPage() {
           >
             <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>🎧</span>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>Thiết bị DJ chính hãng</h3>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>{t.about.pillar1Title}</h3>
               <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
-                Phân phối chính thức các dòng sản phẩm Pioneer DJ, AlphaTheta từ cơ bản đến cao cấp nhất thế giới.
+                {t.about.pillar1Desc}
               </p>
             </div>
 
             <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>🔊</span>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>Giải pháp âm thanh biểu diễn</h3>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>{t.about.pillar2Title}</h3>
               <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
-                Tư vấn, lắp đặt hệ thống âm thanh cho quán bar, lounge, phòng trà, resort và các sự kiện ngoài trời.
+                {t.about.pillar2Desc}
               </p>
             </div>
 
             <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>⚡</span>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>Dịch vụ cho thuê linh hoạt</h3>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>{t.about.pillar3Title}</h3>
               <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
-                Cung cấp dàn máy DJ tiêu chuẩn sự kiện quốc tế theo ngày hoặc theo gói trọn gói có kỹ thuật viên túc trực.
+                {t.about.pillar3Desc}
               </p>
             </div>
           </div>
@@ -76,14 +81,14 @@ export default function AboutPage() {
             }}
           >
             <div>
-              <p className="section-kicker" style={{ marginBottom: "8px" }}>TRẢI NGHIỆM TRỰC TIẾP</p>
-              <h2 style={{ fontSize: "26px", margin: "0 0 8px 0", color: "#ffffff" }}>Ghé thăm Showroom VanBass tại Đà Nẵng</h2>
+              <p className="section-kicker" style={{ marginBottom: "8px" }}>{t.about.ctaKicker}</p>
+              <h2 style={{ fontSize: "26px", margin: "0 0 8px 0", color: "#ffffff" }}>{t.about.ctaTitle}</h2>
               <p style={{ color: "#a1a1aa", margin: 0, fontSize: "15px" }}>
-                Thử máy trực tiếp, nghe thử âm thanh và nhận tư vấn kỹ thuật từ đội ngũ DJ chuyên nghiệp.
+                {t.about.ctaDesc}
               </p>
             </div>
             <Link href="/contact" className="button button-primary">
-              Liên hệ ngay <span>→</span>
+              {t.about.ctaBtn} <span>→</span>
             </Link>
           </div>
         </div>

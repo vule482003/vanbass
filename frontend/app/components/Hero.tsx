@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { DEFAULT_HOME_DATA, HeroPanelCenter, HeroPanelLeft, HeroPanelRight } from "../types/home_config";
+import { useLanguage } from "../lib/language-context";
 
 function VuMeter() {
   return (
@@ -33,6 +34,8 @@ export default function Hero({
   showHero = true,
   isInsideIframe = false,
 }: HeroProps) {
+  const { t, lang } = useLanguage();
+
   const resolveImage = (imgUrl: string | undefined, defaultFallback: string) => {
     if (!imgUrl || !imgUrl.trim()) return defaultFallback;
     if (imgUrl.startsWith("http:") || imgUrl.startsWith("https:") || imgUrl.startsWith("blob:") || imgUrl.startsWith("data:")) {
@@ -45,13 +48,30 @@ export default function Hero({
   const centerBg = resolveImage(heroCenter?.bg_image, "/images/hero/hero_performance.jpg");
   const rightBg = resolveImage(heroRight?.bg_image, "/images/hero/hero_showroom.jpg");
 
+  const effectiveMarquee = lang === "en" ? t.hero.marqueeItems : marqueeItems;
+
+  const leftTag = lang === "en" ? t.hero.panelHardwareTag : (heroLeft?.tag || t.hero.panelHardwareTag);
+  const leftTitle = lang === "en" ? t.hero.panelHardwareTitle : (heroLeft?.title || t.hero.panelHardwareTitle);
+  const leftDesc = lang === "en" ? t.hero.panelHardwareDesc : (heroLeft?.desc || t.hero.panelHardwareDesc);
+  const leftBtnText = lang === "en" ? t.hero.exploreBtn : (heroLeft?.button_text || t.hero.exploreBtn);
+
+  const centerBadge = lang === "en" ? t.hero.panelHardwareTitle : (heroCenter?.badge || "THIẾT BỊ DJ CHÍNH HÃNG");
+  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : (heroCenter?.headline || t.hero.panelRentalTitle);
+  const centerDesc = lang === "en" ? t.hero.panelRentalDesc : (heroCenter?.desc || t.hero.panelRentalDesc);
+  const centerBtnText = lang === "en" ? t.hero.rentalBtn : (heroCenter?.button_text || "THUÊ THIẾT BỊ NGAY");
+
+  const rightTag = lang === "en" ? t.hero.panelShowroomTag : (heroRight?.tag || t.hero.panelShowroomTag);
+  const rightTitle = lang === "en" ? t.hero.panelShowroomTitle : (heroRight?.title || t.hero.panelShowroomTitle);
+  const rightDesc = lang === "en" ? t.hero.panelShowroomDesc : (heroRight?.desc || t.hero.panelShowroomDesc);
+  const rightBtnText = lang === "en" ? t.hero.panelShowroomBtn : (heroRight?.button_text || t.hero.panelShowroomBtn);
+
   return (
     <section className="hero-triptych-section" id="hero">
       {/* 1. TOP GLOWING INFINITE MARQUEE TICKER (NIGHTLIFE & BRAND PARTNERS) */}
-      {showMarquee && marqueeItems.length > 0 && (
+      {showMarquee && effectiveMarquee.length > 0 && (
         <div className="hero-marquee-bar">
           <div className="hero-marquee-track">
-            {marqueeItems.map((item, idx) => (
+            {effectiveMarquee.map((item, idx) => (
               <span key={`mq1-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
                 <span className="marquee-item">{item}</span>
                 {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
@@ -59,7 +79,7 @@ export default function Hero({
             ))}
 
             {/* Seamless Loop duplication */}
-            {marqueeItems.map((item, idx) => (
+            {effectiveMarquee.map((item, idx) => (
               <span key={`mq2-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
                 <span className="marquee-item">{item}</span>
                 {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
@@ -127,9 +147,9 @@ export default function Hero({
             )}
 
             <div className="triptych-content" style={{ zIndex: 2 }}>
-              <div className="triptych-tag" data-cms-key="hero_left.tag" data-cms-label="Tag Phụ Banner Trái" data-cms-type="text">{heroLeft.tag}</div>
-              <h2 className="triptych-title" data-cms-key="hero_left.title" data-cms-label="Tiêu Đề Banner Trái" data-cms-type="text">{heroLeft.title}</h2>
-              <p className="triptych-desc" data-cms-key="hero_left.desc" data-cms-label="Mô Tả Banner Trái" data-cms-type="textarea">{heroLeft.desc}</p>
+              <div className="triptych-tag" data-cms-key="hero_left.tag" data-cms-label="Tag Phụ Banner Trái" data-cms-type="text">{leftTag}</div>
+              <h2 className="triptych-title" data-cms-key="hero_left.title" data-cms-label="Tiêu Đề Banner Trái" data-cms-type="text">{leftTitle}</h2>
+              <p className="triptych-desc" data-cms-key="hero_left.desc" data-cms-label="Mô Tả Banner Trái" data-cms-type="textarea">{leftDesc}</p>
               <Link
                 href={heroLeft.link || "/products"}
                 className="triptych-cta-link"
@@ -137,7 +157,7 @@ export default function Hero({
                 data-cms-label="Chữ Nút Banner Trái"
                 data-cms-type="text"
               >
-                {heroLeft.button_text || "Khám phá thiết bị"} <span>→</span>
+                {leftBtnText} <span>→</span>
               </Link>
             </div>
           </div>
@@ -199,10 +219,10 @@ export default function Hero({
             <div className="triptych-content featured-content" style={{ zIndex: 2 }}>
               <div className="triptych-badge" data-cms-key="hero_center.badge" data-cms-label="Huy Hiệu Banner Chính" data-cms-type="text">
                 <span />
-                {heroCenter.badge || "THIẾT BỊ DJ CHÍNH HÃNG"}
+                {centerBadge}
               </div>
-              <h2 className="triptych-headline" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{heroCenter.headline}</h2>
-              <p className="triptych-desc" data-cms-key="hero_center.desc" data-cms-label="Mô Tả Banner Chính" data-cms-type="textarea">{heroCenter.desc}</p>
+              <h2 className="triptych-headline" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h2>
+              <p className="triptych-desc" data-cms-key="hero_center.desc" data-cms-label="Mô Tả Banner Chính" data-cms-type="textarea">{centerDesc}</p>
 
               <Link
                 href={
@@ -215,7 +235,7 @@ export default function Hero({
                 data-cms-label="Nút Nổi Bật Banner Chính"
                 data-cms-type="text"
               >
-                <span>{heroCenter.button_text || "THUÊ THIẾT BỊ NGAY"}</span>
+                <span>{centerBtnText}</span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
@@ -279,9 +299,9 @@ export default function Hero({
             )}
 
             <div className="triptych-content">
-              <div className="triptych-tag" data-cms-key="hero_right.tag" data-cms-label="Tag Phụ Banner Phải" data-cms-type="text">{heroRight.tag}</div>
-              <h2 className="triptych-title" data-cms-key="hero_right.title" data-cms-label="Tiêu Đề Banner Phải" data-cms-type="text">{heroRight.title}</h2>
-              <p className="triptych-desc" data-cms-key="hero_right.desc" data-cms-label="Mô Tả Banner Phải" data-cms-type="textarea">{heroRight.desc}</p>
+              <div className="triptych-tag" data-cms-key="hero_right.tag" data-cms-label="Tag Phụ Banner Phải" data-cms-type="text">{rightTag}</div>
+              <h2 className="triptych-title" data-cms-key="hero_right.title" data-cms-label="Tiêu Đề Banner Phải" data-cms-type="text">{rightTitle}</h2>
+              <p className="triptych-desc" data-cms-key="hero_right.desc" data-cms-label="Mô Tả Banner Phải" data-cms-type="textarea">{rightDesc}</p>
               <Link
                 href={heroRight.link || "/contact"}
                 className="triptych-cta-link"
@@ -289,7 +309,7 @@ export default function Hero({
                 data-cms-label="Chữ Nút Banner Phải"
                 data-cms-type="text"
               >
-                {heroRight.button_text || "Ghé thăm showroom"} <span>→</span>
+                {rightBtnText} <span>→</span>
               </Link>
             </div>
           </div>

@@ -1360,7 +1360,7 @@ export default function AdminDashboardPage() {
 
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <Link href="/" target="_blank" style={{ fontSize: "13px", color: "#a1a1aa", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
-            🌐 Xem Website Cửa hàng ↗
+            Xem Website Cửa hàng ↗
           </Link>
           <span style={{ fontSize: "13px", color: "#71717a" }}>|</span>
           <span style={{ fontSize: "13px", color: user.role === "staff" ? "#34d399" : "#22c55e", fontWeight: 600 }}>
@@ -1500,13 +1500,13 @@ export default function AdminDashboardPage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%", overflowY: "auto" }}>
             {([
-              { id: "overview", icon: "📊", label: "Tổng quan thống kê", count: null },
-              { id: "home_cms", icon: "🎨", label: "Home Page CMS", count: null },
-              { id: "products", icon: "📦", label: "Quản lý Sản phẩm", count: products.length || dashboardData?.products?.total || null },
-              { id: "categories", icon: "🏷️", label: "Quản lý Danh mục", count: categories.length },
-              { id: "orders", icon: "🛒", label: "Quản lý Đơn hàng", count: orders.length || dashboardData?.orders?.total || null },
-              { id: "staff", icon: "👥", label: "Quản lý Tài khoản", count: staffUsers.length || dashboardData?.users?.total || null },
-              { id: "settings", icon: "⚙️", label: "Cài đặt Cửa hàng", count: null },
+              { id: "overview", label: "Tổng quan thống kê", count: null },
+              { id: "home_cms", label: "Home Page CMS", count: null },
+              { id: "products", label: "Quản lý Sản phẩm", count: products.length || dashboardData?.products?.total || null },
+              { id: "categories", label: "Quản lý Danh mục", count: categories.length },
+              { id: "orders", label: "Quản lý Đơn hàng", count: orders.length || dashboardData?.orders?.total || null },
+              { id: "staff", label: "Quản lý Tài khoản", count: staffUsers.length || dashboardData?.users?.total || null },
+              { id: "settings", label: "Cài đặt Cửa hàng", count: null },
             ] as const)
               .filter((tab) => {
                 if (user?.role === "staff") {
@@ -1525,9 +1525,10 @@ export default function AdminDashboardPage() {
                 }}
                 title={tab.label}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: isSidebarCollapsed ? "center" : "flex-start" }}>
-                  <span style={{ fontSize: "16px" }}>{tab.icon}</span>
-                  {!isSidebarCollapsed && <span>{tab.label}</span>}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: isSidebarCollapsed ? "center" : "flex-start", overflow: "hidden" }}>
+                  <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {isSidebarCollapsed ? tab.label.slice(0, 2).toUpperCase() : tab.label}
+                  </span>
                 </div>
                 {!isSidebarCollapsed && tab.count !== null && (
                   <span className="admin-badge-count">{tab.count}</span>
@@ -1650,9 +1651,6 @@ export default function AdminDashboardPage() {
 
               <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "40px" }}>
                 <div className="admin-stat-card">
-                  <div className="admin-stat-icon" style={{ backgroundColor: "rgba(34, 197, 94, 0.15)", color: "#22c55e" }}>
-                    📦
-                  </div>
                   <div>
                     <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>TỔNG SẢN PHẨM</p>
                     <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{dashboardData?.products?.total ?? products.length}</strong>
@@ -1661,9 +1659,6 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="admin-stat-card">
-                  <div className="admin-stat-icon" style={{ backgroundColor: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>
-                    🛒
-                  </div>
                   <div>
                     <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐƠN MUA HÀNG</p>
                     <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{dashboardData?.orders?.total ?? orders.length}</strong>
@@ -1672,9 +1667,6 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="admin-stat-card">
-                  <div className="admin-stat-icon" style={{ backgroundColor: "rgba(234, 179, 8, 0.15)", color: "#eab308" }}>
-                    💰
-                  </div>
                   <div>
                     <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>DOANH THU ĐÃ THU</p>
                     <strong style={{ fontSize: "28px", fontWeight: 900, color: "#4ade80" }}>{formatCurrency(dashboardData?.revenue?.total || 0)}</strong>
@@ -1683,9 +1675,6 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="admin-stat-card">
-                  <div className="admin-stat-icon" style={{ backgroundColor: "rgba(168, 85, 247, 0.15)", color: "#c084fc" }}>
-                    🏷️
-                  </div>
                   <div>
                     <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>DANH MỤC SẢN PHẨM</p>
                     <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{categories.length}</strong>
@@ -1699,7 +1688,7 @@ export default function AdminDashboardPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
                   <div>
                     <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                      <span>🛒</span> 5 Đơn Hàng Gần Nhất
+                      5 Đơn Hàng Gần Nhất
                     </h3>
                     <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
                       Các đơn hàng mua sắm gần đây cần theo dõi và xử lý
@@ -1862,7 +1851,7 @@ export default function AdminDashboardPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
                   <div>
                     <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                      <span>🔥</span> Top 5 Sản Phẩm Bán Chạy Nhất
+                      Top 5 Sản Phẩm Bán Chạy Nhất
                     </h3>
                     <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
                       Thống kê các thiết bị dẫn đầu doanh số và số lượng xuất kho

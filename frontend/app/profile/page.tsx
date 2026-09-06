@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, logout, updateProfile } = useAuth();
+  const { t, lang } = useLanguage();
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -62,7 +64,7 @@ export default function ProfilePage() {
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#090909" }}>
         <Header />
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <p style={{ color: "#a1a1aa" }}>Đang tải thông tin tài khoản...</p>
+          <p style={{ color: "#a1a1aa" }}>{t.profile.loading}</p>
         </div>
         <Footer />
       </div>
@@ -89,7 +91,7 @@ export default function ProfilePage() {
             }}
           >
             <div>
-              <span className="section-kicker">HỒ SƠ THÀNH VIÊN</span>
+              <span className="section-kicker">{t.profile.kicker}</span>
               <h1
                 style={{
                   fontSize: "clamp(24px, 3.5vw, 36px)",
@@ -99,7 +101,7 @@ export default function ProfilePage() {
                   color: "#fff",
                 }}
               >
-                Xin chào, {user.full_name || user.email.split("@")[0]}
+                {t.profile.greeting}, {user.full_name || user.email.split("@")[0]}
               </h1>
             </div>
 
@@ -120,7 +122,7 @@ export default function ProfilePage() {
                     borderRadius: "6px",
                   }}
                 >
-                  👑 Mở Trang Quản Trị (Admin) →
+                  {t.profile.adminBtn}
                 </Link>
               )}
               <button
@@ -137,7 +139,7 @@ export default function ProfilePage() {
                   transition: "background 180ms ease",
                 }}
               >
-                Đăng xuất
+                {t.profile.logoutBtn}
               </button>
             </div>
           </div>
@@ -160,7 +162,7 @@ export default function ProfilePage() {
                     borderRadius: "4px",
                   }}
                 >
-                  <span>👤</span> Thông tin &amp; Địa chỉ
+                  <span>{t.profile.tabInfo}</span>
                 </div>
                 <Link
                   href="/cart"
@@ -178,9 +180,8 @@ export default function ProfilePage() {
                     transition: "all 180ms ease",
                   }}
                 >
-                  <span>🛒</span> Giỏ hàng
+                  <span>{t.profile.tabCart}</span>
                 </Link>
-                
               </div>
             </div>
 
@@ -188,120 +189,26 @@ export default function ProfilePage() {
             <div>
               <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px" }}>
                 <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                  Thông tin giao hàng mặc định
+                  {t.profile.shippingDefaultTitle}
                 </h2>
 
                 {saveSuccess && (
                   <div style={{ padding: "12px 16px", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "14px", marginBottom: "20px", borderRadius: "6px" }}>
-                    ✓ Đã lưu thông tin hồ sơ vào cơ sở dữ liệu thành công!
+                    {t.profile.saveSuccess}
                   </div>
                 )}
 
                 <form onSubmit={handleSaveProfile}>
-                    <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
-                      <div>
-                        <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
-                          Họ và tên
-                        </label>
-                        <input
-                          type="text"
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          placeholder="Họ và tên"
-                          style={{
-                            width: "100%",
-                            padding: "12px 14px",
-                            backgroundColor: "rgba(255, 255, 255, 0.04)",
-                            border: "1px solid rgba(255, 255, 255, 0.12)",
-                            borderRadius: "6px",
-                            color: "#fff",
-                            fontSize: "14px",
-                            outline: "none",
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
-                          Số điện thoại
-                        </label>
-                        <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="09xx xxx xxx"
-                          style={{
-                            width: "100%",
-                            padding: "12px 14px",
-                            backgroundColor: "rgba(255, 255, 255, 0.04)",
-                            border: "1px solid rgba(255, 255, 255, 0.12)",
-                            borderRadius: "6px",
-                            color: "#fff",
-                            fontSize: "14px",
-                            outline: "none",
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
-                      <div>
-                        <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
-                          Email tài khoản
-                        </label>
-                        <input
-                          type="email"
-                          disabled
-                          value={user.email}
-                          style={{
-                            width: "100%",
-                            padding: "12px 14px",
-                            backgroundColor: "rgba(255, 255, 255, 0.02)",
-                            border: "1px solid rgba(255, 255, 255, 0.08)",
-                            borderRadius: "6px",
-                            color: "#71717a",
-                            fontSize: "14px",
-                            cursor: "not-allowed",
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
-                          Tỉnh / Thành phố
-                        </label>
-                        <input
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Đà Nẵng"
-                          style={{
-                            width: "100%",
-                            padding: "12px 14px",
-                            backgroundColor: "rgba(255, 255, 255, 0.04)",
-                            border: "1px solid rgba(255, 255, 255, 0.12)",
-                            borderRadius: "6px",
-                            color: "#fff",
-                            fontSize: "14px",
-                            outline: "none",
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ marginBottom: "28px" }}>
+                  <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+                    <div>
                       <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
-                        Địa chỉ nhận hàng (Số nhà, Tên đường, Phường/Xã)
+                        {t.profile.fullNameLabel}
                       </label>
                       <input
                         type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="VD: 123 Nguyễn Văn Linh, Phường Nam Dương, Quận Hải Châu"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Họ và tên"
                         style={{
                           width: "100%",
                           padding: "12px 14px",
@@ -316,20 +223,114 @@ export default function ProfilePage() {
                       />
                     </div>
 
-                    <button
-                      type="submit"
-                      disabled={isSaving}
-                      className="button button-primary"
+                    <div>
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
+                        {t.profile.phoneLabel}
+                      </label>
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="09xx xxx xxx"
+                        style={{
+                          width: "100%",
+                          padding: "12px 14px",
+                          backgroundColor: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid rgba(255, 255, 255, 0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "14px",
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
+                        {t.profile.emailLabel}
+                      </label>
+                      <input
+                        type="email"
+                        disabled
+                        value={user.email}
+                        style={{
+                          width: "100%",
+                          padding: "12px 14px",
+                          backgroundColor: "rgba(255, 255, 255, 0.02)",
+                          border: "1px solid rgba(255, 255, 255, 0.08)",
+                          borderRadius: "6px",
+                          color: "#71717a",
+                          fontSize: "14px",
+                          cursor: "not-allowed",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
+                        {t.profile.cityLabel}
+                      </label>
+                      <input
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="Đà Nẵng"
+                        style={{
+                          width: "100%",
+                          padding: "12px 14px",
+                          backgroundColor: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid rgba(255, 255, 255, 0.12)",
+                          borderRadius: "6px",
+                          color: "#fff",
+                          fontSize: "14px",
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "28px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "8px", textTransform: "uppercase" }}>
+                      {t.profile.addressLabel}
+                    </label>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder={lang === "en" ? "e.g. 123 Nguyen Van Linh, Hai Chau, Da Nang" : "VD: 123 Nguyễn Văn Linh, Phường Nam Dương, Quận Hải Châu"}
                       style={{
-                        padding: "13px 28px",
-                        fontSize: "13px",
-                        cursor: isSaving ? "not-allowed" : "pointer",
+                        width: "100%",
+                        padding: "12px 14px",
+                        backgroundColor: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "14px",
+                        outline: "none",
+                        boxSizing: "border-box",
                       }}
-                    >
-                      {isSaving ? "Đang lưu..." : "Lưu thông tin hồ sơ"}
-                    </button>
-                  </form>
-                </div>
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="button button-primary"
+                    style={{
+                      padding: "13px 28px",
+                      fontSize: "13px",
+                      cursor: isSaving ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {isSaving ? t.profile.savingBtn : t.profile.saveBtn}
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import { Category, Product } from "../lib/types";
+import { useLanguage } from "../lib/language-context";
 
 interface VisualCategoryBarProps {
   categories: Category[];
@@ -21,6 +22,15 @@ interface VisualCategoryBarProps {
   onPriceRangeChange?: (range: string) => void;
 }
 
+const CATEGORY_NAMES_EN: Record<string, string> = {
+  "all": "All Equipment",
+  "dj": "DJ Equipment",
+  "mixer": "DJ Mixers",
+  "audio": "Speakers & Audio",
+  "stage-effects": "Stage Effects",
+  "accessories": "Headphones & Cables",
+};
+
 export default function VisualCategoryBar({
   categories,
   products,
@@ -38,6 +48,7 @@ export default function VisualCategoryBar({
   priceRange = "all",
   onPriceRangeChange,
 }: VisualCategoryBarProps) {
+  const { t, lang } = useLanguage();
   // Map category_id (UUID from DB) to category slug
   const categoryIdToSlug = useMemo(() => {
     const map = new Map<string, string>();
@@ -197,19 +208,19 @@ export default function VisualCategoryBar({
   const getCategorySubtitle = (slug: string) => {
     switch (slug) {
       case "all":
-        return "Toàn bộ danh mục thiết bị";
+        return t.visualCategoryBar.subtitles.all;
       case "dj":
-        return "Controller, CDJ & All-in-One";
+        return t.visualCategoryBar.subtitles.dj;
       case "mixer":
-        return "Bàn trộn âm thanh 2-6 kênh";
+        return t.visualCategoryBar.subtitles.mixer;
       case "audio":
-        return "Loa biểu diễn & Kiểm âm";
+        return t.visualCategoryBar.subtitles.audio;
       case "accessories":
-        return "Tai nghe DJ, Micro & Cáp";
+        return t.visualCategoryBar.subtitles.accessories;
       case "stage-effects":
-        return "Máy khói sân khấu & Đèn LED";
+        return t.visualCategoryBar.subtitles.stageEffects;
       default:
-        return "Thiết bị chuyên nghiệp";
+        return t.visualCategoryBar.subtitles.default;
     }
   };
 
@@ -218,11 +229,11 @@ export default function VisualCategoryBar({
       {
         id: "all",
         slug: "all",
-        name: "Tất cả thiết bị",
+        name: t.visualCategoryBar.allDevices,
       },
       ...categories,
     ];
-  }, [categories]);
+  }, [categories, t]);
 
   const activeCategoryObject = categories.find((c) => c.slug === selectedCategory);
 
@@ -319,7 +330,7 @@ export default function VisualCategoryBar({
                   lineHeight: "1.25",
                 }}
               >
-                {cat.name}
+                {lang === "en" ? (CATEGORY_NAMES_EN[cat.slug] || cat.name) : cat.name}
               </div>
 
               {/* Category Subtitle */}
@@ -414,7 +425,7 @@ export default function VisualCategoryBar({
 
             <input
               type="text"
-              placeholder="Tìm theo tên máy, model, hãng (Pioneer, Yamaha, AlphaTheta)..."
+              placeholder={t.visualCategoryBar.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               style={{
@@ -456,14 +467,14 @@ export default function VisualCategoryBar({
                   fontSize: "12px",
                   fontWeight: 700,
                 }}
-                title="Xóa tìm kiếm"
+                title={t.common.cancel}
               >
                 ✕
               </button>
             )}
           </div>
 
-          {/* Center: Segmented Control Mode Filter (Tất cả / Mua bán / Cho thuê) */}
+          {/* Center: Segmented Control Mode Filter */}
           <div
             style={{
               display: "inline-flex",
@@ -489,7 +500,7 @@ export default function VisualCategoryBar({
                 boxShadow: filterMode === "all" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
               }}
             >
-              Tất cả
+              {t.visualCategoryBar.filterAll}
             </button>
             <button
               onClick={() => onFilterModeChange("sale")}
@@ -506,7 +517,7 @@ export default function VisualCategoryBar({
                 boxShadow: filterMode === "sale" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
               }}
             >
-              🛍️ Mua bán
+              🛍️ {t.visualCategoryBar.filterSale}
             </button>
             <button
               onClick={() => onFilterModeChange("rental")}
@@ -523,7 +534,7 @@ export default function VisualCategoryBar({
                 boxShadow: filterMode === "rental" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
               }}
             >
-              🎧 Cho thuê
+              🎧 {t.visualCategoryBar.filterRental}
             </button>
           </div>
 
@@ -547,7 +558,7 @@ export default function VisualCategoryBar({
                   WebkitAppearance: "none",
                 }}
               >
-                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>🏷️ Tất cả Hãng</option>
+                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>🏷️ {t.visualCategoryBar.allBrands}</option>
                 {availableBrands.map((b) => (
                   <option key={b} value={b} style={{ backgroundColor: "#18181b", color: "#fff" }}>{b}</option>
                 ))}
@@ -575,11 +586,11 @@ export default function VisualCategoryBar({
                   WebkitAppearance: "none",
                 }}
               >
-                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>💰 Tất cả Mức giá</option>
-                <option value="under_20m" style={{ backgroundColor: "#18181b", color: "#fff" }}>Dưới 20 Triệu</option>
-                <option value="20m_50m" style={{ backgroundColor: "#18181b", color: "#fff" }}>20 Tr - 50 Triệu</option>
-                <option value="50m_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>50 Tr - 100 Triệu</option>
-                <option value="over_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>Trên 100 Triệu</option>
+                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>💰 {t.visualCategoryBar.allPrices}</option>
+                <option value="under_20m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.priceUnder10m}</option>
+                <option value="20m_50m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.price10mTo30m}</option>
+                <option value="50m_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.price30mTo70m}</option>
+                <option value="over_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.priceAbove70m}</option>
               </select>
               <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "#a1a1aa", fontSize: "10px" }}>▼</span>
             </div>
@@ -606,16 +617,16 @@ export default function VisualCategoryBar({
                 }}
               >
                 <option value="featured" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  ⚡ Sắp xếp: Nổi bật
+                  ⚡ {t.visualCategoryBar.sortBy} {t.visualCategoryBar.sortNewest}
                 </option>
                 <option value="price_asc" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  💵 Giá: Thấp đến Cao
+                  💵 {t.visualCategoryBar.sortPriceAsc}
                 </option>
                 <option value="price_desc" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  💎 Giá: Cao đến Thấp
+                  💎 {t.visualCategoryBar.sortPriceDesc}
                 </option>
                 <option value="name" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  🔤 Tên: A đến Z
+                  🔤 {t.visualCategoryBar.sortName}
                 </option>
               </select>
               <span
@@ -645,12 +656,12 @@ export default function VisualCategoryBar({
                 whiteSpace: "nowrap",
               }}
             >
-              {totalFiltered} {filterMode === "rental" ? "máy cho thuê" : "thiết bị"}
+              {totalFiltered} {t.visualCategoryBar.totalProducts}
             </div>
           </div>
         </div>
 
-        {/* Active Filter Badges Strip (Hiển thị các tiêu chí lọc đang chọn kèm nút xóa nhanh) */}
+        {/* Active Filter Badges Strip */}
         {hasActiveFilters && (
           <div
             style={{
@@ -662,7 +673,7 @@ export default function VisualCategoryBar({
               borderTop: "1px solid rgba(255, 255, 255, 0.07)",
             }}
           >
-            <span style={{ fontSize: "12px", color: "#71717a", fontWeight: 600 }}>Bộ lọc đang chọn:</span>
+            <span style={{ fontSize: "12px", color: "#71717a", fontWeight: 600 }}>{t.products.filters}:</span>
 
             {filterMode === "rental" && (
               <button
@@ -681,7 +692,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>🎧 Chỉ hàng Cho thuê</span>
+                <span>🎧 {t.visualCategoryBar.filterRental}</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}
@@ -703,7 +714,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>🛍️ Chỉ hàng Mua bán</span>
+                <span>🛍️ {t.visualCategoryBar.filterSale}</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}
@@ -766,7 +777,7 @@ export default function VisualCategoryBar({
                 textDecoration: "underline",
               }}
             >
-              Đặt lại tất cả
+              {t.visualCategoryBar.clearFilters}
             </button>
           </div>
         )}

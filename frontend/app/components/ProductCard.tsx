@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
+import { getTranslatedProductName } from "../lib/product-i18n";
 
 interface ProductCardProps {
   product: Product;
@@ -14,14 +16,6 @@ interface ProductCardProps {
   onQuickView?: (product: Product) => void;
   isCompared?: boolean;
   onToggleCompare?: (product: Product) => void;
-}
-
-function formatVND(amount?: number) {
-  if (amount === undefined || amount === null) return "Liên hệ";
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount);
 }
 
 export default function ProductCard({
@@ -34,7 +28,16 @@ export default function ProductCard({
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
+  const { t, lang } = useLanguage();
   const [imageError, setImageError] = useState(false);
+
+  function formatVND(amount?: number) {
+    if (amount === undefined || amount === null) return t.products.contactPrice;
+    return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -64,6 +67,7 @@ export default function ProductCard({
   const rawImage = product.images?.[0]?.image_url || product.image_url;
   const primaryImage = resolveImageUrl(rawImage);
   const showImage = Boolean(primaryImage && !imageError);
+  const displayName = getTranslatedProductName(product, lang);
 
   return (
     <article className="vb-product-card">
@@ -74,7 +78,7 @@ export default function ProductCard({
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={primaryImage!}
-              alt={product.name}
+              alt={displayName}
               className="vb-product-image"
               loading="lazy"
               onError={() => setImageError(true)}
@@ -95,7 +99,7 @@ export default function ProductCard({
 
         {/* Out of Stock Badge (Hiển thị khi sản phẩm có tồn kho bằng 0) */}
         {product.stock_quantity <= 0 && (
-          <span className="vb-badge-soldout">Hết hàng</span>
+          <span className="vb-badge-soldout">{t.products.outOfStock}</span>
         )}
 
         {/* Rental tag badge if rental enabled */}
@@ -108,7 +112,7 @@ export default function ProductCard({
               fontWeight: 800,
             }}
           >
-            {currentMode === "rental" ? "🎧 Cho thuê" : "Cho thuê"}
+            {currentMode === "rental" ? `🎧 ${t.products.rentBtnShort}` : t.products.rentBtnShort}
           </span>
         )}
 
@@ -160,9 +164,9 @@ export default function ProductCard({
                 e.currentTarget.style.color = "#fff";
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
               }}
-              title="Xem nhanh thông số & ảnh"
+              title={t.products.quickView}
             >
-              👁️ Xem nhanh
+              👁️ {t.products.quickView}
             </button>
           )}
 
@@ -190,9 +194,9 @@ export default function ProductCard({
                 transition: "all 180ms ease",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
               }}
-              title={isCompared ? "Bỏ so sánh" : "Thêm vào so sánh"}
+              title={isCompared ? t.products.compared : t.products.compare}
             >
-              {isCompared ? "✓ Đã chọn" : "⚖️ So sánh"}
+              {isCompared ? `✓ ${t.products.compared}` : `⚖️ ${t.products.compare}`}
             </button>
           )}
         </div>
@@ -202,19 +206,19 @@ export default function ProductCard({
       <div className="vb-card-body">
         <div>
           {/* Title */}
-          <Link href={`/products/${product.slug}`} className="vb-product-title" title={product.name}>
-            {product.name}
+          <Link href={`/products/${product.slug}`} className="vb-product-title" title={displayName}>
+            {displayName}
           </Link>
 
           {/* Tags */}
           <div className="vb-tags-row">
             {product.brand && <span className="vb-tag-brand">{product.brand}</span>}
-            <span className="vb-tag-item">Bảo hành 12T</span>
+            <span className="vb-tag-item">{t.products.warranty12M}</span>
             {product.stock_quantity > 0 ? (
-              <span className="vb-tag-item">Sẵn hàng</span>
+              <span className="vb-tag-item">{t.products.inStock}</span>
             ) : (
               <span className="vb-tag-item" style={{ color: "#f87171", borderColor: "rgba(239, 68, 68, 0.3)" }}>
-                Hết hàng
+                {t.products.outOfStock}
               </span>
             )}
           </div>
@@ -225,20 +229,20 @@ export default function ProductCard({
               product.rental_enabled && product.rental_price ? (
                 <div>
                   <div style={{ fontSize: "11px", color: "#4ade80", fontWeight: 700, textTransform: "uppercase" }}>
-                    Giá thuê thiết bị
+                    {t.products.rentalPriceLabel}
                   </div>
                   <div style={{ fontSize: "20px", fontWeight: 800, color: "#22c55e", display: "flex", alignItems: "baseline", gap: "3px" }}>
                     {formatVND(product.rental_price)}
-                    <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 500 }}>/ ngày</span>
+                    <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 500 }}>{t.products.perDay}</span>
                   </div>
                   {product.sale_enabled && product.sale_price ? (
                     <div style={{ fontSize: "11.5px", color: "#71717a", marginTop: "2px" }}>
-                      Giá mua mới: {new Intl.NumberFormat("vi-VN").format(product.sale_price)}₫
+                      {t.products.purchasePriceLabel} {new Intl.NumberFormat("vi-VN").format(product.sale_price)}₫
                     </div>
                   ) : null}
                 </div>
               ) : (
-                <div style={{ fontSize: "13px", color: "#22c55e", fontWeight: 700 }}>Liên hệ báo giá thuê</div>
+                <div style={{ fontSize: "13px", color: "#22c55e", fontWeight: 700 }}>{t.products.rentalQuoteContact}</div>
               )
             ) : (
               <>
@@ -248,12 +252,12 @@ export default function ProductCard({
                     {new Intl.NumberFormat("vi-VN").format(product.sale_price)}
                   </div>
                 ) : (
-                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 700 }}>Chỉ cho thuê</div>
+                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 700 }}>{t.products.rentalOnly}</div>
                 )}
 
                 {product.rental_enabled && product.rental_price ? (
-                  <div className="vb-rental-price" title="Giá thuê theo ngày">
-                    <span className="vb-rental-label">Thuê / ngày</span>
+                  <div className="vb-rental-price" title={t.products.rentalPerDay}>
+                    <span className="vb-rental-label">{t.products.rentalPerDay}</span>
                     <strong>{formatVND(product.rental_price)}</strong>
                   </div>
                 ) : null}
@@ -268,7 +272,7 @@ export default function ProductCard({
             <span>★</span>
             <span>5.0</span>
           </div>
-          <span className="vb-location">Đà Nẵng</span>
+          <span className="vb-location">{t.products.locationDaNang}</span>
         </div>
       </div>
 
@@ -277,13 +281,13 @@ export default function ProductCard({
         {currentMode === "rental" ? (
           /* Khi ở chế độ Cho thuê, nút Thuê sản phẩm hiển thị rộng đầy đủ */
           <a
-            href={getMessengerRentalUrl(product.name)}
+            href={getMessengerRentalUrl(displayName)}
             target="_blank"
             rel="noopener noreferrer"
             className="vb-btn-rental"
             onClick={handleRentProduct}
             style={{ width: "100%", justifyContent: "center" }}
-            title="Liên hệ tư vấn thuê sản phẩm qua Messenger VanBass"
+            title={t.products.rentNowBtn}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -298,7 +302,7 @@ export default function ProductCard({
             >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            Liên hệ thuê máy ngay
+            {t.products.rentNowBtn}
           </a>
         ) : (
           <>
@@ -308,7 +312,7 @@ export default function ProductCard({
                 type="button"
                 className="vb-btn-cart"
                 onClick={handleAddToCart}
-                title="Thêm sản phẩm này vào giỏ hàng"
+                title={t.products.addToCart}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -325,7 +329,7 @@ export default function ProductCard({
                   <circle cx="20" cy="21" r="1" />
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
-                Thêm vào giỏ hàng
+                {t.products.addToCart}
               </button>
             ) : (
               <button
@@ -338,7 +342,7 @@ export default function ProductCard({
                   backgroundColor: "#27272a",
                   color: "#a1a1aa",
                 }}
-                title="Sản phẩm hiện đang tạm hết hàng"
+                title={t.products.outOfStock}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -355,19 +359,19 @@ export default function ProductCard({
                   <circle cx="20" cy="21" r="1" />
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
-                Tạm hết hàng
+                {t.products.outOfStock}
               </button>
             )}
 
             {/* Nút 2: Thuê sản phẩm -> Link sang Facebook Messenger VanBass */}
             {product.rental_enabled && (
               <a
-                href={getMessengerRentalUrl(product.name)}
+                href={getMessengerRentalUrl(displayName)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="vb-btn-rental"
                 onClick={handleRentProduct}
-                title="Liên hệ tư vấn thuê sản phẩm qua Messenger VanBass"
+                title={t.products.rentBtnShort}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -382,7 +386,7 @@ export default function ProductCard({
                 >
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-                Thuê
+                {t.products.rentBtnShort}
               </a>
             )}
           </>
