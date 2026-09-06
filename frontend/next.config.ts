@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.hstatic.net" },
       { protocol: "https", hostname: "product.hstatic.net" },
       { protocol: "https", hostname: "file.hstatic.net" },
+      { protocol: "https", hostname: "*.onrender.com" },
     ],
   },
   async redirects() {
