@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "../lib/cart-context";
@@ -17,12 +17,15 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { t, lang } = useLanguage();
 
-  const navLinks = [
-    { href: "/", label: t.nav.home },
-    { href: "/products", label: t.nav.products },
-    { href: "/about", label: t.nav.about },
-    { href: "/contact", label: t.nav.contact },
-  ];
+  const navLinks = useMemo(
+    () => [
+      { href: "/", label: t.nav.home },
+      { href: "/products", label: t.nav.products },
+      { href: "/about", label: t.nav.about },
+      { href: "/contact", label: t.nav.contact },
+    ],
+    [t.nav.home, t.nav.products, t.nav.about, t.nav.contact]
+  );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -131,7 +134,7 @@ export default function Header() {
       clearTimeout(timer);
       window.removeEventListener("resize", updateIndicator);
     };
-  }, [pathname, hoveredHref]);
+  }, [pathname, hoveredHref, navLinks]);
 
   const searchResults = searchQuery.trim()
     ? searchCatalog

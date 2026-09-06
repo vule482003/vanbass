@@ -2,6 +2,7 @@ from app.models.cart import Cart
 from app.models.cart_item import CartItem
 from app.models.category import Category
 from app.models.customer_profile import CustomerProfile
+from app.models.home_config import HomeConfig
 from app.models.order import Order
 from app.models.order_item import OrderItem
 from app.models.payment import Payment
@@ -18,6 +19,7 @@ __all__ = [
     "CartItem",
     "Category",
     "CustomerProfile",
+    "HomeConfig",
     "Order",
     "OrderItem",
     "Payment",
@@ -29,3 +31,4 @@ __all__ = [
     "StoreSettings",
     "User",
 ]
+
