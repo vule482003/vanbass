@@ -59,6 +59,16 @@ export default function Footer() {
           >
             {t.footer.addressText}
           </a>
+          <a
+            href="https://maps.google.com/?q=442+Chi+L%C4%83ng,+Ph%C3%BA+Xu%C3%A2n,+Th%C3%A0nh+ph%E1%BB%91+Hu%E1%BA%BF"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cms-key="floating_contacts.maps_link_hue"
+            data-cms-label="Địa Chỉ Showroom Huế"
+            data-cms-type="text"
+          >
+            {t.footer.addressHueText}
+          </a>
           <span style={{ fontSize: "10px", color: "#71717a" }} data-cms-key="local_cta.hours" data-cms-label="Giờ Mở Cửa Showroom" data-cms-type="text">{t.footer.hoursText}</span>
         </div>
       </div>

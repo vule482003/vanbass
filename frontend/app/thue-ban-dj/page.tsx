@@ -190,7 +190,7 @@ export default function ThueBanDjPage() {
                 marginBottom: "20px",
               }}
             >
-              <span>🎧</span> Dịch Vụ Cho Thuê Bàn DJ Số 1 Đà Nẵng & Toàn Quốc
+              Dịch Vụ Cho Thuê Bàn DJ Số 1 Đà Nẵng & Toàn Quốc
             </div>
 
             <h1
@@ -230,14 +230,14 @@ export default function ThueBanDjPage() {
                 className="button button-primary button-lg"
                 style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "14px 28px", fontSize: "16px" }}
               >
-                <span>💬</span> Tư Vấn & Đặt Lịch Qua Messenger
+                Tư Vấn & Đặt Lịch Qua Messenger
               </a>
               <a
                 href={`tel:${hotline}`}
                 className="button button-secondary button-lg"
                 style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "14px 28px", fontSize: "16px" }}
               >
-                <span>📞</span> Hotline: {hotline}
+                Hotline: {hotline}
               </a>
             </div>
 
@@ -252,19 +252,19 @@ export default function ThueBanDjPage() {
               }}
             >
               <div style={{ padding: "16px", backgroundColor: "var(--surface)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>✓ Máy Mới 99% Chính Hãng</strong>
+                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>Máy Mới 99% Chính Hãng</strong>
                 <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Bảo dưỡng định kỳ, jog wheel mượt, fader chuẩn xác</span>
               </div>
               <div style={{ padding: "16px", backgroundColor: "var(--surface)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>✓ Thủ Tục Cực Kỳ Nhanh Gọn</strong>
+                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>Thủ Tục Cực Kỳ Nhanh Gọn</strong>
                 <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Thủ tục linh hoạt, nhận máy ngay trong 30 phút</span>
               </div>
               <div style={{ padding: "16px", backgroundColor: "var(--surface)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>✓ Setup & Hỗ Trợ 24/7</strong>
+                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>Setup & Hỗ Trợ 24/7</strong>
                 <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Kỹ thuật viên đồng hành, giao hàng tận nơi sự kiện</span>
               </div>
               <div style={{ padding: "16px", backgroundColor: "var(--surface)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>✓ Giá Thuê Cạnh Tranh Nhất</strong>
+                <strong style={{ color: "#22c55e", display: "block", fontSize: "15px", marginBottom: "4px" }}>Giá Thuê Cạnh Tranh Nhất</strong>
                 <span style={{ fontSize: "13px", color: "#a1a1aa" }}>Ưu đãi sâu từ ngày thứ 2, hỗ trợ đối tác lâu dài</span>
               </div>
             </div>
@@ -297,13 +297,12 @@ export default function ThueBanDjPage() {
               <div
                 style={{
                   backgroundColor: "var(--surface)",
-                  border: "2px solid #22c55e",
+                  border: "1px solid var(--border)",
                   borderRadius: "12px",
                   padding: "28px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
-                  boxShadow: "0 10px 30px rgba(34,197,94,0.15)",
                 }}
               >
                 <div
@@ -311,8 +310,9 @@ export default function ThueBanDjPage() {
                     position: "absolute",
                     top: "16px",
                     right: "16px",
-                    backgroundColor: "#22c55e",
-                    color: "#000",
+                    backgroundColor: "rgba(34,197,94,0.15)",
+                    color: "#4ade80",
+                    border: "1px solid #22c55e",
                     fontSize: "11px",
                     fontWeight: 800,
                     padding: "4px 10px",
@@ -557,6 +557,14 @@ export default function ThueBanDjPage() {
                   >
                     Thuê XZ Ngay
                   </a>
+                  <Link
+                    href="/products/xdj-xz"
+                    className="button button-secondary"
+                    style={{ padding: "10px 14px" }}
+                    title="Chi tiết máy"
+                  >
+                    Chi tiết
+                  </Link>
                 </div>
               </div>
 

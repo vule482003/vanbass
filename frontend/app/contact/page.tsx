@@ -57,18 +57,22 @@ export default function ContactPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
                 <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-                  {t.contact.showroomTitle}
+                  Showroom & Trung tâm kỹ thuật
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
-                  {t.contact.showroomCity}
-                  <br />
-                  <span style={{ color: "#71717a", fontSize: "13px" }}>{t.contact.showroomHours}</span>
-                </p>
+                <div style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: "0 0 8px 0" }}>
+                  <div style={{ marginBottom: "6px" }}>
+                    <strong style={{ color: "#fff" }}>Đà Nẵng:</strong> {t.footer.addressText}
+                  </div>
+                  <div>
+                    <strong style={{ color: "#fff" }}>Huế:</strong> {t.footer.addressHueText}
+                  </div>
+                </div>
+                <span style={{ color: "#71717a", fontSize: "13px" }}>{t.contact.showroomHours}</span>
               </div>
 
               <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
                 <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-                  {t.contact.hotlineTitle}
+                  Hotline tư vấn & Đặt thuê thiết bị
                 </h3>
                 <p style={{ margin: "0 0 6px 0" }}>
                   <a
@@ -83,7 +87,7 @@ export default function ContactPage() {
 
               <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
                 <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-                  {t.contact.emailTitle}
+                  Email hợp tác & Báo giá
                 </h3>
                 <p style={{ color: "#d4d4d8", fontSize: "14px", margin: 0 }}>
                   vanbass.musiccenter@gmail.com
@@ -95,7 +99,6 @@ export default function ContactPage() {
             <div style={{ padding: "36px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
               {sent ? (
                 <div style={{ textAlign: "center", padding: "40px 20px" }}>
-                  <div style={{ fontSize: "40px", marginBottom: "16px" }}>💌</div>
                   <h3 style={{ fontSize: "20px", color: "#fff", marginBottom: "12px" }}>
                     {t.contact.sentTitle}
                   </h3>

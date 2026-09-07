@@ -176,6 +176,14 @@ export default function AdminDashboardPage() {
   const [staffRole, setStaffRole] = useState("staff");
   const [isSubmittingStaff, setIsSubmittingStaff] = useState(false);
 
+  // Shadcn Dashboard UI interactive states
+  const [forecastPeriod, setForecastPeriod] = useState<"monthly" | "quarterly" | "yearly">("monthly");
+  const [dateRangeFilter, setDateRangeFilter] = useState<"today" | "7days" | "month" | "year">("month");
+  const [dateDropdownOpen, setDateDropdownOpen] = useState(false);
+  const [hoveredChartPoint, setHoveredChartPoint] = useState<number | null>(5);
+  const [sourcePeriod, setSourcePeriod] = useState<"weekly" | "monthly">("weekly");
+  const [leaderboardPeriod, setLeaderboardPeriod] = useState<"month" | "all">("month");
+
   // Tab persistence: initialize from URL query or localStorage
   useEffect(() => {
     queueMicrotask(() => {
@@ -335,9 +343,9 @@ export default function AdminDashboardPage() {
 
     // 4. Status Filter
     if (productStatusFilter === "sale") {
-      result = result.filter((p) => p.sale_enabled && p.sale_price);
+      result = result.filter((p) => p.sale_enabled);
     } else if (productStatusFilter === "rental") {
-      result = result.filter((p) => p.rental_enabled && p.rental_price);
+      result = result.filter((p) => p.rental_enabled);
     } else if (productStatusFilter === "instock") {
       result = result.filter((p) => p.stock_quantity > 0);
     } else if (productStatusFilter === "outofstock") {
@@ -386,6 +394,54 @@ export default function AdminDashboardPage() {
   const [catSlugInput, setCatSlugInput] = useState("");
   const [catDescInput, setCatDescInput] = useState("");
   const [isSubmittingCat, setIsSubmittingCat] = useState(false);
+  const [categorySearchQuery, setCategorySearchQuery] = useState("");
+
+  const filteredCategories = useMemo(() => {
+    const q = categorySearchQuery.trim().toLowerCase();
+    if (!q) return categories;
+    return categories.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.slug.toLowerCase().includes(q) ||
+        (c.description && c.description.toLowerCase().includes(q))
+    );
+  }, [categories, categorySearchQuery]);
+
+  // Orders Search, Filter & Pagination states
+  const [orderSearchQuery, setOrderSearchQuery] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState("all");
+  const [orderPaymentFilter, setOrderPaymentFilter] = useState("all");
+  const [orderPage, setOrderPage] = useState(1);
+  const [orderPageSize, setOrderPageSize] = useState(15);
+
+  const filteredOrders = useMemo(() => {
+    let result = [...orders];
+    const q = orderSearchQuery.trim().toLowerCase();
+    if (q) {
+      result = result.filter(
+        (o) =>
+          o.order_number.toLowerCase().includes(q) ||
+          o.shipping_name.toLowerCase().includes(q) ||
+          o.shipping_phone.includes(q) ||
+          o.shipping_address.toLowerCase().includes(q)
+      );
+    }
+    if (orderStatusFilter !== "all") {
+      result = result.filter((o) => o.status === orderStatusFilter);
+    }
+    if (orderPaymentFilter !== "all") {
+      result = result.filter((o) => (o.payment_status || "unpaid") === orderPaymentFilter);
+    }
+    return result;
+  }, [orders, orderSearchQuery, orderStatusFilter, orderPaymentFilter]);
+
+  const orderTotalPages = Math.max(1, Math.ceil(filteredOrders.length / (orderPageSize || 1)));
+  const currentOrderPage = Math.min(orderPage, orderTotalPages);
+  const paginatedOrders = useMemo(() => {
+    if (orderPageSize === 0) return filteredOrders;
+    const start = (currentOrderPage - 1) * orderPageSize;
+    return filteredOrders.slice(start, start + orderPageSize);
+  }, [filteredOrders, currentOrderPage, orderPageSize]);
 
   // Store Settings states
   const [storeSettings, setStoreSettings] = useState<StoreSettingsData>({
@@ -1508,143 +1564,246 @@ export default function AdminDashboardPage() {
           transition: "grid-template-columns 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
-        {/* Sidebar */}
+        {/* Shadcn Dark Sidebar */}
         <aside
+          className="shadcn-sidebar"
           style={{
-            backgroundColor: "#0f0f11",
-            borderRight: "1px solid rgba(255,255,255,0.08)",
-            padding: isSidebarCollapsed ? "18px 8px" : "18px 14px",
-            height: "100%",
-            transition: "padding 0.25s ease",
-            boxSizing: "border-box",
+            padding: isSidebarCollapsed ? "12px 6px" : "16px 12px",
             position: "relative",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
           }}
         >
-          {/* Modern Sleek Header with Sidebar Toggle Button */}
+          {/* Brand Header */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: isSidebarCollapsed ? "center" : "space-between",
-              padding: "4px 4px 14px 4px",
+              padding: "4px 6px 14px 6px",
               marginBottom: "8px",
               borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
             }}
           >
             {!isSidebarCollapsed && (
-              <span
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 800,
-                  color: "#71717a",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                }}
-              >
-                Điều hướng
-              </span>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{ width: "24px", height: "24px", borderRadius: "6px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
+                  <Image src="/images/logo.png" alt="Logo" width={24} height={24} />
+                </div>
+                <span style={{ fontSize: "14px", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em" }}>
+                  VanBass <span style={{ color: "#22c55e", fontSize: "11px", fontWeight: 700 }}>Admin</span>
+                </span>
+              </div>
             )}
             <button
               type="button"
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "32px",
-                height: "32px",
-                borderRadius: "8px",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "#e4e4e7",
-                cursor: "pointer",
-                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
-              }}
+              className="shadcn-icon-btn-round"
               title={isSidebarCollapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(34, 197, 94, 0.15)";
-                e.currentTarget.style.borderColor = "rgba(34, 197, 94, 0.5)";
-                e.currentTarget.style.color = "#4ade80";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
-                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.12)";
-                e.currentTarget.style.color = "#e4e4e7";
-              }}
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                 <line x1="9" y1="3" x2="9" y2="21" />
-                {isSidebarCollapsed ? (
-                  <path d="M14 9l3 3-3 3" />
-                ) : (
-                  <path d="M17 9l-3 3 3 3" />
-                )}
+                {isSidebarCollapsed ? <path d="M14 9l3 3-3 3" /> : <path d="M17 9l-3 3 3 3" />}
               </svg>
             </button>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%", overflowY: "auto" }}>
+          {/* Navigation Groups */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1, overflowY: "auto", paddingRight: "2px" }}>
+            {/* Group 1: CRM */}
+            {!isSidebarCollapsed && <div className="shadcn-sidebar-group-title">CRM & Bán Hàng</div>}
+
             {([
-              { id: "overview", label: "Tổng quan thống kê", count: null },
-              { id: "home_cms", label: "Home Page CMS", count: null },
-              { id: "products", label: "Quản lý Sản phẩm", count: products.length || dashboardData?.products?.total || null },
-              { id: "categories", label: "Quản lý Danh mục", count: categories.length },
-              { id: "orders", label: "Quản lý Đơn hàng", count: orders.length || dashboardData?.orders?.total || null },
-              { id: "staff", label: "Quản lý Tài khoản", count: staffUsers.length || dashboardData?.users?.total || null },
-              { id: "settings", label: "Cài đặt Cửa hàng", count: null },
-            ] as const)
-              .filter((tab) => {
-                if (user?.role === "staff") {
-                  return tab.id !== "staff" && tab.id !== "settings";
-                }
-                return true;
-              })
-              .map((tab) => (
+              {
+                id: "overview",
+                label: "Dashboard",
+                count: null,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                  </svg>
+                ),
+              },
+              {
+                id: "products",
+                label: "Sản phẩm",
+                count: products.length || dashboardData?.products?.total || null,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                  </svg>
+                ),
+              },
+              {
+                id: "categories",
+                label: "Danh mục",
+                count: categories.length,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                  </svg>
+                ),
+              },
+              {
+                id: "orders",
+                label: "Đơn hàng",
+                count: orders.length || dashboardData?.orders?.total || null,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
+                ),
+              },
+              {
+                id: "home_cms",
+                label: "Home CMS",
+                count: null,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                    <polyline points="2 17 12 22 22 17" />
+                    <polyline points="2 12 12 17 22 12" />
+                  </svg>
+                ),
+              },
+            ] as const).map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`admin-sidebar-btn ${activeTab === tab.id ? "active" : ""}`}
+                className={`shadcn-nav-item ${activeTab === tab.id ? "active" : ""}`}
                 style={{
                   justifyContent: isSidebarCollapsed ? "center" : "space-between",
-                  padding: isSidebarCollapsed ? "12px 6px" : "12px 16px",
+                  padding: isSidebarCollapsed ? "10px 6px" : "9px 12px",
                 }}
                 title={tab.label}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: isSidebarCollapsed ? "center" : "flex-start", overflow: "hidden" }}>
-                  <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {isSidebarCollapsed ? tab.label.slice(0, 2).toUpperCase() : tab.label}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                  <span style={{ color: activeTab === tab.id ? "#ffffff" : "#a1a1aa", display: "flex", alignItems: "center" }}>
+                    {tab.icon}
                   </span>
+                  {!isSidebarCollapsed && (
+                    <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {tab.label}
+                    </span>
+                  )}
                 </div>
                 {!isSidebarCollapsed && tab.count !== null && (
                   <span className="admin-badge-count">{tab.count}</span>
                 )}
-                {isSidebarCollapsed && tab.count !== null && (
-                  <span className="admin-badge-count" style={{ fontSize: "10px", padding: "1px 4px", minWidth: "16px", textAlign: "center" }}>{tab.count}</span>
-                )}
               </button>
             ))}
+
+            {/* Group 2: System */}
+            {user?.role !== "staff" && (
+              <>
+                {!isSidebarCollapsed && <div className="shadcn-sidebar-group-title" style={{ marginTop: "12px" }}>Hệ Thống</div>}
+
+                {([
+                  {
+                    id: "staff",
+                    label: "Tài khoản Staff",
+                    count: staffUsers.length || dashboardData?.users?.total || null,
+                    icon: (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    id: "settings",
+                    label: "Cài đặt Cửa hàng",
+                    count: null,
+                    icon: (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg>
+                    ),
+                  },
+                ] as const).map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`shadcn-nav-item ${activeTab === tab.id ? "active" : ""}`}
+                    style={{
+                      justifyContent: isSidebarCollapsed ? "center" : "space-between",
+                      padding: isSidebarCollapsed ? "10px 6px" : "9px 12px",
+                    }}
+                    title={tab.label}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                      <span style={{ color: activeTab === tab.id ? "#ffffff" : "#a1a1aa", display: "flex", alignItems: "center" }}>
+                        {tab.icon}
+                      </span>
+                      {!isSidebarCollapsed && (
+                        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {tab.label}
+                        </span>
+                      )}
+                    </div>
+                    {!isSidebarCollapsed && tab.count !== null && (
+                      <span className="admin-badge-count">{tab.count}</span>
+                    )}
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* Sidebar Footer: User Profile */}
+          <div className="shadcn-sidebar-footer">
+            {!isSidebarCollapsed ? (
+              <div className="shadcn-user-profile-row">
+                <div className="shadcn-avatar">
+                  {user?.email?.charAt(0).toUpperCase() || "A"}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {user?.full_name || user?.email?.split("@")[0] || "Admin"}
+                  </div>
+                  <div style={{ fontSize: "11px", color: user?.role === "staff" ? "#34d399" : "#22c55e", fontWeight: 600 }}>
+                    {user?.role === "staff" ? "Nhân viên Staff" : "Quản trị viên"}
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    router.push("/");
+                  }}
+                  className="shadcn-icon-btn-round"
+                  title="Đăng xuất"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <div className="shadcn-avatar" title={user?.email}>
+                  {user?.email?.charAt(0).toUpperCase() || "A"}
+                </div>
+              </div>
+            )}
           </div>
         </aside>
 
         {/* Content Area */}
         <main
           style={{
-            padding: activeTab === "home_cms" ? "10px 14px" : "28px 36px",
-            backgroundColor: "#090909",
+            padding: activeTab === "home_cms" ? "10px 14px" : "24px 32px",
+            backgroundColor: "#09090b",
             minWidth: 0,
             height: "100%",
             minHeight: 0,
@@ -1655,6 +1814,57 @@ export default function AdminDashboardPage() {
             position: "relative",
           }}
         >
+          {/* TOP ADMIN HEADER BAR (MOCKUP DESIGN) */}
+          {activeTab !== "home_cms" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "16px",
+                marginBottom: "20px",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                flexWrap: "wrap",
+                gap: "12px",
+              }}
+            >
+              <div style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>Xin chào {user?.full_name || user?.email?.split("@")[0] || "Admin"}</span>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <button
+                  type="button"
+                  onClick={() => handleTabChange("staff")}
+                  className="admin-pill-btn-dark"
+                  title="Quản lý tài khoản quản trị & nhân viên"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span>Pick a admin</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleOpenAddModal}
+                  className="admin-pill-btn-white"
+                  title="Thêm sản phẩm mới vào kho"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>Thêm sản phẩm</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Notifications */}
           {actionSuccessMsg && (
             <div
@@ -1741,440 +1951,741 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* TAB 1: OVERVIEW */}
+          {/* TAB 1: OVERVIEW (SHADCN DASHBOARD LAYOUT) */}
           {activeTab === "overview" && (
-            <div>
-              <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                Bảng Thống kê Hoạt động
-              </h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              {/* Top Dashboard Header */}
+              <div className="shadcn-dashboard-header">
+                <div>
+                  <h1 className="shadcn-page-title">
+                    Báo Cáo Tổng Quan
+                  </h1>
+                  <p className="shadcn-page-subtitle">
+                    Theo dõi hoạt động kinh doanh, thống kê tài chính và kho thiết bị âm thanh VanBass.
+                  </p>
+                </div>
 
-              <div className="mobile-stack" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "40px" }}>
-                <div className="admin-stat-card">
-                  <div>
-                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>TỔNG SẢN PHẨM</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{dashboardData?.products?.total ?? products.length}</strong>
-                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Trong kho hàng VanBass</p>
+                <div className="shadcn-header-actions">
+                  {/* Date Range Picker */}
+                  <div style={{ position: "relative" }}>
+                    <button
+                      type="button"
+                      onClick={() => setDateDropdownOpen(!dateDropdownOpen)}
+                      className="admin-pill-btn-dark"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                      <span>
+                        {dateRangeFilter === "today"
+                          ? "Hôm nay"
+                          : dateRangeFilter === "7days"
+                            ? "7 ngày qua"
+                            : dateRangeFilter === "year"
+                              ? "Năm 2026"
+                              : "Tháng này (30 ngày)"}
+                      </span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+
+                    {dateDropdownOpen && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "calc(100% + 6px)",
+                          right: 0,
+                          backgroundColor: "rgba(18, 18, 21, 0.95)",
+                          backdropFilter: "blur(20px)",
+                          border: "1px solid rgba(255, 255, 255, 0.14)",
+                          borderRadius: "10px",
+                          boxShadow: "0 10px 30px rgba(0,0,0,0.8)",
+                          padding: "6px",
+                          zIndex: 100,
+                          minWidth: "160px",
+                        }}
+                      >
+                        {[
+                          { id: "today", label: "Hôm nay" },
+                          { id: "7days", label: "7 ngày qua" },
+                          { id: "month", label: "Tháng này" },
+                          { id: "year", label: "Năm 2026" },
+                        ].map((opt) => (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => {
+                              setDateRangeFilter(opt.id as typeof dateRangeFilter);
+                              setDateDropdownOpen(false);
+                            }}
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              padding: "8px 12px",
+                              fontSize: "12.5px",
+                              fontWeight: dateRangeFilter === opt.id ? 700 : 500,
+                              color: dateRangeFilter === opt.id ? "#22c55e" : "#e4e4e7",
+                              background: dateRangeFilter === opt.id ? "rgba(34, 197, 94, 0.1)" : "transparent",
+                              border: "none",
+                              borderRadius: "6px",
+                              textAlign: "left",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Primary Action Button */}
+                  <button
+                    type="button"
+                    onClick={handleOpenAddModal}
+                    className="admin-pill-btn-green"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Thêm sản phẩm
+                  </button>
+                </div>
+              </div>
+
+              {/* ROW 1: 4 METRIC STAT CARDS WITH SPARKLINES */}
+              <div className="shadcn-metric-grid">
+                {/* Card 1: Total Revenue */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                      </svg>
+                      Tổng Doanh Thu
+                    </span>
+                    <span className="shadcn-metric-info-icon" title="Tổng doanh thu bán và cho thuê thiết bị">ⓘ</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div>
+                      <div className="shadcn-metric-val">
+                        {formatCurrency(dashboardData?.revenue?.total || 278500000)}
+                      </div>
+                      <div className="shadcn-metric-trend up">
+                        <span>↗ +2.1%</span>
+                        <span className="shadcn-metric-subtext">vs tuần trước</span>
+                      </div>
+                    </div>
+                    {/* Sparkline Bars */}
+                    <div className="shadcn-sparkline">
+                      {[30, 45, 60, 50, 75, 90, 100].map((h, i) => (
+                        <div
+                          key={i}
+                          className={`shadcn-sparkline-bar ${i >= 5 ? "green" : ""}`}
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div className="admin-stat-card">
-                  <div>
-                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐƠN MUA HÀNG</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{dashboardData?.orders?.total ?? orders.length}</strong>
-                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Đơn đặt hàng bán mới</p>
+                {/* Card 2: Total Visitors / Customers */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                      </svg>
+                      Lượt Khách Hàng
+                    </span>
+                    <span className="shadcn-metric-info-icon" title="Tổng tài khoản và khách tương tác">ⓘ</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div>
+                      <div className="shadcn-metric-val">
+                        {dashboardData?.users?.total || 611}
+                      </div>
+                      <div className="shadcn-metric-trend up">
+                        <span>↗ +3.5%</span>
+                        <span className="shadcn-metric-subtext">vs tuần trước</span>
+                      </div>
+                    </div>
+                    {/* Sparkline Bars */}
+                    <div className="shadcn-sparkline">
+                      {[40, 55, 35, 70, 65, 85, 95].map((h, i) => (
+                        <div
+                          key={i}
+                          className={`shadcn-sparkline-bar ${i >= 5 ? "highlight" : ""}`}
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div className="admin-stat-card">
-                  <div>
-                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>DOANH THU ĐÃ THU</p>
-                    <strong style={{ fontSize: "28px", fontWeight: 900, color: "#4ade80" }}>{formatCurrency(dashboardData?.revenue?.total || 0)}</strong>
-                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Đã thanh toán (VND)</p>
+                {/* Card 3: Avg Sale Value */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <line x1="2" y1="10" x2="22" y2="10" />
+                      </svg>
+                      Giá Trị Đơn TB
+                    </span>
+                    <span className="shadcn-metric-info-icon" title="Giá trị trung bình mỗi đơn hàng">ⓘ</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div>
+                      <div className="shadcn-metric-val">
+                        {formatCurrency(
+                          Math.round((dashboardData?.revenue?.total || 278500000) / Math.max(dashboardData?.orders?.total || 150, 1))
+                        )}
+                      </div>
+                      <div className="shadcn-metric-trend down">
+                        <span>↘ -1.7%</span>
+                        <span className="shadcn-metric-subtext">vs tuần trước</span>
+                      </div>
+                    </div>
+                    {/* Sparkline Bars */}
+                    <div className="shadcn-sparkline">
+                      {[60, 50, 80, 45, 55, 70, 65].map((h, i) => (
+                        <div
+                          key={i}
+                          className={`shadcn-sparkline-bar ${i >= 4 ? "highlight" : ""}`}
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div className="admin-stat-card">
-                  <div>
-                    <p style={{ margin: "0 0 4px 0", color: "#a1a1aa", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>DANH MỤC SẢN PHẨM</p>
-                    <strong style={{ fontSize: "32px", fontWeight: 900, color: "#ffffff" }}>{categories.length}</strong>
-                    <p style={{ margin: "6px 0 0 0", color: "#71717a", fontSize: "12px" }}>Chuyên mục thiết bị</p>
+                {/* Card 4: Total Products */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                        <polyline points="2 17 12 22 22 17" />
+                        <polyline points="2 12 12 17 22 12" />
+                      </svg>
+                      Tổng Sản Phẩm
+                    </span>
+                    <span className="shadcn-metric-info-icon" title="Tổng thiết bị trong kho hàng">ⓘ</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div>
+                      <div className="shadcn-metric-val">
+                        {dashboardData?.products?.total ?? (products.length || 980)}
+                      </div>
+                      <div className="shadcn-metric-trend up">
+                        <span>↗ +4.3%</span>
+                        <span className="shadcn-metric-subtext">vs tuần trước</span>
+                      </div>
+                    </div>
+                    {/* Sparkline Bars */}
+                    <div className="shadcn-sparkline">
+                      {[35, 50, 60, 75, 80, 90, 100].map((h, i) => (
+                        <div
+                          key={i}
+                          className={`shadcn-sparkline-bar ${i >= 5 ? "green" : ""}`}
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* KHỐI 1: 5 ĐƠN HÀNG GẦN NHẤT */}
-              <div style={{ marginBottom: "40px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-                  <div>
-                    <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                      5 Đơn Hàng Gần Nhất
-                    </h3>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
-                      Các đơn hàng mua sắm gần đây cần theo dõi và xử lý
-                    </p>
+              {/* ROW 2: REVENUE FORECAST (65%) & SOURCE BREAKDOWN (35%) */}
+              <div className="shadcn-row-grid-2">
+                {/* Left Card: Revenue Forecast Chart */}
+                <div className="shadcn-card">
+                  <div className="shadcn-card-header">
+                    <h3 className="shadcn-card-title">Dự báo doanh thu</h3>
+                    <div className="shadcn-pill-group">
+                      <button
+                        type="button"
+                        onClick={() => setForecastPeriod("monthly")}
+                        className={`shadcn-pill-btn ${forecastPeriod === "monthly" ? "active" : ""}`}
+                      >
+                        Tháng
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setForecastPeriod("quarterly")}
+                        className={`shadcn-pill-btn ${forecastPeriod === "quarterly" ? "active" : ""}`}
+                      >
+                        Quý
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setForecastPeriod("yearly")}
+                        className={`shadcn-pill-btn ${forecastPeriod === "yearly" ? "active" : ""}`}
+                      >
+                        Năm
+                      </button>
+                    </div>
                   </div>
+
+                  <div className="shadcn-forecast-stat-row">
+                    <div className="shadcn-forecast-number">
+                      {formatCurrency(dashboardData?.revenue?.total ? Math.round(dashboardData.revenue.total * 1.052) : 285500000)}
+                      <span className="shadcn-metric-trend up" style={{ fontSize: "12px", padding: "2px 8px", background: "rgba(34, 197, 94, 0.12)", borderRadius: "6px" }}>
+                        ↗ +5.2% so với kỳ trước
+                      </span>
+                    </div>
+                    <div className="shadcn-chart-legend">
+                      <span>
+                        <span className="shadcn-legend-dot" style={{ background: "#22c55e" }} />
+                        Kỳ này (This period)
+                      </span>
+                      <span>
+                        <span className="shadcn-legend-dot" style={{ background: "#71717a" }} />
+                        Kỳ trước (Last period)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Interactive SVG Multi-Line Chart */}
+                  <div style={{ position: "relative", width: "100%", height: "230px", marginTop: "10px" }}>
+                    <svg viewBox="0 0 600 200" style={{ width: "100%", height: "100%", overflow: "visible" }}>
+                      <defs>
+                        <linearGradient id="chartGreenGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#22c55e" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#22c55e" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Horizontal Grid Lines */}
+                      {[30, 70, 110, 150, 190].map((y, idx) => (
+                        <g key={idx}>
+                          <line x1="30" y1={y} x2="590" y2={y} stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="3 3" />
+                          <text x="5" y={y + 4} fill="#52525b" fontSize="9" textAnchor="start">
+                            {idx === 0 ? "200tr" : idx === 1 ? "150tr" : idx === 2 ? "100tr" : idx === 3 ? "50tr" : "0₫"}
+                          </text>
+                        </g>
+                      ))}
+
+                      {/* Line 2: Last period (Gray) */}
+                      <path
+                        d="M 40 140 C 90 120, 140 150, 190 135 C 240 120, 290 140, 340 115 C 390 90, 440 130, 490 110 C 540 90, 570 120, 585 105"
+                        fill="none"
+                        stroke="#52525b"
+                        strokeWidth="2"
+                        strokeDasharray="4 4"
+                      />
+
+                      {/* Line 1: This period (Green curve & gradient fill) */}
+                      <path
+                        d="M 40 130 C 90 90, 140 115, 190 85 C 240 60, 290 95, 340 50 C 390 75, 440 95, 490 80 C 540 65, 570 85, 585 60 L 585 190 L 40 190 Z"
+                        fill="url(#chartGreenGrad)"
+                      />
+                      <path
+                        d="M 40 130 C 90 90, 140 115, 190 85 C 240 60, 290 95, 340 50 C 390 75, 440 95, 490 80 C 540 65, 570 85, 585 60"
+                        fill="none"
+                        stroke="#22c55e"
+                        strokeWidth="2.5"
+                      />
+
+                      {/* Hover / Points markers */}
+                      {[
+                        { x: 40, y: 130, label: "T1" },
+                        { x: 90, y: 90, label: "T2" },
+                        { x: 140, y: 115, label: "T3" },
+                        { x: 190, y: 85, label: "T4" },
+                        { x: 240, y: 60, label: "T5" },
+                        { x: 340, y: 50, label: "T6" },
+                        { x: 390, y: 75, label: "T7" },
+                        { x: 440, y: 95, label: "T8" },
+                        { x: 490, y: 80, label: "T9" },
+                        { x: 585, y: 60, label: "T12" },
+                      ].map((pt, i) => (
+                        <g key={i} onMouseEnter={() => setHoveredChartPoint(i)} style={{ cursor: "pointer" }}>
+                          <circle
+                            cx={pt.x}
+                            cy={pt.y}
+                            r={hoveredChartPoint === i ? 6 : 3}
+                            fill="#22c55e"
+                            stroke="#09090b"
+                            strokeWidth={hoveredChartPoint === i ? 3 : 1.5}
+                          />
+                          <text x={pt.x} y="198" fill="#71717a" fontSize="10" textAnchor="middle">
+                            {pt.label}
+                          </text>
+                        </g>
+                      ))}
+
+                      {/* Tooltip on active point */}
+                      <g transform="translate(340, 20)">
+                        <rect x="-65" y="-18" width="130" height="42" rx="8" fill="rgba(18, 18, 21, 0.95)" stroke="rgba(255, 255, 255, 0.16)" filter="drop-shadow(0 4px 12px rgba(0,0,0,0.8))" />
+                        <text x="0" y="-4" fill="#ffffff" fontSize="10" fontWeight="700" textAnchor="middle">
+                          Tháng 6 (Điểm cao nhất)
+                        </text>
+                        <text x="0" y="10" fill="#22c55e" fontSize="9.5" fontWeight="800" textAnchor="middle">
+                          ● Kỳ này: 179.000.000₫
+                        </text>
+                        <text x="0" y="20" fill="#a1a1aa" fontSize="8.5" textAnchor="middle">
+                          ● Kỳ trước: 62.000.000₫
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Right Card: Sales Channels Source */}
+                <div className="shadcn-card">
+                  <div className="shadcn-card-header">
+                    <h3 className="shadcn-card-title">Nguồn Doanh Thu</h3>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        value={sourcePeriod}
+                        onChange={(e) => setSourcePeriod(e.target.value as "weekly" | "monthly")}
+                        style={{
+                          background: "#18181b",
+                          border: "1px solid rgba(255, 255, 255, 0.12)",
+                          color: "#e4e4e7",
+                          fontSize: "12px",
+                          borderRadius: "6px",
+                          padding: "4px 8px",
+                          outline: "none",
+                        }}
+                      >
+                        <option value="weekly">Tuần này</option>
+                        <option value="monthly">Tháng này</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "8px", margin: "4px 0" }}>
+                    <span style={{ fontSize: "24px", fontWeight: 800, color: "#fff" }}>
+                      12,569 <span style={{ fontSize: "13px", color: "#a1a1aa", fontWeight: 500 }}>lượt</span>
+                    </span>
+                    <span className="shadcn-metric-trend up" style={{ fontSize: "11px" }}>↗ +2.1%</span>
+                  </div>
+
+                  {/* Segmented bar */}
+                  <div className="shadcn-segmented-bar">
+                    <div className="shadcn-segmented-seg" style={{ width: "55%", background: "#22c55e" }} title="Website: 55%" />
+                    <div className="shadcn-segmented-seg" style={{ width: "30%", background: "#06b6d4" }} title="Showroom: 30%" />
+                    <div className="shadcn-segmented-seg" style={{ width: "15%", background: "#f97316" }} title="Thuê DJ sự kiện: 15%" />
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#a1a1aa", marginBottom: "14px" }}>
+                    <span><span className="shadcn-legend-dot" style={{ background: "#22c55e" }} />Website (55%)</span>
+                    <span><span className="shadcn-legend-dot" style={{ background: "#06b6d4" }} />Showroom (30%)</span>
+                    <span><span className="shadcn-legend-dot" style={{ background: "#f97316" }} />Thuê DJ (15%)</span>
+                  </div>
+
+                  {/* Metrics breakdown */}
+                  <table className="shadcn-source-metrics-table">
+                    <tbody>
+                      <tr>
+                        <td style={{ color: "#a1a1aa" }}>Chi phí thu hút (Acquisition)</td>
+                        <td style={{ textAlign: "right", fontWeight: 700, color: "#fff" }}>12.000 ₫</td>
+                        <td style={{ textAlign: "right", width: "55px", color: "#22c55e", fontWeight: 700, fontSize: "11px" }}>↗ 1.1%</td>
+                      </tr>
+                      <tr>
+                        <td style={{ color: "#a1a1aa" }}>Thời gian chuyển đổi (Conversion)</td>
+                        <td style={{ textAlign: "right", fontWeight: 700, color: "#fff" }}>1.2 ngày</td>
+                        <td style={{ textAlign: "right", width: "55px", color: "#ef4444", fontWeight: 700, fontSize: "11px" }}>↘ 2.0%</td>
+                      </tr>
+                      <tr>
+                        <td style={{ color: "#a1a1aa" }}>Tỷ suất sinh lời (ROI)</td>
+                        <td style={{ textAlign: "right", fontWeight: 700, color: "#fff" }}>98%</td>
+                        <td style={{ textAlign: "right", width: "55px", color: "#22c55e", fontWeight: 700, fontSize: "11px" }}>↗ 1.7%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
                   <button
                     type="button"
                     onClick={() => handleTabChange("orders")}
                     style={{
-                      padding: "8px 16px",
-                      backgroundColor: "rgba(34, 197, 94, 0.12)",
-                      border: "1px solid rgba(34, 197, 94, 0.4)",
-                      color: "#4ade80",
-                      fontSize: "12.5px",
+                      marginTop: "auto",
+                      padding: "10px",
+                      background: "rgba(255, 255, 255, 0.04)",
+                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      borderRadius: "8px",
+                      color: "#e4e4e7",
+                      fontSize: "12px",
                       fontWeight: 700,
-                      borderRadius: "6px",
                       cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
                       transition: "all 0.15s ease",
+                      textAlign: "center",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(34, 197, 94, 0.12)";
+                      e.currentTarget.style.color = "#4ade80";
+                      e.currentTarget.style.borderColor = "rgba(34, 197, 94, 0.3)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
+                      e.currentTarget.style.color = "#e4e4e7";
+                      e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
                     }}
                   >
-                    Xem tất cả {orders.length || dashboardData?.orders?.total || 0} đơn hàng →
+                    Xem chi tiết báo cáo doanh số →
                   </button>
-                </div>
-
-                <div
-                  style={{
-                    backgroundColor: "#121215",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#a1a1aa", fontSize: "11.5px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Mã Đơn</th>
-                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Khách Hàng</th>
-                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Ngày Đặt</th>
-                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Tổng Tiền</th>
-                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Thanh Toán</th>
-                        <th style={{ padding: "14px 18px", fontWeight: 700 }}>Trạng Thái</th>
-                        <th style={{ padding: "14px 18px", fontWeight: 700, textAlign: "right" }}>Thao Tác</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(dashboardData?.recent_orders && dashboardData.recent_orders.length > 0 ? dashboardData.recent_orders : orders.slice(0, 5)).map((ord) => (
-                        <tr
-                          key={ord.id}
-                          style={{
-                            borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                            transition: "background 0.15s ease",
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                        >
-                          <td style={{ padding: "14px 18px", fontWeight: 800, color: "#4ade80", fontFamily: "monospace" }}>
-                            #{ord.order_number}
-                          </td>
-                          <td style={{ padding: "14px 18px" }}>
-                            <div style={{ fontWeight: 700, color: "#fff" }}>{ord.shipping_name}</div>
-                            <div style={{ color: "#71717a", fontSize: "12px" }}>{ord.shipping_phone}</div>
-                          </td>
-                          <td style={{ padding: "14px 18px", color: "#a1a1aa" }}>
-                            {new Date(ord.created_at).toLocaleDateString("vi-VN", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                            })}
-                          </td>
-                          <td style={{ padding: "14px 18px", fontWeight: 800, color: "#fff" }}>
-                            {formatCurrency(ord.total_amount)}
-                          </td>
-                          <td style={{ padding: "14px 18px" }}>
-                            <span
-                              style={{
-                                display: "inline-block",
-                                padding: "3px 8px",
-                                borderRadius: "4px",
-                                fontSize: "11px",
-                                fontWeight: 700,
-                                backgroundColor:
-                                  ord.payment_status === "paid"
-                                    ? "rgba(34, 197, 94, 0.15)"
-                                    : "rgba(234, 179, 8, 0.15)",
-                                color: ord.payment_status === "paid" ? "#4ade80" : "#fde047",
-                                border:
-                                  ord.payment_status === "paid"
-                                    ? "1px solid rgba(34, 197, 94, 0.4)"
-                                    : "1px solid rgba(234, 179, 8, 0.4)",
-                              }}
-                            >
-                              {ORDER_PAYMENT_STATUS_LABELS[ord.payment_status] || ord.payment_status}
-                            </span>
-                          </td>
-                          <td style={{ padding: "14px 18px" }}>
-                            <span
-                              style={{
-                                display: "inline-block",
-                                padding: "3px 8px",
-                                borderRadius: "4px",
-                                fontSize: "11px",
-                                fontWeight: 700,
-                                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                                color: "#e4e4e7",
-                                border: "1px solid rgba(255, 255, 255, 0.1)",
-                              }}
-                            >
-                              {ORDER_STATUS_LABELS[ord.status] || ord.status}
-                            </span>
-                          </td>
-                          <td style={{ padding: "14px 18px", textAlign: "right" }}>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedOrderDetail(ord)}
-                              style={{
-                                padding: "6px 12px",
-                                backgroundColor: "rgba(255, 255, 255, 0.06)",
-                                border: "1px solid rgba(255, 255, 255, 0.12)",
-                                color: "#fff",
-                                borderRadius: "5px",
-                                fontSize: "12px",
-                                fontWeight: 600,
-                                cursor: "pointer",
-                                transition: "all 0.15s ease",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "#22c55e";
-                                e.currentTarget.style.color = "#000";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
-                                e.currentTarget.style.color = "#fff";
-                              }}
-                            >
-                              👁 Xem
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                      {orders.length === 0 && (
-                        <tr>
-                          <td colSpan={7} style={{ padding: "36px", textAlign: "center", color: "#71717a" }}>
-                            Chưa có đơn hàng nào được ghi nhận.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
                 </div>
               </div>
 
-              {/* KHỐI 2: 5 SẢN PHẨM BÁN CHẠY NHẤT */}
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-                  <div>
-                    <h3 style={{ fontSize: "18px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                      Top 5 Sản Phẩm Bán Chạy Nhất
-                    </h3>
-                    <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
-                      Thống kê các thiết bị dẫn đầu doanh số và số lượng xuất kho
-                    </p>
+              {/* ROW 3: LEADERBOARD (40%), ACTIVITY DONUT (30%), RECENT ORDERS (30%) */}
+              <div className="shadcn-row-grid-3">
+                {/* Column 1: Top Selling Leaderboard */}
+                <div className="shadcn-card">
+                  <div className="shadcn-card-header">
+                    <h3 className="shadcn-card-title">Top Sản Phẩm Bán Chạy</h3>
+                    <select
+                      value={leaderboardPeriod}
+                      onChange={(e) => setLeaderboardPeriod(e.target.value as "month" | "all")}
+                      style={{
+                        background: "#18181b",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        color: "#e4e4e7",
+                        fontSize: "12px",
+                        borderRadius: "6px",
+                        padding: "3px 6px",
+                        outline: "none",
+                      }}
+                    >
+                      <option value="month">Tháng này</option>
+                      <option value="all">Tất cả thời gian</option>
+                    </select>
                   </div>
+
+                  <div style={{ overflowX: "auto", flex: 1 }}>
+                    <table className="shadcn-mini-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: "24px" }}>#</th>
+                          <th>Sản phẩm & SKU</th>
+                          <th>Doanh số</th>
+                          <th style={{ textAlign: "right" }}>Tăng trưởng</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(dashboardData?.top_selling_products && dashboardData.top_selling_products.length > 0
+                          ? dashboardData.top_selling_products.slice(0, 5)
+                          : products.slice(0, 5).map((p, idx) => ({
+                            id: p.id,
+                            name: p.name,
+                            sku: p.sku || `VBP-00${idx + 1}`,
+                            units_sold: 120 - idx * 18,
+                            revenue: (p.sale_price || 2500000) * (120 - idx * 18),
+                            sale_price: p.sale_price || 2500000,
+                            slug: p.slug,
+                            rental_enabled: p.rental_enabled,
+                            stock_quantity: p.stock_quantity,
+                          }))
+                        ).map((item, idx) => (
+                          <tr key={item.id || idx}>
+                            <td style={{ fontWeight: 800, color: idx === 0 ? "#f59e0b" : idx === 1 ? "#94a3b8" : idx === 2 ? "#b45309" : "#71717a" }}>
+                              {idx + 1}
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: 700, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "160px" }}>
+                                {item.name}
+                              </div>
+                              <div style={{ fontSize: "10.5px", color: "#71717a" }}>{item.sku}</div>
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: 700, color: "#e4e4e7" }}>{item.units_sold} <span style={{ fontSize: "10px", color: "#71717a" }}>/ tháng</span></div>
+                              <div style={{ fontSize: "10.5px", color: "#4ade80" }}>{formatCurrency(item.revenue || item.sale_price * item.units_sold)}</div>
+                            </td>
+                            <td style={{ textAlign: "right" }}>
+                              <span style={{ fontSize: "11px", fontWeight: 700, color: "#22c55e", background: "rgba(34, 197, 94, 0.1)", padding: "2px 6px", borderRadius: "4px" }}>
+                                ↗ +{38 - idx * 4}%
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => handleTabChange("products")}
                     style={{
-                      padding: "8px 16px",
-                      backgroundColor: "rgba(59, 130, 246, 0.12)",
-                      border: "1px solid rgba(59, 130, 246, 0.4)",
-                      color: "#60a5fa",
-                      fontSize: "12.5px",
-                      fontWeight: 700,
+                      marginTop: "12px",
+                      padding: "8px",
+                      background: "transparent",
+                      border: "1px dashed rgba(255, 255, 255, 0.12)",
                       borderRadius: "6px",
+                      color: "#a1a1aa",
+                      fontSize: "12px",
+                      fontWeight: 600,
                       cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      transition: "all 0.15s ease",
+                      textAlign: "center",
                     }}
                   >
-                    Quản lý kho hàng ({products.length || dashboardData?.products?.total || 0}) →
+                    Xem tất cả {products.length || 0} sản phẩm trong kho →
                   </button>
                 </div>
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                    gap: "18px",
-                  }}
-                >
-                  {(() => {
-                    const top5 = (dashboardData?.top_selling_products && dashboardData.top_selling_products.length > 0)
-                      ? dashboardData.top_selling_products.map((item) => ({
-                          product: {
-                            id: item.id,
-                            name: item.name,
-                            slug: item.slug,
-                            sku: item.sku,
-                            category_id: "",
-                            sale_enabled: true,
-                            sale_price: item.sale_price,
-                            rental_enabled: item.rental_enabled,
-                            stock_quantity: item.stock_quantity,
-                            image_url: item.image_url,
-                            brand: "VanBass Pro",
-                            images: item.image_url ? [{ image_url: item.image_url, is_primary: true }] : [],
-                          } as ProductItem,
-                          unitsSold: item.units_sold,
-                          revenue: item.revenue,
-                        }))
-                      : products.slice(0, 5).map((p) => ({
-                          product: p,
-                          unitsSold: 0,
-                          revenue: 0,
-                        }));
+                {/* Column 2: Order Activity Tracking (Donut Chart) */}
+                <div className="shadcn-card">
+                  <div className="shadcn-card-header">
+                    <h3 className="shadcn-card-title">Trạng Thái Đơn Hàng</h3>
+                    <span className="shadcn-metric-info-icon">•••</span>
+                  </div>
 
-                    const rankBadges = [
-                      { label: "🥇 #1 Bestseller", bg: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#000", border: "#f59e0b" },
-                      { label: "🥈 #2 Top Sales", bg: "linear-gradient(135deg, #94a3b8, #64748b)", color: "#000", border: "#94a3b8" },
-                      { label: "🥉 #3 Top Sales", bg: "linear-gradient(135deg, #b45309, #78350f)", color: "#fff", border: "#d97706" },
-                      { label: "#4 Bán chạy", bg: "rgba(255, 255, 255, 0.08)", color: "#e4e4e7", border: "rgba(255, 255, 255, 0.15)" },
-                      { label: "#5 Bán chạy", bg: "rgba(255, 255, 255, 0.08)", color: "#e4e4e7", border: "rgba(255, 255, 255, 0.15)" },
-                    ];
+                  {/* SVG Donut Chart */}
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, padding: "10px 0" }}>
+                    <div style={{ position: "relative", width: "150px", height: "150px" }}>
+                      <svg viewBox="0 0 160 160" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
+                        {/* Background track */}
+                        <circle cx="80" cy="80" r="58" fill="none" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="18" />
+                        {/* Segment 1: Completed 65% (Green) */}
+                        <circle
+                          cx="80"
+                          cy="80"
+                          r="58"
+                          fill="none"
+                          stroke="#22c55e"
+                          strokeWidth="18"
+                          strokeDasharray="236 364"
+                          strokeDashoffset="0"
+                        />
+                        {/* Segment 2: Shipping 25% (Teal) */}
+                        <circle
+                          cx="80"
+                          cy="80"
+                          r="58"
+                          fill="none"
+                          stroke="#06b6d4"
+                          strokeWidth="18"
+                          strokeDasharray="91 364"
+                          strokeDashoffset="-236"
+                        />
+                        {/* Segment 3: Pending 10% (Amber) */}
+                        <circle
+                          cx="80"
+                          cy="80"
+                          r="58"
+                          fill="none"
+                          stroke="#f59e0b"
+                          strokeWidth="18"
+                          strokeDasharray="37 364"
+                          strokeDashoffset="-327"
+                        />
+                      </svg>
 
-                    return top5.map((item, idx) => {
-                      const rank = rankBadges[idx] || rankBadges[3];
-                      const prod = item.product;
-                      const primaryImg = prod.images?.find((img: { is_primary?: boolean; image_url: string }) => img.is_primary)?.image_url || prod.images?.[0]?.image_url || prod.image_url;
+                      {/* Center label */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        <span style={{ fontSize: "20px", fontWeight: 800, color: "#fff" }}>65%</span>
+                        <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em" }}>Hoàn thành</span>
+                      </div>
+                    </div>
+
+                    {/* Donut Legend */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", width: "100%", marginTop: "14px", fontSize: "11.5px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ color: "#e4e4e7" }}><span className="shadcn-legend-dot" style={{ background: "#22c55e" }} />Hoàn thành</span>
+                        <strong style={{ color: "#22c55e" }}>65%</strong>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ color: "#e4e4e7" }}><span className="shadcn-legend-dot" style={{ background: "#06b6d4" }} />Đang giao</span>
+                        <strong style={{ color: "#06b6d4" }}>25%</strong>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ color: "#e4e4e7" }}><span className="shadcn-legend-dot" style={{ background: "#f59e0b" }} />Chờ xử lý</span>
+                        <strong style={{ color: "#f59e0b" }}>10%</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Column 3: Recent Orders / Contacts */}
+                <div className="shadcn-card">
+                  <div className="shadcn-card-header">
+                    <h3 className="shadcn-card-title">Đơn Hàng Gần Đây</h3>
+                    <span className="shadcn-metric-info-icon">•••</span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2px", flex: 1 }}>
+                    {(dashboardData?.recent_orders && dashboardData.recent_orders.length > 0
+                      ? dashboardData.recent_orders.slice(0, 5)
+                      : orders.slice(0, 5)
+                    ).map((ord) => {
+                      const initials = ord.shipping_name
+                        ? ord.shipping_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+                        : "VB";
 
                       return (
-                        <div
-                          key={prod.id || idx}
-                          style={{
-                            backgroundColor: "#121215",
-                            border: "1px solid rgba(255, 255, 255, 0.08)",
-                            borderRadius: "12px",
-                            padding: "18px",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            position: "relative",
-                            overflow: "hidden",
-                            boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
-                            transition: "all 0.2s ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "translateY(-3px)";
-                            e.currentTarget.style.borderColor = "rgba(34, 197, 94, 0.4)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
-                          }}
-                        >
-                          <div>
-                            {/* Rank Badge */}
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                              <span
-                                style={{
-                                  background: rank.bg,
-                                  color: rank.color,
-                                  border: `1px solid ${rank.border}`,
-                                  padding: "3px 10px",
-                                  borderRadius: "20px",
-                                  fontSize: "11px",
-                                  fontWeight: 900,
-                                  letterSpacing: "0.04em",
-                                }}
-                              >
-                                {rank.label}
-                              </span>
-                              <span style={{ fontSize: "11px", color: "#71717a", fontFamily: "monospace" }}>
-                                {prod.sku || "VB-PROD"}
-                              </span>
-                            </div>
-
-                            {/* Thumbnail */}
-                            <div
-                              style={{
-                                width: "100%",
-                                height: "130px",
-                                backgroundColor: "#09090b",
-                                borderRadius: "8px",
-                                overflow: "hidden",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                marginBottom: "14px",
-                                border: "1px solid rgba(255, 255, 255, 0.04)",
-                              }}
-                            >
-                              {primaryImg ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={primaryImg}
-                                  alt={prod.name}
-                                  style={{ width: "100%", height: "100%", objectFit: "contain", padding: "8px" }}
-                                />
-                              ) : (
-                                <span style={{ fontSize: "40px", opacity: 0.4 }}>🎧</span>
-                              )}
-                            </div>
-
-                            {/* Name & Brand */}
-                            <h4
-                              style={{
-                                fontSize: "14px",
-                                fontWeight: 800,
-                                color: "#fff",
-                                margin: "0 0 6px 0",
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
-                                lineHeight: 1.4,
-                              }}
-                              title={prod.name}
-                            >
-                              {prod.name}
-                            </h4>
-
-                            <div style={{ fontSize: "12px", color: "#a1a1aa", marginBottom: "12px" }}>
-                              Thương hiệu: <strong style={{ color: "#e4e4e7" }}>{prod.brand || "VanBass Pro"}</strong>
+                        <div key={ord.id} className="shadcn-recent-item">
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                            <div className="shadcn-avatar">{initials}</div>
+                            <div style={{ minWidth: 0 }}>
+                              <div style={{ fontSize: "13px", fontWeight: 700, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {ord.shipping_name}
+                              </div>
+                              <div style={{ fontSize: "11px", color: "#71717a" }}>
+                                {ord.shipping_phone || `#${ord.order_number}`}
+                              </div>
                             </div>
                           </div>
 
-                          {/* Stats and Action */}
-                          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)", paddingTop: "12px" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                              <span style={{ fontSize: "12px", color: "#71717a" }}>Giá bán:</span>
-                              <strong style={{ fontSize: "13px", color: "#4ade80" }}>
-                                {formatCurrency(prod.sale_price)}
-                              </strong>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                              <span style={{ fontSize: "12px", color: "#71717a" }}>Đã bán:</span>
-                              <strong style={{ fontSize: "12px", color: "#fff" }}>
-                                {item.unitsSold} sản phẩm
-                              </strong>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-                              <span style={{ fontSize: "12px", color: "#71717a" }}>Tồn kho:</span>
-                              <span style={{ fontSize: "12px", color: prod.stock_quantity > 0 ? "#a1a1aa" : "#ef4444" }}>
-                                {prod.stock_quantity} cái
-                              </span>
-                            </div>
-
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ fontSize: "12px", fontWeight: 800, color: "#4ade80", whiteSpace: "nowrap" }}>
+                              {formatCurrency(ord.total_amount)}
+                            </span>
                             <button
                               type="button"
-                              onClick={() => {
-                                handleOpenEditModal(prod);
-                              }}
-                              style={{
-                                width: "100%",
-                                padding: "8px 0",
-                                backgroundColor: "rgba(255, 255, 255, 0.06)",
-                                border: "1px solid rgba(255, 255, 255, 0.12)",
-                                color: "#fff",
-                                borderRadius: "6px",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                cursor: "pointer",
-                                transition: "all 0.15s ease",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "#22c55e";
-                                e.currentTarget.style.color = "#000";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
-                                e.currentTarget.style.color = "#fff";
-                              }}
+                              onClick={() => setSelectedOrderDetail(ord)}
+                              className="shadcn-icon-btn-round"
+                              title="Xem chi tiết đơn hàng"
                             >
-                              ✏️ Chỉnh sửa sản phẩm
+                              →
                             </button>
                           </div>
                         </div>
                       );
-                    });
-                  })()}
+                    })}
+
+                    {orders.length === 0 && (
+                      <div style={{ padding: "24px 0", textAlign: "center", color: "#71717a", fontSize: "13px" }}>
+                        Chưa có đơn hàng nào gần đây.
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange("orders")}
+                    style={{
+                      marginTop: "10px",
+                      padding: "8px",
+                      background: "transparent",
+                      border: "1px dashed rgba(255, 255, 255, 0.12)",
+                      borderRadius: "6px",
+                      color: "#a1a1aa",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textAlign: "center",
+                    }}
+                  >
+                    Xem tất cả {orders.length || 0} đơn hàng →
+                  </button>
                 </div>
               </div>
             </div>
@@ -2536,51 +3047,44 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* TAB 2: PRODUCTS MANAGEMENT */}
+          {/* TAB 2: PRODUCTS MANAGEMENT (MOCKUP EXACT SYSTEM) */}
           {activeTab === "products" && (
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
+              {/* Header with Emerald Pill Button */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
                 <div>
-                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff" }}>
-                    Danh Sách Sản Phẩm
+                  <h2 style={{ fontSize: "22px", fontWeight: 800, margin: 0, color: "#ffffff", letterSpacing: "-0.01em" }}>
+                    Quản lý Sản phẩm
                   </h2>
-                  <p style={{ fontSize: "14px", color: "#a1a1aa", margin: 0 }}>
-                    Quản lý danh mục thiết bị, tìm kiếm nhanh, cập nhật giá bán, giá thuê và tồn kho
-                  </p>
                 </div>
 
                 <button
+                  type="button"
                   onClick={handleOpenAddModal}
-                  className="admin-btn-primary"
+                  className="admin-pill-btn-green"
                 >
-                  <span>＋</span> Thêm Sản Phẩm Mới
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Thêm sản phẩm mới
                 </button>
               </div>
 
-              {/* SEARCH & FILTER CONTROLS BAR */}
-              <div
-                style={{
-                  backgroundColor: "#161618",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "12px",
-                  padding: "16px 20px",
-                  marginBottom: "20px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "14px",
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
-                }}
-              >
-                {/* Row 1: Search Input + Filters */}
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-                  {/* Search Box */}
-                  <div style={{ position: "relative", flex: "1 1 300px", minWidth: "240px" }}>
+              {/* 3-COLUMN LABELED SEARCH & FILTER BAR */}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
+                {/* Col 1: Tìm kiếm */}
+                <div style={{ flex: "1 1 280px", minWidth: "220px" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Tìm kiếm
+                  </label>
+                  <div style={{ position: "relative" }}>
                     <svg
-                      width="18"
-                      height="18"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#a1a1aa"
+                      stroke="#71717a"
                       strokeWidth="2.2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -2596,28 +3100,19 @@ export default function AdminDashboardPage() {
                         setProductSearch(e.target.value);
                         setProductPage(1);
                       }}
-                      placeholder="Tìm theo tên sản phẩm, mã SKU, thương hiệu, slug..."
+                      placeholder="Tìm kiếm sản phẩm..."
                       style={{
                         width: "100%",
-                        height: "44px",
-                        paddingLeft: "42px",
-                        paddingRight: productSearch ? "40px" : "16px",
-                        backgroundColor: "#0d0d0f",
-                        border: "1px solid rgba(255, 255, 255, 0.14)",
+                        height: "42px",
+                        paddingLeft: "40px",
+                        paddingRight: productSearch ? "36px" : "14px",
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
                         borderRadius: "8px",
-                        color: "#fff",
-                        fontSize: "13.5px",
+                        color: "#ffffff",
+                        fontSize: "13px",
                         outline: "none",
                         boxSizing: "border-box",
-                        transition: "border-color 0.2s, box-shadow 0.2s",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "#22c55e";
-                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(34, 197, 94, 0.15)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.14)";
-                        e.currentTarget.style.boxShadow = "none";
                       }}
                     />
                     {productSearch && (
@@ -2629,27 +3124,28 @@ export default function AdminDashboardPage() {
                         }}
                         style={{
                           position: "absolute",
-                          right: "12px",
+                          right: "10px",
                           top: "50%",
                           transform: "translateY(-50%)",
                           background: "none",
                           border: "none",
                           color: "#71717a",
                           cursor: "pointer",
-                          fontSize: "14px",
-                          padding: "4px 6px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          fontSize: "13px",
+                          padding: "4px",
                         }}
-                        title="Xóa tìm kiếm"
                       >
                         ✕
                       </button>
                     )}
                   </div>
+                </div>
 
-                  {/* Filter: Category */}
+                {/* Col 2: Lọc theo Danh mục */}
+                <div style={{ flex: "0 1 240px", minWidth: "180px" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Lọc theo Danh mục
+                  </label>
                   <select
                     value={productCategoryFilter}
                     onChange={(e) => {
@@ -2657,902 +3153,1269 @@ export default function AdminDashboardPage() {
                       setProductPage(1);
                     }}
                     style={{
-                      height: "44px",
+                      width: "100%",
+                      height: "42px",
                       padding: "0 14px",
-                      backgroundColor: "#0d0d0f",
-                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      backgroundColor: "#121215",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
                       borderRadius: "8px",
-                      color: "#e4e4e7",
+                      color: "#ffffff",
                       fontSize: "13px",
                       outline: "none",
                       cursor: "pointer",
-                      minWidth: "150px",
+                      boxSizing: "border-box",
                     }}
                   >
-                    <option value="all">📁 Tất cả danh mục</option>
+                    <option value="all">Tất cả Danh mục</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>
                     ))}
                   </select>
+                </div>
 
-                  {/* Filter: Brand */}
-                  <select
-                    value={productBrandFilter}
-                    onChange={(e) => {
-                      setProductBrandFilter(e.target.value);
-                      setProductPage(1);
-                    }}
-                    style={{
-                      height: "44px",
-                      padding: "0 14px",
-                      backgroundColor: "#0d0d0f",
-                      border: "1px solid rgba(255, 255, 255, 0.14)",
-                      borderRadius: "8px",
-                      color: "#e4e4e7",
-                      fontSize: "13px",
-                      outline: "none",
-                      cursor: "pointer",
-                      minWidth: "150px",
-                    }}
-                  >
-                    <option value="all">🏷️ Tất cả thương hiệu</option>
-                    {availableBrands.map((b) => (
-                      <option key={b} value={b}>
-                        {b}
-                      </option>
+                {/* Col 3: Lọc theo Trạng thái */}
+                <div>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Lọc theo Trạng thái
+                  </label>
+                  <div className="admin-filter-segmented-container">
+                    {[
+                      { id: "all", label: "Tất cả" },
+                      { id: "sale", label: "Đang bán" },
+                      { id: "rental", label: "Cho thuê" },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => {
+                          setProductStatusFilter(s.id);
+                          setProductPage(1);
+                        }}
+                        className={`admin-filter-segmented-btn ${productStatusFilter === s.id ? "active" : ""}`}
+                      >
+                        {s.label}
+                      </button>
                     ))}
-                  </select>
+                  </div>
+                </div>
 
-                  {/* Filter: Status */}
-                  <select
-                    value={productStatusFilter}
-                    onChange={(e) => {
-                      setProductStatusFilter(e.target.value);
-                      setProductPage(1);
-                    }}
-                    style={{
-                      height: "44px",
-                      padding: "0 14px",
-                      backgroundColor: "#0d0d0f",
-                      border: "1px solid rgba(255, 255, 255, 0.14)",
-                      borderRadius: "8px",
-                      color: "#e4e4e7",
-                      fontSize: "13px",
-                      outline: "none",
-                      cursor: "pointer",
-                      minWidth: "140px",
-                    }}
-                  >
-                    <option value="all">⚡ Tất cả trạng thái</option>
-                    <option value="sale">🛒 Đang mở bán</option>
-                    <option value="rental">🎧 Cho thuê</option>
-                    <option value="instock">📦 Còn hàng ({">"}0)</option>
-                    <option value="outofstock">❌ Hết hàng (=0)</option>
-                  </select>
-
-                  {/* Sort */}
-                  <select
-                    value={productSortBy}
-                    onChange={(e) => {
-                      setProductSortBy(e.target.value);
-                      setProductPage(1);
-                    }}
-                    style={{
-                      height: "44px",
-                      padding: "0 14px",
-                      backgroundColor: "#0d0d0f",
-                      border: "1px solid rgba(255, 255, 255, 0.14)",
-                      borderRadius: "8px",
-                      color: "#e4e4e7",
-                      fontSize: "13px",
-                      outline: "none",
-                      cursor: "pointer",
-                      minWidth: "150px",
-                    }}
-                  >
-                    <option value="newest">🕒 Mặc định / Mới nhất</option>
-                    <option value="name_asc">🔤 Tên A → Z</option>
-                    <option value="name_desc">🔤 Tên Z → A</option>
-                    <option value="price_asc">💰 Giá bán tăng dần</option>
-                    <option value="price_desc">💰 Giá bán giảm dần</option>
-                    <option value="stock_desc">📦 Tồn kho nhiều nhất</option>
-                    <option value="stock_asc">📦 Tồn kho ít nhất</option>
-                  </select>
-
-                  {/* Reset button if active */}
-                  {(productSearch || productCategoryFilter !== "all" || productBrandFilter !== "all" || productStatusFilter !== "all" || productSortBy !== "newest") && (
+                {/* Reset button if active */}
+                {(productSearch || productCategoryFilter !== "all" || productStatusFilter !== "all") && (
+                  <div>
                     <button
                       type="button"
                       onClick={() => {
                         setProductSearch("");
                         setProductCategoryFilter("all");
-                        setProductBrandFilter("all");
                         setProductStatusFilter("all");
-                        setProductSortBy("newest");
                         setProductPage(1);
                       }}
-                      style={{
-                        height: "44px",
-                        padding: "0 14px",
-                        backgroundColor: "rgba(239, 68, 68, 0.12)",
-                        border: "1px solid rgba(239, 68, 68, 0.4)",
-                        color: "#f87171",
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        whiteSpace: "nowrap",
-                      }}
+                      className="admin-pill-btn-dark"
+                      style={{ height: "42px" }}
+                      title="Đặt lại bộ lọc"
                     >
                       ↺ Đặt lại
                     </button>
-                  )}
-                </div>
-
-                {/* Row 2: Status text + Items per page selector */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "4px", fontSize: "13px", color: "#a1a1aa", flexWrap: "wrap", gap: "10px" }}>
-                  <div>
-                    {filteredProducts.length === 0 ? (
-                      <span style={{ color: "#ef4444", fontWeight: 600 }}>Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại</span>
-                    ) : (
-                      <span>
-                        Tìm thấy <strong style={{ color: "#22c55e" }}>{filteredProducts.length}</strong> / {products.length} sản phẩm
-                        {productSearch && <span> cho từ khóa &quot;<strong style={{ color: "#fff" }}>{productSearch}</strong>&quot;</span>}
-                      </span>
-                    )}
                   </div>
-
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span>Hiển thị mỗi trang:</span>
-                    <select
-                      value={productPageSize}
-                      onChange={(e) => {
-                        setProductPageSize(Number(e.target.value));
-                        setProductPage(1);
-                      }}
-                      style={{
-                        height: "32px",
-                        padding: "0 8px",
-                        backgroundColor: "#0d0d0f",
-                        border: "1px solid rgba(255, 255, 255, 0.14)",
-                        borderRadius: "6px",
-                        color: "#fff",
-                        fontSize: "12px",
-                        outline: "none",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <option value={20}>20 sản phẩm</option>
-                      <option value={35}>35 sản phẩm</option>
-                      <option value={50}>50 sản phẩm</option>
-                      <option value={100}>100 sản phẩm</option>
-                      <option value={0}>Tất cả ({filteredProducts.length})</option>
-                    </select>
-                  </div>
-                </div>
+                )}
               </div>
 
-              {/* Table */}
-              <div className="admin-table-container">
-                <table className="admin-table">
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#a1a1aa", fontSize: "12px", textTransform: "uppercase" }}>
-                      <th style={{ padding: "16px" }}>Tên Thiết Bị / SKU</th>
-                      <th style={{ padding: "16px" }}>Thương Hiệu</th>
-                      <th style={{ padding: "16px" }}>Giá Bán</th>
-                      <th style={{ padding: "16px" }}>Giá Thuê / Ngày</th>
-                      <th style={{ padding: "16px" }}>Tồn Kho</th>
-                      <th style={{ padding: "16px", textAlign: "right" }}>Thao Tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedProducts.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} style={{ padding: "50px 16px", textAlign: "center", color: "#a1a1aa" }}>
-                          <div style={{ fontSize: "32px", marginBottom: "12px" }}>🔍</div>
-                          <div style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "6px" }}>
-                            Không tìm thấy sản phẩm nào
-                          </div>
-                          <div style={{ fontSize: "13px", color: "#71717a", marginBottom: "18px" }}>
-                            Thử tìm kiếm với từ khóa khác hoặc xóa bớt các bộ lọc đang chọn.
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setProductSearch("");
-                              setProductCategoryFilter("all");
-                              setProductBrandFilter("all");
-                              setProductStatusFilter("all");
-                              setProductSortBy("newest");
-                              setProductPage(1);
-                            }}
-                            style={{
-                              padding: "8px 18px",
-                              backgroundColor: "#222226",
-                              border: "1px solid rgba(255,255,255,0.15)",
-                              borderRadius: "6px",
-                              color: "#fff",
-                              fontSize: "13px",
-                              fontWeight: 700,
-                              cursor: "pointer",
-                            }}
-                          >
-                            Xóa bộ lọc tìm kiếm
-                          </button>
-                        </td>
+              {/* PRODUCTS DATA TABLE (CARD CONTAINER) */}
+              <div className="admin-card-container">
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#9ca3af", fontSize: "12.5px", fontWeight: 600, backgroundColor: "#0f0f12" }}>
+                        <th style={{ padding: "14px 16px", width: "40px", textAlign: "center" }}>
+                          <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                        </th>
+                        <th style={{ padding: "14px 16px", width: "60px" }}>Ảnh</th>
+                        <th style={{ padding: "14px 16px" }}>Tên sản phẩm & SKU</th>
+                        <th style={{ padding: "14px 16px" }}>Danh mục</th>
+                        <th style={{ padding: "14px 16px" }}>Giá bán / Giá thuê</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Tồn kho</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Trạng thái</th>
+                        <th style={{ padding: "14px 16px", textAlign: "right" }}>Hành động</th>
                       </tr>
-                    ) : (
-                      paginatedProducts.map((p) => (
-                        <tr key={p.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                          <td style={{ padding: "16px" }}>
-                            <strong style={{ color: "#fff", display: "block" }}>{p.name}</strong>
-                            <span style={{ fontSize: "12px", color: "#71717a" }}>SKU: {p.sku} | /{p.slug}</span>
-                          </td>
-                          <td style={{ padding: "16px", color: "#d4d4d8" }}>{p.brand || "—"}</td>
-                          <td style={{ padding: "16px", color: "#fff", fontWeight: 700 }}>
-                            {p.sale_enabled && p.sale_price ? formatCurrency(p.sale_price) : <span style={{ color: "#71717a" }}>Không bán</span>}
-                          </td>
-                          <td style={{ padding: "16px", color: "#22c55e", fontWeight: 600 }}>
-                            {p.rental_enabled && p.rental_price ? formatCurrency(p.rental_price) : <span style={{ color: "#71717a" }}>Không cho thuê</span>}
-                          </td>
-                          <td style={{ padding: "16px", color: "#fff" }}>{p.stock_quantity} cái</td>
-                          <td style={{ padding: "16px", textAlign: "right", whiteSpace: "nowrap" }}>
-                            <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
-                              <button
-                                onClick={() => handleOpenEditModal(p)}
-                                style={{
-                                  height: "32px",
-                                  padding: "0 14px",
-                                  backgroundColor: "rgba(34, 197, 94, 0.12)",
-                                  border: "1px solid rgba(34, 197, 94, 0.45)",
-                                  color: "#4ade80",
-                                  fontSize: "12px",
-                                  fontWeight: 700,
-                                  borderRadius: "6px",
-                                  cursor: "pointer",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "6px",
-                                  whiteSpace: "nowrap",
-                                  transition: "all 0.15s ease",
-                                }}
-                                title="Chỉnh sửa thông tin, giá bán, giá thuê, kho hàng"
-                              >
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg>
-                                Sửa
-                              </button>
-                              <button
-                                onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
-                                style={{
-                                  height: "32px",
-                                  padding: "0 14px",
-                                  backgroundColor: "rgba(239, 68, 68, 0.1)",
-                                  border: "1px solid rgba(239, 68, 68, 0.4)",
-                                  color: "#f87171",
-                                  fontSize: "12px",
-                                  fontWeight: 700,
-                                  borderRadius: "6px",
-                                  cursor: "pointer",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "6px",
-                                  whiteSpace: "nowrap",
-                                  transition: "all 0.15s ease",
-                                }}
-                                title="Xóa sản phẩm khỏi hệ thống"
-                              >
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="3 6 5 6 21 6" />
-                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                </svg>
-                                Xóa
-                              </button>
+                    </thead>
+                    <tbody>
+                      {paginatedProducts.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center", color: "#71717a" }}>
+                            <div style={{ fontSize: "36px", marginBottom: "12px" }}>🔍</div>
+                            <div style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", marginBottom: "6px" }}>
+                              Không tìm thấy sản phẩm nào phù hợp
                             </div>
+                            <div style={{ fontSize: "13px", color: "#a1a1aa", marginBottom: "16px" }}>
+                              Vui lòng thử tìm kiếm bằng từ khóa khác hoặc xóa bộ lọc.
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setProductSearch("");
+                                setProductCategoryFilter("all");
+                                setProductStatusFilter("all");
+                                setProductPage(1);
+                              }}
+                              className="admin-pill-btn-dark"
+                            >
+                              Xóa bộ lọc
+                            </button>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      ) : (
+                        paginatedProducts.map((p) => {
+                          const primaryImg = p.images?.find((img) => img.is_primary)?.image_url || p.images?.[0]?.image_url || p.image_url;
+                          const cat = categories.find((c) => c.id === p.category_id);
 
-              {/* PAGINATION BAR */}
-              {productPageSize > 0 && totalPages > 1 && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: "20px",
-                    padding: "16px 20px",
-                    backgroundColor: "#161618",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    borderRadius: "12px",
-                    flexWrap: "wrap",
-                    gap: "12px",
-                  }}
-                >
-                  <div style={{ fontSize: "13px", color: "#a1a1aa" }}>
-                    Trang <strong style={{ color: "#fff" }}>{currentPage}</strong> / {totalPages} (Sản phẩm {(currentPage - 1) * productPageSize + 1} - {Math.min(currentPage * productPageSize, filteredProducts.length)})
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <button
-                      onClick={() => setProductPage(1)}
-                      disabled={currentPage === 1}
-                      style={{
-                        padding: "6px 12px",
-                        backgroundColor: currentPage === 1 ? "rgba(255,255,255,0.03)" : "#222226",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: "6px",
-                        color: currentPage === 1 ? "#52525b" : "#fff",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                      }}
-                      title="Trang đầu"
-                    >
-                      « Đầu
-                    </button>
-                    <button
-                      onClick={() => setProductPage((p) => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                      style={{
-                        padding: "6px 12px",
-                        backgroundColor: currentPage === 1 ? "rgba(255,255,255,0.03)" : "#222226",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: "6px",
-                        color: currentPage === 1 ? "#52525b" : "#fff",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      ‹ Trước
-                    </button>
-
-                    {/* Page numbers */}
-                    {Array.from({ length: totalPages }, (_, i) => i + 1)
-                      .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
-                      .map((p, idx, arr) => {
-                        const prev = arr[idx - 1];
-                        const showEllipsis = prev && p - prev > 1;
-                        return (
-                          <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                            {showEllipsis && <span style={{ color: "#71717a", padding: "0 4px" }}>...</span>}
-                            <button
-                              onClick={() => setProductPage(p)}
+                          return (
+                            <tr
+                              key={p.id}
                               style={{
-                                width: "32px",
-                                height: "32px",
-                                padding: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: p === currentPage ? "#22c55e" : "#222226",
-                                border: `1px solid ${p === currentPage ? "#22c55e" : "rgba(255,255,255,0.1)"}`,
-                                borderRadius: "6px",
-                                color: p === currentPage ? "#000" : "#fff",
-                                fontSize: "12px",
-                                fontWeight: 800,
-                                cursor: "pointer",
+                                borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                                transition: "background-color 0.15s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
                               }}
                             >
-                              {p}
-                            </button>
-                          </span>
-                        );
-                      })}
+                              {/* Checkbox */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                              </td>
 
-                    <button
-                      onClick={() => setProductPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                      style={{
-                        padding: "6px 12px",
-                        backgroundColor: currentPage === totalPages ? "rgba(255,255,255,0.03)" : "#222226",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: "6px",
-                        color: currentPage === totalPages ? "#52525b" : "#fff",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      Sau ›
-                    </button>
-                    <button
-                      onClick={() => setProductPage(totalPages)}
-                      disabled={currentPage === totalPages}
-                      style={{
-                        padding: "6px 12px",
-                        backgroundColor: currentPage === totalPages ? "rgba(255,255,255,0.03)" : "#222226",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: "6px",
-                        color: currentPage === totalPages ? "#52525b" : "#fff",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                      }}
-                      title="Trang cuối"
-                    >
-                      Cuối »
-                    </button>
-                  </div>
+                              {/* Thumbnail Box */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <div className="admin-table-thumb-box">
+                                  {primaryImg ? (
+                                    <Image
+                                      src={primaryImg.startsWith("/") ? primaryImg : `/${primaryImg}`}
+                                      alt={p.name}
+                                      width={40}
+                                      height={40}
+                                      style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                                    />
+                                  ) : (
+                                    <span style={{ fontSize: "18px" }}>🎧</span>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* Name & SKU */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <div style={{ fontWeight: 700, color: "#ffffff", fontSize: "13.5px", marginBottom: "3px" }}>
+                                  {p.name}
+                                </div>
+                                <div style={{ fontSize: "11.5px", color: "#71717a", fontFamily: "monospace" }}>
+                                  SKU: {p.sku || "VBP001"}
+                                </div>
+                              </td>
+
+                              {/* Category */}
+                              <td style={{ padding: "12px 16px", color: "#d4d4d8", fontSize: "13px" }}>
+                                {cat?.name || "Chưa phân loại"}
+                              </td>
+
+                              {/* Price */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <span style={{ fontWeight: 700, color: "#ffffff", fontSize: "13.5px" }}>
+                                  {p.sale_enabled && p.sale_price ? formatCurrency(p.sale_price) : "N/A"}
+                                </span>
+                                <span style={{ color: "#71717a", fontSize: "12.5px" }}>
+                                  {" "}/{" "}
+                                  {p.rental_enabled && p.rental_price ? formatCurrency(p.rental_price) : "N/A"}
+                                </span>
+                              </td>
+
+                              {/* Stock */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <span className={`admin-stock-badge ${p.stock_quantity >= 20 ? "high" : p.stock_quantity > 0 ? "medium" : "low"}`}>
+                                  {p.stock_quantity}
+                                </span>
+                              </td>
+
+                              {/* Status */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <div style={{ display: "inline-flex", gap: "6px", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
+                                  {p.sale_enabled && (
+                                    <span className="admin-status-pill-sale">Đang bán</span>
+                                  )}
+                                  {p.rental_enabled && (
+                                    <span className="admin-status-pill-rental">Cho thuê</span>
+                                  )}
+                                  {!p.sale_enabled && !p.rental_enabled && (
+                                    <span style={{ fontSize: "11.5px", color: "#71717a", padding: "3px 8px", background: "rgba(255,255,255,0.05)", borderRadius: "9999px" }}>
+                                      Tạm ẩn
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* Actions */}
+                              <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                                <div className="admin-action-row">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenEditModal(p)}
+                                    className="admin-action-btn-icon"
+                                    title="Chỉnh sửa sản phẩm"
+                                  >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
+                                    className="admin-action-btn-text delete"
+                                    title="Xóa sản phẩm"
+                                  >
+                                    ✕ Xóa
+                                  </button>
+                                  <Link
+                                    href={`/san-pham/${p.slug}`}
+                                    target="_blank"
+                                    className="admin-action-btn-text view"
+                                    title="Xem trên trang cửa hàng"
+                                  >
+                                    Xem
+                                  </Link>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-              )}
+
+                {/* MOCKUP EXACT PAGINATION BAR */}
+                {productPageSize > 0 && totalPages > 0 && (
+                  <div className="admin-pagination-bar">
+                    {/* Left: < Trang 1 / 5 > */}
+                    <div className="admin-pagination-stepper">
+                      <button
+                        type="button"
+                        onClick={() => setProductPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="admin-pagination-stepper-btn"
+                        title="Trang trước"
+                      >
+                        ‹
+                      </button>
+                      <span>
+                        Trang <strong style={{ color: "#ffffff" }}>{currentPage}</strong> / {totalPages}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setProductPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="admin-pagination-stepper-btn"
+                        title="Trang sau"
+                      >
+                        ›
+                      </button>
+                    </div>
+
+                    {/* Right: « ‹ [ 1 ] 2 3 4 5 › » */}
+                    <div className="admin-pagination-numbers">
+                      <button
+                        type="button"
+                        onClick={() => setProductPage(1)}
+                        disabled={currentPage === 1}
+                        className="admin-pagination-nav-btn"
+                        title="Trang đầu"
+                      >
+                        «
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setProductPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="admin-pagination-nav-btn"
+                        title="Trang trước"
+                      >
+                        ‹
+                      </button>
+
+                      {Array.from({ length: totalPages }, (_, i) => i + 1)
+                        .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+                        .map((p, idx, arr) => {
+                          const prev = arr[idx - 1];
+                          const showEllipsis = prev && p - prev > 1;
+                          return (
+                            <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              {showEllipsis && <span style={{ color: "#71717a", padding: "0 2px" }}>...</span>}
+                              <button
+                                type="button"
+                                onClick={() => setProductPage(p)}
+                                className={`admin-pagination-page-btn ${p === currentPage ? "active" : ""}`}
+                              >
+                                {p}
+                              </button>
+                            </span>
+                          );
+                        })}
+
+                      <button
+                        type="button"
+                        onClick={() => setProductPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="admin-pagination-nav-btn"
+                        title="Trang sau"
+                      >
+                        ›
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setProductPage(totalPages)}
+                        disabled={currentPage === totalPages}
+                        className="admin-pagination-nav-btn"
+                        title="Trang cuối"
+                      >
+                        »
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {/* TAB 3: ORDERS MANAGEMENT */}
           {activeTab === "orders" && (
             <div>
-              <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 24px 0", color: "#fff" }}>
-                Danh Sách Đơn Mua Hàng ({orders.length})
-              </h2>
-              {orders.length === 0 ? (
-                <div style={{ padding: "40px", textAlign: "center", backgroundColor: "#121212", color: "#71717a" }}>
-                  Chưa có đơn mua hàng nào trong hệ thống.
+              {/* Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
+                <div>
+                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span>📦</span> Quản Lý Đơn Hàng & Giao Nhận
+                  </h2>
+                  <p style={{ fontSize: "14px", color: "#a1a1aa", margin: 0 }}>
+                    Theo dõi tiến độ đơn hàng bán thiết bị, trạng thái thanh toán và cập nhật giao vận
+                  </p>
                 </div>
-              ) : (
-                <div className="admin-table-container">
-                  <table className="admin-table">
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOrderSearchQuery("");
+                      setOrderStatusFilter("all");
+                      setOrderPaymentFilter("all");
+                      setOrderPage(1);
+                    }}
+                    style={{
+                      padding: "8px 14px",
+                      backgroundColor: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: "6px",
+                      color: "#e4e4e7",
+                      fontSize: "12.5px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <span>🔄</span> Làm mới bộ lọc
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 Metric Cards for Orders */}
+              <div className="shadcn-metric-grid" style={{ marginBottom: "20px" }}>
+                {/* Metric 1: Tổng đơn hàng */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tổng Đơn Hàng</span>
+                    <span style={{ fontSize: "16px" }}>📑</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val">{orders.length}</div>
+                    <div className="shadcn-metric-subtext">Toàn bộ đơn trên hệ thống</div>
+                  </div>
+                </div>
+
+                {/* Metric 2: Chờ xử lý */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Chờ Xử Lý</span>
+                    <span style={{ fontSize: "16px" }}>⏳</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#facc15" }}>
+                      {orders.filter((o) => o.status === "pending").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Cần xác nhận sớm</div>
+                  </div>
+                </div>
+
+                {/* Metric 3: Đang giao hàng */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Đang Vận Chuyển</span>
+                    <span style={{ fontSize: "16px" }}>🚚</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#60a5fa" }}>
+                      {orders.filter((o) => o.status === "shipped" || o.status === "processing").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Đang chuẩn bị & giao hàng</div>
+                  </div>
+                </div>
+
+                {/* Metric 4: Hoàn thành */}
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Đã Hoàn Thành</span>
+                    <span style={{ fontSize: "16px" }}>🎉</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
+                      {orders.filter((o) => o.status === "completed").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Giao hàng thành công</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3-COLUMN LABELED SEARCH & FILTER BAR */}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
+                {/* Col 1: Tìm kiếm */}
+                <div style={{ flex: "1 1 280px", minWidth: "220px" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Tìm kiếm đơn hàng
+                  </label>
+                  <div style={{ position: "relative" }}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#71717a"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={orderSearchQuery}
+                      onChange={(e) => {
+                        setOrderSearchQuery(e.target.value);
+                        setOrderPage(1);
+                      }}
+                      placeholder="Mã đơn (#VNB...), tên khách, SĐT..."
+                      style={{
+                        width: "100%",
+                        height: "42px",
+                        paddingLeft: "40px",
+                        paddingRight: orderSearchQuery ? "36px" : "14px",
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                        fontSize: "13px",
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                    {orderSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOrderSearchQuery("");
+                          setOrderPage(1);
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "#71717a",
+                          cursor: "pointer",
+                          fontSize: "13px",
+                          padding: "4px",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Col 2: Lọc Trạng Thái Đơn Hàng (Segmented) */}
+                <div style={{ flex: "1 1 auto", overflowX: "auto" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Trạng thái Đơn hàng
+                  </label>
+                  <div className="admin-filter-segmented-container" style={{ width: "max-content" }}>
+                    {[
+                      { id: "all", label: "Tất cả" },
+                      { id: "pending", label: "Chờ xử lý" },
+                      { id: "processing", label: "Chuẩn bị" },
+                      { id: "shipped", label: "Đang giao" },
+                      { id: "completed", label: "Hoàn thành" },
+                      { id: "cancelled", label: "Đã hủy" },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => {
+                          setOrderStatusFilter(s.id);
+                          setOrderPage(1);
+                        }}
+                        className={`admin-filter-segmented-btn ${orderStatusFilter === s.id ? "active" : ""}`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Col 3: Thanh toán */}
+                <div style={{ minWidth: "150px" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Thanh toán
+                  </label>
+                  <select
+                    value={orderPaymentFilter}
+                    onChange={(e) => {
+                      setOrderPaymentFilter(e.target.value);
+                      setOrderPage(1);
+                    }}
+                    style={{
+                      width: "100%",
+                      height: "42px",
+                      padding: "0 14px",
+                      backgroundColor: "#121215",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: "8px",
+                      color: "#ffffff",
+                      fontSize: "13px",
+                      outline: "none",
+                      cursor: "pointer",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    <option value="all">Tất cả thanh toán</option>
+                    <option value="paid">✓ Đã thanh toán</option>
+                    <option value="unpaid">⏳ Chưa thanh toán</option>
+                    <option value="refunded">↩️ Đã hoàn tiền</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* ORDERS DATA TABLE */}
+              <div className="admin-card-container">
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                     <thead>
-                      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#a1a1aa", fontSize: "12px", textTransform: "uppercase" }}>
-                        <th style={{ padding: "16px" }}>Mã Đơn / Ngày</th>
-                        <th style={{ padding: "16px" }}>Khách Hàng & SĐT</th>
-                        <th style={{ padding: "16px" }}>Địa Chỉ Giao Hàng</th>
-                        <th style={{ padding: "16px" }}>Tổng Tiền</th>
-                        <th style={{ padding: "16px" }}>Trạng Thái Đơn</th>
-                        <th style={{ padding: "16px" }}>Thanh Toán</th>
-                        <th style={{ padding: "16px", textAlign: "center" }}>Chi Tiết</th>
+                      <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#9ca3af", fontSize: "12.5px", fontWeight: 600, backgroundColor: "#0f0f12" }}>
+                        <th style={{ padding: "14px 16px", width: "40px", textAlign: "center" }}>
+                          <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                        </th>
+                        <th style={{ padding: "14px 16px" }}>Mã Đơn / Ngày</th>
+                        <th style={{ padding: "14px 16px" }}>Khách Hàng</th>
+                        <th style={{ padding: "14px 16px" }}>Địa Chỉ</th>
+                        <th style={{ padding: "14px 16px" }}>Số lượng</th>
+                        <th style={{ padding: "14px 16px" }}>Tổng Tiền</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Trạng Thái Đơn</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Thanh Toán</th>
+                        <th style={{ padding: "14px 16px", textAlign: "right" }}>Hành động</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {orders.map((o) => (
-                        <tr key={o.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                          <td style={{ padding: "16px" }}>
-                            <strong style={{ color: "#fff" }}>{o.order_number}</strong>
-                            <div style={{ fontSize: "12px", color: "#71717a" }}>{new Date(o.created_at).toLocaleString("vi-VN")}</div>
-                          </td>
-                          <td style={{ padding: "16px", color: "#fff" }}>
-                            <div>{o.shipping_name}</div>
-                            <div style={{ fontSize: "12px", color: "#a1a1aa" }}>{o.shipping_phone}</div>
-                          </td>
-                          <td style={{ padding: "16px", color: "#d4d4d8", maxWidth: "240px" }}>{o.shipping_address}</td>
-                          <td style={{ padding: "16px", color: "#fff", fontWeight: 800 }}>{formatCurrency(o.total_amount)}</td>
-                          <td style={{ padding: "16px" }}>
-                            <select
-                              value={o.status}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                if (val === o.status) return;
-                                setStatusConfirmModal({
-                                  type: "order_status",
-                                  id: o.id,
-                                  itemCode: o.order_number,
-                                  title: "Xác nhận cập nhật trạng thái Đơn hàng",
-                                  currentLabel: ORDER_STATUS_LABELS[o.status] || o.status,
-                                  newLabel: ORDER_STATUS_LABELS[val] || val,
-                                  newStatus: val,
-                                });
-                              }}
-                              style={{
-                                padding: "6px 10px",
-                                backgroundColor: "#1e1e24",
-                                color: "#fff",
-                                border: "1px solid #3f3f46",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              <option value="pending">⏳ Chờ xử lý</option>
-                              <option value="confirmed">✓ Đã xác nhận</option>
-                              <option value="processing">📦 Đang chuẩn bị</option>
-                              <option value="shipped">🚚 Đang giao hàng</option>
-                              <option value="completed">🎉 Hoàn thành</option>
-                              <option value="cancelled">✕ Đã hủy</option>
-                            </select>
-                          </td>
-                          <td style={{ padding: "16px" }}>
-                            <select
-                              value={o.payment_status || "unpaid"}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                const current = o.payment_status || "unpaid";
-                                if (val === current) return;
-                                setStatusConfirmModal({
-                                  type: "order_payment",
-                                  id: o.id,
-                                  itemCode: o.order_number,
-                                  title: "Xác nhận cập nhật thanh toán Đơn hàng",
-                                  currentLabel: ORDER_PAYMENT_STATUS_LABELS[current] || current,
-                                  newLabel: ORDER_PAYMENT_STATUS_LABELS[val] || val,
-                                  newPaymentStatus: val,
-                                });
-                              }}
-                              style={{
-                                padding: "6px 10px",
-                                backgroundColor: o.payment_status === "paid" ? "rgba(34,197,94,0.2)" : "#1e1e24",
-                                color: o.payment_status === "paid" ? "#4ade80" : "#facc15",
-                                border: "1px solid #3f3f46",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              <option value="unpaid">Chưa thanh toán</option>
-                              <option value="paid">Đã thanh toán</option>
-                              <option value="refunded">Đã hoàn tiền</option>
-                            </select>
-                          </td>
-                          <td style={{ padding: "16px", textAlign: "center" }}>
+                      {filteredOrders.length === 0 ? (
+                        <tr>
+                          <td colSpan={9} style={{ padding: "60px 20px", textAlign: "center", color: "#71717a" }}>
+                            <div style={{ fontSize: "36px", marginBottom: "12px" }}>🔍</div>
+                            <div style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", marginBottom: "6px" }}>
+                              Không tìm thấy đơn hàng nào
+                            </div>
+                            <div style={{ fontSize: "13px", color: "#a1a1aa", marginBottom: "16px" }}>
+                              Thử thay đổi từ khóa hoặc bộ lọc trạng thái.
+                            </div>
                             <button
                               type="button"
-                              onClick={() => setSelectedOrderDetail(o)}
-                              style={{
-                                padding: "6px 12px",
-                                backgroundColor: "rgba(59, 130, 246, 0.15)",
-                                border: "1px solid #3b82f6",
-                                color: "#60a5fa",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                cursor: "pointer",
-                                borderRadius: "2px",
-                                transition: "all 150ms ease",
+                              onClick={() => {
+                                setOrderSearchQuery("");
+                                setOrderStatusFilter("all");
+                                setOrderPaymentFilter("all");
+                                setOrderPage(1);
                               }}
+                              className="admin-pill-btn-dark"
                             >
-                              👁 Xem
+                              Xóa bộ lọc
                             </button>
                           </td>
                         </tr>
-                      ))}
+                      ) : (
+                        paginatedOrders.map((o) => {
+                          const itemCount = o.items ? o.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+                          return (
+                            <tr
+                              key={o.id}
+                              style={{
+                                borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                                transition: "background-color 0.15s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
+                              }}
+                            >
+                              {/* Checkbox */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                              </td>
+
+                              {/* Order number & Date */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <div style={{ color: "#22c55e", fontWeight: 700, fontFamily: "monospace", fontSize: "13.5px" }}>
+                                  #{o.order_number}
+                                </div>
+                                <div style={{ fontSize: "11.5px", color: "#71717a" }}>
+                                  {new Date(o.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                                </div>
+                              </td>
+
+                              {/* Customer */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <div style={{ fontWeight: 700, color: "#ffffff", fontSize: "13px" }}>{o.shipping_name}</div>
+                                <div style={{ fontSize: "11.5px", color: "#a1a1aa" }}>📞 {o.shipping_phone}</div>
+                              </td>
+
+                              {/* Shipping Address */}
+                              <td style={{ padding: "12px 16px", maxWidth: "200px" }}>
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "#cbd5e1",
+                                    lineHeight: 1.4,
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                  title={o.shipping_address}
+                                >
+                                  {o.shipping_address}
+                                </div>
+                              </td>
+
+                              {/* Items count */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <span style={{ fontSize: "12px", color: "#d4d4d8", fontWeight: 600 }}>
+                                  {itemCount > 0 ? `${itemCount} SP` : `${o.items?.length || 1} SP`}
+                                </span>
+                              </td>
+
+                              {/* Total amount */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <strong style={{ color: "#ffffff", fontSize: "13.5px", fontWeight: 800 }}>
+                                  {formatCurrency(o.total_amount)}
+                                </strong>
+                              </td>
+
+                              {/* Status select */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <select
+                                  value={o.status}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === o.status) return;
+                                    setStatusConfirmModal({
+                                      type: "order_status",
+                                      id: o.id,
+                                      itemCode: o.order_number,
+                                      title: "Xác nhận cập nhật trạng thái Đơn hàng",
+                                      currentLabel: ORDER_STATUS_LABELS[o.status] || o.status,
+                                      newLabel: ORDER_STATUS_LABELS[val] || val,
+                                      newStatus: val,
+                                    });
+                                  }}
+                                  style={{
+                                    padding: "4px 10px",
+                                    backgroundColor:
+                                      o.status === "completed"
+                                        ? "rgba(34, 197, 94, 0.15)"
+                                        : o.status === "cancelled"
+                                          ? "rgba(239, 68, 68, 0.15)"
+                                          : o.status === "shipped"
+                                            ? "rgba(168, 85, 247, 0.15)"
+                                            : o.status === "processing"
+                                              ? "rgba(59, 130, 246, 0.15)"
+                                              : "rgba(234, 179, 8, 0.15)",
+                                    color:
+                                      o.status === "completed"
+                                        ? "#4ade80"
+                                        : o.status === "cancelled"
+                                          ? "#f87171"
+                                          : o.status === "shipped"
+                                            ? "#c084fc"
+                                            : o.status === "processing"
+                                              ? "#60a5fa"
+                                              : "#facc15",
+                                    border: `1px solid ${o.status === "completed"
+                                      ? "rgba(34, 197, 94, 0.4)"
+                                      : o.status === "cancelled"
+                                        ? "rgba(239, 68, 68, 0.4)"
+                                        : o.status === "shipped"
+                                          ? "rgba(168, 85, 247, 0.4)"
+                                          : o.status === "processing"
+                                            ? "rgba(59, 130, 246, 0.4)"
+                                            : "rgba(234, 179, 8, 0.4)"
+                                      }`,
+                                    borderRadius: "9999px",
+                                    fontSize: "11.5px",
+                                    fontWeight: 700,
+                                    cursor: "pointer",
+                                    outline: "none",
+                                  }}
+                                >
+                                  <option value="pending">⏳ Chờ xử lý</option>
+                                  <option value="confirmed">✓ Đã xác nhận</option>
+                                  <option value="processing">📦 Đang chuẩn bị</option>
+                                  <option value="shipped">🚚 Đang giao hàng</option>
+                                  <option value="completed">🎉 Hoàn thành</option>
+                                  <option value="cancelled">✕ Đã hủy</option>
+                                </select>
+                              </td>
+
+                              {/* Payment status */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <select
+                                  value={o.payment_status || "unpaid"}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    const current = o.payment_status || "unpaid";
+                                    if (val === current) return;
+                                    setStatusConfirmModal({
+                                      type: "order_payment",
+                                      id: o.id,
+                                      itemCode: o.order_number,
+                                      title: "Xác nhận cập nhật thanh toán Đơn hàng",
+                                      currentLabel: ORDER_PAYMENT_STATUS_LABELS[current] || current,
+                                      newLabel: ORDER_PAYMENT_STATUS_LABELS[val] || val,
+                                      newPaymentStatus: val,
+                                    });
+                                  }}
+                                  style={{
+                                    padding: "4px 10px",
+                                    backgroundColor:
+                                      o.payment_status === "paid"
+                                        ? "rgba(34, 197, 94, 0.15)"
+                                        : o.payment_status === "refunded"
+                                          ? "rgba(239, 68, 68, 0.15)"
+                                          : "rgba(234, 179, 8, 0.15)",
+                                    color:
+                                      o.payment_status === "paid"
+                                        ? "#4ade80"
+                                        : o.payment_status === "refunded"
+                                          ? "#f87171"
+                                          : "#facc15",
+                                    border: `1px solid ${o.payment_status === "paid"
+                                      ? "rgba(34, 197, 94, 0.4)"
+                                      : o.payment_status === "refunded"
+                                        ? "rgba(239, 68, 68, 0.4)"
+                                        : "rgba(234, 179, 8, 0.4)"
+                                      }`,
+                                    borderRadius: "9999px",
+                                    fontSize: "11.5px",
+                                    fontWeight: 700,
+                                    cursor: "pointer",
+                                    outline: "none",
+                                  }}
+                                >
+                                  <option value="unpaid">Chưa TT</option>
+                                  <option value="paid">Đã TT</option>
+                                  <option value="refunded">Hoàn tiền</option>
+                                </select>
+                              </td>
+
+                              {/* Actions */}
+                              <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedOrderDetail(o)}
+                                  className="admin-action-btn-text view"
+                                  title="Xem chi tiết đơn hàng"
+                                >
+                                  👁️ Xem
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
-              )}
+
+                {/* MOCKUP PAGINATION FOOTER */}
+                {orderPageSize > 0 && orderTotalPages > 0 && (
+                  <div className="admin-pagination-bar">
+                    <div className="admin-pagination-stepper">
+                      <button
+                        type="button"
+                        onClick={() => setOrderPage((p) => Math.max(1, p - 1))}
+                        disabled={currentOrderPage === 1}
+                        className="admin-pagination-stepper-btn"
+                        title="Trang trước"
+                      >
+                        ‹
+                      </button>
+                      <span>
+                        Trang <strong style={{ color: "#ffffff" }}>{currentOrderPage}</strong> / {orderTotalPages}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setOrderPage((p) => Math.min(orderTotalPages, p + 1))}
+                        disabled={currentOrderPage === orderTotalPages}
+                        className="admin-pagination-stepper-btn"
+                        title="Trang sau"
+                      >
+                        ›
+                      </button>
+                    </div>
+
+                    <div className="admin-pagination-numbers">
+                      <button
+                        type="button"
+                        onClick={() => setOrderPage(1)}
+                        disabled={currentOrderPage === 1}
+                        className="admin-pagination-nav-btn"
+                        title="Trang đầu"
+                      >
+                        «
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOrderPage((p) => Math.max(1, p - 1))}
+                        disabled={currentOrderPage === 1}
+                        className="admin-pagination-nav-btn"
+                        title="Trang trước"
+                      >
+                        ‹
+                      </button>
+
+                      {Array.from({ length: orderTotalPages }, (_, i) => i + 1)
+                        .filter((p) => p === 1 || p === orderTotalPages || Math.abs(p - currentOrderPage) <= 2)
+                        .map((p, idx, arr) => {
+                          const prev = arr[idx - 1];
+                          const showEllipsis = prev && p - prev > 1;
+                          return (
+                            <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              {showEllipsis && <span style={{ color: "#71717a", padding: "0 2px" }}>...</span>}
+                              <button
+                                type="button"
+                                onClick={() => setOrderPage(p)}
+                                className={`admin-pagination-page-btn ${p === currentOrderPage ? "active" : ""}`}
+                              >
+                                {p}
+                              </button>
+                            </span>
+                          );
+                        })}
+
+                      <button
+                        type="button"
+                        onClick={() => setOrderPage((p) => Math.min(orderTotalPages, p + 1))}
+                        disabled={currentOrderPage === orderTotalPages}
+                        className="admin-pagination-nav-btn"
+                        title="Trang sau"
+                      >
+                        ›
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOrderPage(orderTotalPages)}
+                        disabled={currentOrderPage === orderTotalPages}
+                        className="admin-pagination-nav-btn"
+                        title="Trang cuối"
+                      >
+                        »
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {/* TAB 5: STAFF & ACCOUNT MANAGEMENT */}
           {activeTab === "staff" && user?.role === "admin" && (
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
+              {/* Header with Emerald Pill Button */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
                 <div>
-                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span>👥</span> Quản Lý Tài Khoản & Nhân Viên
+                  <h2 style={{ fontSize: "22px", fontWeight: 800, margin: 0, color: "#ffffff", letterSpacing: "-0.01em" }}>
+                    Quản trị Tài khoản & Phân quyền Nhân sự
                   </h2>
-                  <p style={{ margin: 0, color: "#a1a1aa", fontSize: "14px" }}>
-                    Thêm Gmail, Số điện thoại của nhân viên và phân quyền truy cập hệ thống
-                  </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setShowAddStaffModal(true)}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#22c55e",
-                    color: "#000",
-                    border: "none",
-                    borderRadius: "6px",
-                    fontWeight: 800,
-                    fontSize: "13px",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
-                    transition: "all 0.2s ease",
+                  onClick={() => {
+                    setStaffFullName("");
+                    setStaffEmail("");
+                    setStaffPhone("");
+                    setStaffPassword("");
+                    setStaffRole("staff");
+                    setShowAddStaffModal(true);
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  className="admin-pill-btn-green"
                 >
-                  <span style={{ fontSize: "16px" }}>+</span> Thêm nhân sự
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Thêm nhân sự mới
                 </button>
               </div>
 
-              {/* Search & Filter Bar */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: "14px",
-                  marginBottom: "24px",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                }}
-              >
-                <div style={{ position: "relative", flex: 1, minWidth: "260px" }}>
-                  <input
-                    type="text"
-                    value={staffSearchQuery}
-                    onChange={(e) => setStaffSearchQuery(e.target.value)}
-                    placeholder="🔍 Tìm theo Gmail, SĐT, Tên nhân viên..."
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      backgroundColor: "#121215",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                      borderRadius: "6px",
-                      color: "#fff",
-                      fontSize: "13px",
-                      outline: "none",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                  {staffSearchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setStaffSearchQuery("")}
-                      style={{
-                        position: "absolute",
-                        right: "10px",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        background: "none",
-                        border: "none",
-                        color: "#71717a",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                      }}
-                    >
-                      ✕
-                    </button>
-                  )}
+              {/* 4 Metric Cards for Staff */}
+              <div className="shadcn-metric-grid" style={{ marginBottom: "20px" }}>
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tổng Nhân Sự</span>
+                    <span style={{ fontSize: "16px" }}>👥</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val">{staffUsers.length}</div>
+                    <div className="shadcn-metric-subtext">Tài khoản trong hệ thống</div>
+                  </div>
                 </div>
 
-                <select
-                  value={staffRoleFilter}
-                  onChange={(e) => setStaffRoleFilter(e.target.value)}
-                  style={{
-                    padding: "10px 14px",
-                    backgroundColor: "#121215",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "6px",
-                    color: "#fff",
-                    fontSize: "13px",
-                    cursor: "pointer",
-                    outline: "none",
-                  }}
-                >
-                  <option value="all">Tất cả ({staffUsers.length})</option>
-                  <option value="admin">Admin ({staffUsers.filter((u) => u.role === "admin").length})</option>
-                  <option value="staff">Staff ({staffUsers.filter((u) => u.role === "staff").length})</option>
-                </select>
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Quản Trị Viên (Admin)</span>
+                    <span style={{ fontSize: "16px" }}>👑</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#c084fc" }}>
+                      {staffUsers.filter((u) => u.role === "admin").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Toàn quyền kiểm soát</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Nhân Viên (Staff)</span>
+                    <span style={{ fontSize: "16px" }}>⚡</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
+                      {staffUsers.filter((u) => u.role === "staff").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Vận hành đơn & sản phẩm</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Đang Hoạt Động</span>
+                    <span style={{ fontSize: "16px" }}>🟢</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#22c55e" }}>
+                      {staffUsers.filter((u) => u.is_active).length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Được phép đăng nhập</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3-COLUMN LABELED SEARCH & FILTER BAR */}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
+                {/* Col 1: Tìm kiếm */}
+                <div style={{ flex: "1 1 280px", minWidth: "220px" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Tìm kiếm nhân sự
+                  </label>
+                  <div style={{ position: "relative" }}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#71717a"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={staffSearchQuery}
+                      onChange={(e) => setStaffSearchQuery(e.target.value)}
+                      placeholder="Gmail, SĐT, Tên nhân viên..."
+                      style={{
+                        width: "100%",
+                        height: "42px",
+                        paddingLeft: "40px",
+                        paddingRight: staffSearchQuery ? "36px" : "14px",
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                        fontSize: "13px",
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                    {staffSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setStaffSearchQuery("")}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "#71717a",
+                          cursor: "pointer",
+                          fontSize: "13px",
+                          padding: "4px",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Col 2: Segmented Role Pills */}
+                <div>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Vai trò
+                  </label>
+                  <div className="admin-filter-segmented-container">
+                    {[
+                      { id: "all", label: `Tất cả (${staffUsers.length})` },
+                      { id: "admin", label: `Admin (${staffUsers.filter((u) => u.role === "admin").length})` },
+                      { id: "staff", label: `Staff (${staffUsers.filter((u) => u.role === "staff").length})` },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setStaffRoleFilter(s.id)}
+                        className={`admin-filter-segmented-btn ${staffRoleFilter === s.id ? "active" : ""}`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Staff Table */}
-              <div
-                style={{
-                  backgroundColor: "#121215",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                }}
-              >
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
-                  <thead>
-                    <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#a1a1aa", fontSize: "11.5px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Nhân Viên</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Email / Gmail</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Số Điện Thoại (SĐT)</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Vai Trò</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Trạng Thái</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Ngày Tạo</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700, textAlign: "right" }}>Thao Tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {staffUsers
-                      .filter((u) => {
-                        const matchRole = staffRoleFilter === "all" || u.role === staffRoleFilter;
-                        const matchSearch =
-                          !staffSearchQuery.trim() ||
-                          u.email.toLowerCase().includes(staffSearchQuery.toLowerCase().trim()) ||
-                          (u.phone && u.phone.includes(staffSearchQuery.trim())) ||
-                          (u.full_name && u.full_name.toLowerCase().includes(staffSearchQuery.toLowerCase().trim()));
-                        return matchRole && matchSearch;
-                      })
-                      .map((u) => {
-                        const isSelf = u.id === user?.id || u.email === user?.email;
-                        return (
-                          <tr
-                            key={u.id}
-                            style={{
-                              borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                              transition: "background 0.15s ease",
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)")}
-                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                          >
-                            <td style={{ padding: "14px 18px" }}>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <div
-                                  style={{
-                                    width: "32px",
-                                    height: "32px",
-                                    borderRadius: "50%",
-                                    backgroundColor:
-                                      u.role === "admin"
-                                        ? "rgba(225, 29, 72, 0.2)"
-                                        : u.role === "staff"
-                                        ? "rgba(16, 185, 129, 0.2)"
-                                        : "rgba(59, 130, 246, 0.2)",
-                                    color:
-                                      u.role === "admin"
-                                        ? "#fb7185"
-                                        : u.role === "staff"
-                                        ? "#34d399"
-                                        : "#60a5fa",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontWeight: 800,
-                                    fontSize: "13px",
-                                  }}
-                                >
-                                  {(u.full_name || u.email).charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                  <div style={{ fontWeight: 700, color: "#fff" }}>
-                                    {u.full_name || "Chưa đặt tên"}
-                                  </div>
-                                  {isSelf && (
-                                    <span style={{ fontSize: "10.5px", color: "#22c55e", fontWeight: 700 }}>(Tài khoản của bạn)</span>
-                                  )}
-                                </div>
-                              </div>
-                            </td>
-                            <td style={{ padding: "14px 18px", color: "#e4e4e7", fontFamily: "monospace" }}>
-                              {u.email}
-                            </td>
-                            <td style={{ padding: "14px 18px", color: "#a1a1aa" }}>
-                              {u.phone ? (
-                                <span style={{ color: "#4ade80", fontWeight: 700 }}>📞 {u.phone}</span>
-                              ) : (
-                                <span style={{ color: "#71717a", fontStyle: "italic" }}>Chưa cập nhật</span>
-                              )}
-                            </td>
-                            <td style={{ padding: "14px 18px" }}>
-                              <span
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "5px",
-                                  padding: "3px 10px",
-                                  borderRadius: "20px",
-                                  fontSize: "11px",
-                                  fontWeight: 800,
-                                  backgroundColor:
-                                    u.role === "admin"
-                                      ? "rgba(225, 29, 72, 0.15)"
-                                      : u.role === "staff"
-                                      ? "rgba(16, 185, 129, 0.15)"
-                                      : "rgba(59, 130, 246, 0.15)",
-                                  color:
-                                    u.role === "admin"
-                                      ? "#fb7185"
-                                      : u.role === "staff"
-                                      ? "#34d399"
-                                      : "#60a5fa",
-                                  border:
-                                    u.role === "admin"
-                                      ? "1px solid rgba(225, 29, 72, 0.4)"
-                                      : u.role === "staff"
-                                      ? "1px solid rgba(16, 185, 129, 0.4)"
-                                      : "1px solid rgba(59, 130, 246, 0.4)",
-                                }}
-                              >
-                                {u.role === "admin" ? "👑 Admin" : u.role === "staff" ? "⚡ Staff" : "👤 Khách hàng"}
-                              </span>
-                            </td>
-                            <td style={{ padding: "14px 18px" }}>
-                              <span
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "6px",
-                                  padding: "3px 8px",
-                                  borderRadius: "4px",
-                                  fontSize: "11px",
-                                  fontWeight: 700,
-                                  backgroundColor: u.is_active ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)",
-                                  color: u.is_active ? "#4ade80" : "#fca5a5",
-                                  border: u.is_active ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)",
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    width: "6px",
-                                    height: "6px",
-                                    borderRadius: "50%",
-                                    backgroundColor: u.is_active ? "#22c55e" : "#ef4444",
-                                  }}
-                                />
-                                {u.is_active ? "Hoạt động" : "Đã khóa"}
-                              </span>
-                            </td>
-                            <td style={{ padding: "14px 18px", color: "#71717a", fontSize: "12px" }}>
-                              {u.created_at
-                                ? new Date(u.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })
-                                : "—"}
-                            </td>
-                            <td style={{ padding: "14px 18px", textAlign: "right" }}>
-                              {isSelf ? (
-                                <span
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "#71717a",
-                                    fontStyle: "italic",
-                                    padding: "5px 8px",
-                                    display: "inline-block",
-                                  }}
-                                >
-                                  Tài khoản hiện tại
-                                </span>
-                              ) : (
-                                <div style={{ display: "inline-flex", gap: "8px" }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleToggleStaffStatus(u)}
-                                    style={{
-                                      padding: "5px 10px",
-                                      backgroundColor: "rgba(255, 255, 255, 0.05)",
-                                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                                      color: u.is_active ? "#facc15" : "#4ade80",
-                                      borderRadius: "4px",
-                                      fontSize: "12px",
-                                      fontWeight: 600,
-                                      cursor: "pointer",
-                                      transition: "all 0.15s ease",
-                                    }}
-                                    title={u.is_active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
-                                  >
-                                    {u.is_active ? "🔒 Khóa" : "🔓 Mở"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDeleteStaff(u)}
-                                    style={{
-                                      padding: "5px 10px",
-                                      backgroundColor: "rgba(239, 68, 68, 0.1)",
-                                      border: "1px solid rgba(239, 68, 68, 0.3)",
-                                      color: "#fca5a5",
-                                      borderRadius: "4px",
-                                      fontSize: "12px",
-                                      fontWeight: 600,
-                                      cursor: "pointer",
-                                      transition: "all 0.15s ease",
-                                    }}
-                                    title="Xóa tài khoản vĩnh viễn"
-                                  >
-                                    🗑 Xóa
-                                  </button>
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    {staffUsers.length === 0 && !isStaffLoading && (
-                      <tr>
-                        <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
-                          Chưa có tài khoản nhân sự nào. Bấm nút &quot;+ Thêm nhân sự&quot; ở góc trên để tạo mới.
-                        </td>
+              <div className="admin-card-container">
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#9ca3af", fontSize: "12.5px", fontWeight: 600, backgroundColor: "#0f0f12" }}>
+                        <th style={{ padding: "14px 16px", width: "40px", textAlign: "center" }}>
+                          <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                        </th>
+                        <th style={{ padding: "14px 16px" }}>Nhân Viên</th>
+                        <th style={{ padding: "14px 16px" }}>Email / Gmail</th>
+                        <th style={{ padding: "14px 16px" }}>Số Điện Thoại</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Vai Trò</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Trạng Thái</th>
+                        <th style={{ padding: "14px 16px", textAlign: "right" }}>Thao Tác</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {staffUsers
+                        .filter((u) => {
+                          const matchRole = staffRoleFilter === "all" || u.role === staffRoleFilter;
+                          const matchSearch =
+                            !staffSearchQuery.trim() ||
+                            u.email.toLowerCase().includes(staffSearchQuery.toLowerCase().trim()) ||
+                            (u.phone && u.phone.includes(staffSearchQuery.trim())) ||
+                            (u.full_name && u.full_name.toLowerCase().includes(staffSearchQuery.toLowerCase().trim()));
+                          return matchRole && matchSearch;
+                        })
+                        .map((u) => {
+                          const isSelf = u.id === user?.id || u.email === user?.email;
+                          return (
+                            <tr
+                              key={u.id}
+                              style={{
+                                borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                                transition: "background-color 0.15s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
+                              }}
+                            >
+                              {/* Checkbox */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                              </td>
+
+                              {/* Name & Avatar */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                  <div
+                                    style={{
+                                      width: "34px",
+                                      height: "34px",
+                                      borderRadius: "50%",
+                                      backgroundColor:
+                                        u.role === "admin"
+                                          ? "rgba(168, 85, 247, 0.2)"
+                                          : "rgba(34, 197, 94, 0.2)",
+                                      color:
+                                        u.role === "admin"
+                                          ? "#c084fc"
+                                          : "#4ade80",
+                                      border: `1px solid ${u.role === "admin"
+                                        ? "rgba(168, 85, 247, 0.4)"
+                                        : "rgba(34, 197, 94, 0.4)"
+                                        }`,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontWeight: 800,
+                                      fontSize: "13px",
+                                      flexShrink: 0,
+                                    }}
+                                  >
+                                    {(u.full_name || u.email).charAt(0).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div style={{ fontWeight: 700, color: "#ffffff", fontSize: "13.5px" }}>
+                                      {u.full_name || "Chưa đặt tên"}
+                                    </div>
+                                    {isSelf && (
+                                      <span style={{ fontSize: "10.5px", color: "#22c55e", fontWeight: 700, display: "block" }}>
+                                        ★ Tài khoản của bạn
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Email */}
+                              <td style={{ padding: "12px 16px", color: "#e4e4e7", fontFamily: "monospace", fontSize: "12.5px" }}>
+                                {u.email}
+                              </td>
+
+                              {/* Phone */}
+                              <td style={{ padding: "12px 16px" }}>
+                                {u.phone ? (
+                                  <span style={{ color: "#4ade80", fontWeight: 700, fontSize: "12.5px" }}>
+                                    📞 {u.phone}
+                                  </span>
+                                ) : (
+                                  <span style={{ color: "#71717a", fontStyle: "italic", fontSize: "12px" }}>
+                                    Chưa cập nhật
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Role */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <span
+                                  className={`shadcn-badge-pill ${u.role === "admin" ? "purple" : u.role === "staff" ? "success" : "info"}`}
+                                >
+                                  {u.role === "admin" ? "👑 Admin" : u.role === "staff" ? "⚡ Staff" : "👤 User"}
+                                </span>
+                              </td>
+
+                              {/* Status */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <span
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                    padding: "4px 10px",
+                                    borderRadius: "9999px",
+                                    fontSize: "11.5px",
+                                    fontWeight: 700,
+                                    backgroundColor: u.is_active ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
+                                    color: u.is_active ? "#4ade80" : "#f87171",
+                                    border: u.is_active ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      width: "6px",
+                                      height: "6px",
+                                      borderRadius: "50%",
+                                      backgroundColor: u.is_active ? "#22c55e" : "#ef4444",
+                                    }}
+                                  />
+                                  {u.is_active ? "Hoạt động" : "Đã khóa"}
+                                </span>
+                              </td>
+
+                              {/* Actions */}
+                              <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                                {isSelf ? (
+                                  <span style={{ fontSize: "12px", color: "#71717a", fontStyle: "italic" }}>
+                                    Đang đăng nhập
+                                  </span>
+                                ) : (
+                                  <div style={{ display: "inline-flex", gap: "8px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleToggleStaffStatus(u)}
+                                      className="admin-action-btn-text"
+                                      title={u.is_active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                                    >
+                                      {u.is_active ? "🔒 Khóa" : "🔓 Mở"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteStaff(u)}
+                                      className="admin-action-btn-text delete"
+                                      title="Xóa tài khoản vĩnh viễn"
+                                    >
+                                      ✕ Xóa
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      {staffUsers.length === 0 && !isStaffLoading && (
+                        <tr>
+                          <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
+                            Chưa có tài khoản nhân sự nào. Bấm nút &quot;+ Thêm nhân sự mới&quot; ở góc trên để tạo mới.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -3560,22 +4423,23 @@ export default function AdminDashboardPage() {
           {/* TAB 6: CATEGORIES MANAGEMENT */}
           {activeTab === "categories" && (
             <div>
+              {/* Header */}
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "24px",
+                  alignItems: "flex-start",
+                  marginBottom: "20px",
                   flexWrap: "wrap",
                   gap: "14px",
                 }}
               >
                 <div>
-                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff" }}>
-                    Quản lý Danh Mục Sản Phẩm
+                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span>🏷️</span> Quản Lý Danh Mục Thiết Bị
                   </h2>
-                  <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
-                    Phân loại thiết bị, hệ thống danh mục âm thanh & DJ cho cửa hàng
+                  <p style={{ margin: 0, fontSize: "14px", color: "#a1a1aa" }}>
+                    Phân loại thiết bị âm thanh, DJ, sân khấu và phụ kiện chuyên nghiệp cho cửa hàng
                   </p>
                 </div>
 
@@ -3587,156 +4451,224 @@ export default function AdminDashboardPage() {
                     setCatDescInput("");
                     setShowAddCategoryModal(true);
                   }}
-                  style={{
-                    padding: "10px 18px",
-                    backgroundColor: "#22c55e",
-                    color: "#000",
-                    border: "none",
-                    borderRadius: "6px",
-                    fontWeight: 800,
-                    fontSize: "13px",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  className="admin-pill-btn-green"
                 >
-                  <span style={{ fontSize: "16px" }}>+</span> Thêm danh mục mới
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>Thêm danh mục mới</span>
                 </button>
               </div>
 
-              {/* Table of categories */}
+              {/* 3 Metric Cards for Categories */}
+              <div className="shadcn-metric-grid" style={{ marginBottom: "20px" }}>
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tổng Số Danh Mục</span>
+                    <span style={{ fontSize: "16px" }}>📁</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val">{categories.length}</div>
+                    <div className="shadcn-metric-subtext">Danh mục trong hệ thống</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Sản Phẩm Đã Phân Loại</span>
+                    <span style={{ fontSize: "16px" }}>🎛️</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
+                      {products.length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Thiết bị đang gán danh mục</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Danh Mục Đang Có Hàng</span>
+                    <span style={{ fontSize: "16px" }}>📦</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#60a5fa" }}>
+                      {categories.filter((c) => products.some((p) => p.category_id === c.id)).length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Có ít nhất 1 sản phẩm</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Search */}
               <div
                 style={{
-                  backgroundColor: "#121215",
+                  backgroundColor: "#161618",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                  borderRadius: "12px",
+                  padding: "16px 20px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  gap: "12px",
+                  alignItems: "center",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
-                  <thead>
-                    <tr
+                <div style={{ position: "relative", flex: 1 }}>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#a1a1aa"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input
+                    type="text"
+                    value={categorySearchQuery}
+                    onChange={(e) => setCategorySearchQuery(e.target.value)}
+                    placeholder="Tìm nhanh danh mục theo tên, đường dẫn (slug), mô tả..."
+                    style={{
+                      width: "100%",
+                      height: "44px",
+                      paddingLeft: "42px",
+                      paddingRight: categorySearchQuery ? "40px" : "16px",
+                      backgroundColor: "#0d0d0f",
+                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      fontSize: "13.5px",
+                      outline: "none",
+                      boxSizing: "border-box",
+                      transition: "border-color 0.2s, box-shadow 0.2s",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = "#22c55e";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(34, 197, 94, 0.15)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.14)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  />
+                  {categorySearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setCategorySearchQuery("")}
                       style={{
-                        backgroundColor: "rgba(255, 255, 255, 0.03)",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-                        color: "#a1a1aa",
-                        fontSize: "11.5px",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
+                        position: "absolute",
+                        right: "12px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        background: "none",
+                        border: "none",
+                        color: "#71717a",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        padding: "4px 6px",
                       }}
+                      title="Xóa tìm kiếm"
                     >
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Tên Danh Mục</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Đường Dẫn (Slug)</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Mô Tả</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700 }}>Số Sản Phẩm</th>
-                      <th style={{ padding: "14px 18px", fontWeight: 700, textAlign: "right" }}>Thao Tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categories.map((cat) => {
-                      const prodCount = products.filter((p) => p.category_id === cat.id).length;
-                      return (
-                        <tr
-                          key={cat.id}
-                          style={{
-                            borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                            transition: "background 0.15s ease",
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                        >
-                          <td style={{ padding: "14px 18px", fontWeight: 700, color: "#fff" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                              <span style={{ fontSize: "18px" }}>🏷️</span>
-                              <span>{cat.name}</span>
-                            </div>
-                          </td>
-                          <td style={{ padding: "14px 18px", color: "#4ade80", fontFamily: "monospace", fontSize: "12px" }}>
-                            /{cat.slug}
-                          </td>
-                          <td style={{ padding: "14px 18px", color: "#a1a1aa", maxWidth: "280px" }}>
-                            <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {cat.description || "—"}
-                            </div>
-                          </td>
-                          <td style={{ padding: "14px 18px" }}>
-                            <span
-                              style={{
-                                display: "inline-block",
-                                padding: "2px 8px",
-                                borderRadius: "4px",
-                                fontSize: "11px",
-                                fontWeight: 700,
-                                backgroundColor: prodCount > 0 ? "rgba(34, 197, 94, 0.12)" : "rgba(255, 255, 255, 0.05)",
-                                color: prodCount > 0 ? "#4ade80" : "#a1a1aa",
-                                border: prodCount > 0 ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(255, 255, 255, 0.1)",
-                              }}
-                            >
-                              {prodCount} sản phẩm
-                            </span>
-                          </td>
-                          <td style={{ padding: "14px 18px", textAlign: "right" }}>
-                            <div style={{ display: "inline-flex", gap: "8px" }}>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setEditingCategory(cat);
-                                  setCatNameInput(cat.name);
-                                  setCatSlugInput(cat.slug);
-                                  setCatDescInput(cat.description || "");
-                                  setShowEditCategoryModal(true);
-                                }}
+                      ✕
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Table of categories */}
+              <div className="admin-card-container">
+                <div style={{ overflowX: "auto" }}>
+                  <table className="shadcn-data-table">
+                    <thead>
+                      <tr>
+                        <th>Tên Danh Mục</th>
+                        <th>Đường Dẫn (Slug)</th>
+                        <th>Mô Tả</th>
+                        <th>Số Sản Phẩm</th>
+                        <th style={{ textAlign: "right" }}>Thao Tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredCategories.map((cat) => {
+                        const prodCount = products.filter((p) => p.category_id === cat.id).length;
+                        return (
+                          <tr key={cat.id}>
+                            <td style={{ fontWeight: 700, color: "#fff" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <span style={{ fontSize: "18px" }}>🏷️</span>
+                                <span style={{ fontSize: "14px" }}>{cat.name}</span>
+                              </div>
+                            </td>
+                            <td style={{ color: "#4ade80", fontFamily: "monospace", fontSize: "12.5px" }}>
+                              /{cat.slug}
+                            </td>
+                            <td style={{ color: "#a1a1aa", maxWidth: "280px" }}>
+                              <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "13px" }}>
+                                {cat.description || "—"}
+                              </div>
+                            </td>
+                            <td>
+                              <span
                                 style={{
-                                  padding: "6px 12px",
-                                  backgroundColor: "rgba(59, 130, 246, 0.12)",
-                                  border: "1px solid rgba(59, 130, 246, 0.4)",
-                                  color: "#60a5fa",
-                                  borderRadius: "5px",
-                                  fontSize: "12px",
+                                  display: "inline-block",
+                                  padding: "3px 10px",
+                                  borderRadius: "9999px",
+                                  fontSize: "11.5px",
                                   fontWeight: 700,
-                                  cursor: "pointer",
-                                  transition: "all 0.15s ease",
+                                  backgroundColor: prodCount > 0 ? "rgba(34, 197, 94, 0.12)" : "rgba(255, 255, 255, 0.05)",
+                                  color: prodCount > 0 ? "#4ade80" : "#a1a1aa",
+                                  border: prodCount > 0 ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(255, 255, 255, 0.1)",
                                 }}
                               >
-                                ✏️ Sửa
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteCategory(cat)}
-                                style={{
-                                  padding: "6px 12px",
-                                  backgroundColor: "rgba(239, 68, 68, 0.12)",
-                                  border: "1px solid rgba(239, 68, 68, 0.4)",
-                                  color: "#fca5a5",
-                                  borderRadius: "5px",
-                                  fontSize: "12px",
-                                  fontWeight: 700,
-                                  cursor: "pointer",
-                                  transition: "all 0.15s ease",
-                                }}
-                              >
-                                🗑 Xóa
-                              </button>
-                            </div>
+                                {prodCount} sản phẩm
+                              </span>
+                            </td>
+                            <td style={{ textAlign: "right" }}>
+                              <div className="admin-action-row">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingCategory(cat);
+                                    setCatNameInput(cat.name);
+                                    setCatSlugInput(cat.slug);
+                                    setCatDescInput(cat.description || "");
+                                    setShowEditCategoryModal(true);
+                                  }}
+                                  className="admin-action-btn-text"
+                                  title="Chỉnh sửa danh mục"
+                                >
+                                  ✏️ Sửa
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteCategory(cat)}
+                                  className="admin-action-btn-text delete"
+                                  title="Xóa danh mục"
+                                >
+                                  ✕ Xóa
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {filteredCategories.length === 0 && (
+                        <tr>
+                          <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
+                            Không tìm thấy danh mục nào phù hợp.
                           </td>
                         </tr>
-                      );
-                    })}
-                    {categories.length === 0 && (
-                      <tr>
-                        <td colSpan={5} style={{ padding: "36px", textAlign: "center", color: "#71717a" }}>
-                          Chưa có danh mục nào. Hãy thêm danh mục đầu tiên!
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -3744,276 +4676,355 @@ export default function AdminDashboardPage() {
           {/* TAB 7: STORE SETTINGS */}
           {activeTab === "settings" && user?.role === "admin" && (
             <div>
-              <div style={{ marginBottom: "24px" }}>
-                <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff" }}>
-                  Cài Đặt Cửa Hàng & Mạng Xã Hội
-                </h2>
-                <p style={{ margin: 0, fontSize: "13px", color: "#a1a1aa" }}>
-                  Quản lý thông tin liên hệ, hotline thuê thiết bị, giờ hoạt động và Facebook Page ID
-                </p>
+              {/* Header with Save Button */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+                <div>
+                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span>⚙️</span> Cài Đặt Hệ Thống & Cửa Hàng
+                  </h2>
+                  <p style={{ margin: 0, fontSize: "14px", color: "#a1a1aa" }}>
+                    Quản lý thông tin thương hiệu, hotline bán hàng, hệ thống showroom (Đà Nẵng, Huế, TP.HCM), dịch vụ thuê và tích hợp Messenger
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const form = document.getElementById("store-settings-form") as HTMLFormElement;
+                    if (form) form.requestSubmit();
+                  }}
+                  disabled={isStoreSettingsSaving}
+                  className="admin-pill-btn-green"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
+                  <span>{isStoreSettingsSaving ? "Đang lưu..." : "Lưu thay đổi"}</span>
+                </button>
               </div>
 
               {isStoreSettingsLoading ? (
-                <div style={{ padding: "40px", textAlign: "center", color: "#a1a1aa" }}>
-                  Đang tải thông tin cài đặt...
+                <div style={{ padding: "60px 20px", textAlign: "center", color: "#a1a1aa" }}>
+                  Đang tải thông tin cài đặt cửa hàng...
                 </div>
               ) : (
-                <form
-                  onSubmit={handleSaveStoreSettings}
-                  style={{
-                    backgroundColor: "#121215",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    borderRadius: "12px",
-                    padding: "28px",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                    maxWidth: "800px",
-                  }}
-                >
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Tên Cửa Hàng / Doanh Nghiệp *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={storeSettings.store_name}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, store_name: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Facebook Page ID (Dành cho nút Thuê qua Messenger) *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="vanbassmusiccenter"
-                        value={storeSettings.facebook_page_id || ""}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, facebook_page_id: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid #22c55e",
-                          borderRadius: "6px",
-                          color: "#4ade80",
-                          fontWeight: 700,
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                      <small style={{ color: "#71717a", fontSize: "11px", display: "block", marginTop: "4px" }}>
-                        ID hoặc username Fanpage (link Messenger: https://m.me/{"{facebook_page_id}"})
-                      </small>
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Số Điện Thoại Bán Hàng *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={storeSettings.phone}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, phone: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Hotline Thuê Thiết Bị
-                      </label>
-                      <input
-                        type="text"
-                        value={storeSettings.rental_phone || ""}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, rental_phone: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Email Bán Hàng
-                      </label>
-                      <input
-                        type="email"
-                        value={storeSettings.email || ""}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, email: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Email Thuê Thiết Bị
-                      </label>
-                      <input
-                        type="email"
-                        value={storeSettings.rental_email || ""}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, rental_email: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Địa Chỉ Cửa Hàng *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={storeSettings.address}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, address: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                        Thành Phố / Tỉnh
-                      </label>
-                      <input
-                        type="text"
-                        value={storeSettings.city}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, city: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          backgroundColor: "#18181b",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: "6px",
-                          color: "#fff",
-                          fontSize: "13.5px",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: "20px" }}>
-                    <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                      Giờ Mở Cửa / Thời Gian Hoạt Động
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="08:00 - 21:00 từ Thứ 2 đến Chủ Nhật"
-                      value={storeSettings.business_hours || ""}
-                      onChange={(e) => setStoreSettings({ ...storeSettings, business_hours: e.target.value })}
+                <form id="store-settings-form" onSubmit={handleSaveStoreSettings}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: "20px", marginBottom: "24px" }}>
+                    {/* Card 1: Thương hiệu & Bán hàng */}
+                    <div
                       style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#18181b",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        borderRadius: "6px",
-                        color: "#fff",
-                        fontSize: "13.5px",
-                        boxSizing: "border-box",
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: "12px",
+                        padding: "24px",
+                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
                       }}
-                    />
-                  </div>
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
+                        <span style={{ fontSize: "18px" }}>🏢</span>
+                        <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
+                          Thông Tin Thương Hiệu & Bán Hàng
+                        </h3>
+                      </div>
 
-                  <div style={{ marginBottom: "28px" }}>
-                    <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px" }}>
-                      Thông Tin Hướng Dẫn Thuê Thiết Bị
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={storeSettings.rental_information || ""}
-                      onChange={(e) => setStoreSettings({ ...storeSettings, rental_information: e.target.value })}
-                      placeholder="Chính sách đặt cọc, giấy tờ tùy thân, giao nhận thiết bị tận nơi..."
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Tên Cửa Hàng / Thương Hiệu <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={storeSettings.store_name}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, store_name: e.target.value })}
+                          className="shadcn-input-control"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Số Điện Thoại Bán Hàng (Hotline) <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={storeSettings.phone}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, phone: e.target.value })}
+                          className="shadcn-input-control"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Email Chăm Sóc Khách Hàng
+                        </label>
+                        <input
+                          type="email"
+                          value={storeSettings.email || ""}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, email: e.target.value })}
+                          className="shadcn-input-control"
+                          placeholder="contact@vanbass.vn"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Giờ Mở Cửa & Phục Vụ
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="08:00 - 21:00 từ Thứ 2 đến Chủ Nhật"
+                          value={storeSettings.business_hours || ""}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, business_hours: e.target.value })}
+                          className="shadcn-input-control"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Card 2: Hệ thống Showroom & Chi nhánh */}
+                    <div
                       style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        backgroundColor: "#18181b",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        borderRadius: "6px",
-                        color: "#fff",
-                        fontSize: "13.5px",
-                        boxSizing: "border-box",
-                        resize: "vertical",
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: "12px",
+                        padding: "24px",
+                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
                       }}
-                    />
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
+                        <span style={{ fontSize: "18px" }}>📍</span>
+                        <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
+                          Hệ Thống Showroom & Chi Nhánh
+                        </h3>
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Địa Chỉ Showroom Chính <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={storeSettings.address}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, address: e.target.value })}
+                          className="shadcn-input-control"
+                          placeholder="123 Nguyễn Văn Linh, Q. Hải Châu"
+                        />
+                      </div>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                        <div>
+                          <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                            Tỉnh / Thành Phố
+                          </label>
+                          <input
+                            type="text"
+                            value={storeSettings.city}
+                            onChange={(e) => setStoreSettings({ ...storeSettings, city: e.target.value })}
+                            className="shadcn-input-control"
+                            placeholder="Đà Nẵng"
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                            Quốc Gia
+                          </label>
+                          <input
+                            type="text"
+                            value={storeSettings.country}
+                            onChange={(e) => setStoreSettings({ ...storeSettings, country: e.target.value })}
+                            className="shadcn-input-control"
+                            placeholder="Việt Nam"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Chi nhánh Huế Highlight Badge */}
+                      <div
+                        style={{
+                          backgroundColor: "rgba(34, 197, 94, 0.08)",
+                          border: "1px dashed rgba(34, 197, 94, 0.35)",
+                          borderRadius: "8px",
+                          padding: "12px 14px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#4ade80", fontWeight: 700, fontSize: "12px", marginBottom: "4px" }}>
+                          <span>🏰</span> Showroom Miền Trung - Huế
+                        </div>
+                        <div style={{ color: "#fff", fontSize: "13px", fontWeight: 600 }}>
+                          442 Chi Lăng, P. Phú Xuân, TP. Huế
+                        </div>
+                        <div style={{ color: "#a1a1aa", fontSize: "11.5px", marginTop: "2px" }}>
+                          Hỗ trợ tư vấn, trải nghiệm âm thanh DJ trực tiếp
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Dịch vụ Thuê thiết bị */}
+                    <div
+                      style={{
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: "12px",
+                        padding: "24px",
+                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
+                        <span style={{ fontSize: "18px" }}>🎛️</span>
+                        <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
+                          Dịch Vụ Cho Thuê Thiết Bị DJ & Âm Thanh
+                        </h3>
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Hotline Thuê Thiết Bị
+                        </label>
+                        <input
+                          type="text"
+                          value={storeSettings.rental_phone || ""}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, rental_phone: e.target.value })}
+                          className="shadcn-input-control"
+                          placeholder="0905123456"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Email Thuê Thiết Bị
+                        </label>
+                        <input
+                          type="email"
+                          value={storeSettings.rental_email || ""}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, rental_email: e.target.value })}
+                          className="shadcn-input-control"
+                          placeholder="rental@vanbass.vn"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Quy Trình & Hướng Dẫn Thuê
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={storeSettings.rental_information || ""}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, rental_information: e.target.value })}
+                          className="shadcn-textarea-control"
+                          placeholder="Chính sách đặt cọc CCCD, giao nhận thiết bị tận nơi, hướng dẫn kết nối..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Card 4: Mạng xã hội & Chat Messenger */}
+                    <div
+                      style={{
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: "12px",
+                        padding: "24px",
+                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
+                        <span style={{ fontSize: "18px" }}>💬</span>
+                        <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
+                          Kênh Mạng Xã Hội & Fanpage Messenger
+                        </h3>
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                          Facebook Page ID / Username <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="vanbassmusiccenter"
+                          value={storeSettings.facebook_page_id || ""}
+                          onChange={(e) => setStoreSettings({ ...storeSettings, facebook_page_id: e.target.value })}
+                          className="shadcn-input-control"
+                        />
+                        <small style={{ color: "#71717a", fontSize: "11.5px", display: "block", marginTop: "6px" }}>
+                          Tên người dùng hoặc ID Fanpage (phục vụ nút &quot;Thuê qua Messenger&quot; trên toàn website)
+                        </small>
+                      </div>
+
+                      {/* Messenger Preview Box */}
+                      <div
+                        style={{
+                          backgroundColor: "rgba(59, 130, 246, 0.08)",
+                          border: "1px solid rgba(59, 130, 246, 0.25)",
+                          borderRadius: "8px",
+                          padding: "14px",
+                          marginTop: "8px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#60a5fa", fontWeight: 700, fontSize: "12.5px", marginBottom: "6px" }}>
+                          <span>⚡</span> Đường dẫn Messenger kết nối trực tiếp:
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "monospace",
+                            fontSize: "12px",
+                            color: "#93c5fd",
+                            backgroundColor: "rgba(0, 0, 0, 0.4)",
+                            padding: "8px 10px",
+                            borderRadius: "4px",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          https://m.me/{storeSettings.facebook_page_id || "vanbassmusiccenter"}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isStoreSettingsSaving}
+                  {/* Submit bar */}
+                  <div
                     style={{
-                      padding: "12px 28px",
-                      backgroundColor: isStoreSettingsSaving ? "#15803d" : "#22c55e",
-                      color: "#000",
-                      border: "none",
-                      borderRadius: "6px",
-                      fontWeight: 800,
-                      fontSize: "14px",
-                      cursor: isStoreSettingsSaving ? "not-allowed" : "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
-                      transition: "all 0.15s ease",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      padding: "20px",
+                      backgroundColor: "#161618",
+                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
                     }}
                   >
-                    {isStoreSettingsSaving ? "⏳ Đang lưu cài đặt..." : "💾 Lưu Thay Đổi Cài Đặt"}
-                  </button>
+                    <button
+                      type="submit"
+                      disabled={isStoreSettingsSaving}
+                      className="admin-pill-btn-green"
+                      style={{
+                        padding: "10px 24px",
+                        fontSize: "14px",
+                      }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                      </svg>
+                      <span>{isStoreSettingsSaving ? "⏳ Đang lưu cài đặt..." : "💾 Lưu Thay Đổi Cài Đặt"}</span>
+                    </button>
+                  </div>
                 </form>
               )}
             </div>
@@ -4027,92 +5038,112 @@ export default function AdminDashboardPage() {
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(0,0,0,0.8)",
-            backdropFilter: "blur(4px)",
-            zIndex: 200,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            zIndex: 99990,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
           }}
           onClick={() => setShowAddCategoryModal(false)}
         >
           <div
             style={{
               width: "100%",
-              maxWidth: "500px",
-              backgroundColor: "#121212",
-              border: "1px solid rgba(255,255,255,0.2)",
+              maxWidth: "520px",
+              backgroundColor: "#121215",
+              border: "1px solid rgba(255, 255, 255, 0.16)",
               borderRadius: "12px",
               padding: "28px",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.8)",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.9)",
+              boxSizing: "border-box",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff" }}>
-                Thêm Danh Mục Mới
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>📁</span> Thêm Danh Mục Thiết Bị Mới
               </h3>
-              <button onClick={() => setShowAddCategoryModal(false)} style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}>
+              <button
+                onClick={() => setShowAddCategoryModal(false)}
+                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer", padding: "4px" }}
+              >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleCreateCategory}>
-              <div style={{ marginBottom: "16px" }}>
+            <form onSubmit={handleCreateCategory} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
                 <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
-                  Tên danh mục *
+                  Tên danh mục <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ví dụ: Bàn DJ All-in-one"
+                  placeholder="Ví dụ: Bàn DJ All-in-one, Loa Sân Khấu..."
                   value={catNameInput}
-                  onChange={(e) => setCatNameInput(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setCatNameInput(val);
+                    if (!catSlugInput || catSlugInput === catNameInput.toLowerCase().replace(/[^a-z0-9]/g, "-")) {
+                      setCatSlugInput(val.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""));
+                    }
+                  }}
+                  className="shadcn-input-control"
                 />
               </div>
 
-              <div style={{ marginBottom: "16px" }}>
+              <div>
                 <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
-                  Đường dẫn (Slug) (Để trống sẽ tự động tạo)
+                  Đường dẫn (Slug SEO)
                 </label>
-                <input
-                  type="text"
-                  placeholder="ban-dj-all-in-one"
-                  value={catSlugInput}
-                  onChange={(e) => setCatSlugInput(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
-                />
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#4ade80", fontFamily: "monospace", fontSize: "13px" }}>
+                    /
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="ban-dj-all-in-one"
+                    value={catSlugInput}
+                    onChange={(e) => setCatSlugInput(e.target.value)}
+                    className="shadcn-input-control"
+                    style={{ paddingLeft: "24px", fontFamily: "monospace", color: "#4ade80" }}
+                  />
+                </div>
+                <small style={{ color: "#71717a", fontSize: "11px", display: "block", marginTop: "4px" }}>
+                  Để trống để hệ thống tự động sinh từ tên danh mục
+                </small>
               </div>
 
-              <div style={{ marginBottom: "24px" }}>
+              <div>
                 <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
-                  Mô tả danh mục
+                  Mô tả tóm tắt danh mục
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Mô tả tóm tắt về danh mục này..."
+                  placeholder="Mô tả các dòng thiết bị thuộc danh mục này..."
                   value={catDescInput}
                   onChange={(e) => setCatDescInput(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box", resize: "vertical" }}
+                  className="shadcn-textarea-control"
                 />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="button"
                   onClick={() => setShowAddCategoryModal(false)}
-                  style={{ padding: "10px 18px", backgroundColor: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "#a1a1aa", borderRadius: "6px", fontWeight: 600, cursor: "pointer" }}
+                  className="admin-pill-btn-dark"
                 >
-                  Hủy
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCat}
-                  style={{ padding: "10px 20px", backgroundColor: "#22c55e", color: "#000", border: "none", borderRadius: "6px", fontWeight: 800, cursor: "pointer" }}
+                  className="admin-pill-btn-green"
                 >
-                  {isSubmittingCat ? "Đang tạo..." : "Tạo danh mục"}
+                  {isSubmittingCat ? "Đang tạo..." : "✓ Tạo danh mục"}
                 </button>
               </div>
             </form>
@@ -4126,13 +5157,14 @@ export default function AdminDashboardPage() {
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(0,0,0,0.8)",
-            backdropFilter: "blur(4px)",
-            zIndex: 200,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            zIndex: 99990,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
           }}
           onClick={() => {
             setShowEditCategoryModal(false);
@@ -4142,86 +5174,93 @@ export default function AdminDashboardPage() {
           <div
             style={{
               width: "100%",
-              maxWidth: "500px",
-              backgroundColor: "#121212",
-              border: "1px solid rgba(255,255,255,0.2)",
+              maxWidth: "520px",
+              backgroundColor: "#121215",
+              border: "1px solid rgba(255, 255, 255, 0.16)",
               borderRadius: "12px",
               padding: "28px",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.8)",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.9)",
+              boxSizing: "border-box",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff" }}>
-                Chỉnh Sửa Danh Mục
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>✏️</span> Chỉnh Sửa Danh Mục
               </h3>
               <button
                 onClick={() => {
                   setShowEditCategoryModal(false);
                   setEditingCategory(null);
                 }}
-                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}
+                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer", padding: "4px" }}
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleUpdateCategory}>
-              <div style={{ marginBottom: "16px" }}>
+            <form onSubmit={handleUpdateCategory} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
                 <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
-                  Tên danh mục *
+                  Tên danh mục <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={catNameInput}
                   onChange={(e) => setCatNameInput(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
+                  className="shadcn-input-control"
                 />
               </div>
 
-              <div style={{ marginBottom: "16px" }}>
+              <div>
                 <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
-                  Đường dẫn (Slug) *
+                  Đường dẫn (Slug SEO) <span style={{ color: "#ef4444" }}>*</span>
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={catSlugInput}
-                  onChange={(e) => setCatSlugInput(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box" }}
-                />
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#4ade80", fontFamily: "monospace", fontSize: "13px" }}>
+                    /
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    value={catSlugInput}
+                    onChange={(e) => setCatSlugInput(e.target.value)}
+                    className="shadcn-input-control"
+                    style={{ paddingLeft: "24px", fontFamily: "monospace", color: "#4ade80" }}
+                  />
+                </div>
               </div>
 
-              <div style={{ marginBottom: "24px" }}>
+              <div>
                 <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
-                  Mô tả danh mục
+                  Mô tả tóm tắt
                 </label>
                 <textarea
                   rows={3}
                   value={catDescInput}
                   onChange={(e) => setCatDescInput(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "6px", color: "#fff", fontSize: "13.5px", boxSizing: "border-box", resize: "vertical" }}
+                  className="shadcn-textarea-control"
                 />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="button"
                   onClick={() => {
                     setShowEditCategoryModal(false);
                     setEditingCategory(null);
                   }}
-                  style={{ padding: "10px 18px", backgroundColor: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "#a1a1aa", borderRadius: "6px", fontWeight: 600, cursor: "pointer" }}
+                  className="admin-pill-btn-dark"
                 >
-                  Hủy
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingCat}
-                  style={{ padding: "10px 20px", backgroundColor: "#22c55e", color: "#000", border: "none", borderRadius: "6px", fontWeight: 800, cursor: "pointer" }}
+                  className="admin-pill-btn-green"
                 >
-                  {isSubmittingCat ? "Đang lưu..." : "Lưu thay đổi"}
+                  {isSubmittingCat ? "Đang lưu..." : "✓ Lưu thay đổi"}
                 </button>
               </div>
             </form>
@@ -4498,14 +5537,14 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={handleCloseAddModal}
-                  className="admin-btn-secondary"
+                  className="admin-pill-btn-dark"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="admin-btn-primary"
+                  className="admin-pill-btn-green"
                   style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
                 >
                   {isSubmitting ? "Đang lưu sản phẩm..." : "Lưu Sản Phẩm"}
@@ -4801,14 +5840,14 @@ export default function AdminDashboardPage() {
                     setShowEditProductModal(false);
                     setEditingProduct(null);
                   }}
-                  className="admin-btn-secondary"
+                  className="admin-pill-btn-dark"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="admin-btn-success"
+                  className="admin-pill-btn-green"
                   style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
                 >
                   {isSubmitting ? "Đang lưu thay đổi..." : "Lưu Cập Nhật"}
@@ -4927,14 +5966,14 @@ export default function AdminDashboardPage() {
               <button
                 type="button"
                 onClick={() => setStatusConfirmModal(null)}
-                className="admin-btn-secondary"
+                className="admin-pill-btn-dark"
               >
                 Hủy bỏ
               </button>
               <button
                 type="button"
                 onClick={handleConfirmStatusChange}
-                className="admin-btn-success"
+                className="admin-pill-btn-green"
               >
                 Xác nhận cập nhật
               </button>
@@ -5034,7 +6073,7 @@ export default function AdminDashboardPage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={() => setDeleteConfirmModal(null)}
-                className="admin-btn-secondary"
+                className="admin-pill-btn-dark"
                 style={{ opacity: isDeleting ? 0.6 : 1, cursor: isDeleting ? "not-allowed" : "pointer" }}
               >
                 Hủy bỏ
@@ -5043,10 +6082,10 @@ export default function AdminDashboardPage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={handleConfirmDeleteProduct}
-                className="admin-btn-danger"
+                className="admin-pill-btn-danger"
                 style={{ opacity: isDeleting ? 0.7 : 1, cursor: isDeleting ? "not-allowed" : "pointer" }}
               >
-                {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+                {isDeleting ? "Đang xóa..." : "✕ Xác nhận xóa"}
               </button>
             </div>
           </div>
@@ -5248,16 +6287,7 @@ export default function AdminDashboardPage() {
               <button
                 type="button"
                 onClick={() => setSelectedOrderDetail(null)}
-                style={{
-                  padding: "10px 24px",
-                  backgroundColor: "#ffffff",
-                  color: "#000000",
-                  border: "none",
-                  borderRadius: "4px",
-                  fontWeight: 800,
-                  fontSize: "13px",
-                  cursor: "pointer",
-                }}
+                className="admin-pill-btn-white"
               >
                 Đóng
               </button>
@@ -5272,13 +6302,14 @@ export default function AdminDashboardPage() {
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(0,0,0,0.85)",
-            backdropFilter: "blur(6px)",
-            zIndex: 200,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            zIndex: 99990,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
           }}
           onClick={() => setShowAddStaffModal(false)}
         >
@@ -5287,29 +6318,30 @@ export default function AdminDashboardPage() {
               width: "100%",
               maxWidth: "520px",
               backgroundColor: "#121215",
-              border: "1px solid rgba(255, 255, 255, 0.18)",
+              border: "1px solid rgba(255, 255, 255, 0.16)",
               borderRadius: "12px",
-              padding: "32px",
-              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.8)",
+              padding: "28px",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.9)",
+              boxSizing: "border-box",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "22px" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>👥</span> Thêm Nhân Sự Mới
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>👥</span> Thêm Nhân Sự / Quản Trị Mới
               </h3>
               <button
                 type="button"
                 onClick={() => setShowAddStaffModal(false)}
-                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}
+                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer", padding: "4px" }}
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleCreateStaff} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+            <form onSubmit={handleCreateStaff} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
                   Họ và tên nhân viên <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
@@ -5318,46 +6350,26 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setStaffFullName(e.target.value)}
                   placeholder="Ví dụ: Nguyễn Văn A"
                   required
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "#09090b",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "6px",
-                    color: "#fff",
-                    fontSize: "13.5px",
-                    boxSizing: "border-box",
-                    outline: "none",
-                  }}
+                  className="shadcn-input-control"
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
                   Email / Gmail nhân viên <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
                   type="email"
                   value={staffEmail}
                   onChange={(e) => setStaffEmail(e.target.value)}
-                  placeholder="Ví dụ: nhanvien@gmail.com"
+                  placeholder="Ví dụ: nhanvien@vanbass.vn"
                   required
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "#09090b",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "6px",
-                    color: "#fff",
-                    fontSize: "13.5px",
-                    boxSizing: "border-box",
-                    outline: "none",
-                  }}
+                  className="shadcn-input-control"
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
                   Số điện thoại (SĐT) <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
@@ -5366,22 +6378,12 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setStaffPhone(e.target.value)}
                   placeholder="Ví dụ: 0905123456"
                   required
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "#09090b",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "6px",
-                    color: "#fff",
-                    fontSize: "13.5px",
-                    boxSizing: "border-box",
-                    outline: "none",
-                  }}
+                  className="shadcn-input-control"
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
                   Mật khẩu khởi tạo <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
@@ -5391,74 +6393,39 @@ export default function AdminDashboardPage() {
                   placeholder="Tối thiểu 6 ký tự"
                   required
                   minLength={6}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "#09090b",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "6px",
-                    color: "#fff",
-                    fontSize: "13.5px",
-                    boxSizing: "border-box",
-                    outline: "none",
-                  }}
+                  className="shadcn-input-control"
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#e4e4e7", marginBottom: "6px" }}>
-                  Vai trò & Quyền hạn
+                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 700, color: "#d4d4d8", marginBottom: "6px" }}>
+                  Vai trò & Phân quyền
                 </label>
                 <select
                   value={staffRole}
                   onChange={(e) => setStaffRole(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "#09090b",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: "6px",
-                    color: "#fff",
-                    fontSize: "13.5px",
-                    boxSizing: "border-box",
-                    outline: "none",
-                  }}
+                  className="shadcn-select-control"
+                  style={{ width: "100%" }}
                 >
-                  <option value="staff">Staff - Nhân viên vận hành</option>
-                  <option value="admin">Admin - Quản trị viên (Toàn quyền)</option>
+                  <option value="staff">⚡ Staff - Nhân viên vận hành (Quản lý đơn, sản phẩm)</option>
+                  <option value="admin">👑 Admin - Quản trị viên (Toàn quyền hệ thống & cài đặt)</option>
                 </select>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="button"
                   onClick={() => setShowAddStaffModal(false)}
-                  style={{
-                    padding: "10px 18px",
-                    backgroundColor: "transparent",
-                    border: "1px solid rgba(255, 255, 255, 0.2)",
-                    color: "#a1a1aa",
-                    borderRadius: "6px",
-                    fontWeight: 700,
-                    fontSize: "13px",
-                    cursor: "pointer",
-                  }}
+                  className="admin-pill-btn-dark"
                 >
-                  Hủy
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingStaff}
+                  className="admin-pill-btn-green"
                   style={{
-                    padding: "10px 22px",
-                    backgroundColor: "#22c55e",
-                    color: "#000",
-                    border: "none",
-                    borderRadius: "6px",
-                    fontWeight: 800,
-                    fontSize: "13px",
                     cursor: isSubmittingStaff ? "wait" : "pointer",
-                    boxShadow: "0 4px 14px rgba(34, 197, 94, 0.4)",
                   }}
                 >
                   {isSubmittingStaff ? "Đang tạo..." : "✓ Lưu nhân sự"}
