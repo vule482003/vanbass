@@ -2,6 +2,7 @@
 
 import { startTransition, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/auth-context";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
@@ -1350,9 +1351,11 @@ export default function AdminDashboardPage() {
       >
         <Link href="/admin" className="brand" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "12px" }}>
           <div className="brand-logo-wrap" style={{ width: "38px", height: "38px" }}>
-            <img
+            <Image
               src="/images/logo.png"
               alt="VanBass Logo"
+              width={38}
+              height={38}
               className="brand-logo-img"
             />
           </div>

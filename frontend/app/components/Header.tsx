@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
@@ -34,6 +35,14 @@ export default function Header() {
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchCatalog, setSearchCatalog] = useState(MOCK_PRODUCTS);
+
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    if (mobileMenuOpen) setMobileMenuOpen(false);
+    if (isSearchDropdownOpen) setIsSearchDropdownOpen(false);
+    if (userDropdownOpen) setUserDropdownOpen(false);
+  }
 
   const islandRef = useRef<HTMLDivElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -75,13 +84,6 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Close menus on page route changes
-  useEffect(() => {
-    setMobileMenuOpen(false);
-    setIsSearchDropdownOpen(false);
-    setUserDropdownOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     const loadSearchCatalog = async () => {
@@ -191,10 +193,13 @@ export default function Header() {
           {/* Logo Brand */}
           <Link href="/" className="brand" aria-label="VanBass Music Center">
             <div className="brand-logo-wrap">
-              <img
+              <Image
                 src="/images/logo.png"
                 alt="VanBass Music Center Logo"
+                width={40}
+                height={40}
                 className="brand-logo-img"
+                priority
               />
             </div>
             <span className="brand-text">

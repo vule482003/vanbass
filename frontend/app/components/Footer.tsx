@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "../lib/language-context";
 
 export default function Footer() {
@@ -12,9 +13,11 @@ export default function Footer() {
         <div className="footer-brand">
           <Link href="/" className="brand" style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
             <div className="brand-logo-wrap" style={{ width: "36px", height: "36px" }}>
-              <img
+              <Image
                 src="/images/logo.png"
                 alt="VanBass Music Center Logo"
+                width={36}
+                height={36}
                 className="brand-logo-img"
               />
             </div>
