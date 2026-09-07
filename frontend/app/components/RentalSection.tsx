@@ -57,7 +57,6 @@ export default function RentalSection({
           <ul className="check-list">
             {features.map((feature, idx) => (
               <li key={idx}>
-                <span>✓</span>
                 {feature}
               </li>
             ))}

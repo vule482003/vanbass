@@ -14,7 +14,7 @@ import { getTranslatedProductName } from "../lib/product-i18n";
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const { totalItems } = useCart();
+  const { items, totalItems, subtotal } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
   const { t, lang } = useLanguage();
 
@@ -34,6 +34,7 @@ export default function Header() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
   const [searchCatalog, setSearchCatalog] = useState(MOCK_PRODUCTS);
 
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -42,6 +43,7 @@ export default function Header() {
     if (mobileMenuOpen) setMobileMenuOpen(false);
     if (isSearchDropdownOpen) setIsSearchDropdownOpen(false);
     if (userDropdownOpen) setUserDropdownOpen(false);
+    if (cartDropdownOpen) setCartDropdownOpen(false);
   }
 
   const islandRef = useRef<HTMLDivElement>(null);
@@ -117,6 +119,7 @@ export default function Header() {
       ) {
         setMobileMenuOpen(false);
         setUserDropdownOpen(false);
+        setCartDropdownOpen(false);
       }
     };
 
@@ -166,7 +169,7 @@ export default function Header() {
           );
         })
         .slice(0, 6)
-    : [];
+      : [];
 
   const handleSelectSearchResult = (slug: string) => {
     setIsSearchDropdownOpen(false);
@@ -182,12 +185,20 @@ export default function Header() {
     }
   };
 
+  const [isHeaderHovered, setIsHeaderHovered] = useState(false);
+
+  const isInteracting = isHeaderHovered || isSearchFocused || isSearchDropdownOpen || userDropdownOpen || cartDropdownOpen || mobileMenuOpen;
   const headerVisibilityClass = isVisible || mobileMenuOpen || isSearchDropdownOpen ? "is-visible" : "is-hidden";
   const headerScrollClass = isScrolled ? "scrolled" : "unscrolled";
   const mobileExpandedClass = mobileMenuOpen ? "mobile-expanded" : "";
+  const headerInteractingClass = isInteracting ? "is-interacting" : "is-idle";
 
   return (
-    <header className={`site-header dynamic-island-header ${headerVisibilityClass} ${headerScrollClass} ${mobileExpandedClass}`}>
+    <header
+      className={`site-header dynamic-island-header ${headerVisibilityClass} ${headerScrollClass} ${mobileExpandedClass} ${headerInteractingClass}`}
+      onMouseEnter={() => setIsHeaderHovered(true)}
+      onMouseLeave={() => setIsHeaderHovered(false)}
+    >
       <div ref={islandRef} className="dynamic-island-pill">
         <div className="header-inner">
           {/* Logo Brand */}
@@ -334,14 +345,121 @@ export default function Header() {
           <div className="header-actions">
             <LanguageSwitcher />
 
-            <Link href="/cart" className="header-cart-btn" aria-label={t.nav.cart}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-              {totalItems > 0 && <span className="header-cart-badge">{totalItems}</span>}
-            </Link>
+            {/* Cart Preview Hover Dropdown */}
+            <div
+              className="header-cart-wrapper"
+              onMouseEnter={() => setCartDropdownOpen(true)}
+              onMouseLeave={() => setCartDropdownOpen(false)}
+              style={{ position: "relative", display: "inline-flex", alignItems: "center" }}
+            >
+              <Link
+                href="/cart"
+                className={`header-cart-btn ${cartDropdownOpen ? "open" : ""}`}
+                aria-label={t.nav.cart}
+                onClick={() => setCartDropdownOpen(false)}
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                {totalItems > 0 && <span className="header-cart-badge">{totalItems}</span>}
+              </Link>
+
+              {cartDropdownOpen && (
+                <div className="header-cart-dropdown">
+                  <div className="cart-preview-header">
+                    <span className="cart-preview-title">{lang === "en" ? "Shopping Cart" : "Giỏ hàng của bạn"}</span>
+                    <span className="cart-preview-count">
+                      {totalItems} {lang === "en" ? (totalItems === 1 ? "item" : "items") : "sản phẩm"}
+                    </span>
+                  </div>
+
+                  {items.length === 0 ? (
+                    <div className="cart-preview-empty">
+                      <p className="cart-empty-text">{lang === "en" ? "Your cart is currently empty" : "Giỏ hàng hiện đang trống"}</p>
+                      <Link
+                        href="/products"
+                        onClick={() => setCartDropdownOpen(false)}
+                        className="cart-preview-explore-btn"
+                      >
+                        {lang === "en" ? "Explore Equipment" : "Khám phá thiết bị"}
+                      </Link>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="cart-preview-items-list">
+                        {items.slice(0, 3).map((item) => (
+                          <Link
+                            key={item.product_id}
+                            href={`/products/${item.slug}`}
+                            onClick={() => setCartDropdownOpen(false)}
+                            className="cart-preview-item-row"
+                          >
+                            <div className="cart-preview-item-thumb">
+                              {item.image_url ? (
+                                <Image
+                                  src={item.image_url.startsWith("/") ? item.image_url : `/${item.image_url}`}
+                                  alt={item.name}
+                                  width={40}
+                                  height={40}
+                                  className="cart-preview-thumb-img"
+                                />
+                              ) : (
+                                <div className="cart-preview-thumb-placeholder" />
+                              )}
+                            </div>
+                            <div className="cart-preview-item-info">
+                              <h5 className="cart-preview-item-name">{item.name}</h5>
+                              <div className="cart-preview-item-meta">
+                                <span className="cart-preview-item-qty">x{item.quantity}</span>
+                                <span className="cart-preview-item-price">
+                                  {lang === "en"
+                                    ? new Intl.NumberFormat("en-US").format(item.sale_price * item.quantity) + "₫"
+                                    : (item.sale_price * item.quantity).toLocaleString("vi-VN") + "₫"}
+                                </span>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                        {items.length > 3 && (
+                          <div className="cart-preview-more-count">
+                            +{items.length - 3} {lang === "en" ? "other items in cart" : "sản phẩm khác trong giỏ"}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="cart-preview-footer">
+                        <div className="cart-preview-subtotal-row">
+                          <span>{lang === "en" ? "Subtotal:" : "Tạm tính:"}</span>
+                          <strong className="cart-preview-subtotal-price">
+                            {lang === "en"
+                              ? new Intl.NumberFormat("en-US").format(subtotal) + "₫"
+                              : subtotal.toLocaleString("vi-VN") + "₫"}
+                          </strong>
+                        </div>
+                        <div className="cart-preview-action-buttons">
+                          <Link
+                            href="/cart"
+                            onClick={() => setCartDropdownOpen(false)}
+                            className="cart-preview-view-btn"
+                          >
+                            {lang === "en" ? "View Cart" : "Xem giỏ hàng"}
+                          </Link>
+                          <Link
+                            href="/checkout"
+                            onClick={() => setCartDropdownOpen(false)}
+                            className="cart-preview-checkout-btn"
+                          >
+                            {lang === "en" ? "Checkout" : "Thanh toán"}
+                          </Link>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
             {isAuthenticated ? (
               <div

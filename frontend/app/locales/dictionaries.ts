@@ -312,6 +312,7 @@ export const dictionaries = {
       callHotline: "Gọi Hotline Tư Vấn Ngay",
       hours: "8:00 - 22:00 Hàng ngày",
       address: "77 Nguyễn Tất Thành, Thanh Khê, Đà Nẵng",
+      addressHue: "442 Chi Lăng, Phú Xuân, TP. Huế",
     },
     auth: {
       loginTitle: "Đăng nhập VanBass",
@@ -459,6 +460,7 @@ export const dictionaries = {
       policiesLink: "Chính sách",
       contact: "Liên hệ",
       addressText: "77 Nguyễn Tất Thành, Thanh Khê, Đà Nẵng",
+      addressHueText: "442 Chi Lăng, Phú Xuân, TP. Huế",
       hoursText: "8:00 - 22:00 Hàng ngày",
       copyright: "VanBass Music Center. All rights reserved.",
       brandsBottom: "PIONEER DJ • ALPHATHETA • ALLEN & HEATH",
@@ -787,6 +789,7 @@ export const dictionaries = {
       callHotline: "Call Advisory Hotline Now",
       hours: "8:00 - 22:00 Daily",
       address: "77 Nguyen Tat Thanh, Thanh Khe, Da Nang",
+      addressHue: "442 Chi Lang, Phu Xuan, Hue City",
     },
     auth: {
       loginTitle: "Sign In to VanBass",
@@ -934,6 +937,7 @@ export const dictionaries = {
       policiesLink: "Policies",
       contact: "Contact",
       addressText: "77 Nguyen Tat Thanh, Thanh Khe, Da Nang",
+      addressHueText: "442 Chi Lang, Phu Xuan, Hue City",
       hoursText: "8:00 - 22:00 Daily",
       copyright: "VanBass Music Center. All rights reserved.",
       brandsBottom: "PIONEER DJ • ALPHATHETA • ALLEN & HEATH",

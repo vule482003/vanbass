@@ -66,33 +66,12 @@ export default function Hero({
   const rightBtnText = lang === "en" ? t.hero.panelShowroomBtn : (heroRight?.button_text || t.hero.panelShowroomBtn);
 
   return (
-    <section className="hero-triptych-section" id="hero">
-      {/* 1. TOP GLOWING INFINITE MARQUEE TICKER (NIGHTLIFE & BRAND PARTNERS) */}
-      {showMarquee && effectiveMarquee.length > 0 && (
-        <div className="hero-marquee-bar">
-          <div className="hero-marquee-track">
-            {effectiveMarquee.map((item, idx) => (
-              <span key={`mq1-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
-                <span className="marquee-item">{item}</span>
-                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
-              </span>
-            ))}
-
-            {/* Seamless Loop duplication */}
-            {effectiveMarquee.map((item, idx) => (
-              <span key={`mq2-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
-                <span className="marquee-item">{item}</span>
-                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 2. 3-COLUMN FULL-BLEED DYNAMIC ACCORDION HERO */}
+    <>
+      {/* 1. TRANG 1: 3-COLUMN FULL-BLEED DYNAMIC ACCORDION HERO (FULL SCREEN 100VH) */}
       {showHero && (
-        <div className="hero-triptych-container">
-          {/* KHUNG 1 (BÊN TRÁI): THIẾT BỊ & HARDWARE */}
+        <section className="hero-triptych-section" id="hero">
+          <div className="hero-triptych-container">
+            {/* KHUNG 1 (BÊN TRÁI): THIẾT BỊ & HARDWARE */}
           <div className="triptych-panel panel-hardware" style={{ position: "relative", overflow: "hidden" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -236,10 +215,6 @@ export default function Hero({
                 data-cms-type="text"
               >
                 <span>{centerBtnText}</span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
               </Link>
             </div>
           </div>
@@ -314,7 +289,30 @@ export default function Hero({
             </div>
           </div>
         </div>
+      </section>
+    )}
+
+      {/* 2. CHUYỂN QUA PAGE 2: THANH GLOWING INFINITE MARQUEE TICKER */}
+      {showMarquee && effectiveMarquee.length > 0 && (
+        <div className="hero-marquee-bar marquee-page-2">
+          <div className="hero-marquee-track">
+            {effectiveMarquee.map((item, idx) => (
+              <span key={`mq1-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
+                <span className="marquee-item">{item}</span>
+                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
+              </span>
+            ))}
+
+            {/* Seamless Loop duplication */}
+            {effectiveMarquee.map((item, idx) => (
+              <span key={`mq2-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
+                <span className="marquee-item">{item}</span>
+                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
-    </section>
+    </>
   );
 }
