@@ -226,9 +226,9 @@ export default function Hero({
 
               <Link
                 href={
-                  heroCenter.link
-                    ? heroCenter.link.replace(/^\/rental(\?.*)?$/, "/products?mode=rental")
-                    : "/products?mode=rental"
+                  heroCenter.link && !heroCenter.link.startsWith("/rental") && heroCenter.link !== "/products?mode=rental"
+                    ? heroCenter.link
+                    : "/thue-ban-dj"
                 }
                 className="triptych-center-btn"
                 data-cms-key="hero_center.button_text"

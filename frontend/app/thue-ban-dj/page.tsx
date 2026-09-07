@@ -6,13 +6,14 @@ import Footer from "../components/Footer";
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Dịch Vụ Cho Thuê Bàn DJ Chuyên Nghiệp Đà Nẵng & Toàn Quốc",
+  title: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4",
   description:
-    "Dịch vụ cho thuê bàn DJ uy tín hàng đầu: Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000. Thiết bị mới 99%, setup tận nơi 24/7, giá thuê rẻ nhất, không cần cọc phức tạp.",
+    "Dịch vụ cho thuê bàn DJ Đà Nẵng & toàn quốc uy tín giá rẻ từ 350k/ngày: Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000. Máy mới 99%, giao và setup tận nơi 24/7, thủ tục nhanh không cần cọc.",
   keywords: [
     "thuê bàn dj",
     "thue ban dj",
     "thuê bàn dj đà nẵng",
+    "thue ban dj da nang",
     "cho thuê bàn dj",
     "thuê bàn dj giá rẻ",
     "DJ PIONEER DJ XDJ-RX3",
@@ -27,9 +28,9 @@ export const metadata: Metadata = {
     canonical: "/thue-ban-dj",
   },
   openGraph: {
-    title: "Dịch Vụ Cho Thuê Bàn DJ Chuyên Nghiệp Đà Nẵng & Toàn Quốc | VanBass",
+    title: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4 | VanBass",
     description:
-      "Cho thuê bàn DJ Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000 giá tốt nhất. Thiết bị mới 99%, giao nhận và setup tận nơi 24/7 tại Đà Nẵng và toàn quốc.",
+      "Dịch vụ cho thuê bàn DJ Đà Nẵng & toàn quốc uy tín giá rẻ từ 350k/ngày: Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000. Máy mới 99%, giao và setup tận nơi 24/7.",
     url: `${baseUrl}/thue-ban-dj`,
     type: "website",
     images: [
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/images/products/xdj-rx3.png`,
         width: 800,
         height: 600,
-        alt: "Dịch Vụ Cho Thuê Bàn DJ Chuyên Nghiệp - VanBass",
+        alt: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ - VanBass",
       },
     ],
   },
@@ -74,19 +75,27 @@ export default function ThueBanDjPage() {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Service",
+        "@type": ["Service", "LocalBusiness"],
         "@id": `${baseUrl}/thue-ban-dj#service`,
-        "name": "Dịch Vụ Cho Thuê Bàn DJ Chuyên Nghiệp - VanBass",
+        "name": "Dịch Vụ Cho Thuê Bàn DJ Đà Nẵng & Toàn Quốc - VanBass",
         "url": `${baseUrl}/thue-ban-dj`,
         "provider": {
-          "@type": "MusicStore",
+          "@type": ["MusicStore", "LocalBusiness"],
           "name": "VanBass Music Center",
           "url": baseUrl,
           "telephone": "+84706067799",
+          "priceRange": "400.000đ - 1.800.000đ",
           "address": {
             "@type": "PostalAddress",
+            "streetAddress": "Đà Nẵng",
             "addressLocality": "Đà Nẵng",
+            "addressRegion": "Đà Nẵng",
             "addressCountry": "VN",
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "16.054407",
+            "longitude": "108.202167",
           },
         },
         "description":
@@ -194,8 +203,8 @@ export default function ThueBanDjPage() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Cho Thuê Bàn DJ Chuyên Nghiệp <br />
-              <span style={{ color: "#22c55e" }}>Pioneer XDJ-RX3, DDJ-FLX4, CDJ-3000</span>
+              Thuê Bàn DJ Đà Nẵng & Toàn Quốc Uy Tín Giá Rẻ <br />
+              <span style={{ color: "#22c55e" }}>Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000</span>
             </h1>
 
             <p
@@ -640,13 +649,38 @@ export default function ThueBanDjPage() {
         {/* Pricing Comparison Table */}
         <section style={{ padding: "70px 0", borderBottom: "1px solid var(--border)" }}>
           <div className="container" style={{ maxWidth: "900px" }}>
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <h2 style={{ fontSize: "28px", fontWeight: 800, color: "#fff" }}>
-                Bảng Giá Cho Thuê Bàn DJ Chi Tiết
+            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <span style={{ color: "#22c55e", fontSize: "13px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                BÁO GIÁ THAM KHẢO
+              </span>
+              <h2 style={{ fontSize: "28px", fontWeight: 800, color: "#fff", marginTop: "8px" }}>
+                Bảng Giá Thuê Bàn DJ Tham Khảo Tại Đà Nẵng Mới Nhất 2026
               </h2>
               <p style={{ color: "#a1a1aa", fontSize: "14px", marginTop: "8px" }}>
-                Đã bao gồm dây jack kết nối chuyên dụng và túi chống sốc. Ưu đãi lớn khi thuê nhiều ngày.
+                Đã bao gồm dây jack kết nối chuyên dụng và túi chống sốc. Ưu đãi giảm 20% - 40% khi thuê nhiều ngày.
               </p>
+            </div>
+
+            {/* Quick Summary Box for Google AI Overview & Featured Snippets */}
+            <div
+              style={{
+                backgroundColor: "rgba(34,197,94,0.06)",
+                border: "1px solid rgba(34,197,94,0.3)",
+                borderRadius: "10px",
+                padding: "24px",
+                marginBottom: "32px",
+              }}
+            >
+              <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#4ade80", margin: "0 0 12px 0" }}>
+                💡 Giá thuê bàn DJ tại khu vực Đà Nẵng dao động từ 400.000 VNĐ đến 1.800.000 VNĐ mỗi ngày tùy theo dòng máy:
+              </h3>
+              <ul style={{ paddingLeft: "20px", margin: 0, fontSize: "14px", color: "#d4d4d8", lineHeight: 1.8 }}>
+                <li><strong style={{ color: "#fff" }}>Dòng cơ bản / Controller nhỏ (như Pioneer DDJ-FLX4, DDJ-400 / tương đương):</strong> Khoảng 400.000 VNĐ/ngày. Thích hợp cho người mới tập chơi, tiệc gia đình, sinh nhật, workshop.</li>
+                <li><strong style={{ color: "#fff" }}>Pioneer XDJ-RX2:</strong> Khoảng 700.000 VNĐ - 800.000 VNĐ/ngày. Hệ thống All-In-One 2 kênh chơi trực tiếp từ USB không cần máy tính.</li>
+                <li><strong style={{ color: "#fff" }}>Pioneer XDJ-RX3:</strong> Khoảng 800.000 VNĐ - 1.200.000 VNĐ/ngày. Màn hình cảm ứng 10.1 inch mượt mà, Release FX chuyên nghiệp cho tiệc cưới, bar lounge, show sự kiện.</li>
+                <li><strong style={{ color: "#fff" }}>Pioneer XDJ-XZ (4 kênh):</strong> Khoảng 1.500.000 VNĐ - 1.800.000 VNĐ/ngày. Mâm xoay Full-size, bộ xử lý âm thanh 64-bit chuẩn Club.</li>
+                <li><strong style={{ color: "#fff" }}>Dàn Club Standard (2x Pioneer CDJ-3000 + Mixer DJM-900NXS2 / A9):</strong> Mức giá riêng theo thỏa thuận cho lễ hội âm nhạc và show lớn.</li>
+              </ul>
             </div>
 
             <div style={{ overflowX: "auto" }}>

@@ -65,8 +65,8 @@ export default function RentalSection({
 
           <Link
             href={
-              !config.button_link || config.button_link === "/products" || config.button_link.startsWith("/rental")
-                ? "/products?mode=rental"
+              !config.button_link || config.button_link === "/products" || config.button_link.startsWith("/rental") || config.button_link === "/products?mode=rental"
+                ? "/thue-ban-dj"
                 : config.button_link
             }
             className="button button-primary"
