@@ -1,0 +1,142 @@
+[
+  {
+    "slug": "all-in-one-dj-systems",
+    "name": "Hệ Thống DJ All-in-One",
+    "description": "Bàn DJ độc lập All-in-One tích hợp màn hình cảm ứng, biểu diễn chuyên nghiệp không cần máy tính."
+  },
+  {
+    "slug": "dj-controllers",
+    "name": "DJ Controllers",
+    "description": "Bàn điều khiển DJ kết nối máy tính chuyên nghiệp từ AlphaTheta và Pioneer DJ."
+  },
+  {
+    "slug": "dj-player",
+    "name": "Đầu Phát DJ (Players)",
+    "description": "Đầu phát đa phương tiện DJ chuyên nghiệp chuẩn club quốc tế CDJ-3000, CDJ-1500X."
+  },
+  {
+    "slug": "turntables",
+    "name": "Mâm Đĩa Than (Turntables)",
+    "description": "Mâm xoay đĩa than vinyl chuyên nghiệp cho DJ scratch và người chơi đĩa than cao cấp."
+  },
+  {
+    "slug": "dj-mixers",
+    "name": "Mixer DJ Chuyên Nghiệp",
+    "description": "Bàn trộn âm thanh DJ từ 2 kênh đến 6 kênh cao cấp Pioneer DJM, Euphonia."
+  },
+  {
+    "slug": "dj-sampler",
+    "name": "DJ Sampler & Remix",
+    "description": "Thiết bị lấy mẫu âm thanh Sampler và Remix Stations biểu diễn live độc đáo."
+  },
+  {
+    "slug": "dj-software-interfaces",
+    "name": "DJ Software & Audio Interfaces",
+    "description": "Hộp giải mã DVS, card âm thanh và phụ kiện phần mềm rekordbox, Serato DJ."
+  },
+  {
+    "slug": "mixer-ban-tron-am-thanh",
+    "name": "Mixer - Bàn Trộn Âm Thanh",
+    "description": "Bàn trộn âm thanh sân khấu Analog & Digital chuyên nghiệp Mackie, Behringer, Marani."
+  },
+  {
+    "slug": "loa-roi",
+    "name": "Loa Rời & Củ Treble",
+    "description": "Củ loa rời, loa bass rời 2 tấc đến 5 tấc và củ treble B&C Speakers Italy, P.Audio."
+  },
+  {
+    "slug": "phu-kien-loa-roi",
+    "name": "Phụ Kiện Loa Rời",
+    "description": "Họng kèn loa treble, màng loa thay thế diaphragm và phụ kiện củ loa rời."
+  },
+  {
+    "slug": "loa-thung-pro-audio",
+    "name": "Loa Thùng & Sân Khấu Pro Audio",
+    "description": "Hệ thống loa thùng biểu diễn sân khấu, loa cột PA, loa Line Array và Subwoofer công suất lớn."
+  },
+  {
+    "slug": "loa-kiem-am",
+    "name": "Loa Kiểm Âm (Monitor Speakers)",
+    "description": "Loa kiểm âm phòng thu Studio Monitor và loa kiểm âm sân khấu độ chính xác cao."
+  },
+  {
+    "slug": "amplifier-cong-suat",
+    "name": "Amplifier - Cục Đẩy Công Suất",
+    "description": "Cục đẩy công suất âm thanh nguồn xung và nguồn xuyến chuyên nghiệp cho hệ thống âm thanh lớn."
+  },
+  {
+    "slug": "thiet-bi-xu-ly-tin-hieu",
+    "name": "Thiết Bị Xử Lý Tín Hiệu (DSP)",
+    "description": "Bộ xử lý tín hiệu kỹ thuật số DSP Marani, Crossover, Equalizer, Compressor tối ưu âm thanh."
+  },
+  {
+    "slug": "may-tao-khoi",
+    "name": "Máy Tạo Khói & Sương Sân Khấu",
+    "description": "Máy tạo khói sân khấu, máy khói lạnh, máy tạo sương Haze, máy tạo bong bóng Antari Châu Âu."
+  },
+  {
+    "slug": "dung-dich-tao-khoi",
+    "name": "Dung Dịch & Nước Tạo Khói",
+    "description": "Nước tạo khói tiêu chuẩn, dung dịch khói nhẹ Haze, nước bong bóng, nước tuyết và tinh dầu tạo hương."
+  },
+  {
+    "slug": "quat-dieu-huong",
+    "name": "Quạt Điều Hướng Sân Khấu",
+    "description": "Quạt gió chuyên dụng khuếch tán khói và tạo hiệu ứng gió sân khấu biểu diễn."
+  },
+  {
+    "slug": "micro-khong-day",
+    "name": "Micro Không Dây Chuyên Nghiệp",
+    "description": "Hệ thống micro không dây UHF cao cấp Sennheiser EW-D, micro cài áo, micro gài đầu, anten thu sóng."
+  },
+  {
+    "slug": "micro-co-day",
+    "name": "Micro Có Dây & Phòng Thu",
+    "description": "Micro có dây dynamic cho ca sĩ, micro thu âm condenser phòng thu, micro nhạc cụ chuyên nghiệp."
+  },
+  {
+    "slug": "headphones-dj",
+    "name": "Tai Nghe DJ & Kiểm Âm",
+    "description": "Tai nghe DJ chuyên nghiệp cách âm đỉnh cao AlphaTheta, Sennheiser HD 25, Pioneer DJ."
+  },
+  {
+    "slug": "day-tin-hieu-day-loa",
+    "name": "Dây Tín Hiệu - Dây Loa",
+    "description": "Dây cáp tín hiệu âm thanh Klotz AIS Germany, dây loa đồng nguyên chất chống nhiễu tuyệt đối."
+  },
+  {
+    "slug": "giac-ket-noi",
+    "name": "Giắc Kết Nối Âm Thanh",
+    "description": "Đầu giắc Canon XLR, jack 6 ly, Speakon Neutrik và RCA mạ vàng chất lượng cao."
+  },
+  {
+    "slug": "nhac-cu",
+    "name": "Nhạc Cụ & Trống Jazz",
+    "description": "Nhạc cụ biểu diễn, bộ trống Jazz, trống điện tử, máy tạo nhịp Drum Machine."
+  },
+  {
+    "slug": "la-cymbal",
+    "name": "Lá Cymbal",
+    "description": "Lá Cymbal Sabian Canada chính hãng cho dàn trống Jazz chuyên nghiệp."
+  },
+  {
+    "slug": "phu-kien-nhac-cu",
+    "name": "Phụ Kiện Nhạc Cụ",
+    "description": "Phụ kiện dùi trống, chân đế, bao đàn, phụ kiện nhạc cụ biểu diễn."
+  },
+  {
+    "slug": "phu-kien-dj",
+    "name": "Phụ Kiện DJ",
+    "description": "Bao chống sốc, túi đựng bàn DJ, nắp nhựa mica Decksaver, giá đỡ laptop cho DJ."
+  },
+  {
+    "slug": "phu-kien",
+    "name": "Phụ Kiện Âm Thanh Tổng Hợp",
+    "description": "Giá treo loa, tủ rack, module điều khiển, phụ kiện Sennheiser và thiết bị âm thanh tổng hợp."
+  },
+  {
+    "slug": "hieu-ung-anh-sang-da-quang",
+    "name": "Hiệu Ứng Ánh Sáng & UV",
+    "description": "Đèn UV tia cực tím dạ quang, sơn phản quang nghệ thuật sân khấu, bar club."
+  }
+]

@@ -31,7 +31,7 @@ export default function ProductCard({
   const { t, lang } = useLanguage();
   const [imageError, setImageError] = useState(false);
 
-  function formatVND(amount?: number) {
+  function formatVND(amount?: number | null) {
     if (amount === undefined || amount === null) return t.products.contactPrice;
     return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN", {
       style: "currency",
@@ -59,6 +59,7 @@ export default function ProductCard({
   const resolveImageUrl = (url?: string) => {
     if (!url) return null;
     if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
+    if (url.startsWith("/images/")) return url;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
     const backendBase = apiUrl.replace(/\/api\/?$/, "");
     return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;

@@ -247,14 +247,17 @@ export default function VisualCategoryBar({
 
   return (
     <div style={{ marginBottom: "44px" }}>
-      {/* 1. Category Showcase Grid Cards */}
+      {/* 1. Category Showcase Scrollable Bar */}
       <div
         className="category-showcase-container"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
-          gap: "14px",
+          display: "flex",
+          gap: "12px",
           marginBottom: "20px",
+          overflowX: "auto",
+          paddingBottom: "12px",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {allCategoryCards.map((cat) => {
@@ -267,6 +270,8 @@ export default function VisualCategoryBar({
               onClick={() => onSelectCategory(cat.slug)}
               className={`visual-category-card ${isActive ? "is-active" : ""}`}
               style={{
+                flex: "0 0 155px",
+                scrollSnapAlign: "start",
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",

@@ -21,7 +21,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const [addedNotice, setAddedNotice] = useState(false);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
 
-  function formatVND(amount?: number) {
+  function formatVND(amount?: number | null) {
     if (!amount || isNaN(amount)) return t.products.contactPrice;
     return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN").format(amount) + " ₫";
   }

@@ -14,7 +14,7 @@ interface CompareDrawerProps {
   onClearAll: () => void;
 }
 
-function formatVND(amount?: number, lang: "vi" | "en" = "vi") {
+function formatVND(amount?: number | null, lang: "vi" | "en" = "vi") {
   if (!amount || isNaN(amount)) return lang === "en" ? "Contact" : "Liên hệ";
   return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN").format(amount) + " ₫";
 }

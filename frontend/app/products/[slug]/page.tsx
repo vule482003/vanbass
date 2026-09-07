@@ -190,6 +190,7 @@ export default function ProductDetailPage() {
                   const resolveImageUrl = (url?: string) => {
                     if (!url) return null;
                     if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
+                    if (url.startsWith("/images/")) return url;
                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
                     const backendBase = apiUrl.replace(/\/api\/?$/, "");
                     return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
