@@ -297,12 +297,11 @@ def pay_order(
 
 @router.post(
     "/webhook/bank-transfer",
-    response_model=OrderResponse,
 )
 def bank_transfer_webhook(
     payload: BankWebhookPayload,
     db: Session = Depends(get_db),
-) -> Order:
+):
     text_content = (
         payload.content or payload.description or payload.code or ""
     ).strip()
@@ -335,10 +334,11 @@ def bank_transfer_webhook(
                 break
 
     if not target_order:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Không tìm thấy đơn hàng tương ứng với nội dung chuyển khoản",
-        )
+        # Tra ve 200 OK de SePAY biet webhook hoat dong binh thuong (vi du: SePAY test ping hoac giao dich khong lien quan)
+        return {
+            "success": True,
+            "message": "Webhook received successfully, no matching unpaid order found",
+        }
 
     target_order.payment_status = PaymentStatus.PAID
     target_order.payment_method = payload.gateway or "vietqr"
@@ -347,4 +347,8 @@ def bank_transfer_webhook(
 
     db.commit()
     db.refresh(target_order)
-    return target_order
+    return {
+        "success": True,
+        "order_number": target_order.order_number,
+        "payment_status": target_order.payment_status.value,
+    }

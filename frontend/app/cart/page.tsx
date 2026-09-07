@@ -2,7 +2,7 @@
 
 import { startTransition, useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../lib/cart-context";
@@ -145,7 +145,7 @@ function CartContent() {
   // Orders History list
   const [myOrders, setMyOrders] = useState<MyOrderItem[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
-  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+  const router = useRouter();
 
   // Cancellation Modal
   const [cancelModal, setCancelModal] = useState<{
@@ -203,32 +203,9 @@ function CartContent() {
     }
   }, [token, activeTab, fetchMyOrders]);
 
-  // Pay directly via VNPAY
-  const handlePayOrderVnpay = async (orderId: string) => {
-    setPayingOrderId(orderId);
-    try {
-      const headers: Record<string, string> = {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
-      const res = await fetch(`${apiUrl}/orders/${orderId}/vnpay/create-payment`, {
-        method: "POST",
-        headers,
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.payment_url) {
-          window.location.href = data.payment_url;
-          return;
-        }
-      }
-      const err = await res.json().catch(() => ({ detail: "Không thể khởi tạo cổng VNPAY" }));
-      alert(err.detail || "Không thể kết nối đến VNPAY. Vui lòng thử lại sau.");
-    } catch (e) {
-      console.error("VNPAY pay error:", e);
-      alert("Lỗi kết nối đến máy chủ thanh toán.");
-    } finally {
-      setPayingOrderId(null);
-    }
+  // Pay directly via VietQR
+  const handlePayOrderVnpay = (orderId: string) => {
+    router.push(`/payment?order_id=${orderId}`);
   };
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
@@ -276,23 +253,8 @@ function CartContent() {
         fetchMyOrders();
 
         if (paymentMethod === "vietqr" || paymentMethod === "vnpay" || paymentMethod === "online" || paymentMethod === "banking" || paymentMethod === "visa") {
-          try {
-            const vnpayRes = await fetch(`${apiUrl}/orders/${orderData.id}/vnpay/create-payment`, {
-              method: "POST",
-              headers,
-            });
-            if (vnpayRes.ok) {
-              const vnpayData = await vnpayRes.json();
-              if (vnpayData.payment_url) {
-                window.location.href = vnpayData.payment_url;
-                return;
-              }
-            }
-          } catch (vnpayErr) {
-            console.error("VNPAY payment initiation error:", vnpayErr);
-          }
-          setActiveTab("history");
-          setErrorMsg(lang === "en" ? "Order recorded. You can click 'Pay via VNPay' below." : "Đơn hàng đã được ghi nhận. Bạn có thể bấm nút 'Thanh Toán VNPAY' bên dưới để thanh toán.");
+          router.push(`/payment?order_id=${orderData.id}`);
+          return;
         } else {
           setOrderSuccess(true);
         }
@@ -575,12 +537,11 @@ function CartContent() {
                     {createdOrderId && paymentMethod !== "cod" && (
                       <button
                         type="button"
-                        disabled={payingOrderId === createdOrderId}
                         onClick={() => handlePayOrderVnpay(createdOrderId)}
                         className="button button-primary"
                         style={{ cursor: "pointer", backgroundColor: "#22c55e", color: "#000", fontWeight: 800 }}
                       >
-                        {payingOrderId === createdOrderId ? (lang === "en" ? "⏳ Connecting..." : "⏳ Đang kết nối...") : t.checkout.payVnpayNow}
+                        {lang === "en" ? "⚡ Pay via VietQR Now →" : "⚡ Quét mã VietQR Thanh Toán →"}
                       </button>
                     )}
                     <button
@@ -1283,7 +1244,6 @@ function CartContent() {
                               {ord.payment_status === "unpaid" && ord.status !== "cancelled" && (
                                 <button
                                   type="button"
-                                  disabled={payingOrderId === ord.id}
                                   onClick={() => handlePayOrderVnpay(ord.id)}
                                   style={{
                                     padding: "8px 18px",
@@ -1293,7 +1253,7 @@ function CartContent() {
                                     fontSize: "13px",
                                     fontWeight: 900,
                                     borderRadius: "4px",
-                                    cursor: payingOrderId === ord.id ? "not-allowed" : "pointer",
+                                    cursor: "pointer",
                                     boxShadow: "0 0 14px rgba(34, 197, 94, 0.4)",
                                     display: "inline-flex",
                                     alignItems: "center",
@@ -1301,8 +1261,8 @@ function CartContent() {
                                     transition: "all 0.2s ease",
                                   }}
                                 >
-                                  <span>{payingOrderId === ord.id ? "⏳" : "⚡"}</span>
-                                  {payingOrderId === ord.id ? (lang === "en" ? "Connecting VNPAY..." : "Đang mở VNPAY...") : t.orderHistory.payNowBtn}
+                                  <span>⚡</span>
+                                  {lang === "en" ? "⚡ Pay via VietQR" : "⚡ Thanh toán VietQR"}
                                 </button>
                               )}
 
