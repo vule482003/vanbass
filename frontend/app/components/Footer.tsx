@@ -11,7 +11,13 @@ export default function Footer() {
       <div className="container footer-grid">
         <div className="footer-brand">
           <Link href="/" className="brand" style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
-            <span className="brand-mark" style={{ width: "30px", height: "30px", fontSize: "10px" }}>VB</span>
+            <div className="brand-logo-wrap" style={{ width: "36px", height: "36px" }}>
+              <img
+                src="/images/logo.png"
+                alt="VanBass Music Center Logo"
+                className="brand-logo-img"
+              />
+            </div>
             <span className="brand-text" style={{ fontSize: "14px" }}>
               VANBASS
               <small style={{ fontSize: "6.5px" }}>MUSIC CENTER</small>

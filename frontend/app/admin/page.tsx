@@ -1349,9 +1349,13 @@ export default function AdminDashboardPage() {
         }}
       >
         <Link href="/admin" className="brand" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "12px" }}>
-          <span className="brand-mark" style={{ width: "36px", height: "36px", fontSize: "12px" }}>
-            VB
-          </span>
+          <div className="brand-logo-wrap" style={{ width: "38px", height: "38px" }}>
+            <img
+              src="/images/logo.png"
+              alt="VanBass Logo"
+              className="brand-logo-img"
+            />
+          </div>
           <span className="brand-text" style={{ fontSize: "17px" }}>
             VANBASS
             <small style={{ color: "#22c55e", letterSpacing: "0.22em" }}>ADMIN PANEL</small>

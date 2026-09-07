@@ -57,6 +57,14 @@ export const metadata: Metadata = {
     description:
       "Dịch vụ cho thuê bàn DJ Pioneer XDJ-RX3, DDJ-FLX4, loa biểu diễn B&C Speakers và thiết bị sự kiện chuyên nghiệp.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/images/logo.png", type: "image/png" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -67,6 +75,9 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`h-full antialiased ${montserrat.variable}`} suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="kVT29kH_KCrgKEpwrhUIHZNuYyK5NSNLs0PTC3nrruI" />
+        <link rel="icon" href="/icon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
         <JsonLd />
       </head>
       <body className={`min-h-full flex flex-col ${montserrat.className}`} suppressHydrationWarning>

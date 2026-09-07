@@ -9,8 +9,8 @@ export default function JsonLd() {
         "@id": `${baseUrl}/#organization`,
         "name": "VanBass Music Center",
         "url": baseUrl,
-        "logo": `${baseUrl}/logo.png`,
-        "image": `${baseUrl}/images/products/xdj-rx3.png`,
+        "logo": `${baseUrl}/images/logo.png`,
+        "image": `${baseUrl}/images/logo.png`,
         "description": "Trung tâm phân phối & dịch vụ cho thuê bàn DJ (Pioneer DJ XDJ-RX3, DDJ-FLX4, CDJ-3000), Mixer, Loa biểu diễn chính hãng tại Đà Nẵng và toàn quốc",
         "telephone": "+84706067799",
         "priceRange": "$$",
@@ -76,6 +76,7 @@ export default function JsonLd() {
         "@id": `${baseUrl}/#website`,
         "url": baseUrl,
         "name": "VanBass Music Center",
+        "alternateName": ["VanBass", "VanBass DJ", "VanBass Music"],
         "description": "Dịch vụ cho thuê bàn DJ & thiết bị âm thanh chuyên nghiệp Đà Nẵng",
         "publisher": {
           "@id": `${baseUrl}/#organization`,
