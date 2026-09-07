@@ -20,11 +20,12 @@ export default function Header() {
   const navLinks = useMemo(
     () => [
       { href: "/", label: t.nav.home },
+      { href: "/thue-ban-dj", label: lang === "vi" ? "Thuê Bàn DJ" : "DJ Rental" },
       { href: "/products", label: t.nav.products },
       { href: "/about", label: t.nav.about },
       { href: "/contact", label: t.nav.contact },
     ],
-    [t.nav.home, t.nav.products, t.nav.about, t.nav.contact]
+    [t.nav.home, t.nav.products, t.nav.about, t.nav.contact, lang]
   );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

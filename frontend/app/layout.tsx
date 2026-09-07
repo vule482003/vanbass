@@ -20,14 +20,40 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vanbass.vn"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "VanBass Music Center | Thiết bị DJ & Âm thanh chuyên nghiệp Đà Nẵng",
+    default: "VanBass Music Center | Cho Thuê Bàn DJ & Thiết Bị Âm Thanh Chuyên Nghiệp",
     template: "%s | VanBass Music Center",
   },
   description:
-    "Trung tâm phân phối và cho thuê thiết bị DJ, DJ Controller, Mixer, CDJ, Loa biểu diễn và giải pháp âm thanh sự kiện chuyên nghiệp tại Đà Nẵng, Việt Nam.",
+    "Trung tâm phân phối & dịch vụ cho thuê bàn DJ (Pioneer DJ XDJ-RX3, DDJ-FLX4, CDJ-3000), Mixer, Loa biểu diễn B&C Speakers và thiết bị âm thanh sự kiện uy tín hàng đầu.",
+  keywords: [
+    "thuê bàn dj",
+    "thue ban dj",
+    "thuê bàn dj đà nẵng",
+    "cho thuê bàn dj",
+    "DJ PIONEER DJ XDJ-RX3",
+    "DJ Pioneer DDJ-FLX4 – DJ Controller",
+    "bàn dj pioneer",
+    "alphatheta dj",
+    "thiết bị dj",
+    "vanbass music center",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "vi_VN",
+    url: siteUrl,
+    siteName: "VanBass Music Center",
+    title: "VanBass Music Center | Cho Thuê Bàn DJ & Thiết Bị Âm Thanh Chuyên Nghiệp",
+    description:
+      "Dịch vụ cho thuê bàn DJ Pioneer XDJ-RX3, DDJ-FLX4, loa biểu diễn B&C Speakers và thiết bị sự kiện chuyên nghiệp.",
+  },
 };
 
 export default function RootLayout({

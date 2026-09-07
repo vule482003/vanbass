@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="footer-column">
           <h3>{t.footer.explore}</h3>
           <Link href="/products">{t.footer.productsLink}</Link>
-          <Link href="/products?mode=rental">{t.footer.rentalLink}</Link>
+          <Link href="/thue-ban-dj">{t.footer.rentalLink}</Link>
           <Link href="/about">{t.footer.aboutLink}</Link>
         </div>
 

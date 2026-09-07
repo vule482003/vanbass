@@ -2,13 +2,19 @@ import { MetadataRoute } from "next";
 import { MOCK_PRODUCTS } from "./lib/mock-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://vanbass.vn";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
   const now = new Date();
 
   // Static routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/thue-ban-dj`,
       lastModified: now,
       changeFrequency: "daily",
       priority: 1.0,

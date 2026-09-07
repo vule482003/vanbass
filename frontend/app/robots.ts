@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vn";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
 
   return {
     rules: [
@@ -9,8 +9,10 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: [
           "/",
+          "/thue-ban-dj",
           "/products",
           "/products/*",
+          "/images/*",
           "/about",
           "/contact",
           "/static/uploads/*",

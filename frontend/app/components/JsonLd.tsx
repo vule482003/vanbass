@@ -1,14 +1,17 @@
 export default function JsonLd() {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
+
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "MusicStore",
-        "@id": "https://vanbass.vn/#organization",
+        "@type": ["MusicStore", "LocalBusiness"],
+        "@id": `${baseUrl}/#organization`,
         "name": "VanBass Music Center",
-        "url": "https://vanbass.vn",
-        "logo": "https://vanbass.vn/logo.png",
-        "description": "Trung tâm phân phối & cho thuê thiết bị DJ, DJ Controller, Mixer, CDJ, Loa biểu diễn chính hãng tại Đà Nẵng",
+        "url": baseUrl,
+        "logo": `${baseUrl}/logo.png`,
+        "image": `${baseUrl}/images/products/xdj-rx3.png`,
+        "description": "Trung tâm phân phối & dịch vụ cho thuê bàn DJ (Pioneer DJ XDJ-RX3, DDJ-FLX4, CDJ-3000), Mixer, Loa biểu diễn chính hãng tại Đà Nẵng và toàn quốc",
         "telephone": "+84706067799",
         "priceRange": "$$",
         "address": {
@@ -40,22 +43,46 @@ export default function JsonLd() {
           },
         ],
         "sameAs": [
-          "https://facebook.com/vanbass",
+          "https://facebook.com/vanbassmusiccenter",
           "https://instagram.com/vanbass",
         ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Dịch Vụ Cho Thuê Bàn DJ & Thiết Bị Âm Thanh",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Cho Thuê Bàn DJ Pioneer DJ XDJ-RX3 All-In-One",
+                "url": `${baseUrl}/thue-ban-dj`,
+                "description": "Dịch vụ cho thuê bàn DJ độc lập Pioneer XDJ-RX3 màn hình 10.1 inch biểu diễn sự kiện, tiệc cưới, bar club chuyên nghiệp.",
+              },
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Cho Thuê Bàn DJ Pioneer DDJ-FLX4 Controller",
+                "url": `${baseUrl}/thue-ban-dj`,
+                "description": "Dịch vụ cho thuê bàn DJ Controller Pioneer DDJ-FLX4 2 kênh cho Rekordbox và Serato DJ, nhỏ gọn, giá rẻ.",
+              },
+            },
+          ],
+        },
       },
       {
         "@type": "WebSite",
-        "@id": "https://vanbass.vn/#website",
-        "url": "https://vanbass.vn",
+        "@id": `${baseUrl}/#website`,
+        "url": baseUrl,
         "name": "VanBass Music Center",
-        "description": "Thiết bị DJ & Âm thanh chuyên nghiệp Đà Nẵng",
+        "description": "Dịch vụ cho thuê bàn DJ & thiết bị âm thanh chuyên nghiệp Đà Nẵng",
         "publisher": {
-          "@id": "https://vanbass.vn/#organization",
+          "@id": `${baseUrl}/#organization`,
         },
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://vanbass.vn/products?q={search_term_string}",
+          "target": `${baseUrl}/products?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       },
