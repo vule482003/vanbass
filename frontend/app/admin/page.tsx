@@ -105,12 +105,12 @@ interface OrderItem {
 }
 
 const ORDER_STATUS_LABELS: Record<string, string> = {
-  pending: "⏳ Chờ xử lý",
-  confirmed: "✓ Đã xác nhận",
-  processing: "📦 Đang chuẩn bị",
-  shipped: "🚚 Đang giao hàng",
-  completed: "🎉 Hoàn thành",
-  cancelled: "✕ Đã hủy",
+  pending: "Chờ xử lý",
+  confirmed: "Đã xác nhận",
+  processing: "Đang chuẩn bị",
+  shipped: "Đang giao hàng",
+  completed: "Hoàn thành",
+  cancelled: "Đã hủy",
 };
 
 const ORDER_PAYMENT_STATUS_LABELS: Record<string, string> = {
@@ -1461,14 +1461,14 @@ export default function AdminDashboardPage() {
   if (!user || (user.role !== "admin" && user.role !== "staff")) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", backgroundColor: "#090909", color: "#fff", textAlign: "center", padding: "20px" }}>
-        <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔒</div>
+        
         <h1 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 12px 0" }}>Truy cập bị từ chối</h1>
         <p style={{ color: "#a1a1aa", maxWidth: "420px", marginBottom: "24px" }}>
           Tài khoản <strong>{user?.email}</strong> không có quyền Quản trị viên (Admin) hoặc Nhân viên (Staff) để truy cập trang này.
         </p>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
           <Link href="/profile" style={{ padding: "12px 24px", backgroundColor: "#22c55e", color: "#000", fontWeight: 700, textDecoration: "none", borderRadius: "6px" }}>
-            👤 Về Hồ Sơ Cá Nhân (/profile)
+            Về Hồ Sơ Cá Nhân (/profile)
           </Link>
           <Link href="/" style={{ padding: "12px 24px", backgroundColor: "#fff", color: "#000", fontWeight: 700, textDecoration: "none", borderRadius: "4px" }}>
             Trang chủ
@@ -2741,7 +2741,7 @@ export default function AdminDashboardPage() {
                         <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#22c55e", display: "inline-block" }}></span>
                       </div>
                       <span style={{ fontSize: "12px", fontWeight: 800, color: "#fff", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                        <span>🎨</span> Visual Builder
+                        Visual Builder
                         <span style={{ fontSize: "10px", fontWeight: 800, padding: "2px 6px", backgroundColor: "rgba(34, 197, 94, 0.15)", color: "#4ade80", border: "1px solid rgba(34, 197, 94, 0.4)", borderRadius: "4px" }}>
                           0s DELAY
                         </span>
@@ -2753,9 +2753,9 @@ export default function AdminDashboardPage() {
                     {/* Device Selector */}
                     <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                       {[
-                        { id: "desktop", label: "💻 100%" },
-                        { id: "tablet", label: "📱 Tablet" },
-                        { id: "mobile", label: "📱 Mobile" },
+                        { id: "desktop", label: "Desktop (100%)" },
+                        { id: "tablet", label: "Tablet" },
+                        { id: "mobile", label: "Mobile" },
                       ].map((d) => (
                         <button
                           key={d.id}
@@ -2796,7 +2796,7 @@ export default function AdminDashboardPage() {
                         }}
                         title="Tải lại khung xem trước"
                       >
-                        🔄 Tải lại
+                        Tải lại
                       </button>
                       <Link
                         href="/"
@@ -2841,7 +2841,7 @@ export default function AdminDashboardPage() {
                       }}
                       title="Khôi phục về mẫu giao diện gốc"
                     >
-                      🔄 Mặc định
+                      Mặc định
                     </button>
 
                     <button
@@ -2859,7 +2859,7 @@ export default function AdminDashboardPage() {
                       }}
                       title="Hủy các thay đổi chưa lưu và khôi phục bản đã lưu gần nhất"
                     >
-                      ↩️ Hủy bỏ
+                      Hủy bỏ
                     </button>
 
                     <button
@@ -2888,7 +2888,7 @@ export default function AdminDashboardPage() {
                         </>
                       ) : (
                         <>
-                          <span>💾</span>
+                          
                           <span>Lưu Thay Đổi (Publish)</span>
                         </>
                       )}
@@ -2951,7 +2951,7 @@ export default function AdminDashboardPage() {
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", paddingBottom: "10px" }}>
                 <span style={{ fontSize: "13px", fontWeight: 800, color: "#4ade80", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span>✏️</span> {inlineEditor.label}
+                  {inlineEditor.label}
                 </span>
                 <button
                   type="button"
@@ -3008,7 +3008,7 @@ export default function AdminDashboardPage() {
                       onClick={() => centerHeroFileRef.current?.click()}
                       style={{ padding: "8px 14px", backgroundColor: "#22c55e", color: "#000", fontWeight: 800, border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", whiteSpace: "nowrap" }}
                     >
-                      📷 Tải ảnh lên
+                      Tải ảnh lên
                     </button>
                   </div>
                 </div>
@@ -3035,7 +3035,7 @@ export default function AdminDashboardPage() {
               )}
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "14px", paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                <span style={{ fontSize: "11px", color: "#71717a" }}>✨ Cập nhật live...</span>
+                <span style={{ fontSize: "11px", color: "#71717a" }}>Cập nhật live...</span>
                 <button
                   type="button"
                   onClick={() => setInlineEditor(null)}
@@ -3244,7 +3244,7 @@ export default function AdminDashboardPage() {
                       {paginatedProducts.length === 0 ? (
                         <tr>
                           <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center", color: "#71717a" }}>
-                            <div style={{ fontSize: "36px", marginBottom: "12px" }}>🔍</div>
+                            
                             <div style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", marginBottom: "6px" }}>
                               Không tìm thấy sản phẩm nào phù hợp
                             </div>
@@ -3301,7 +3301,7 @@ export default function AdminDashboardPage() {
                                       style={{ objectFit: "contain", width: "100%", height: "100%" }}
                                     />
                                   ) : (
-                                    <span style={{ fontSize: "18px" }}>🎧</span>
+                                    <span style={{ fontSize: "10px", color: "#71717a" }}>No img</span>
                                   )}
                                 </div>
                               </td>
@@ -3496,7 +3496,7 @@ export default function AdminDashboardPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
                 <div>
                   <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span>📦</span> Quản Lý Đơn Hàng & Giao Nhận
+                    Quản Lý Đơn Hàng & Giao Nhận
                   </h2>
                   <p style={{ fontSize: "14px", color: "#a1a1aa", margin: 0 }}>
                     Theo dõi tiến độ đơn hàng bán thiết bị, trạng thái thanh toán và cập nhật giao vận
@@ -3525,7 +3525,7 @@ export default function AdminDashboardPage() {
                       gap: "6px",
                     }}
                   >
-                    <span>🔄</span> Làm mới bộ lọc
+                    Làm mới bộ lọc
                   </button>
                 </div>
               </div>
@@ -3536,7 +3536,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Tổng Đơn Hàng</span>
-                    <span style={{ fontSize: "16px" }}>📑</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val">{orders.length}</div>
@@ -3548,7 +3548,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Chờ Xử Lý</span>
-                    <span style={{ fontSize: "16px" }}>⏳</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#facc15" }}>
@@ -3562,7 +3562,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Đang Vận Chuyển</span>
-                    <span style={{ fontSize: "16px" }}>🚚</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#60a5fa" }}>
@@ -3576,7 +3576,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Đã Hoàn Thành</span>
-                    <span style={{ fontSize: "16px" }}>🎉</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
@@ -3712,9 +3712,9 @@ export default function AdminDashboardPage() {
                     }}
                   >
                     <option value="all">Tất cả thanh toán</option>
-                    <option value="paid">✓ Đã thanh toán</option>
-                    <option value="unpaid">⏳ Chưa thanh toán</option>
-                    <option value="refunded">↩️ Đã hoàn tiền</option>
+                    <option value="paid">Đã thanh toán</option>
+                    <option value="unpaid">Chưa thanh toán</option>
+                    <option value="refunded">Đã hoàn tiền</option>
                   </select>
                 </div>
               </div>
@@ -3742,7 +3742,7 @@ export default function AdminDashboardPage() {
                       {filteredOrders.length === 0 ? (
                         <tr>
                           <td colSpan={9} style={{ padding: "60px 20px", textAlign: "center", color: "#71717a" }}>
-                            <div style={{ fontSize: "36px", marginBottom: "12px" }}>🔍</div>
+                            
                             <div style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", marginBottom: "6px" }}>
                               Không tìm thấy đơn hàng nào
                             </div>
@@ -3798,7 +3798,7 @@ export default function AdminDashboardPage() {
                               {/* Customer */}
                               <td style={{ padding: "12px 16px" }}>
                                 <div style={{ fontWeight: 700, color: "#ffffff", fontSize: "13px" }}>{o.shipping_name}</div>
-                                <div style={{ fontSize: "11.5px", color: "#a1a1aa" }}>📞 {o.shipping_phone}</div>
+                                <div style={{ fontSize: "11.5px", color: "#a1a1aa" }}>SĐT: {o.shipping_phone}</div>
                               </td>
 
                               {/* Shipping Address */}
@@ -3888,12 +3888,12 @@ export default function AdminDashboardPage() {
                                     outline: "none",
                                   }}
                                 >
-                                  <option value="pending">⏳ Chờ xử lý</option>
-                                  <option value="confirmed">✓ Đã xác nhận</option>
-                                  <option value="processing">📦 Đang chuẩn bị</option>
-                                  <option value="shipped">🚚 Đang giao hàng</option>
-                                  <option value="completed">🎉 Hoàn thành</option>
-                                  <option value="cancelled">✕ Đã hủy</option>
+                                  <option value="pending">Chờ xử lý</option>
+                                  <option value="confirmed">Đã xác nhận</option>
+                                  <option value="processing">Đang chuẩn bị</option>
+                                  <option value="shipped">Đang giao hàng</option>
+                                  <option value="completed">Hoàn thành</option>
+                                  <option value="cancelled">Đã hủy</option>
                                 </select>
                               </td>
 
@@ -3956,7 +3956,7 @@ export default function AdminDashboardPage() {
                                   className="admin-action-btn-text view"
                                   title="Xem chi tiết đơn hàng"
                                 >
-                                  👁️ Xem
+                                  Xem
                                 </button>
                               </td>
                             </tr>
@@ -4093,7 +4093,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Tổng Nhân Sự</span>
-                    <span style={{ fontSize: "16px" }}>👥</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val">{staffUsers.length}</div>
@@ -4104,7 +4104,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Quản Trị Viên (Admin)</span>
-                    <span style={{ fontSize: "16px" }}>👑</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#c084fc" }}>
@@ -4117,7 +4117,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Nhân Viên (Staff)</span>
-                    <span style={{ fontSize: "16px" }}>⚡</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
@@ -4130,7 +4130,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Đang Hoạt Động</span>
-                    <span style={{ fontSize: "16px" }}>🟢</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#22c55e" }}>
@@ -4314,7 +4314,7 @@ export default function AdminDashboardPage() {
                                     </div>
                                     {isSelf && (
                                       <span style={{ fontSize: "10.5px", color: "#22c55e", fontWeight: 700, display: "block" }}>
-                                        ★ Tài khoản của bạn
+                                        (Tài khoản của bạn)
                                       </span>
                                     )}
                                   </div>
@@ -4330,7 +4330,7 @@ export default function AdminDashboardPage() {
                               <td style={{ padding: "12px 16px" }}>
                                 {u.phone ? (
                                   <span style={{ color: "#4ade80", fontWeight: 700, fontSize: "12.5px" }}>
-                                    📞 {u.phone}
+                                    SĐT: {u.phone}
                                   </span>
                                 ) : (
                                   <span style={{ color: "#71717a", fontStyle: "italic", fontSize: "12px" }}>
@@ -4344,7 +4344,7 @@ export default function AdminDashboardPage() {
                                 <span
                                   className={`shadcn-badge-pill ${u.role === "admin" ? "purple" : u.role === "staff" ? "success" : "info"}`}
                                 >
-                                  {u.role === "admin" ? "👑 Admin" : u.role === "staff" ? "⚡ Staff" : "👤 User"}
+                                  {u.role === "admin" ? "Admin" : u.role === "staff" ? "Staff" : "User"}
                                 </span>
                               </td>
 
@@ -4390,7 +4390,7 @@ export default function AdminDashboardPage() {
                                       className="admin-action-btn-text"
                                       title={u.is_active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
                                     >
-                                      {u.is_active ? "🔒 Khóa" : "🔓 Mở"}
+                                      {u.is_active ? "Khóa" : "Mở"}
                                     </button>
                                     <button
                                       type="button"
@@ -4436,7 +4436,7 @@ export default function AdminDashboardPage() {
               >
                 <div>
                   <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span>🏷️</span> Quản Lý Danh Mục Thiết Bị
+                    Quản Lý Danh Mục Thiết Bị
                   </h2>
                   <p style={{ margin: 0, fontSize: "14px", color: "#a1a1aa" }}>
                     Phân loại thiết bị âm thanh, DJ, sân khấu và phụ kiện chuyên nghiệp cho cửa hàng
@@ -4466,7 +4466,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Tổng Số Danh Mục</span>
-                    <span style={{ fontSize: "16px" }}>📁</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val">{categories.length}</div>
@@ -4477,7 +4477,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Sản Phẩm Đã Phân Loại</span>
-                    <span style={{ fontSize: "16px" }}>🎛️</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
@@ -4490,7 +4490,7 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Danh Mục Đang Có Hàng</span>
-                    <span style={{ fontSize: "16px" }}>📦</span>
+                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#60a5fa" }}>
@@ -4602,7 +4602,7 @@ export default function AdminDashboardPage() {
                           <tr key={cat.id}>
                             <td style={{ fontWeight: 700, color: "#fff" }}>
                               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <span style={{ fontSize: "18px" }}>🏷️</span>
+                                
                                 <span style={{ fontSize: "14px" }}>{cat.name}</span>
                               </div>
                             </td>
@@ -4644,7 +4644,7 @@ export default function AdminDashboardPage() {
                                   className="admin-action-btn-text"
                                   title="Chỉnh sửa danh mục"
                                 >
-                                  ✏️ Sửa
+                                  Sửa
                                 </button>
                                 <button
                                   type="button"
@@ -4680,7 +4680,7 @@ export default function AdminDashboardPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
                 <div>
                   <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span>⚙️</span> Cài Đặt Hệ Thống & Cửa Hàng
+                    Cài Đặt Hệ Thống & Cửa Hàng
                   </h2>
                   <p style={{ margin: 0, fontSize: "14px", color: "#a1a1aa" }}>
                     Quản lý thông tin thương hiệu, hotline bán hàng, hệ thống showroom (Đà Nẵng, Huế, TP.HCM), dịch vụ thuê và tích hợp Messenger
@@ -4726,7 +4726,7 @@ export default function AdminDashboardPage() {
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
-                        <span style={{ fontSize: "18px" }}>🏢</span>
+                        
                         <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
                           Thông Tin Thương Hiệu & Bán Hàng
                         </h3>
@@ -4799,7 +4799,7 @@ export default function AdminDashboardPage() {
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
-                        <span style={{ fontSize: "18px" }}>📍</span>
+                        
                         <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
                           Hệ Thống Showroom & Chi Nhánh
                         </h3>
@@ -4858,7 +4858,7 @@ export default function AdminDashboardPage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#4ade80", fontWeight: 700, fontSize: "12px", marginBottom: "4px" }}>
-                          <span>🏰</span> Showroom Miền Trung - Huế
+                          Showroom Miền Trung - Huế
                         </div>
                         <div style={{ color: "#fff", fontSize: "13px", fontWeight: 600 }}>
                           442 Chi Lăng, P. Phú Xuân, TP. Huế
@@ -4883,7 +4883,7 @@ export default function AdminDashboardPage() {
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
-                        <span style={{ fontSize: "18px" }}>🎛️</span>
+                        
                         <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
                           Dịch Vụ Cho Thuê Thiết Bị DJ & Âm Thanh
                         </h3>
@@ -4943,7 +4943,7 @@ export default function AdminDashboardPage() {
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "12px" }}>
-                        <span style={{ fontSize: "18px" }}>💬</span>
+                        
                         <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#fff", margin: 0 }}>
                           Kênh Mạng Xã Hội & Fanpage Messenger
                         </h3>
@@ -4977,7 +4977,7 @@ export default function AdminDashboardPage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#60a5fa", fontWeight: 700, fontSize: "12.5px", marginBottom: "6px" }}>
-                          <span>⚡</span> Đường dẫn Messenger kết nối trực tiếp:
+                          Đường dẫn Messenger kết nối trực tiếp:
                         </div>
                         <div
                           style={{
@@ -5022,7 +5022,7 @@ export default function AdminDashboardPage() {
                         <polyline points="17 21 17 13 7 13 7 21" />
                         <polyline points="7 3 7 8 15 8" />
                       </svg>
-                      <span>{isStoreSettingsSaving ? "⏳ Đang lưu cài đặt..." : "💾 Lưu Thay Đổi Cài Đặt"}</span>
+                      <span>{isStoreSettingsSaving ? "Đang lưu cài đặt..." : "Lưu Thay Đổi Cài Đặt"}</span>
                     </button>
                   </div>
                 </form>
@@ -5064,7 +5064,7 @@ export default function AdminDashboardPage() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
               <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>📁</span> Thêm Danh Mục Thiết Bị Mới
+                Thêm Danh Mục Thiết Bị Mới
               </h3>
               <button
                 onClick={() => setShowAddCategoryModal(false)}
@@ -5186,7 +5186,7 @@ export default function AdminDashboardPage() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
               <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>✏️</span> Chỉnh Sửa Danh Mục
+                Chỉnh Sửa Danh Mục
               </h3>
               <button
                 onClick={() => {
@@ -5373,7 +5373,7 @@ export default function AdminDashboardPage() {
                         fontWeight: 600,
                       }}
                     >
-                      🔄 Đổi mã
+                      Đổi mã
                     </button>
                   </div>
                   <input
@@ -5451,7 +5451,7 @@ export default function AdminDashboardPage() {
               {/* Row 4: Image Input & Upload */}
               <div style={{ marginBottom: "16px", padding: "16px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#fff", marginBottom: "8px", textTransform: "uppercase" }}>
-                  📸 Hình ảnh thiết bị (Dán link URL hoặc Tải từ máy tính)
+                  Hình ảnh thiết bị (Dán link URL hoặc Tải từ máy tính)
                 </label>
 
                 {/* Option A: Direct Image URL */}
@@ -5514,7 +5514,7 @@ export default function AdminDashboardPage() {
               {/* Row 6: SEO Metadata */}
               <div style={{ padding: "14px", backgroundColor: "#0f0f11", border: "1px dashed rgba(255,255,255,0.15)", marginBottom: "24px" }}>
                 <p style={{ margin: "0 0 10px 0", fontSize: "12px", fontWeight: 700, color: "#22c55e", textTransform: "uppercase" }}>
-                  🎯 Cấu hình SEO Google (Tùy chọn)
+                  Cấu hình SEO Google (Tùy chọn)
                 </p>
                 <input
                   type="text"
@@ -5588,7 +5588,7 @@ export default function AdminDashboardPage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
               <div>
                 <h3 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff" }}>
-                  ✏️ Chỉnh Sửa & Cập Nhật Sản Phẩm
+                  Chỉnh Sửa & Cập Nhật Sản Phẩm
                 </h3>
                 <span style={{ fontSize: "12px", color: "#22c55e", fontWeight: 700 }}>
                   ID: {editingProduct.id} | SKU: {editingProduct.sku}
@@ -5672,7 +5672,7 @@ export default function AdminDashboardPage() {
                         fontWeight: 600,
                       }}
                     >
-                      🔄 Tạo mã mới
+                      Tạo mã mới
                     </button>
                   </div>
                   <input
@@ -5751,7 +5751,7 @@ export default function AdminDashboardPage() {
               {/* Row 4: Image Input & Upload */}
               <div style={{ marginBottom: "16px", padding: "16px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#fff", marginBottom: "8px", textTransform: "uppercase" }}>
-                  📸 Hình ảnh thiết bị (Dán link URL hoặc Tải file ảnh mới)
+                  Hình ảnh thiết bị (Dán link URL hoặc Tải file ảnh mới)
                 </label>
 
                 {/* Option A: Direct Image URL */}
@@ -5814,7 +5814,7 @@ export default function AdminDashboardPage() {
               {/* Row 6: SEO Metadata */}
               <div style={{ padding: "14px", backgroundColor: "#0f0f11", border: "1px dashed rgba(255,255,255,0.15)", marginBottom: "24px" }}>
                 <p style={{ margin: "0 0 10px 0", fontSize: "12px", fontWeight: 700, color: "#22c55e", textTransform: "uppercase" }}>
-                  🎯 Cấu hình SEO Google (Tùy chọn)
+                  Cấu hình SEO Google (Tùy chọn)
                 </p>
                 <input
                   type="text"
@@ -5904,7 +5904,7 @@ export default function AdminDashboardPage() {
                   flexShrink: 0,
                 }}
               >
-                ⚠️
+                
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: "17px", fontWeight: 800, color: "#ffffff" }}>
@@ -6028,7 +6028,7 @@ export default function AdminDashboardPage() {
                   flexShrink: 0,
                 }}
               >
-                🗑️
+                
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 800, color: "#ffffff" }}>
@@ -6159,20 +6159,20 @@ export default function AdminDashboardPage() {
               {/* Shipping info */}
               <div style={{ backgroundColor: "#0d0e0f", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "6px", padding: "16px" }}>
                 <span style={{ fontSize: "11px", color: "#a1a1aa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "10px" }}>
-                  📦 Thông tin giao hàng
+                  Thông tin giao hàng
                 </span>
                 <div style={{ fontSize: "14px", color: "#fff", fontWeight: 700, marginBottom: "4px" }}>
                   {selectedOrderDetail.shipping_name}
                 </div>
                 <div style={{ fontSize: "13px", color: "#60a5fa", marginBottom: "6px" }}>
-                  📞 {selectedOrderDetail.shipping_phone}
+                  SĐT: {selectedOrderDetail.shipping_phone}
                 </div>
                 <div style={{ fontSize: "13px", color: "#cbd5e1", lineHeight: 1.4 }}>
-                  📍 {selectedOrderDetail.shipping_address}
+                  Địa chỉ: {selectedOrderDetail.shipping_address}
                 </div>
                 {selectedOrderDetail.customer_note && (
                   <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px dashed rgba(255,255,255,0.1)", fontSize: "12px", color: "#fbbf24" }}>
-                    💬 Ghi chú: {selectedOrderDetail.customer_note}
+                    Ghi chú: {selectedOrderDetail.customer_note}
                   </div>
                 )}
               </div>
@@ -6180,7 +6180,7 @@ export default function AdminDashboardPage() {
               {/* Status info */}
               <div style={{ backgroundColor: "#0d0e0f", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "6px", padding: "16px" }}>
                 <span style={{ fontSize: "11px", color: "#a1a1aa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "10px" }}>
-                  📋 Trạng thái & Thanh toán
+                  Trạng thái & Thanh toán
                 </span>
                 <div style={{ marginBottom: "12px" }}>
                   <span style={{ fontSize: "12px", color: "#71717a", display: "block", marginBottom: "4px" }}>Trạng thái đơn:</span>
@@ -6209,7 +6209,7 @@ export default function AdminDashboardPage() {
             {/* Products Table */}
             <div style={{ marginBottom: "24px" }}>
               <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "12px" }}>
-                🛒 Danh sách sản phẩm ({selectedOrderDetail.items?.length || 0})
+                Danh sách sản phẩm ({selectedOrderDetail.items?.length || 0})
               </span>
               <div style={{ backgroundColor: "#0d0e0f", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "6px", overflow: "hidden" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
@@ -6328,7 +6328,7 @@ export default function AdminDashboardPage() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
               <h3 style={{ fontSize: "18px", fontWeight: 800, margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>👥</span> Thêm Nhân Sự / Quản Trị Mới
+                Thêm Nhân Sự / Quản Trị Mới
               </h3>
               <button
                 type="button"
@@ -6407,8 +6407,8 @@ export default function AdminDashboardPage() {
                   className="shadcn-select-control"
                   style={{ width: "100%" }}
                 >
-                  <option value="staff">⚡ Staff - Nhân viên vận hành (Quản lý đơn, sản phẩm)</option>
-                  <option value="admin">👑 Admin - Quản trị viên (Toàn quyền hệ thống & cài đặt)</option>
+                  <option value="staff">Staff - Nhân viên vận hành (Quản lý đơn, sản phẩm)</option>
+                  <option value="admin">Admin - Quản trị viên (Toàn quyền hệ thống & cài đặt)</option>
                 </select>
               </div>
 

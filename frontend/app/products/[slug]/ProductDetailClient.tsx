@@ -364,7 +364,7 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
                       className="button button-secondary"
                       style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "13px", padding: "8px 16px" }}
                     >
-                      <span>💬</span> {t.productDetail.consultMessenger}
+                      {t.productDetail.consultMessenger}
                     </a>
                   </div>
                 </div>

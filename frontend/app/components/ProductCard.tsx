@@ -113,7 +113,7 @@ export default function ProductCard({
               fontWeight: 800,
             }}
           >
-            {currentMode === "rental" ? `🎧 ${t.products.rentBtnShort}` : t.products.rentBtnShort}
+            {t.products.rentBtnShort}
           </span>
         )}
 
@@ -167,7 +167,7 @@ export default function ProductCard({
               }}
               title={t.products.quickView}
             >
-              👁️ {t.products.quickView}
+              {t.products.quickView}
             </button>
           )}
 
@@ -197,7 +197,7 @@ export default function ProductCard({
               }}
               title={isCompared ? t.products.compared : t.products.compare}
             >
-              {isCompared ? `✓ ${t.products.compared}` : `⚖️ ${t.products.compare}`}
+              {isCompared ? `✓ ${t.products.compared}` : t.products.compare}
             </button>
           )}
         </div>

@@ -593,7 +593,7 @@ export default function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="mobile-user-link"
                   >
-                    <span>🛡️ {t.nav.adminPanel}</span>
+                    <span>{t.nav.adminPanel}</span>
                   </Link>
                 )}
                 <Link
@@ -601,7 +601,7 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="mobile-user-link"
                 >
-                  <span>👤 {t.nav.profile} ({user?.full_name || user?.email})</span>
+                  <span>{t.nav.profile} ({user?.full_name || user?.email})</span>
                 </Link>
                 <button
                   onClick={() => {
@@ -611,7 +611,7 @@ export default function Header() {
                   }}
                   className="mobile-logout-btn"
                 >
-                  <span>🚪 {t.nav.logout}</span>
+                  <span>{t.nav.logout}</span>
                 </button>
               </div>
             ) : (

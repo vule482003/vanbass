@@ -51,7 +51,7 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontSize: "13px", fontWeight: 800, color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span>⚖️</span> {t.compareDrawer.barTitle} ({products.length}/3)
+            {t.compareDrawer.barTitle} ({products.length}/3)
           </span>
 
           {/* Product Thumbnails */}

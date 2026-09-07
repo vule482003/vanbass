@@ -169,7 +169,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   letterSpacing: "0.05em",
                 }}
               >
-                🎧 CÓ CHO THUÊ
+                CÓ CHO THUÊ
               </span>
             )}
           </div>
@@ -345,7 +345,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   className="button button-primary"
                   style={{ flex: 1, padding: "13px 20px", fontSize: "13px" }}
                 >
-                  🛒 {t.products.addToCart}
+                  {t.products.addToCart}
                 </button>
               ) : (
                 <button
@@ -379,7 +379,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                     borderColor: "rgba(34, 197, 94, 0.4)",
                   }}
                 >
-                  💬 {t.products.rentBtnShort}
+                  {t.products.rentBtnShort}
                 </a>
               )}
             </div>

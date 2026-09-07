@@ -680,7 +680,7 @@ export default function ThueBanDjPage() {
               }}
             >
               <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#4ade80", margin: "0 0 12px 0" }}>
-                💡 Giá thuê bàn DJ tại khu vực Đà Nẵng dao động từ 400.000 VNĐ đến 1.800.000 VNĐ mỗi ngày tùy theo dòng máy:
+                Giá thuê bàn DJ tại khu vực Đà Nẵng dao động từ 400.000 VNĐ đến 1.800.000 VNĐ mỗi ngày tùy theo dòng máy:
               </h3>
               <ul style={{ paddingLeft: "20px", margin: 0, fontSize: "14px", color: "#d4d4d8", lineHeight: 1.8 }}>
                 <li><strong style={{ color: "#fff" }}>Dòng cơ bản / Controller nhỏ (như Pioneer DDJ-FLX4, DDJ-400 / tương đương):</strong> Khoảng 400.000 VNĐ/ngày. Thích hợp cho người mới tập chơi, tiệc gia đình, sinh nhật, workshop.</li>
@@ -726,7 +726,7 @@ export default function ThueBanDjPage() {
                     </td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid var(--border)", backgroundColor: "rgba(34,197,94,0.04)" }}>
-                    <td style={{ padding: "16px", fontWeight: 700, color: "#4ade80" }}>Pioneer DJ XDJ-RX3 ⭐</td>
+                    <td style={{ padding: "16px", fontWeight: 700, color: "#4ade80" }}>Pioneer DJ XDJ-RX3</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Show sự kiện, Wedding, Bar Club, Lounge</td>
                     <td style={{ padding: "16px", color: "#22c55e", fontWeight: 800 }}>1.200.000đ</td>
@@ -836,7 +836,7 @@ export default function ThueBanDjPage() {
                   }}
                 >
                   <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#fff", margin: "0 0 10px 0" }}>
-                    ❓ {faq.q}
+                    {faq.q}
                   </h3>
                   <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.7, margin: 0 }}>
                     {faq.a}
@@ -870,14 +870,14 @@ export default function ThueBanDjPage() {
                   className="button button-primary"
                   style={{ padding: "12px 24px" }}
                 >
-                  💬 Chat Trực Tiếp Qua Messenger
+                  Chat Trực Tiếp Qua Messenger
                 </a>
                 <a
                   href={`tel:${hotline}`}
                   className="button button-secondary"
                   style={{ padding: "12px 24px" }}
                 >
-                  📞 Hotline: {hotline}
+                  Hotline: {hotline}
                 </a>
               </div>
             </div>

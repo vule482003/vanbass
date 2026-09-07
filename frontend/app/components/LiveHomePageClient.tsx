@@ -140,7 +140,7 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
             box-shadow: 0 0 15px rgba(34, 197, 94, 0.35) !important;
           }
           [data-cms-key]:not(.triptych-bg):not(button):not(img):hover::after {
-            content: "✏️ Click sửa";
+            content: "Click sửa";
             position: absolute;
             top: -24px;
             left: 50%;

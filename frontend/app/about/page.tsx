@@ -42,7 +42,6 @@ export default function AboutPage() {
             }}
           >
             <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
-              <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>🎧</span>
               <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>{t.about.pillar1Title}</h3>
               <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
                 {t.about.pillar1Desc}
@@ -50,7 +49,6 @@ export default function AboutPage() {
             </div>
 
             <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
-              <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>🔊</span>
               <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>{t.about.pillar2Title}</h3>
               <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
                 {t.about.pillar2Desc}
@@ -58,7 +56,6 @@ export default function AboutPage() {
             </div>
 
             <div style={{ padding: "32px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
-              <span style={{ fontSize: "28px", display: "block", marginBottom: "16px" }}>⚡</span>
               <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px", color: "#ffffff" }}>{t.about.pillar3Title}</h3>
               <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
                 {t.about.pillar3Desc}

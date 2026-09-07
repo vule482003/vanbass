@@ -522,7 +522,7 @@ export default function VisualCategoryBar({
                 boxShadow: filterMode === "sale" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
               }}
             >
-              🛍️ {t.visualCategoryBar.filterSale}
+              {t.visualCategoryBar.filterSale}
             </button>
             <button
               onClick={() => onFilterModeChange("rental")}
@@ -539,7 +539,7 @@ export default function VisualCategoryBar({
                 boxShadow: filterMode === "rental" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
               }}
             >
-              🎧 {t.visualCategoryBar.filterRental}
+              {t.visualCategoryBar.filterRental}
             </button>
           </div>
 
@@ -563,7 +563,7 @@ export default function VisualCategoryBar({
                   WebkitAppearance: "none",
                 }}
               >
-                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>🏷️ {t.visualCategoryBar.allBrands}</option>
+                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.allBrands}</option>
                 {availableBrands.map((b) => (
                   <option key={b} value={b} style={{ backgroundColor: "#18181b", color: "#fff" }}>{b}</option>
                 ))}
@@ -591,7 +591,7 @@ export default function VisualCategoryBar({
                   WebkitAppearance: "none",
                 }}
               >
-                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>💰 {t.visualCategoryBar.allPrices}</option>
+                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.allPrices}</option>
                 <option value="under_20m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.priceUnder10m}</option>
                 <option value="20m_50m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.price10mTo30m}</option>
                 <option value="50m_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.price30mTo70m}</option>
@@ -622,16 +622,16 @@ export default function VisualCategoryBar({
                 }}
               >
                 <option value="featured" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  ⚡ {t.visualCategoryBar.sortBy} {t.visualCategoryBar.sortNewest}
+                  {t.visualCategoryBar.sortBy} {t.visualCategoryBar.sortNewest}
                 </option>
                 <option value="price_asc" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  💵 {t.visualCategoryBar.sortPriceAsc}
+                  {t.visualCategoryBar.sortPriceAsc}
                 </option>
                 <option value="price_desc" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  💎 {t.visualCategoryBar.sortPriceDesc}
+                  {t.visualCategoryBar.sortPriceDesc}
                 </option>
                 <option value="name" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  🔤 {t.visualCategoryBar.sortName}
+                  {t.visualCategoryBar.sortName}
                 </option>
               </select>
               <span
@@ -697,7 +697,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>🎧 {t.visualCategoryBar.filterRental}</span>
+                <span>{t.visualCategoryBar.filterRental}</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}
@@ -719,7 +719,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>🛍️ {t.visualCategoryBar.filterSale}</span>
+                <span>{t.visualCategoryBar.filterSale}</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}
@@ -741,7 +741,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>📁 {activeCategoryObject.name}</span>
+                <span>{activeCategoryObject.name}</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}
@@ -763,7 +763,7 @@ export default function VisualCategoryBar({
                   cursor: "pointer",
                 }}
               >
-                <span>🔍 &quot;{searchQuery}&quot;</span>
+                <span>&quot;{searchQuery}&quot;</span>
                 <span style={{ fontSize: "12px" }}>✕</span>
               </button>
             )}
