@@ -67,6 +67,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`h-full antialiased ${montserrat.variable}`} suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="kVT29kH_KCrgKEpwrhUIHZNuYyK5NSNLs0PTC3nrruI" />
         <JsonLd />
       </head>
       <body className={`min-h-full flex flex-col ${montserrat.className}`} suppressHydrationWarning>
