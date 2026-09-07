@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useState, useEffect, useCallback, useRef } from "react";
+import { startTransition, useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -285,6 +285,98 @@ export default function AdminDashboardPage() {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [, setIsDataLoading] = useState(true);
+
+  // Products Tab Search, Filter & Pagination states
+  const [productSearch, setProductSearch] = useState("");
+  const [productCategoryFilter, setProductCategoryFilter] = useState("all");
+  const [productBrandFilter, setProductBrandFilter] = useState("all");
+  const [productStatusFilter, setProductStatusFilter] = useState("all");
+  const [productSortBy, setProductSortBy] = useState("newest");
+  const [productPage, setProductPage] = useState(1);
+  const [productPageSize, setProductPageSize] = useState(20);
+
+  // Dynamic available brands list
+  const availableBrands = useMemo(() => {
+    const brandsSet = new Set<string>();
+    products.forEach((p) => {
+      if (p.brand && p.brand.trim()) brandsSet.add(p.brand.trim());
+    });
+    return Array.from(brandsSet).sort();
+  }, [products]);
+
+  // Filtered & Sorted Products
+  const filteredProducts = useMemo(() => {
+    let result = [...products];
+
+    // 1. Text Search (Name, SKU, Slug, Brand, Description)
+    const q = productSearch.trim().toLowerCase();
+    if (q) {
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.sku.toLowerCase().includes(q) ||
+          p.slug.toLowerCase().includes(q) ||
+          (p.brand && p.brand.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q))
+      );
+    }
+
+    // 2. Category Filter
+    if (productCategoryFilter !== "all") {
+      result = result.filter((p) => p.category_id === productCategoryFilter);
+    }
+
+    // 3. Brand Filter
+    if (productBrandFilter !== "all") {
+      result = result.filter(
+        (p) => (p.brand || "").trim().toLowerCase() === productBrandFilter.toLowerCase()
+      );
+    }
+
+    // 4. Status Filter
+    if (productStatusFilter === "sale") {
+      result = result.filter((p) => p.sale_enabled && p.sale_price);
+    } else if (productStatusFilter === "rental") {
+      result = result.filter((p) => p.rental_enabled && p.rental_price);
+    } else if (productStatusFilter === "instock") {
+      result = result.filter((p) => p.stock_quantity > 0);
+    } else if (productStatusFilter === "outofstock") {
+      result = result.filter((p) => p.stock_quantity <= 0);
+    }
+
+    // 5. Sorting
+    if (productSortBy === "name_asc") {
+      result.sort((a, b) => a.name.localeCompare(b.name, "vi"));
+    } else if (productSortBy === "name_desc") {
+      result.sort((a, b) => b.name.localeCompare(a.name, "vi"));
+    } else if (productSortBy === "price_asc") {
+      result.sort((a, b) => (a.sale_price || 0) - (b.sale_price || 0));
+    } else if (productSortBy === "price_desc") {
+      result.sort((a, b) => (b.sale_price || 0) - (a.sale_price || 0));
+    } else if (productSortBy === "stock_asc") {
+      result.sort((a, b) => a.stock_quantity - b.stock_quantity);
+    } else if (productSortBy === "stock_desc") {
+      result.sort((a, b) => b.stock_quantity - a.stock_quantity);
+    }
+
+    return result;
+  }, [
+    products,
+    productSearch,
+    productCategoryFilter,
+    productBrandFilter,
+    productStatusFilter,
+    productSortBy,
+  ]);
+
+  // Total pages & Paginated slice
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / (productPageSize || 1)));
+  const currentPage = Math.min(productPage, totalPages);
+  const paginatedProducts = useMemo(() => {
+    if (productPageSize === 0) return filteredProducts;
+    const start = (currentPage - 1) * productPageSize;
+    return filteredProducts.slice(start, start + productPageSize);
+  }, [filteredProducts, currentPage, productPageSize]);
 
   // Category management states
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
@@ -2447,13 +2539,13 @@ export default function AdminDashboardPage() {
           {/* TAB 2: PRODUCTS MANAGEMENT */}
           {activeTab === "products" && (
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
                 <div>
                   <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff" }}>
                     Danh Sách Sản Phẩm
                   </h2>
                   <p style={{ fontSize: "14px", color: "#a1a1aa", margin: 0 }}>
-                    Thêm máy mới, tải ảnh trực tiếp lên server hoặc chỉnh sửa giá bán & giá thuê
+                    Quản lý danh mục thiết bị, tìm kiếm nhanh, cập nhật giá bán, giá thuê và tồn kho
                   </p>
                 </div>
 
@@ -2463,6 +2555,286 @@ export default function AdminDashboardPage() {
                 >
                   <span>＋</span> Thêm Sản Phẩm Mới
                 </button>
+              </div>
+
+              {/* SEARCH & FILTER CONTROLS BAR */}
+              <div
+                style={{
+                  backgroundColor: "#161618",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "16px 20px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "14px",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                }}
+              >
+                {/* Row 1: Search Input + Filters */}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                  {/* Search Box */}
+                  <div style={{ position: "relative", flex: "1 1 300px", minWidth: "240px" }}>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#a1a1aa"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={productSearch}
+                      onChange={(e) => {
+                        setProductSearch(e.target.value);
+                        setProductPage(1);
+                      }}
+                      placeholder="Tìm theo tên sản phẩm, mã SKU, thương hiệu, slug..."
+                      style={{
+                        width: "100%",
+                        height: "44px",
+                        paddingLeft: "42px",
+                        paddingRight: productSearch ? "40px" : "16px",
+                        backgroundColor: "#0d0d0f",
+                        border: "1px solid rgba(255, 255, 255, 0.14)",
+                        borderRadius: "8px",
+                        color: "#fff",
+                        fontSize: "13.5px",
+                        outline: "none",
+                        boxSizing: "border-box",
+                        transition: "border-color 0.2s, box-shadow 0.2s",
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#22c55e";
+                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(34, 197, 94, 0.15)";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.14)";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
+                    />
+                    {productSearch && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setProductSearch("");
+                          setProductPage(1);
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "#71717a",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "4px 6px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        title="Xóa tìm kiếm"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Filter: Category */}
+                  <select
+                    value={productCategoryFilter}
+                    onChange={(e) => {
+                      setProductCategoryFilter(e.target.value);
+                      setProductPage(1);
+                    }}
+                    style={{
+                      height: "44px",
+                      padding: "0 14px",
+                      backgroundColor: "#0d0d0f",
+                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      borderRadius: "8px",
+                      color: "#e4e4e7",
+                      fontSize: "13px",
+                      outline: "none",
+                      cursor: "pointer",
+                      minWidth: "150px",
+                    }}
+                  >
+                    <option value="all">📁 Tất cả danh mục</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Filter: Brand */}
+                  <select
+                    value={productBrandFilter}
+                    onChange={(e) => {
+                      setProductBrandFilter(e.target.value);
+                      setProductPage(1);
+                    }}
+                    style={{
+                      height: "44px",
+                      padding: "0 14px",
+                      backgroundColor: "#0d0d0f",
+                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      borderRadius: "8px",
+                      color: "#e4e4e7",
+                      fontSize: "13px",
+                      outline: "none",
+                      cursor: "pointer",
+                      minWidth: "150px",
+                    }}
+                  >
+                    <option value="all">🏷️ Tất cả thương hiệu</option>
+                    {availableBrands.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Filter: Status */}
+                  <select
+                    value={productStatusFilter}
+                    onChange={(e) => {
+                      setProductStatusFilter(e.target.value);
+                      setProductPage(1);
+                    }}
+                    style={{
+                      height: "44px",
+                      padding: "0 14px",
+                      backgroundColor: "#0d0d0f",
+                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      borderRadius: "8px",
+                      color: "#e4e4e7",
+                      fontSize: "13px",
+                      outline: "none",
+                      cursor: "pointer",
+                      minWidth: "140px",
+                    }}
+                  >
+                    <option value="all">⚡ Tất cả trạng thái</option>
+                    <option value="sale">🛒 Đang mở bán</option>
+                    <option value="rental">🎧 Cho thuê</option>
+                    <option value="instock">📦 Còn hàng ({">"}0)</option>
+                    <option value="outofstock">❌ Hết hàng (=0)</option>
+                  </select>
+
+                  {/* Sort */}
+                  <select
+                    value={productSortBy}
+                    onChange={(e) => {
+                      setProductSortBy(e.target.value);
+                      setProductPage(1);
+                    }}
+                    style={{
+                      height: "44px",
+                      padding: "0 14px",
+                      backgroundColor: "#0d0d0f",
+                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      borderRadius: "8px",
+                      color: "#e4e4e7",
+                      fontSize: "13px",
+                      outline: "none",
+                      cursor: "pointer",
+                      minWidth: "150px",
+                    }}
+                  >
+                    <option value="newest">🕒 Mặc định / Mới nhất</option>
+                    <option value="name_asc">🔤 Tên A → Z</option>
+                    <option value="name_desc">🔤 Tên Z → A</option>
+                    <option value="price_asc">💰 Giá bán tăng dần</option>
+                    <option value="price_desc">💰 Giá bán giảm dần</option>
+                    <option value="stock_desc">📦 Tồn kho nhiều nhất</option>
+                    <option value="stock_asc">📦 Tồn kho ít nhất</option>
+                  </select>
+
+                  {/* Reset button if active */}
+                  {(productSearch || productCategoryFilter !== "all" || productBrandFilter !== "all" || productStatusFilter !== "all" || productSortBy !== "newest") && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProductSearch("");
+                        setProductCategoryFilter("all");
+                        setProductBrandFilter("all");
+                        setProductStatusFilter("all");
+                        setProductSortBy("newest");
+                        setProductPage(1);
+                      }}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        backgroundColor: "rgba(239, 68, 68, 0.12)",
+                        border: "1px solid rgba(239, 68, 68, 0.4)",
+                        color: "#f87171",
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      ↺ Đặt lại
+                    </button>
+                  )}
+                </div>
+
+                {/* Row 2: Status text + Items per page selector */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "4px", fontSize: "13px", color: "#a1a1aa", flexWrap: "wrap", gap: "10px" }}>
+                  <div>
+                    {filteredProducts.length === 0 ? (
+                      <span style={{ color: "#ef4444", fontWeight: 600 }}>Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại</span>
+                    ) : (
+                      <span>
+                        Tìm thấy <strong style={{ color: "#22c55e" }}>{filteredProducts.length}</strong> / {products.length} sản phẩm
+                        {productSearch && <span> cho từ khóa &quot;<strong style={{ color: "#fff" }}>{productSearch}</strong>&quot;</span>}
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span>Hiển thị mỗi trang:</span>
+                    <select
+                      value={productPageSize}
+                      onChange={(e) => {
+                        setProductPageSize(Number(e.target.value));
+                        setProductPage(1);
+                      }}
+                      style={{
+                        height: "32px",
+                        padding: "0 8px",
+                        backgroundColor: "#0d0d0f",
+                        border: "1px solid rgba(255, 255, 255, 0.14)",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "12px",
+                        outline: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <option value={20}>20 sản phẩm</option>
+                      <option value={35}>35 sản phẩm</option>
+                      <option value={50}>50 sản phẩm</option>
+                      <option value={100}>100 sản phẩm</option>
+                      <option value={0}>Tất cả ({filteredProducts.length})</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
               {/* Table */}
@@ -2479,83 +2851,245 @@ export default function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((p) => (
-                      <tr key={p.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                        <td style={{ padding: "16px" }}>
-                          <strong style={{ color: "#fff", display: "block" }}>{p.name}</strong>
-                          <span style={{ fontSize: "12px", color: "#71717a" }}>SKU: {p.sku} | /{p.slug}</span>
-                        </td>
-                        <td style={{ padding: "16px", color: "#d4d4d8" }}>{p.brand || "—"}</td>
-                        <td style={{ padding: "16px", color: "#fff", fontWeight: 700 }}>
-                          {p.sale_enabled && p.sale_price ? formatCurrency(p.sale_price) : <span style={{ color: "#71717a" }}>Không bán</span>}
-                        </td>
-                        <td style={{ padding: "16px", color: "#22c55e", fontWeight: 600 }}>
-                          {p.rental_enabled && p.rental_price ? formatCurrency(p.rental_price) : <span style={{ color: "#71717a" }}>Không cho thuê</span>}
-                        </td>
-                        <td style={{ padding: "16px", color: "#fff" }}>{p.stock_quantity} cái</td>
-                        <td style={{ padding: "16px", textAlign: "right", whiteSpace: "nowrap" }}>
-                          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
-                            <button
-                              onClick={() => handleOpenEditModal(p)}
-                              style={{
-                                height: "32px",
-                                padding: "0 14px",
-                                backgroundColor: "rgba(34, 197, 94, 0.12)",
-                                border: "1px solid rgba(34, 197, 94, 0.45)",
-                                color: "#4ade80",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: "6px",
-                                whiteSpace: "nowrap",
-                                transition: "all 0.15s ease",
-                              }}
-                              title="Chỉnh sửa thông tin, giá bán, giá thuê, kho hàng"
-                            >
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                              </svg>
-                              Sửa
-                            </button>
-                            <button
-                              onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
-                              style={{
-                                height: "32px",
-                                padding: "0 14px",
-                                backgroundColor: "rgba(239, 68, 68, 0.1)",
-                                border: "1px solid rgba(239, 68, 68, 0.4)",
-                                color: "#f87171",
-                                fontSize: "12px",
-                                fontWeight: 700,
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: "6px",
-                                whiteSpace: "nowrap",
-                                transition: "all 0.15s ease",
-                              }}
-                              title="Xóa sản phẩm khỏi hệ thống"
-                            >
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="3 6 5 6 21 6" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              </svg>
-                              Xóa
-                            </button>
+                    {paginatedProducts.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} style={{ padding: "50px 16px", textAlign: "center", color: "#a1a1aa" }}>
+                          <div style={{ fontSize: "32px", marginBottom: "12px" }}>🔍</div>
+                          <div style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "6px" }}>
+                            Không tìm thấy sản phẩm nào
                           </div>
+                          <div style={{ fontSize: "13px", color: "#71717a", marginBottom: "18px" }}>
+                            Thử tìm kiếm với từ khóa khác hoặc xóa bớt các bộ lọc đang chọn.
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProductSearch("");
+                              setProductCategoryFilter("all");
+                              setProductBrandFilter("all");
+                              setProductStatusFilter("all");
+                              setProductSortBy("newest");
+                              setProductPage(1);
+                            }}
+                            style={{
+                              padding: "8px 18px",
+                              backgroundColor: "#222226",
+                              border: "1px solid rgba(255,255,255,0.15)",
+                              borderRadius: "6px",
+                              color: "#fff",
+                              fontSize: "13px",
+                              fontWeight: 700,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Xóa bộ lọc tìm kiếm
+                          </button>
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      paginatedProducts.map((p) => (
+                        <tr key={p.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                          <td style={{ padding: "16px" }}>
+                            <strong style={{ color: "#fff", display: "block" }}>{p.name}</strong>
+                            <span style={{ fontSize: "12px", color: "#71717a" }}>SKU: {p.sku} | /{p.slug}</span>
+                          </td>
+                          <td style={{ padding: "16px", color: "#d4d4d8" }}>{p.brand || "—"}</td>
+                          <td style={{ padding: "16px", color: "#fff", fontWeight: 700 }}>
+                            {p.sale_enabled && p.sale_price ? formatCurrency(p.sale_price) : <span style={{ color: "#71717a" }}>Không bán</span>}
+                          </td>
+                          <td style={{ padding: "16px", color: "#22c55e", fontWeight: 600 }}>
+                            {p.rental_enabled && p.rental_price ? formatCurrency(p.rental_price) : <span style={{ color: "#71717a" }}>Không cho thuê</span>}
+                          </td>
+                          <td style={{ padding: "16px", color: "#fff" }}>{p.stock_quantity} cái</td>
+                          <td style={{ padding: "16px", textAlign: "right", whiteSpace: "nowrap" }}>
+                            <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+                              <button
+                                onClick={() => handleOpenEditModal(p)}
+                                style={{
+                                  height: "32px",
+                                  padding: "0 14px",
+                                  backgroundColor: "rgba(34, 197, 94, 0.12)",
+                                  border: "1px solid rgba(34, 197, 94, 0.45)",
+                                  color: "#4ade80",
+                                  fontSize: "12px",
+                                  fontWeight: 700,
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "6px",
+                                  whiteSpace: "nowrap",
+                                  transition: "all 0.15s ease",
+                                }}
+                                title="Chỉnh sửa thông tin, giá bán, giá thuê, kho hàng"
+                              >
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                                Sửa
+                              </button>
+                              <button
+                                onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
+                                style={{
+                                  height: "32px",
+                                  padding: "0 14px",
+                                  backgroundColor: "rgba(239, 68, 68, 0.1)",
+                                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                                  color: "#f87171",
+                                  fontSize: "12px",
+                                  fontWeight: 700,
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "6px",
+                                  whiteSpace: "nowrap",
+                                  transition: "all 0.15s ease",
+                                }}
+                                title="Xóa sản phẩm khỏi hệ thống"
+                              >
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                </svg>
+                                Xóa
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
+
+              {/* PAGINATION BAR */}
+              {productPageSize > 0 && totalPages > 1 && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: "20px",
+                    padding: "16px 20px",
+                    backgroundColor: "#161618",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: "12px",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                  }}
+                >
+                  <div style={{ fontSize: "13px", color: "#a1a1aa" }}>
+                    Trang <strong style={{ color: "#fff" }}>{currentPage}</strong> / {totalPages} (Sản phẩm {(currentPage - 1) * productPageSize + 1} - {Math.min(currentPage * productPageSize, filteredProducts.length)})
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <button
+                      onClick={() => setProductPage(1)}
+                      disabled={currentPage === 1}
+                      style={{
+                        padding: "6px 12px",
+                        backgroundColor: currentPage === 1 ? "rgba(255,255,255,0.03)" : "#222226",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "6px",
+                        color: currentPage === 1 ? "#52525b" : "#fff",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                      }}
+                      title="Trang đầu"
+                    >
+                      « Đầu
+                    </button>
+                    <button
+                      onClick={() => setProductPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      style={{
+                        padding: "6px 12px",
+                        backgroundColor: currentPage === 1 ? "rgba(255,255,255,0.03)" : "#222226",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "6px",
+                        color: currentPage === 1 ? "#52525b" : "#fff",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      ‹ Trước
+                    </button>
+
+                    {/* Page numbers */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+                      .map((p, idx, arr) => {
+                        const prev = arr[idx - 1];
+                        const showEllipsis = prev && p - prev > 1;
+                        return (
+                          <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                            {showEllipsis && <span style={{ color: "#71717a", padding: "0 4px" }}>...</span>}
+                            <button
+                              onClick={() => setProductPage(p)}
+                              style={{
+                                width: "32px",
+                                height: "32px",
+                                padding: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: p === currentPage ? "#22c55e" : "#222226",
+                                border: `1px solid ${p === currentPage ? "#22c55e" : "rgba(255,255,255,0.1)"}`,
+                                borderRadius: "6px",
+                                color: p === currentPage ? "#000" : "#fff",
+                                fontSize: "12px",
+                                fontWeight: 800,
+                                cursor: "pointer",
+                              }}
+                            >
+                              {p}
+                            </button>
+                          </span>
+                        );
+                      })}
+
+                    <button
+                      onClick={() => setProductPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      style={{
+                        padding: "6px 12px",
+                        backgroundColor: currentPage === totalPages ? "rgba(255,255,255,0.03)" : "#222226",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "6px",
+                        color: currentPage === totalPages ? "#52525b" : "#fff",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      Sau ›
+                    </button>
+                    <button
+                      onClick={() => setProductPage(totalPages)}
+                      disabled={currentPage === totalPages}
+                      style={{
+                        padding: "6px 12px",
+                        backgroundColor: currentPage === totalPages ? "rgba(255,255,255,0.03)" : "#222226",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "6px",
+                        color: currentPage === totalPages ? "#52525b" : "#fff",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                      }}
+                      title="Trang cuối"
+                    >
+                      Cuối »
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
