@@ -4,6 +4,7 @@ import { LanguageProvider } from "./lib/language-context";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import JsonLd from "./components/JsonLd";
+import MobileBottomNav from "./components/MobileBottomNav";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -85,6 +86,7 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               {children}
+              <MobileBottomNav />
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>

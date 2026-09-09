@@ -109,14 +109,14 @@ export interface HomeConfigResponse {
 
 export const DEFAULT_HOME_DATA: HomeData = {
   marquee_items: [
-    "⚡ PIONEER DJ OFFICIAL DISTRIBUTOR",
+    "PIONEER DJ OFFICIAL DISTRIBUTOR",
     "ALPHATHETA",
     "ALLEN & HEATH",
     "DENON DJ",
-    "🎧 SHOWROOM TEST MÁY ĐÀ NẴNG",
-    "⚡ HỖ TRỢ KỸ THUẬT 24/7",
+    "SHOWROOM TEST MÁY ĐÀ NẴNG",
+    "HỖ TRỢ KỸ THUẬT 24/7",
     "GIAO HÀNG HỎA TỐC",
-    "🔥 CHO THUÊ THIẾT BỊ SỰ KIỆN 24/7",
+    "CHO THUÊ THIẾT BỊ SỰ KIỆN 24/7",
   ],
   hero_left: {
     tag: "01 / HARDWARE & AUDIO",

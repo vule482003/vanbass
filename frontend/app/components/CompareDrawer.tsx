@@ -51,7 +51,7 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontSize: "13px", fontWeight: 800, color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span>⚖️</span> {t.compareDrawer.barTitle} ({products.length}/3)
+            {t.compareDrawer.barTitle} ({products.length}/3)
           </span>
 
           {/* Product Thumbnails */}
@@ -306,7 +306,13 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                               {t.compareDrawer.viewDetailBtn}
                             </Link>
                             {prod.rental_enabled && (
-                              <a href={getMessengerRentalUrl(displayName)} target="_blank" rel="noopener noreferrer" className="button button-outline button-sm" style={{ width: "100%", justifyContent: "center", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
+                              <a
+                                href={getMessengerRentalUrl(displayName)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`button ${!prod.sale_enabled ? "button-primary" : "button-outline"} button-sm`}
+                                style={{ width: "100%", justifyContent: "center" }}
+                              >
                                 {t.compareDrawer.rentNowBtn}
                               </a>
                             )}

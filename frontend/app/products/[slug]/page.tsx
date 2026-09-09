@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import ProductDetailClient from "./ProductDetailClient";
 import { Product } from "../../lib/types";
+import { getProductPlainExcerpt } from "../../lib/product-i18n";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -115,9 +116,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   // General product metadata
   const title = `${product.name} | Thuê & Mua Chính Hãng`;
-  const plainDesc = product.description
-    ? product.description.replace(/<[^>]*>/g, "").slice(0, 160).trim()
-    : product.name;
+  const plainDesc = getProductPlainExcerpt(product.description, 160) || product.name;
   const description = `${plainDesc}... Dịch vụ cho thuê bàn DJ và phân phối thiết bị âm thanh chính hãng tại VanBass Music Center.`;
   const rawImg = product.images?.[0]?.image_url || product.image_url || "/images/placeholder.png";
   const ogImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
@@ -162,9 +161,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   if (product) {
     const rawImg = product.images?.[0]?.image_url || product.image_url || "/images/placeholder.png";
     const fullImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
-    const plainDesc = product.description
-      ? product.description.replace(/<[^>]*>/g, "").slice(0, 250).trim()
-      : product.name;
+    const plainDesc = getProductPlainExcerpt(product.description, 250) || product.name;
 
     jsonLd = {
       "@context": "https://schema.org",

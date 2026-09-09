@@ -63,7 +63,7 @@ function CartContent() {
       label: lang === "en" ? "Pending Confirmation" : "Chờ xác nhận",
       bg: "rgba(234, 179, 8, 0.15)",
       color: "#facc15",
-      stepText: lang === "en" ? "⏳ Awaiting VanBass confirmation" : "⏳ Đang chờ VanBass tiếp nhận",
+      stepText: lang === "en" ? "Awaiting VanBass confirmation" : "Đang chờ VanBass tiếp nhận",
     },
     confirmed: {
       label: lang === "en" ? "Confirmed" : "Đã xác nhận",
@@ -75,19 +75,19 @@ function CartContent() {
       label: lang === "en" ? "Preparing Gear" : "Đang chuẩn bị hàng",
       bg: "rgba(168, 85, 247, 0.15)",
       color: "#c084fc",
-      stepText: lang === "en" ? "📦 Technicians packaging equipment" : "📦 Kỹ thuật đang đóng gói thiết bị",
+      stepText: lang === "en" ? "Technicians packaging equipment" : "Kỹ thuật đang đóng gói thiết bị",
     },
     shipped: {
       label: lang === "en" ? "In Transit" : "Đang giao hàng",
       bg: "rgba(6, 182, 212, 0.15)",
       color: "#22d3ee",
-      stepText: lang === "en" ? "🚚 Out for delivery" : "🚚 Đang trên đường vận chuyển",
+      stepText: lang === "en" ? "Out for delivery" : "Đang trên đường vận chuyển",
     },
     completed: {
       label: lang === "en" ? "Completed" : "Hoàn thành",
       bg: "rgba(34, 197, 94, 0.15)",
       color: "#4ade80",
-      stepText: lang === "en" ? "🎉 Delivery successful" : "🎉 Giao hàng thành công",
+      stepText: lang === "en" ? "Delivery successful" : "Giao hàng thành công",
     },
     cancelled: {
       label: lang === "en" ? "Cancelled" : "Đã hủy",
@@ -524,7 +524,7 @@ function CartContent() {
                     borderRadius: "6px",
                   }}
                 >
-                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎉</div>
+                  <div style={{ fontSize: "36px", marginBottom: "16px", color: "#22c55e", fontWeight: 900 }}>✓</div>
                   <h2 style={{ fontSize: "22px", color: "#fff", marginBottom: "12px", fontWeight: 800 }}>
                     {t.checkout.orderSuccessTitle}
                   </h2>
@@ -541,7 +541,7 @@ function CartContent() {
                         className="button button-primary"
                         style={{ cursor: "pointer", backgroundColor: "#22c55e", color: "#000", fontWeight: 800 }}
                       >
-                        {lang === "en" ? "⚡ Pay via VietQR Now →" : "⚡ Quét mã VietQR Thanh Toán →"}
+                        {lang === "en" ? "Pay via VietQR Now →" : "Quét mã VietQR Thanh Toán →"}
                       </button>
                     )}
                     <button
@@ -572,7 +572,12 @@ function CartContent() {
                       marginBottom: "40px",
                     }}
                   >
-                    <div style={{ fontSize: "42px", marginBottom: "12px" }}>🛒</div>
+                    <div style={{ marginBottom: "16px", color: "#71717a", display: "flex", justifyContent: "center" }}>
+                      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                      </svg>
+                    </div>
                     <h3 style={{ fontSize: "18px", color: "#fff", margin: "0 0 10px 0", fontWeight: 700 }}>
                       {t.cart.emptyTitle}
                     </h3>
@@ -598,7 +603,7 @@ function CartContent() {
                             cursor: "pointer",
                           }}
                         >
-                          📦 {t.cart.viewPastOrdersBtn} ({myOrders.length})
+                          {t.cart.viewPastOrdersBtn} ({myOrders.length})
                         </button>
                       )}
                     </div>
@@ -842,7 +847,8 @@ function CartContent() {
                               />
                               <div>
                                 <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                                  <strong style={{ fontSize: "14px", color: "#fff" }}>⚡ {t.checkout.vietqrOnline}</strong>
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                  <strong style={{ fontSize: "14px", color: "#fff" }}>{t.checkout.vietqrOnline}</strong>
                                   <span style={{ fontSize: "10.5px", padding: "2px 7px", backgroundColor: "rgba(34,197,94,0.2)", color: "#4ade80", borderRadius: "4px", fontWeight: 700 }}>100% AUTO</span>
                                 </div>
                                 <span style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginTop: "4px", lineHeight: 1.5 }}>
@@ -860,7 +866,10 @@ function CartContent() {
                                 style={{ marginTop: "4px" }}
                               />
                               <div>
-                                <strong style={{ fontSize: "14px", color: "#fff" }}>💵 {t.checkout.cod}</strong>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                                  <strong style={{ fontSize: "14px", color: "#fff" }}>{t.checkout.cod}</strong>
+                                </div>
                                 <span style={{ display: "block", fontSize: "12px", color: "#a1a1aa", marginTop: "4px", lineHeight: 1.5 }}>
                                   {t.checkout.codDesc}
                                 </span>
@@ -965,7 +974,12 @@ function CartContent() {
                     borderRadius: "6px",
                   }}
                 >
-                  <div style={{ fontSize: "40px", marginBottom: "12px" }}>🔒</div>
+                  <div style={{ marginBottom: "16px", color: "#71717a", display: "flex", justifyContent: "center" }}>
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                  </div>
                   <h3 style={{ fontSize: "18px", color: "#fff", margin: "0 0 10px 0", fontWeight: 700 }}>
                     {t.cart.loginPrompt}
                   </h3>
@@ -983,7 +997,13 @@ function CartContent() {
                     borderRadius: "6px",
                   }}
                 >
-                  <div style={{ fontSize: "40px", marginBottom: "12px" }}>📦</div>
+                  <div style={{ marginBottom: "16px", color: "#71717a", display: "flex", justifyContent: "center" }}>
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                      <line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                  </div>
                   <p style={{ color: "#a1a1aa", fontSize: "15px", marginBottom: "18px" }}>
                     {t.orderHistory.emptyHistory}
                   </p>
@@ -1211,7 +1231,7 @@ function CartContent() {
                             }}
                           >
                             <div>
-                              📍 {t.orderHistory.recipient} <strong style={{ color: "#cbd5e1" }}>{ord.shipping_name} ({ord.shipping_phone})</strong> - {ord.shipping_address}
+                              {t.orderHistory.recipient} <strong style={{ color: "#cbd5e1" }}>{ord.shipping_name} ({ord.shipping_phone})</strong> - {ord.shipping_address}
                             </div>
                             <div>
                               {t.orderHistory.orderDate} {new Date(ord.created_at).toLocaleString(lang === "en" ? "en-US" : "vi-VN")}
@@ -1261,8 +1281,7 @@ function CartContent() {
                                     transition: "all 0.2s ease",
                                   }}
                                 >
-                                  <span>⚡</span>
-                                  {lang === "en" ? "⚡ Pay via VietQR" : "⚡ Thanh toán VietQR"}
+                                  {lang === "en" ? "Pay via VietQR" : "Thanh toán VietQR"}
                                 </button>
                               )}
 

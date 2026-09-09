@@ -142,7 +142,7 @@ function PaymentBridgeContent() {
   if (isLoading) {
     return (
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
-        <p style={{ color: "#a1a1aa", fontSize: "15px" }}>⏳ Đang tải thông tin thanh toán...</p>
+        <p style={{ color: "#a1a1aa", fontSize: "15px" }}>Đang tải thông tin thanh toán...</p>
       </div>
     );
   }
@@ -232,7 +232,7 @@ function PaymentBridgeContent() {
                   textDecoration: "none",
                 }}
               >
-                📦 Xem Lịch Sử Đơn Mua
+                Xem Lịch Sử Đơn Mua
               </Link>
               <Link
                 href="/"
@@ -272,7 +272,7 @@ function PaymentBridgeContent() {
                   marginBottom: "12px",
                 }}
               >
-                <span>⚡</span> QUÉT MÃ VIETQR TỰ ĐỘNG
+                QUÉT MÃ VIETQR TỰ ĐỘNG
               </div>
               <h1 style={{ fontSize: "22px", color: "#fff", fontWeight: 800, margin: "0 0 6px 0" }}>
                 Chuyển Khoản Ngân Hàng
@@ -310,7 +310,7 @@ function PaymentBridgeContent() {
                 }}
               />
               <p style={{ color: "#52525b", fontSize: "12px", marginTop: "10px", textAlign: "center", fontWeight: 500 }}>
-                💡 Quét bằng ứng dụng ngân hàng để tự động điền STK, Số tiền và Nội dung
+                Quét bằng ứng dụng ngân hàng để tự động điền STK, Số tiền và Nội dung
               </p>
             </div>
 
@@ -501,7 +501,6 @@ function PaymentBridgeContent() {
                   transition: "all 0.15s ease",
                 }}
               >
-                <span>{isChecking ? "⏳" : "🔄"}</span>
                 {isChecking ? "Đang kiểm tra giao dịch..." : "Tôi Đã Chuyển Khoản Xong (Kiểm tra lại)"}
               </button>
 

@@ -1,18 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ProductCard from "../../components/ProductCard";
+import ProductImageGallery from "../../components/ProductImageGallery";
+import StickyProductActionBar from "../../components/StickyProductActionBar";
 import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
 import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
 import { fetchStoreSettings, getMessengerRentalUrl } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
-import { getTranslatedProductName, getTranslatedProductDesc, getTranslatedSpecKey } from "../../lib/product-i18n";
+import {
+  getTranslatedProductName,
+  getTranslatedProductDesc,
+  getTranslatedSpecKey,
+  getProductPlainExcerpt,
+} from "../../lib/product-i18n";
 
 function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
   if (amount === undefined || amount === null) return lang === "en" ? "Contact" : "Liên hệ";
@@ -41,6 +48,8 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "rental">("specs");
   const [addedNotice, setAddedNotice] = useState(false);
   const [facebookPageId, setFacebookPageId] = useState("vanbassmusiccenter");
+
+  const heroActionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchStoreSettings().then((st) => {
@@ -106,6 +115,8 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
 
   const displayName = getTranslatedProductName(product, lang);
   const displayDesc = getTranslatedProductDesc(product, lang);
+  const shortExcerpt = getProductPlainExcerpt(displayDesc, 190);
+  const hasHtmlDesc = Boolean(displayDesc && displayDesc.includes("<") && displayDesc.includes(">"));
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -143,88 +154,13 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
               marginBottom: "80px",
             }}
           >
-            {/* Left: Product Mock/Image */}
+            {/* Left: Interactive Multi-Image Gallery with Hover Zoom & Fullscreen Lightbox */}
             <div>
-              <div
-                style={{
-                  backgroundColor: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "10px",
-                  aspectRatio: "4/3",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                  padding: "40px",
-                }}
-              >
-                {(() => {
-                  const resolveImageUrl = (url?: string) => {
-                    if (!url) return null;
-                    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
-                    if (url.startsWith("/images/")) return url;
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-                    const backendBase = apiUrl.replace(/\/api\/?$/, "");
-                    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
-                  };
-                  const rawImg = product.images?.[0]?.image_url || product.image_url;
-                  const displayImg = resolveImageUrl(rawImg);
-
-                  return displayImg ? (
-                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={displayImg}
-                        alt={displayName}
-                        style={{ maxWidth: "100%", maxHeight: "280px", objectFit: "contain", filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.5))" }}
-                        onError={(e) => {
-                          (e.currentTarget.parentElement as HTMLElement).style.display = "none";
-                          const fb = e.currentTarget.parentElement?.nextElementSibling as HTMLElement;
-                          if (fb) fb.style.display = "block";
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="product-placeholder" style={{ width: "100%", height: "100%", maxWidth: "340px", maxHeight: "240px", display: "block" }}>
-                      <div className="product-placeholder-top">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
-                      <div className="product-placeholder-body">
-                        <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
-                        <div className="product-faders">
-                          <i />
-                          <i />
-                        </div>
-                        <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "16px",
-                    left: "16px",
-                    display: "flex",
-                    gap: "8px",
-                  }}
-                >
-                  {product.sale_enabled && product.stock_quantity > 0 && <span className="badge badge-sale">{t.productDetail.saleBadge}</span>}
-                  {product.sale_enabled && product.stock_quantity <= 0 && (
-                    <span className="badge" style={{ backgroundColor: "rgba(239,68,68,0.2)", color: "#f87171", border: "1px solid rgba(239,68,68,0.4)" }}>
-                      {t.productDetail.outOfStockBadge}
-                    </span>
-                  )}
-                  {product.rental_enabled && <span className="badge badge-rental">{t.productDetail.rentalBadge}</span>}
-                </div>
-              </div>
+              <ProductImageGallery product={product} displayName={displayName} />
             </div>
 
             {/* Right: Product Info & Actions */}
-            <div>
+            <div ref={heroActionRef}>
               <div style={{ marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.1em" }}>
                   {product.brand || "VanBass"}
@@ -233,9 +169,15 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
                 <span style={{ fontSize: "12px", color: "#71717a" }}>SKU: {product.sku || "VB-DEVICE"}</span>
               </div>
 
-              <h1 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, margin: "0 0 16px 0", color: "#fff", lineHeight: 1.25 }}>
+              <h1 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, margin: "0 0 14px 0", color: "#fff", lineHeight: 1.25 }}>
                 {displayName}
               </h1>
+
+              {shortExcerpt && (
+                <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.6, margin: "0 0 24px 0" }}>
+                  {shortExcerpt}
+                </p>
+              )}
 
               {/* Pricing Box */}
               <div
@@ -291,24 +233,27 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
                 </div>
               </div>
 
-              {/* Quantity & Buy Button */}
-              {product.sale_enabled && (
-                <div style={{ marginBottom: "24px" }}>
-                  {product.stock_quantity > 0 ? (
+              {/* Main Actions: Buy (if sale_enabled) and/or Rent (if rental_enabled) */}
+              <div style={{ marginBottom: "32px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                {/* 1. Buy Action */}
+                {product.sale_enabled ? (
+                  product.stock_quantity > 0 ? (
                     <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                      <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+                      <div style={{ display: "flex", border: "1px solid var(--border)", backgroundColor: "#000", borderRadius: "8px", overflow: "hidden" }}>
                         <button
                           onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                           style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                          aria-label="Giảm số lượng"
                         >
                           -
                         </button>
-                        <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "20px", textAlign: "center" }}>
+                        <span style={{ padding: "12px 16px", color: "#fff", fontWeight: 700, minWidth: "24px", textAlign: "center" }}>
                           {quantity}
                         </span>
                         <button
                           onClick={() => setQuantity((q) => Math.min(product.stock_quantity || 10, q + 1))}
                           style={{ padding: "12px 18px", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: "16px" }}
+                          aria-label="Tăng số lượng"
                         >
                           +
                         </button>
@@ -317,9 +262,14 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
                       <button
                         onClick={handleAddToCart}
                         className="button button-primary button-lg"
-                        style={{ flex: 1 }}
+                        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
                       >
-                        {t.productDetail.addToCartWithPrice} ({formatCurrency((product.sale_price || 0) * quantity, lang)})
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="9" cy="21" r="1" />
+                          <circle cx="20" cy="21" r="1" />
+                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                        <span>{t.productDetail.addToCartWithPrice} ({formatCurrency((product.sale_price || 0) * quantity, lang)})</span>
                       </button>
                     </div>
                   ) : (
@@ -332,42 +282,66 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
                         {t.productDetail.outOfStock}
                       </button>
                     </div>
-                  )}
+                  )
+                ) : null}
 
-                  {addedNotice && (
-                    <div style={{ marginTop: "12px", padding: "10px 16px", backgroundColor: "rgba(34,197,94,0.15)", border: "1px solid #22c55e", color: "#4ade80", fontSize: "13px" }}>
-                      {t.productDetail.addedToCartNotice} <Link href="/cart" style={{ color: "#fff", fontWeight: 700, marginLeft: "8px", textDecoration: "underline" }}>{t.productDetail.viewCart}</Link>
+                {/* 2. Direct Rental Action (Full-size primary button matching Add to Cart) */}
+                {product.rental_enabled && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                      <a
+                        href={getMessengerRentalUrl(displayName, facebookPageId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="button button-primary button-lg"
+                        style={{
+                          flex: 1,
+                          minWidth: "220px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                          backgroundColor: "#22c55e",
+                          color: "#000000",
+                          fontWeight: 800,
+                          boxShadow: "0 4px 16px rgba(34, 197, 94, 0.4)",
+                        }}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <span>{lang === "en" ? "Rent Gear Now (Messenger / Hotline)" : "Liên hệ thuê máy ngay"}</span>
+                      </a>
+
+                      <Link
+                        href="/thue-ban-dj"
+                        className="button button-secondary button-lg"
+                        style={{
+                          padding: "14px 20px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          fontSize: "14px",
+                          fontWeight: 700,
+                        }}
+                      >
+                        <span>{lang === "en" ? "Rental Rates" : "Bảng giá thuê bàn DJ"}</span>
+                      </Link>
                     </div>
-                  )}
-                </div>
-              )}
 
-              {/* Direct Rental Link */}
-              <div style={{ padding: "20px", backgroundColor: "var(--surface)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "10px", marginBottom: "32px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-                  <div>
-                    <strong style={{ color: "#fff", fontSize: "15px", display: "block" }}>{t.productDetail.rentalBannerTitle}</strong>
-                    <span style={{ fontSize: "13px", color: "#a1a1aa" }}>{t.productDetail.rentalBannerDesc}</span>
+                    <div style={{ padding: "10px 14px", backgroundColor: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: "8px", fontSize: "12px", color: "#a1a1aa", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ color: "#22c55e", fontWeight: 800 }}>⚡</span>
+                      <span>{t.productDetail.rentalBannerDesc || "Giao nhận, setup và hướng dẫn sử dụng tận nơi 24/7 tại Đà Nẵng & Toàn quốc."}</span>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                    <Link
-                      href="/thue-ban-dj"
-                      className="button button-primary"
-                      style={{ fontSize: "13px", padding: "8px 16px" }}
-                    >
-                      Bảng giá thuê bàn DJ
-                    </Link>
-                    <a
-                      href={getMessengerRentalUrl(displayName, facebookPageId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="button button-secondary"
-                      style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "13px", padding: "8px 16px" }}
-                    >
-                      <span>💬</span> {t.productDetail.consultMessenger}
-                    </a>
+                )}
+
+                {/* Added to cart feedback toast */}
+                {addedNotice && (
+                  <div style={{ padding: "10px 16px", backgroundColor: "rgba(34,197,94,0.15)", border: "1px solid #22c55e", borderRadius: "8px", color: "#4ade80", fontSize: "13px" }}>
+                    {t.productDetail.addedToCartNotice} <Link href="/cart" style={{ color: "#fff", fontWeight: 700, marginLeft: "8px", textDecoration: "underline" }}>{t.productDetail.viewCart}</Link>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -443,7 +417,22 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
 
             {activeTab === "desc" && (
               <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "32px", color: "#d4d4d8", lineHeight: 1.8 }}>
-                <p>{displayDesc}</p>
+                {displayDesc ? (
+                  hasHtmlDesc ? (
+                    <div
+                      className="product-rich-desc"
+                      dangerouslySetInnerHTML={{ __html: displayDesc }}
+                    />
+                  ) : (
+                    <div className="product-rich-desc" style={{ whiteSpace: "pre-line" }}>
+                      {displayDesc}
+                    </div>
+                  )
+                ) : (
+                  <p style={{ color: "#71717a", fontStyle: "italic", margin: 0 }}>
+                    {lang === "en" ? "No detailed description available." : "Chưa có mô tả chi tiết cho sản phẩm này."}
+                  </p>
+                )}
               </div>
             )}
 
@@ -481,7 +470,20 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
         </div>
       </main>
 
+      {/* STICKY BOTTOM ACTION BAR */}
+      <StickyProductActionBar
+        product={product}
+        displayName={displayName}
+        quantity={quantity}
+        onQuantityChange={setQuantity}
+        onAddToCart={handleAddToCart}
+        addedNotice={addedNotice}
+        facebookPageId={facebookPageId}
+        targetRef={heroActionRef}
+      />
+
       <Footer />
     </div>
   );
 }
+

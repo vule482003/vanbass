@@ -11,6 +11,7 @@ import LocalCTA from "./LocalCTA";
 import Footer from "./Footer";
 import ScrollObserver from "./ScrollObserver";
 import FloatingContact from "./FloatingContact";
+import BrandLogoCloud from "./BrandLogoCloud";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
 
 interface LiveHomePageClientProps {
@@ -140,7 +141,7 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
             box-shadow: 0 0 15px rgba(34, 197, 94, 0.35) !important;
           }
           [data-cms-key]:not(.triptych-bg):not(button):not(img):hover::after {
-            content: "✏️ Click sửa";
+            content: "Click sửa";
             position: absolute;
             top: -24px;
             left: 50%;
@@ -208,6 +209,9 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
             isInsideIframe={isInsideIframe}
           />
         )}
+
+        {/* 1.5 Framer-Style Brand Logo Cloud (8 World Leading Brands) */}
+        <BrandLogoCloud />
 
         {/* 2. Thiết bị nổi bật */}
         {visibility.show_products && <ProductGrid />}

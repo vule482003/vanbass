@@ -413,3 +413,24 @@ export function getTranslatedSpecKey(key: string, lang: string = "vi"): string {
   if (lang !== "en") return key;
   return SPEC_KEY_TRANSLATIONS[key] || key;
 }
+
+/**
+ * Extract a clean plain-text excerpt from HTML or raw product description
+ */
+export function getProductPlainExcerpt(rawDesc?: string | null, maxLength = 220): string {
+  if (!rawDesc) return "";
+  const clean = rawDesc
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (clean.length <= maxLength) return clean;
+  return clean.slice(0, maxLength).trim() + "...";
+}
