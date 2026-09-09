@@ -4871,17 +4871,27 @@ export default function AdminDashboardPage() {
                       </div>
 
                       {/* Chi nhánh Huế Highlight Badge */}
-                      <div
+                      <a
+                        href="https://www.google.com/maps/place/V%26B+STUDIO+(Training+DJ+Pioneer)/@16.4946002,107.5903409,17z/data=!3m1!4b1!4m6!3m5!1s0x3141a10047a15223:0x298a389a412fb2d1!8m2!3d16.4946002!4d107.5903409!16s%2Fg%2F11m6bydlgc?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         style={{
                           backgroundColor: "rgba(34, 197, 94, 0.08)",
                           border: "1px dashed rgba(34, 197, 94, 0.35)",
                           borderRadius: "8px",
                           padding: "12px 14px",
                           marginTop: "4px",
+                          display: "block",
+                          textDecoration: "none",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#4ade80", fontWeight: 700, fontSize: "12px", marginBottom: "4px" }}>
-                          Showroom Miền Trung - Huế
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+                          <span style={{ color: "#4ade80", fontWeight: 700, fontSize: "12px" }}>
+                            Showroom Miền Trung - Huế
+                          </span>
+                          <span style={{ color: "#22c55e", fontSize: "11px" }}>
+                            Xem bản đồ ↗
+                          </span>
                         </div>
                         <div style={{ color: "#fff", fontSize: "13px", fontWeight: 600 }}>
                           442 Chi Lăng, P. Phú Xuân, TP. Huế
@@ -4889,7 +4899,7 @@ export default function AdminDashboardPage() {
                         <div style={{ color: "#a1a1aa", fontSize: "11.5px", marginTop: "2px" }}>
                           Hỗ trợ tư vấn, trải nghiệm âm thanh DJ trực tiếp
                         </div>
-                      </div>
+                      </a>
                     </div>
 
                     {/* Card 3: Dịch vụ Thuê thiết bị */}

@@ -60,7 +60,7 @@ export default function Footer() {
             {t.footer.addressText}
           </a>
           <a
-            href="https://maps.google.com/?q=442+Chi+L%C4%83ng,+Ph%C3%BA+Xu%C3%A2n,+Th%C3%A0nh+ph%E1%BB%91+Hu%E1%BA%BF"
+            href="https://www.google.com/maps/place/V%26B+STUDIO+(Training+DJ+Pioneer)/@16.4946002,107.5903409,17z/data=!3m1!4b1!4m6!3m5!1s0x3141a10047a15223:0x298a389a412fb2d1!8m2!3d16.4946002!4d107.5903409!16s%2Fg%2F11m6bydlgc?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D"
             target="_blank"
             rel="noopener noreferrer"
             data-cms-key="floating_contacts.maps_link_hue"

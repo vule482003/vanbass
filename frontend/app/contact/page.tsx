@@ -61,10 +61,26 @@ export default function ContactPage() {
                 </h3>
                 <div style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: "0 0 8px 0" }}>
                   <div style={{ marginBottom: "6px" }}>
-                    <strong style={{ color: "#fff" }}>Đà Nẵng:</strong> {t.footer.addressText}
+                    <strong style={{ color: "#fff" }}>Đà Nẵng:</strong>{" "}
+                    <a
+                      href="https://www.google.com/maps?cid=3481175637981139835"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "3px" }}
+                    >
+                      {t.footer.addressText}
+                    </a>
                   </div>
                   <div>
-                    <strong style={{ color: "#fff" }}>Huế:</strong> {t.footer.addressHueText}
+                    <strong style={{ color: "#fff" }}>Huế:</strong>{" "}
+                    <a
+                      href="https://www.google.com/maps/place/V%26B+STUDIO+(Training+DJ+Pioneer)/@16.4946002,107.5903409,17z/data=!3m1!4b1!4m6!3m5!1s0x3141a10047a15223:0x298a389a412fb2d1!8m2!3d16.4946002!4d107.5903409!16s%2Fg%2F11m6bydlgc?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "3px" }}
+                    >
+                      {t.footer.addressHueText}
+                    </a>
                   </div>
                 </div>
                 <span style={{ color: "#71717a", fontSize: "13px" }}>{t.contact.showroomHours}</span>

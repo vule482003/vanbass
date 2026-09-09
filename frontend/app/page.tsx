@@ -6,6 +6,7 @@ async function getHomeConfig(): Promise<HomeData> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
     const res = await fetch(`${apiUrl}/home-config`, {
       next: { revalidate: 5 },
+      signal: AbortSignal.timeout(3000),
     });
     if (res.ok) {
       const json = await res.json();
