@@ -11,6 +11,7 @@ import LocalCTA from "./LocalCTA";
 import Footer from "./Footer";
 import ScrollObserver from "./ScrollObserver";
 import FloatingContact from "./FloatingContact";
+import BrandLogoCloud from "./BrandLogoCloud";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
 
 interface LiveHomePageClientProps {
@@ -208,6 +209,9 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
             isInsideIframe={isInsideIframe}
           />
         )}
+
+        {/* 1.5 Framer-Style Brand Logo Cloud (8 World Leading Brands) */}
+        <BrandLogoCloud />
 
         {/* 2. Thiết bị nổi bật */}
         {visibility.show_products && <ProductGrid />}

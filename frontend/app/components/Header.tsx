@@ -10,6 +10,7 @@ import { useLanguage } from "../lib/language-context";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { getTranslatedProductName } from "../lib/product-i18n";
+import { CATEGORY_GROUPS } from "../lib/category-hierarchy";
 
 export default function Header() {
   const pathname = usePathname();
@@ -22,7 +23,7 @@ export default function Header() {
     () => [
       { href: "/", label: t.nav.home },
       { href: "/thue-ban-dj", label: lang === "vi" ? "Thuê Bàn DJ" : "DJ Rental" },
-      { href: "/products", label: t.nav.products },
+      { href: "/products", label: t.nav.products, isMega: true },
       { href: "/about", label: t.nav.about },
       { href: "/contact", label: t.nav.contact },
     ],
@@ -30,6 +31,30 @@ export default function Header() {
   );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileCatAccordionOpen, setMobileCatAccordionOpen] = useState(false);
+  const [mobileActiveGroupId, setMobileActiveGroupId] = useState<string | null>(null);
+
+  const [isProductsMenuOpen, setIsProductsMenuOpen] = useState(false);
+  const [activeMegaGroupId, setActiveMegaGroupId] = useState<string>("dj");
+  const megaMenuTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleOpenMegaMenu = () => {
+    if (megaMenuTimerRef.current) {
+      clearTimeout(megaMenuTimerRef.current);
+      megaMenuTimerRef.current = null;
+    }
+    setIsProductsMenuOpen(true);
+  };
+
+  const handleCloseMegaMenu = () => {
+    if (megaMenuTimerRef.current) {
+      clearTimeout(megaMenuTimerRef.current);
+    }
+    megaMenuTimerRef.current = setTimeout(() => {
+      setIsProductsMenuOpen(false);
+    }, 280);
+  };
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
@@ -41,6 +66,7 @@ export default function Header() {
   if (prevPathname !== pathname) {
     setPrevPathname(pathname);
     if (mobileMenuOpen) setMobileMenuOpen(false);
+    if (isProductsMenuOpen) setIsProductsMenuOpen(false);
     if (isSearchDropdownOpen) setIsSearchDropdownOpen(false);
     if (userDropdownOpen) setUserDropdownOpen(false);
     if (cartDropdownOpen) setCartDropdownOpen(false);
@@ -49,7 +75,7 @@ export default function Header() {
   const islandRef = useRef<HTMLDivElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLElement>(null);
-  const linkRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
+  const linkRefs = useRef<{ [key: string]: HTMLAnchorElement | HTMLDivElement | null }>({});
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; opacity: number }>({
     left: 0,
     width: 0,
@@ -118,6 +144,7 @@ export default function Header() {
         !islandRef.current.contains(event.target as Node)
       ) {
         setMobileMenuOpen(false);
+        setIsProductsMenuOpen(false);
         setUserDropdownOpen(false);
         setCartDropdownOpen(false);
       }
@@ -187,7 +214,19 @@ export default function Header() {
 
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
 
-  const isInteracting = isHeaderHovered || isSearchFocused || isSearchDropdownOpen || userDropdownOpen || cartDropdownOpen || mobileMenuOpen;
+  const selectedMegaGroup = useMemo(() => {
+    return CATEGORY_GROUPS.find((g) => g.id === activeMegaGroupId) || CATEGORY_GROUPS[0];
+  }, [activeMegaGroupId]);
+
+  const isInteracting =
+    isHeaderHovered ||
+    isProductsMenuOpen ||
+    isSearchFocused ||
+    isSearchDropdownOpen ||
+    userDropdownOpen ||
+    cartDropdownOpen ||
+    mobileMenuOpen;
+
   const headerVisibilityClass = isVisible || mobileMenuOpen || isSearchDropdownOpen ? "is-visible" : "is-hidden";
   const headerScrollClass = isScrolled ? "scrolled" : "unscrolled";
   const mobileExpandedClass = mobileMenuOpen ? "mobile-expanded" : "";
@@ -230,6 +269,160 @@ export default function Header() {
               const isCurrentPage = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               const isHovered = hoveredHref === link.href;
               const isHighlighted = hoveredHref ? isHovered : isCurrentPage;
+
+              if (link.isMega) {
+                return (
+                  <div
+                    key={link.href}
+                    className="header-nav-item-wrap"
+                    onMouseEnter={() => {
+                      setHoveredHref(link.href);
+                      handleOpenMegaMenu();
+                    }}
+                    onMouseLeave={handleCloseMegaMenu}
+                  >
+                    <Link
+                      href={link.href}
+                      ref={(el) => {
+                        linkRefs.current[link.href] = el;
+                      }}
+                      className={`nav-link-item ${isHighlighted ? "active" : ""}`}
+                      onClick={() => setIsProductsMenuOpen(false)}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        {link.label}
+                        <svg
+                          width="10"
+                          height="10"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={{
+                            transition: "transform 0.2s ease",
+                            transform: isProductsMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                            opacity: 0.75,
+                          }}
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </Link>
+
+                    {/* 2-Tier Obsidian Glass Mega Menu Dropdown */}
+                    {isProductsMenuOpen && (
+                      <div
+                        className="header-megamenu-dropdown"
+                        onMouseEnter={handleOpenMegaMenu}
+                        onMouseLeave={handleCloseMegaMenu}
+                      >
+                        {/* Left Column: 4 Parent Category Groups */}
+                        <div className="megamenu-left-col">
+                          <div className="megamenu-section-title">
+                            {lang === "en" ? "CATALOGUE" : "DANH MỤC THIẾT BỊ"}
+                          </div>
+
+                          <div className="megamenu-parent-list">
+                            {CATEGORY_GROUPS.map((group) => {
+                              const isActive = activeMegaGroupId === group.id;
+                              return (
+                                <div
+                                  key={group.id}
+                                  onMouseEnter={() => {
+                                    handleOpenMegaMenu();
+                                    setActiveMegaGroupId(group.id);
+                                  }}
+                                  className={`megamenu-parent-row ${isActive ? "is-active" : ""}`}
+                                >
+                                  <Link
+                                    href={`/products?group=${group.id}`}
+                                    onClick={() => setIsProductsMenuOpen(false)}
+                                    className="megamenu-parent-link"
+                                  >
+                                    <div className="megamenu-parent-meta">
+                                      <span className="megamenu-parent-name">
+                                        {lang === "en" ? group.nameEn : group.nameVi}
+                                      </span>
+                                      <span className="megamenu-parent-subcount">
+                                        {group.subcategories.length} {lang === "en" ? "categories" : "danh mục"}
+                                      </span>
+                                    </div>
+                                    <span className="megamenu-chevron">›</span>
+                                  </Link>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <div className="megamenu-left-footer">
+                            <Link
+                              href="/products"
+                              onClick={() => setIsProductsMenuOpen(false)}
+                              className="megamenu-all-link"
+                            >
+                              <span>{lang === "en" ? "Explore All Equipment →" : "Xem tất cả thiết bị →"}</span>
+                            </Link>
+                          </div>
+                        </div>
+
+                        {/* Right Column: Subcategories Grid */}
+                        <div className="megamenu-right-col">
+                          <div className="megamenu-right-header">
+                            <div className="megamenu-header-badge">
+                              {lang === "en" ? selectedMegaGroup.nameEn : selectedMegaGroup.nameVi}
+                            </div>
+                            <Link
+                              href={`/products?group=${selectedMegaGroup.id}`}
+                              onClick={() => setIsProductsMenuOpen(false)}
+                              className="megamenu-group-view-all"
+                            >
+                              {lang === "en" ? "View group archive →" : "Xem toàn bộ nhóm →"}
+                            </Link>
+                          </div>
+
+                          <div className="megamenu-sub-grid">
+                            {selectedMegaGroup.subcategories.map((sub) => (
+                              <Link
+                                key={sub.slug}
+                                href={`/products?category=${sub.slug}`}
+                                onClick={() => setIsProductsMenuOpen(false)}
+                                className="megamenu-sub-card"
+                              >
+                                <span className="megamenu-sub-bullet" />
+                                <span className="megamenu-sub-title">
+                                  {lang === "en" ? sub.nameEn : sub.nameVi}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+
+                          {/* Mega Menu Featured Showcase Card */}
+                          <div className="megamenu-showcase-card">
+                            <div className="megamenu-showcase-info">
+                              <div className="megamenu-showcase-tag">VanBass Pro Audio</div>
+                              <div className="megamenu-showcase-title">
+                                {lang === "en" ? "Official Audio Equipment & Systems" : "Thiết Bị Âm Thanh Chính Hãng & Cho Thuê"}
+                              </div>
+                              <div className="megamenu-showcase-desc">
+                                {lang === "en" ? "100% Genuine • 12 Months Warranty • Da Nang Delivery" : "Bảo hành 12 tháng • Giao lắp tận nơi tại Đà Nẵng"}
+                              </div>
+                            </div>
+                            <Link
+                              href="/products"
+                              onClick={() => setIsProductsMenuOpen(false)}
+                              className="megamenu-showcase-cta"
+                            >
+                              {lang === "en" ? "Explore Catalog →" : "Khám phá ngay →"}
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
               return (
                 <Link
@@ -559,6 +752,92 @@ export default function Header() {
             <div className="mobile-drawer-links">
               {navLinks.map((link) => {
                 const isCurrent = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+
+                if (link.isMega) {
+                  return (
+                    <div key={link.href} className="mobile-mega-accordion-wrap">
+                      <div className="mobile-mega-header-row">
+                        <Link
+                          href={link.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`mobile-nav-link ${isCurrent ? "active" : ""}`}
+                          style={{ flex: 1 }}
+                        >
+                          <span>{link.label}</span>
+                          {isCurrent && <span className="mobile-active-dot" />}
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => setMobileCatAccordionOpen(!mobileCatAccordionOpen)}
+                          className="mobile-accordion-toggle-btn"
+                          aria-label="Toggle categories"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            style={{
+                              transition: "transform 0.2s ease",
+                              transform: mobileCatAccordionOpen ? "rotate(180deg)" : "rotate(0deg)",
+                            }}
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Expanded Mobile Category Groups */}
+                      {mobileCatAccordionOpen && (
+                        <div className="mobile-groups-container">
+                          {CATEGORY_GROUPS.map((group) => {
+                            const isGroupOpen = mobileActiveGroupId === group.id;
+                            return (
+                              <div key={group.id} className="mobile-group-block">
+                                <div className="mobile-group-header">
+                                  <Link
+                                    href={`/products?group=${group.id}`}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="mobile-group-title-link"
+                                  >
+                                    <span>{lang === "en" ? group.nameEn : group.nameVi}</span>
+                                  </Link>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setMobileActiveGroupId(isGroupOpen ? null : group.id)
+                                    }
+                                    className="mobile-subgroup-toggle"
+                                  >
+                                    {isGroupOpen ? "−" : "+"}
+                                  </button>
+                                </div>
+
+                                {isGroupOpen && (
+                                  <div className="mobile-sub-list">
+                                    {group.subcategories.map((sub) => (
+                                      <Link
+                                        key={sub.slug}
+                                        href={`/products?category=${sub.slug}`}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="mobile-sub-item"
+                                      >
+                                        • {lang === "en" ? sub.nameEn : sub.nameVi}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
                 return (
                   <Link
                     key={link.href}

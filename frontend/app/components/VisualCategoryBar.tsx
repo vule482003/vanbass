@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Category, Product } from "../lib/types";
 import { useLanguage } from "../lib/language-context";
+import {
+  CATEGORY_GROUPS,
+  getParentGroupBySubSlug,
+  getSubcategoryDisplayName,
+} from "../lib/category-hierarchy";
 
 interface VisualCategoryBarProps {
   categories: Category[];
@@ -22,15 +27,6 @@ interface VisualCategoryBarProps {
   onPriceRangeChange?: (range: string) => void;
 }
 
-const CATEGORY_NAMES_EN: Record<string, string> = {
-  "all": "All Equipment",
-  "dj": "DJ Equipment",
-  "mixer": "DJ Mixers",
-  "audio": "Speakers & Audio",
-  "stage-effects": "Stage Effects",
-  "accessories": "Headphones & Cables",
-};
-
 export default function VisualCategoryBar({
   categories,
   products,
@@ -49,6 +45,23 @@ export default function VisualCategoryBar({
   onPriceRangeChange,
 }: VisualCategoryBarProps) {
   const { t, lang } = useLanguage();
+
+  // Custom Dropdown Popover States
+  const [openDropdown, setOpenDropdown] = useState<"brand" | "price" | "sort" | null>(null);
+  const [brandSearchInput, setBrandSearchInput] = useState("");
+  const toolbarRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (toolbarRef.current && !toolbarRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   // Map category_id (UUID from DB) to category slug
   const categoryIdToSlug = useMemo(() => {
     const map = new Map<string, string>();
@@ -58,749 +71,1309 @@ export default function VisualCategoryBar({
     return map;
   }, [categories]);
 
-  // Extract available unique brands dynamically
+  // Extract canonical normalized brands + product counts (Clean deduplicated brands)
   const availableBrands = useMemo(() => {
-    const set = new Set<string>();
-    products.forEach((p) => {
-      if (p.brand) set.add(p.brand);
-    });
-    return Array.from(set).sort();
-  }, [products]);
+    const brandMap = new Map<string, { key: string; name: string; count: number }>();
 
-  // Compute accurate product counts per category, dynamically reacting to filterMode (all/sale/rental)
-  const categoryCounts = useMemo(() => {
+    products.forEach((p) => {
+      if (!p.brand) return;
+      const raw = p.brand.trim();
+      if (!raw) return;
+      const lower = raw.toLowerCase();
+
+      // Normalize brand display names (Fix duplicates like ANTARI / Antari, B&C SPEAKERS / B&C Speakers)
+      if (!brandMap.has(lower)) {
+        let displayName = raw;
+        if (lower === "antari") displayName = "Antari";
+        else if (lower === "b&c speakers" || lower === "b&c") displayName = "B&C Speakers";
+        else if (lower === "behringer") displayName = "Behringer";
+        else if (lower === "dixon") displayName = "Dixon";
+        else if (lower === "fox") displayName = "Fox";
+        else if (lower === "g.music" || lower === "gmusic") displayName = "G.Music";
+        else if (lower === "jbl") displayName = "JBL";
+        else if (lower === "klotz") displayName = "Klotz";
+        else if (lower === "marani") displayName = "Marani";
+        else if (lower === "nexo") displayName = "Nexo";
+        else if (lower === "pioneer dj" || lower === "pioneer") displayName = "Pioneer DJ";
+        else if (lower === "yamaha") displayName = "Yamaha";
+        else if (lower === "alphatheta") displayName = "AlphaTheta";
+        else if (lower === "shure") displayName = "Shure";
+        else if (lower === "sennheiser") displayName = "Sennheiser";
+        else if (lower === "allen & heath") displayName = "Allen & Heath";
+        else if (raw === raw.toUpperCase() && raw.length > 3) {
+          displayName = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+        }
+
+        brandMap.set(lower, { key: lower, name: displayName, count: 0 });
+      }
+
+      const item = brandMap.get(lower)!;
+      if (filterMode === "sale" && !p.sale_enabled) return;
+      if (filterMode === "rental" && !p.rental_enabled) return;
+      item.count += 1;
+    });
+
+    return Array.from(brandMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }, [products, filterMode]);
+
+  // Filtered brands by brandSearchInput
+  const filteredBrands = useMemo(() => {
+    if (!brandSearchInput.trim()) return availableBrands;
+    const q = brandSearchInput.toLowerCase();
+    return availableBrands.filter((b) => b.name.toLowerCase().includes(q));
+  }, [availableBrands, brandSearchInput]);
+
+  // Selected brand display name
+  const selectedBrandDisplayName = useMemo(() => {
+    if (selectedBrand === "all") return null;
+    const found = availableBrands.find(
+      (b) => b.key === selectedBrand.toLowerCase() || b.name.toLowerCase() === selectedBrand.toLowerCase()
+    );
+    return found ? found.name : selectedBrand;
+  }, [selectedBrand, availableBrands]);
+
+  // Compute accurate product counts per subcategory
+  const subcategoryCounts = useMemo(() => {
     const counts: Record<string, number> = { all: 0 };
     categories.forEach((c) => {
       counts[c.slug] = 0;
     });
 
     products.forEach((p) => {
-      // Respect mode filter (sale / rental)
       if (filterMode === "sale" && !p.sale_enabled) return;
       if (filterMode === "rental" && !p.rental_enabled) return;
 
       counts.all = (counts.all || 0) + 1;
 
       const slug = p.category_slug || (p.category_id ? categoryIdToSlug.get(p.category_id) : undefined);
-      if (slug && counts[slug] !== undefined) {
-        counts[slug] += 1;
+      if (slug) {
+        counts[slug] = (counts[slug] || 0) + 1;
       }
     });
 
     return counts;
   }, [products, categories, categoryIdToSlug, filterMode]);
 
-  // Hardware icons / SVG illustrations
-  const renderHardwareVisual = (slug: string, isActive: boolean) => {
-    const activeColor = "#22c55e";
-    const dimColor = "rgba(255, 255, 255, 0.4)";
-    const fillColor = isActive ? "rgba(34, 197, 94, 0.14)" : "rgba(255, 255, 255, 0.03)";
-    const strokeColor = isActive ? activeColor : dimColor;
+  // Compute total count per parent group
+  const groupCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: subcategoryCounts.all || 0 };
+    CATEGORY_GROUPS.forEach((group) => {
+      let sum = 0;
+      group.subcategories.forEach((sub) => {
+        sum += subcategoryCounts[sub.slug] || 0;
+      });
+      if (group.id === "dj") sum += subcategoryCounts["dj"] || 0;
+      if (group.id === "audio") sum += (subcategoryCounts["audio"] || 0) + (subcategoryCounts["mixer"] || 0);
+      if (group.id === "effects") sum += subcategoryCounts["stage-effects"] || 0;
+      if (group.id === "accessories") sum += subcategoryCounts["accessories"] || 0;
 
-    switch (slug) {
-      case "all":
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <rect x="6" y="10" width="60" height="40" rx="6" fill={fillColor} stroke={strokeColor} strokeWidth="1.5" />
-            <circle cx="24" cy="30" r="11" stroke={strokeColor} strokeWidth="1.5" />
-            <circle cx="24" cy="30" r="4" fill={isActive ? activeColor : dimColor} />
-            <circle cx="48" cy="30" r="11" stroke={strokeColor} strokeWidth="1.5" />
-            <circle cx="48" cy="30" r="4" fill={isActive ? activeColor : dimColor} />
-            <line x1="36" y1="18" x2="36" y2="42" stroke={strokeColor} strokeWidth="1.2" strokeDasharray="2 2" />
-          </svg>
-        );
+      counts[group.id] = sum;
+    });
+    return counts;
+  }, [subcategoryCounts]);
 
-      case "dj":
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <rect x="4" y="8" width="64" height="44" rx="5" fill={fillColor} stroke={strokeColor} strokeWidth="1.6" />
-            <circle cx="20" cy="27" r="11" stroke={strokeColor} strokeWidth="1.8" />
-            <circle cx="20" cy="27" r="6" fill="rgba(0,0,0,0.5)" stroke={isActive ? activeColor : "#52525b"} strokeWidth="1.2" />
-            <circle cx="20" cy="27" r="2.5" fill={isActive ? activeColor : "#fff"} />
-            <circle cx="52" cy="27" r="11" stroke={strokeColor} strokeWidth="1.8" />
-            <circle cx="52" cy="27" r="6" fill="rgba(0,0,0,0.5)" stroke={isActive ? activeColor : "#52525b"} strokeWidth="1.2" />
-            <circle cx="52" cy="27" r="2.5" fill={isActive ? activeColor : "#fff"} />
-            <line x1="36" y1="12" x2="36" y2="34" stroke={isActive ? activeColor : "#3f3f46"} strokeWidth="1.5" />
-            <circle cx="36" cy="18" r="1.5" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="36" cy="24" r="1.5" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="36" cy="30" r="1.5" fill={isActive ? activeColor : "#71717a"} />
-            <rect x="13" y="42" width="4" height="3" rx="0.5" fill={isActive ? activeColor : "#3f3f46"} />
-            <rect x="19" y="42" width="4" height="3" rx="0.5" fill={isActive ? activeColor : "#3f3f46"} />
-            <rect x="25" y="42" width="4" height="3" rx="0.5" fill={isActive ? activeColor : "#3f3f46"} />
-            <rect x="43" y="42" width="4" height="3" rx="0.5" fill={isActive ? activeColor : "#3f3f46"} />
-            <rect x="49" y="42" width="4" height="3" rx="0.5" fill={isActive ? activeColor : "#3f3f46"} />
-            <rect x="55" y="42" width="4" height="3" rx="0.5" fill={isActive ? activeColor : "#3f3f46"} />
-          </svg>
-        );
+  // Active Parent Group State
+  const initialGroup = useMemo(() => {
+    if (selectedCategory === "all") return "all";
+    if (selectedCategory.startsWith("group:")) return selectedCategory.replace("group:", "");
+    const parent = getParentGroupBySubSlug(selectedCategory);
+    return parent ? parent.id : "all";
+  }, [selectedCategory]);
 
-      case "mixer":
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <rect x="14" y="6" width="44" height="48" rx="4" fill={fillColor} stroke={strokeColor} strokeWidth="1.6" />
-            <circle cx="22" cy="15" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="22" cy="22" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="22" cy="29" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="31" cy="15" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="31" cy="22" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="31" cy="29" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="41" cy="15" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="41" cy="22" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="41" cy="29" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="50" cy="15" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="50" cy="22" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <circle cx="50" cy="29" r="2" fill={isActive ? activeColor : "#71717a"} />
-            <line x1="22" y1="35" x2="22" y2="43" stroke={strokeColor} strokeWidth="1.4" />
-            <line x1="31" y1="35" x2="31" y2="43" stroke={strokeColor} strokeWidth="1.4" />
-            <line x1="41" y1="35" x2="41" y2="43" stroke={strokeColor} strokeWidth="1.4" />
-            <line x1="50" y1="35" x2="50" y2="43" stroke={strokeColor} strokeWidth="1.4" />
-            <rect x="24" y="47" width="24" height="3" rx="1.5" fill="rgba(0,0,0,0.6)" stroke={strokeColor} strokeWidth="0.8" />
-            <rect x="34" y="46" width="4" height="5" rx="1" fill={isActive ? activeColor : "#fff"} />
-          </svg>
-        );
+  const [activeGroupId, setActiveGroupId] = useState<string>(initialGroup);
 
-      case "audio":
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <rect x="11" y="10" width="22" height="40" rx="3" fill={fillColor} stroke={strokeColor} strokeWidth="1.5" />
-            <circle cx="22" cy="20" r="3.5" fill="rgba(0,0,0,0.6)" stroke={isActive ? activeColor : dimColor} strokeWidth="1.2" />
-            <circle cx="22" cy="35" r="6.5" fill={isActive ? "rgba(34, 197, 94, 0.25)" : "rgba(234, 179, 8, 0.2)"} stroke={isActive ? activeColor : "#eab308"} strokeWidth="1.6" />
-            <circle cx="22" cy="35" r="2" fill={isActive ? activeColor : "#eab308"} />
-            <rect x="39" y="10" width="22" height="40" rx="3" fill={fillColor} stroke={strokeColor} strokeWidth="1.5" />
-            <circle cx="50" cy="20" r="3.5" fill="rgba(0,0,0,0.6)" stroke={isActive ? activeColor : dimColor} strokeWidth="1.2" />
-            <circle cx="50" cy="35" r="6.5" fill={isActive ? "rgba(34, 197, 94, 0.25)" : "rgba(234, 179, 8, 0.2)"} stroke={isActive ? activeColor : "#eab308"} strokeWidth="1.6" />
-            <circle cx="50" cy="35" r="2" fill={isActive ? activeColor : "#eab308"} />
-          </svg>
-        );
+  // Sync state if selectedCategory prop changes from external sources (URL, header dropdown)
+  useEffect(() => {
+    if (selectedCategory === "all") {
+      setActiveGroupId("all");
+    } else if (selectedCategory.startsWith("group:")) {
+      setActiveGroupId(selectedCategory.replace("group:", ""));
+    } else {
+      const parent = getParentGroupBySubSlug(selectedCategory);
+      if (parent) {
+        setActiveGroupId(parent.id);
+      }
+    }
+  }, [selectedCategory]);
 
-      case "accessories":
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <path d="M18 36 C18 16, 54 16, 54 36" stroke={strokeColor} strokeWidth="2.8" strokeLinecap="round" fill="none" />
-            <rect x="13" y="32" width="10" height="18" rx="5" fill={isActive ? activeColor : "#27272a"} stroke={strokeColor} strokeWidth="1.5" />
-            <rect x="49" y="32" width="10" height="18" rx="5" fill={isActive ? activeColor : "#27272a"} stroke={strokeColor} strokeWidth="1.5" />
-            <path d="M18 50 Q16 54 20 56 T24 58 T28 56" stroke={isActive ? activeColor : "#71717a"} strokeWidth="1.2" fill="none" />
-            <line x1="28" y1="56" x2="33" y2="56" stroke={isActive ? activeColor : "#eab308"} strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        );
+  const activeGroup = CATEGORY_GROUPS.find((g) => g.id === activeGroupId);
 
-      case "stage-effects":
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <rect x="12" y="24" width="38" height="24" rx="3" fill={fillColor} stroke={strokeColor} strokeWidth="1.5" />
-            <path d="M22 24 V18 H38 V24" stroke={strokeColor} strokeWidth="1.6" fill="none" />
-            <rect x="50" y="32" width="7" height="8" rx="1" fill={isActive ? activeColor : "#3f3f46"} stroke={strokeColor} strokeWidth="1.2" />
-            <path d="M58 33 Q64 30 68 31" stroke={isActive ? activeColor : "rgba(255,255,255,0.4)"} strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M58 36 Q65 36 70 35" stroke={isActive ? activeColor : "rgba(255,255,255,0.7)"} strokeWidth="2" strokeLinecap="round" />
-            <path d="M58 39 Q64 42 68 41" stroke={isActive ? activeColor : "rgba(255,255,255,0.4)"} strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        );
-
-      default:
-        return (
-          <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-            <rect x="16" y="15" width="40" height="30" rx="4" fill={fillColor} stroke={strokeColor} strokeWidth="1.5" />
-            <circle cx="36" cy="30" r="6" fill={isActive ? activeColor : dimColor} />
-          </svg>
-        );
+  const handleSelectGroup = (groupId: string) => {
+    setActiveGroupId(groupId);
+    if (groupId === "all") {
+      onSelectCategory("all");
+    } else {
+      onSelectCategory(`group:${groupId}`);
     }
   };
 
-  const getCategorySubtitle = (slug: string) => {
-    switch (slug) {
-      case "all":
-        return t.visualCategoryBar.subtitles.all;
-      case "dj":
-        return t.visualCategoryBar.subtitles.dj;
-      case "mixer":
-        return t.visualCategoryBar.subtitles.mixer;
-      case "audio":
-        return t.visualCategoryBar.subtitles.audio;
-      case "accessories":
-        return t.visualCategoryBar.subtitles.accessories;
-      case "stage-effects":
-        return t.visualCategoryBar.subtitles.stageEffects;
-      default:
-        return t.visualCategoryBar.subtitles.default;
-    }
-  };
+  const PRICE_RANGE_OPTIONS = useMemo(
+    () => [
+      { value: "all", labelVi: "Tất cả mức giá", labelEn: "All Prices" },
+      { value: "under_10m", labelVi: "Dưới 10 triệu", labelEn: "Under 10M (< 10 Tr)" },
+      { value: "10m_25m", labelVi: "10 - 25 triệu", labelEn: "10M - 25M (10 - 25 Tr)" },
+      { value: "25m_50m", labelVi: "25 - 50 triệu", labelEn: "25M - 50M (25 - 50 Tr)" },
+      { value: "50m_100m", labelVi: "50 - 100 triệu", labelEn: "50M - 100M (50 - 100 Tr)" },
+      { value: "over_100m", labelVi: "Trên 100 triệu", labelEn: "Above 100M (> 100 Tr)" },
+    ],
+    []
+  );
 
-  const allCategoryCards = useMemo(() => {
-    return [
-      {
-        id: "all",
-        slug: "all",
-        name: t.visualCategoryBar.allDevices,
-      },
-      ...categories,
-    ];
-  }, [categories, t]);
+  const SORT_OPTIONS = useMemo(
+    () => [
+      { value: "featured", labelVi: "Mới nhất", labelEn: "Newest" },
+      { value: "price_asc", labelVi: "Giá: Thấp → Cao", labelEn: "Price: Low → High" },
+      { value: "price_desc", labelVi: "Giá: Cao → Thấp", labelEn: "Price: High → Low" },
+      { value: "name", labelVi: "Tên: A → Z", labelEn: "Name: A → Z" },
+    ],
+    []
+  );
 
-  const activeCategoryObject = categories.find((c) => c.slug === selectedCategory);
+  const activePriceLabel = useMemo(() => {
+    if (priceRange === "all") return null;
+    const opt = PRICE_RANGE_OPTIONS.find((o) => o.value === priceRange);
+    return opt ? (lang === "en" ? opt.labelEn : opt.labelVi) : null;
+  }, [priceRange, PRICE_RANGE_OPTIONS, lang]);
+
+  const activeSortLabel = useMemo(() => {
+    const found = SORT_OPTIONS.find((s) => s.value === sortBy);
+    return found ? (lang === "en" ? found.labelEn : found.labelVi) : lang === "en" ? "Sort" : "Sắp xếp";
+  }, [sortBy, SORT_OPTIONS, lang]);
 
   const resetAllFilters = () => {
+    setActiveGroupId("all");
     onSelectCategory("all");
     onFilterModeChange("all");
+    if (onSelectBrand) onSelectBrand("all");
+    if (onPriceRangeChange) onPriceRangeChange("all");
     onSearchChange("");
+    setOpenDropdown(null);
   };
 
-  const hasActiveFilters = selectedCategory !== "all" || filterMode !== "all" || searchQuery.trim() !== "";
+  const hasActiveFilters =
+    selectedCategory !== "all" ||
+    filterMode !== "all" ||
+    searchQuery.trim() !== "" ||
+    selectedBrand !== "all" ||
+    priceRange !== "all";
+
+  // Selected Category Display Label
+  const activeCategoryLabel = useMemo(() => {
+    if (selectedCategory === "all") return null;
+    if (selectedCategory.startsWith("group:")) {
+      const grp = CATEGORY_GROUPS.find((g) => g.id === selectedCategory.replace("group:", ""));
+      return grp ? (lang === "en" ? grp.nameEn : grp.nameVi) : null;
+    }
+    const cat = categories.find((c) => c.slug === selectedCategory);
+    return cat ? getSubcategoryDisplayName(cat.slug, lang) : getSubcategoryDisplayName(selectedCategory, lang);
+  }, [selectedCategory, categories, lang]);
 
   return (
-    <div style={{ marginBottom: "44px" }}>
-      {/* 1. Category Showcase Scrollable Bar */}
-      <div
-        className="category-showcase-container"
-        style={{
-          display: "flex",
-          gap: "12px",
-          marginBottom: "20px",
-          overflowX: "auto",
-          paddingBottom: "12px",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {allCategoryCards.map((cat) => {
-          const isActive = selectedCategory === cat.slug;
-          const count = categoryCounts[cat.slug] || 0;
+    <div className="visual-category-system" style={{ marginBottom: "36px" }} ref={toolbarRef}>
+      {/* ============================================================
+          TIER 1: PARENT GROUP TABS (5 Elegant Pill Tabs)
+         ============================================================ */}
+      <div className="category-tier1-container">
+        {/* ALL TAB */}
+        <button
+          type="button"
+          onClick={() => handleSelectGroup("all")}
+          className={`category-tier1-pill ${activeGroupId === "all" ? "is-active" : ""}`}
+        >
+          <span className="tier1-label">
+            {lang === "en" ? "All Equipment" : "Tất Cả Thiết Bị"}
+          </span>
+          <span className="tier1-badge">
+            {groupCounts.all}
+          </span>
+        </button>
+
+        {/* 4 CATEGORY GROUPS TABS */}
+        {CATEGORY_GROUPS.map((group) => {
+          const isActive = activeGroupId === group.id;
+          const count = groupCounts[group.id] || 0;
 
           return (
             <button
-              key={cat.id}
-              onClick={() => onSelectCategory(cat.slug)}
-              className={`visual-category-card ${isActive ? "is-active" : ""}`}
-              style={{
-                flex: "0 0 155px",
-                scrollSnapAlign: "start",
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                padding: "20px 14px 16px 14px",
-                background: isActive
-                  ? "linear-gradient(180deg, rgba(34, 197, 94, 0.15) 0%, rgba(13, 18, 14, 0.95) 100%)"
-                  : "linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(15, 15, 17, 0.85) 100%)",
-                border: isActive
-                  ? "1px solid #22c55e"
-                  : "1px solid rgba(255, 255, 255, 0.09)",
-                boxShadow: isActive
-                  ? "0 0 24px rgba(34, 197, 94, 0.25), inset 0 1px 0 rgba(34, 197, 94, 0.4)"
-                  : "0 4px 20px rgba(0, 0, 0, 0.3)",
-                borderRadius: "12px",
-                cursor: "pointer",
-                transition: "all 240ms cubic-bezier(0.16, 1, 0.3, 1)",
-                outline: "none",
-                transform: isActive ? "translateY(-3px)" : "none",
-              }}
+              key={group.id}
+              type="button"
+              onClick={() => handleSelectGroup(group.id)}
+              className={`category-tier1-pill ${isActive ? "is-active" : ""}`}
             >
-              {/* Top active glowing light bar */}
-              {isActive && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "-1px",
-                    left: "20%",
-                    right: "20%",
-                    height: "2px",
-                    background: "#22c55e",
-                    boxShadow: "0 0 12px #22c55e",
-                    borderRadius: "9999px",
-                  }}
-                />
-              )}
-
-              {/* Hardware Visual Center */}
-              <div
-                style={{
-                  height: "64px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "12px",
-                  transition: "transform 240ms ease",
-                }}
-              >
-                {renderHardwareVisual(cat.slug, isActive)}
-              </div>
-
-              {/* Category Title */}
-              <div
-                style={{
-                  fontSize: "14px",
-                  fontWeight: 800,
-                  color: isActive ? "#ffffff" : "#e4e4e7",
-                  letterSpacing: "-0.01em",
-                  marginBottom: "4px",
-                  lineHeight: "1.25",
-                }}
-              >
-                {lang === "en" ? (CATEGORY_NAMES_EN[cat.slug] || cat.name) : cat.name}
-              </div>
-
-              {/* Category Subtitle */}
-              <div
-                style={{
-                  fontSize: "11px",
-                  color: isActive ? "#a1a1aa" : "#71717a",
-                  lineHeight: "1.3",
-                  marginBottom: "12px",
-                }}
-              >
-                {getCategorySubtitle(cat.slug)}
-              </div>
-
-              {/* Count Tag Badge (Dynamic to Filter Mode) */}
-              <div
-                style={{
-                  marginTop: "auto",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  padding: "3px 9px",
-                  borderRadius: "9999px",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  backgroundColor: isActive ? "rgba(34, 197, 94, 0.2)" : "rgba(255, 255, 255, 0.06)",
-                  color: isActive ? "#4ade80" : "#a1a1aa",
-                  border: isActive ? "1px solid rgba(34, 197, 94, 0.35)" : "1px solid rgba(255, 255, 255, 0.08)",
-                  transition: "all 200ms ease",
-                }}
-              >
-                {count} {filterMode === "rental" ? "máy cho thuê" : "thiết bị"}
-              </div>
+              <span className="tier1-label">
+                {lang === "en" ? group.nameEn : group.nameVi}
+              </span>
+              <span className="tier1-badge">
+                {count}
+              </span>
             </button>
           );
         })}
       </div>
 
-      {/* 2. Floating Command Toolbar */}
-      <div
-        style={{
-          background: "linear-gradient(180deg, rgba(24, 24, 27, 0.8) 0%, rgba(14, 14, 16, 0.95) 100%)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          borderRadius: "14px",
-          padding: "16px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "14px",
-          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.4)",
-        }}
-      >
-        {/* Main Controls Row */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: "16px",
-          }}
-        >
-          {/* Left: Search input with magnifying glass */}
-          <div
-            style={{
-              flex: "1 1 280px",
-              position: "relative",
-              minWidth: "220px",
-            }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={searchQuery ? "#22c55e" : "rgba(255, 255, 255, 0.4)"}
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                position: "absolute",
-                left: "14px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                transition: "stroke 180ms ease",
-              }}
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-
-            <input
-              type="text"
-              placeholder={t.visualCategoryBar.searchPlaceholder}
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "11px 40px 11px 40px",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                borderRadius: "9999px",
-                color: "#fff",
-                fontSize: "13.5px",
-                outline: "none",
-                transition: "border-color 180ms ease, box-shadow 180ms ease",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#22c55e";
-                e.currentTarget.style.boxShadow = "0 0 0 3px rgba(34, 197, 94, 0.15)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.12)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            />
-
-            {searchQuery && (
+      {/* ============================================================
+          TIER 2: SUBCATEGORY CHIPS (Smart Contextual Chips Bar)
+         ============================================================ */}
+      <div className="category-tier2-wrapper">
+        <div className="category-tier2-container">
+          {activeGroupId === "all" ? (
+            <>
+              {/* Popular quick filters when "All" is active */}
               <button
                 type="button"
-                onClick={() => onSearchChange("")}
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "none",
-                  border: "none",
-                  color: "#a1a1aa",
-                  cursor: "pointer",
-                  padding: "4px",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                }}
-                title={t.common.cancel}
+                onClick={() => onSelectCategory("all")}
+                className={`category-tier2-chip ${selectedCategory === "all" ? "is-active" : ""}`}
               >
-                ✕
+                <span>{lang === "en" ? "All Categories" : "Tất Cả Sản Phẩm"}</span>
               </button>
-            )}
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("dj");
+                  onSelectCategory("dj-controllers");
+                }}
+                className={`category-tier2-chip ${selectedCategory === "dj-controllers" ? "is-active" : ""}`}
+              >
+                <span>DJ Controllers</span>
+                <span className="tier2-count">{subcategoryCounts["dj-controllers"] || 0}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("dj");
+                  onSelectCategory("all-in-one-dj-systems");
+                }}
+                className={`category-tier2-chip ${selectedCategory === "all-in-one-dj-systems" ? "is-active" : ""}`}
+              >
+                <span>All-in-One DJ</span>
+                <span className="tier2-count">{subcategoryCounts["all-in-one-dj-systems"] || 0}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("audio");
+                  onSelectCategory("loa-thung-pro-audio");
+                }}
+                className={`category-tier2-chip ${selectedCategory === "loa-thung-pro-audio" ? "is-active" : ""}`}
+              >
+                <span>{lang === "en" ? "Pro Audio Speakers" : "Loa Thùng Pro"}</span>
+                <span className="tier2-count">{subcategoryCounts["loa-thung-pro-audio"] || 0}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("audio");
+                  onSelectCategory("mixer-ban-tron-am-thanh");
+                }}
+                className={`category-tier2-chip ${selectedCategory === "mixer-ban-tron-am-thanh" ? "is-active" : ""}`}
+              >
+                <span>{lang === "en" ? "Mixer Consoles" : "Mixer Bàn Trộn"}</span>
+                <span className="tier2-count">{subcategoryCounts["mixer-ban-tron-am-thanh"] || 0}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("audio");
+                  onSelectCategory("micro-khong-day");
+                }}
+                className={`category-tier2-chip ${selectedCategory === "micro-khong-day" ? "is-active" : ""}`}
+              >
+                <span>{lang === "en" ? "Wireless Mics" : "Micro Không Dây"}</span>
+                <span className="tier2-count">{subcategoryCounts["micro-khong-day"] || 0}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("effects");
+                  onSelectCategory("may-tao-khoi");
+                }}
+                className={`category-tier2-chip ${selectedCategory === "may-tao-khoi" ? "is-active" : ""}`}
+              >
+                <span>{lang === "en" ? "Fog Machines" : "Máy Tạo Khói"}</span>
+                <span className="tier2-count">{subcategoryCounts["may-tao-khoi"] || 0}</span>
+              </button>
+            </>
+          ) : activeGroup ? (
+            <>
+              {/* Group View All Chip */}
+              <button
+                type="button"
+                onClick={() => onSelectCategory(`group:${activeGroup.id}`)}
+                className={`category-tier2-chip ${
+                  selectedCategory === `group:${activeGroup.id}` || selectedCategory === "all" ? "is-active" : ""
+                }`}
+              >
+                <span>
+                  {lang === "en" ? `All ${activeGroup.nameEn}` : `Tất Cả ${activeGroup.nameVi}`}
+                </span>
+                <span className="tier2-count">{groupCounts[activeGroup.id]}</span>
+              </button>
 
-          {/* Center: Segmented Control Mode Filter */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              backgroundColor: "rgba(0, 0, 0, 0.55)",
-              padding: "4px",
-              borderRadius: "9999px",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            }}
-          >
+              {/* Subcategories list chips */}
+              {activeGroup.subcategories.map((sub) => {
+                const isSelected = selectedCategory === sub.slug;
+                const count = subcategoryCounts[sub.slug] || 0;
+
+                return (
+                  <button
+                    key={sub.slug}
+                    type="button"
+                    onClick={() => onSelectCategory(sub.slug)}
+                    className={`category-tier2-chip ${isSelected ? "is-active" : ""}`}
+                  >
+                    <span>{lang === "en" ? sub.nameEn : sub.nameVi}</span>
+                    <span className="tier2-count">{count}</span>
+                  </button>
+                );
+              })}
+            </>
+          ) : null}
+        </div>
+      </div>
+
+      {/* ============================================================
+          FILTER TOOLBAR (Mode, Search, Custom Brand Popover, Custom Price Popover, Custom Sort Popover)
+         ============================================================ */}
+      <div className="category-toolbar-box">
+        <div className="category-toolbar-row">
+          {/* Left: Mode Switcher (All / Sale / Rental) */}
+          <div className="category-mode-segmented">
             <button
+              type="button"
               onClick={() => onFilterModeChange("all")}
-              style={{
-                padding: "8px 18px",
-                borderRadius: "9999px",
-                border: "none",
-                fontSize: "12.5px",
-                fontWeight: 700,
-                cursor: "pointer",
-                backgroundColor: filterMode === "all" ? "#22c55e" : "transparent",
-                color: filterMode === "all" ? "#000000" : "#a1a1aa",
-                transition: "all 180ms ease",
-                boxShadow: filterMode === "all" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
-              }}
+              className={`mode-btn ${filterMode === "all" ? "is-active" : ""}`}
             >
               {t.visualCategoryBar.filterAll}
             </button>
             <button
+              type="button"
               onClick={() => onFilterModeChange("sale")}
-              style={{
-                padding: "8px 18px",
-                borderRadius: "9999px",
-                border: "none",
-                fontSize: "12.5px",
-                fontWeight: 700,
-                cursor: "pointer",
-                backgroundColor: filterMode === "sale" ? "#22c55e" : "transparent",
-                color: filterMode === "sale" ? "#000000" : "#a1a1aa",
-                transition: "all 180ms ease",
-                boxShadow: filterMode === "sale" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
-              }}
+              className={`mode-btn ${filterMode === "sale" ? "is-active" : ""}`}
             >
               {t.visualCategoryBar.filterSale}
             </button>
             <button
+              type="button"
               onClick={() => onFilterModeChange("rental")}
-              style={{
-                padding: "8px 18px",
-                borderRadius: "9999px",
-                border: "none",
-                fontSize: "12.5px",
-                fontWeight: 700,
-                cursor: "pointer",
-                backgroundColor: filterMode === "rental" ? "#22c55e" : "transparent",
-                color: filterMode === "rental" ? "#000000" : "#a1a1aa",
-                transition: "all 180ms ease",
-                boxShadow: filterMode === "rental" ? "0 2px 10px rgba(34, 197, 94, 0.35)" : "none",
-              }}
+              className={`mode-btn ${filterMode === "rental" ? "is-active" : ""}`}
             >
               {t.visualCategoryBar.filterRental}
             </button>
           </div>
 
-          {/* Brand & Price Range Dropdown Filters */}
-          {onSelectBrand && (
-            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-              <select
-                value={selectedBrand}
-                onChange={(e) => onSelectBrand(e.target.value)}
-                style={{
-                  padding: "9px 28px 9px 12px",
-                  backgroundColor: selectedBrand !== "all" ? "rgba(34, 197, 94, 0.15)" : "rgba(0, 0, 0, 0.5)",
-                  border: selectedBrand !== "all" ? "1px solid rgba(34, 197, 94, 0.4)" : "1px solid rgba(255, 255, 255, 0.12)",
-                  borderRadius: "9999px",
-                  color: selectedBrand !== "all" ? "#4ade80" : "#e4e4e7",
-                  fontSize: "12.5px",
-                  fontWeight: 600,
-                  outline: "none",
-                  cursor: "pointer",
-                  appearance: "none",
-                  WebkitAppearance: "none",
-                }}
-              >
-                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.allBrands}</option>
-                {availableBrands.map((b) => (
-                  <option key={b} value={b} style={{ backgroundColor: "#18181b", color: "#fff" }}>{b}</option>
-                ))}
-              </select>
-              <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "#a1a1aa", fontSize: "10px" }}>▼</span>
-            </div>
-          )}
-
-          {onPriceRangeChange && (
-            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-              <select
-                value={priceRange}
-                onChange={(e) => onPriceRangeChange(e.target.value)}
-                style={{
-                  padding: "9px 28px 9px 12px",
-                  backgroundColor: priceRange !== "all" ? "rgba(34, 197, 94, 0.15)" : "rgba(0, 0, 0, 0.5)",
-                  border: priceRange !== "all" ? "1px solid rgba(34, 197, 94, 0.4)" : "1px solid rgba(255, 255, 255, 0.12)",
-                  borderRadius: "9999px",
-                  color: priceRange !== "all" ? "#4ade80" : "#e4e4e7",
-                  fontSize: "12.5px",
-                  fontWeight: 600,
-                  outline: "none",
-                  cursor: "pointer",
-                  appearance: "none",
-                  WebkitAppearance: "none",
-                }}
-              >
-                <option value="all" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.allPrices}</option>
-                <option value="under_20m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.priceUnder10m}</option>
-                <option value="20m_50m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.price10mTo30m}</option>
-                <option value="50m_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.price30mTo70m}</option>
-                <option value="over_100m" style={{ backgroundColor: "#18181b", color: "#fff" }}>{t.visualCategoryBar.priceAbove70m}</option>
-              </select>
-              <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "#a1a1aa", fontSize: "10px" }}>▼</span>
-            </div>
-          )}
-
-          {/* Right: Sort Dropdown & Results Counter */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-              <select
-                value={sortBy}
-                onChange={(e) => onSortChange(e.target.value)}
-                style={{
-                  padding: "9px 32px 9px 14px",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  border: "1px solid rgba(255, 255, 255, 0.12)",
-                  borderRadius: "9999px",
-                  color: "#e4e4e7",
-                  fontSize: "12.5px",
-                  fontWeight: 600,
-                  outline: "none",
-                  cursor: "pointer",
-                  appearance: "none",
-                  WebkitAppearance: "none",
-                }}
-              >
-                <option value="featured" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  {t.visualCategoryBar.sortBy} {t.visualCategoryBar.sortNewest}
-                </option>
-                <option value="price_asc" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  {t.visualCategoryBar.sortPriceAsc}
-                </option>
-                <option value="price_desc" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  {t.visualCategoryBar.sortPriceDesc}
-                </option>
-                <option value="name" style={{ backgroundColor: "#18181b", color: "#fff" }}>
-                  {t.visualCategoryBar.sortName}
-                </option>
-              </select>
-              <span
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                  color: "#a1a1aa",
-                  fontSize: "11px",
-                }}
-              >
-                ▼
-              </span>
+          {/* Middle: Inline Search, Custom Brand Popover & Custom Price Popover */}
+          <div className="category-dropdowns-wrap">
+            {/* Quick Search Input */}
+            <div className="toolbar-search-wrap">
+              <svg className="toolbar-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder={lang === "en" ? "Search model, brand..." : "Tìm nhanh mã máy, hãng..."}
+                className="toolbar-search-input"
+              />
+              {searchQuery.trim() && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange("")}
+                  className="toolbar-search-clear"
+                  aria-label="Xóa từ khóa"
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
-            <div
-              style={{
-                fontSize: "12.5px",
-                fontWeight: 700,
-                color: "#22c55e",
-                backgroundColor: "rgba(34, 197, 94, 0.12)",
-                padding: "6px 12px",
-                borderRadius: "9999px",
-                border: "1px solid rgba(34, 197, 94, 0.28)",
-                whiteSpace: "nowrap",
-              }}
-            >
+            {/* CUSTOM BRAND POPOVER */}
+            {onSelectBrand && (
+              <div className="obsidian-popover-wrap">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenDropdown(openDropdown === "brand" ? null : "brand");
+                    setBrandSearchInput("");
+                  }}
+                  className={`obsidian-popover-trigger ${selectedBrand !== "all" ? "has-active-value" : ""} ${openDropdown === "brand" ? "is-open" : ""}`}
+                  aria-haspopup="listbox"
+                  aria-expanded={openDropdown === "brand"}
+                >
+                  <span className="trigger-text">
+                    {selectedBrandDisplayName || (lang === "en" ? "All Brands" : "Tất cả hãng")}
+                  </span>
+                  <span className={`trigger-caret ${openDropdown === "brand" ? "is-flipped" : ""}`}>▾</span>
+                </button>
+
+                {openDropdown === "brand" && (
+                  <div className="obsidian-popover-menu brand-menu" role="listbox">
+                    <div className="popover-menu-header">
+                      <span className="popover-menu-kicker">
+                        {lang === "en" ? "SELECT BRAND" : "CHỌN HÃNG SẢN XUẤT"}
+                      </span>
+                      {selectedBrand !== "all" && (
+                        <button
+                          type="button"
+                          className="popover-quick-clear"
+                          onClick={() => {
+                            onSelectBrand("all");
+                            setOpenDropdown(null);
+                          }}
+                        >
+                          {lang === "en" ? "Clear" : "Bỏ chọn"}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Inline Search in Brand Popover */}
+                    <div className="popover-search-box">
+                      <input
+                        type="text"
+                        value={brandSearchInput}
+                        onChange={(e) => setBrandSearchInput(e.target.value)}
+                        placeholder={lang === "en" ? "Filter brands..." : "Lọc tên hãng..."}
+                        className="popover-search-input"
+                        autoFocus
+                      />
+                    </div>
+
+                    <div className="popover-scroll-list">
+                      {/* ALL BRANDS OPTION */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSelectBrand("all");
+                          setOpenDropdown(null);
+                        }}
+                        className={`popover-option-item ${selectedBrand === "all" ? "is-selected" : ""}`}
+                      >
+                        <span className="option-name">{lang === "en" ? "All Brands" : "Tất cả hãng"}</span>
+                        <span className="option-count">{totalFiltered}</span>
+                      </button>
+
+                      {/* BRAND LIST */}
+                      {filteredBrands.length === 0 ? (
+                        <div className="popover-empty-msg">
+                          {lang === "en" ? "No brand found" : "Không có hãng này"}
+                        </div>
+                      ) : (
+                        filteredBrands.map((b) => {
+                          const isSelected = selectedBrand.toLowerCase() === b.key;
+                          return (
+                            <button
+                              key={b.key}
+                              type="button"
+                              onClick={() => {
+                                onSelectBrand(b.key);
+                                setOpenDropdown(null);
+                              }}
+                              className={`popover-option-item ${isSelected ? "is-selected" : ""}`}
+                            >
+                              <span className="option-name">{b.name}</span>
+                              <span className="option-count">{b.count}</span>
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* CUSTOM PRICE POPOVER */}
+            {onPriceRangeChange && (
+              <div className="obsidian-popover-wrap">
+                <button
+                  type="button"
+                  onClick={() => setOpenDropdown(openDropdown === "price" ? null : "price")}
+                  className={`obsidian-popover-trigger ${priceRange !== "all" ? "has-active-value" : ""} ${openDropdown === "price" ? "is-open" : ""}`}
+                  aria-haspopup="listbox"
+                  aria-expanded={openDropdown === "price"}
+                >
+                  <span className="trigger-text">
+                    {activePriceLabel || (lang === "en" ? "All Prices" : "Tất cả mức giá")}
+                  </span>
+                  <span className={`trigger-caret ${openDropdown === "price" ? "is-flipped" : ""}`}>▾</span>
+                </button>
+
+                {openDropdown === "price" && (
+                  <div className="obsidian-popover-menu price-menu" role="listbox">
+                    <div className="popover-menu-header">
+                      <span className="popover-menu-kicker">
+                        {lang === "en" ? "PRICE RANGE" : "KHOẢNG GIÁ"}
+                      </span>
+                      {priceRange !== "all" && (
+                        <button
+                          type="button"
+                          className="popover-quick-clear"
+                          onClick={() => {
+                            onPriceRangeChange("all");
+                            setOpenDropdown(null);
+                          }}
+                        >
+                          {lang === "en" ? "Clear" : "Bỏ chọn"}
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="popover-scroll-list">
+                      {PRICE_RANGE_OPTIONS.map((opt) => {
+                        const isSelected = priceRange === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => {
+                              onPriceRangeChange(opt.value);
+                              setOpenDropdown(null);
+                            }}
+                            className={`popover-option-item ${isSelected ? "is-selected" : ""}`}
+                          >
+                            <span className="option-name">{lang === "en" ? opt.labelEn : opt.labelVi}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Custom Sort Popover & Results Counter */}
+          <div className="category-sort-wrap">
+            <div className="obsidian-popover-wrap">
+              <button
+                type="button"
+                onClick={() => setOpenDropdown(openDropdown === "sort" ? null : "sort")}
+                className={`obsidian-popover-trigger sort-trigger ${openDropdown === "sort" ? "is-open" : ""}`}
+                aria-haspopup="listbox"
+                aria-expanded={openDropdown === "sort"}
+              >
+                <span className="trigger-text">{activeSortLabel}</span>
+                <span className={`trigger-caret ${openDropdown === "sort" ? "is-flipped" : ""}`}>▾</span>
+              </button>
+
+              {openDropdown === "sort" && (
+                <div className="obsidian-popover-menu sort-menu" role="listbox">
+                  <div className="popover-menu-header">
+                    <span className="popover-menu-kicker">
+                      {lang === "en" ? "SORT BY" : "SẮP XẾP THEO"}
+                    </span>
+                  </div>
+
+                  <div className="popover-scroll-list">
+                    {SORT_OPTIONS.map((opt) => {
+                      const isSelected = sortBy === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => {
+                            onSortChange(opt.value);
+                            setOpenDropdown(null);
+                          }}
+                          className={`popover-option-item ${isSelected ? "is-selected" : ""}`}
+                        >
+                          <span className="option-name">{lang === "en" ? opt.labelEn : opt.labelVi}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="results-counter-badge">
               {totalFiltered} {t.visualCategoryBar.totalProducts}
             </div>
           </div>
         </div>
 
-        {/* Active Filter Badges Strip */}
+        {/* Active Filters Tag Bar (All Selected Conditions Visible) */}
         {hasActiveFilters && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              flexWrap: "wrap",
-              paddingTop: "12px",
-              borderTop: "1px solid rgba(255, 255, 255, 0.07)",
-            }}
-          >
-            <span style={{ fontSize: "12px", color: "#71717a", fontWeight: 600 }}>{t.products.filters}:</span>
+          <div className="active-filters-strip">
+            <div className="active-filters-label-wrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              <span className="active-filters-label">{lang === "en" ? "Active filters:" : "Đang lọc theo:"}</span>
+            </div>
 
-            {filterMode === "rental" && (
+            {/* Mode Tag */}
+            {filterMode !== "all" && (
               <button
+                type="button"
                 onClick={() => onFilterModeChange("all")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "4px 10px",
-                  borderRadius: "9999px",
-                  fontSize: "11.5px",
-                  fontWeight: 600,
-                  backgroundColor: "rgba(34, 197, 94, 0.15)",
-                  color: "#4ade80",
-                  border: "1px solid rgba(34, 197, 94, 0.3)",
-                  cursor: "pointer",
-                }}
+                className="active-filter-tag"
+                title={lang === "en" ? "Remove mode filter" : "Bỏ lọc chế độ"}
               >
-                <span>{t.visualCategoryBar.filterRental}</span>
-                <span style={{ fontSize: "12px" }}>✕</span>
+                <span className="tag-prefix">{lang === "en" ? "Mode:" : "Chế độ:"}</span>
+                <span>{filterMode === "rental" ? t.visualCategoryBar.filterRental : t.visualCategoryBar.filterSale}</span>
+                <span className="tag-close">✕</span>
               </button>
             )}
 
-            {filterMode === "sale" && (
+            {/* Category Tag */}
+            {activeCategoryLabel && (
               <button
-                onClick={() => onFilterModeChange("all")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "4px 10px",
-                  borderRadius: "9999px",
-                  fontSize: "11.5px",
-                  fontWeight: 600,
-                  backgroundColor: "rgba(34, 197, 94, 0.15)",
-                  color: "#4ade80",
-                  border: "1px solid rgba(34, 197, 94, 0.3)",
-                  cursor: "pointer",
+                type="button"
+                onClick={() => {
+                  setActiveGroupId("all");
+                  onSelectCategory("all");
                 }}
+                className="active-filter-tag category-tag"
+                title={lang === "en" ? "Remove category filter" : "Bỏ lọc danh mục"}
               >
-                <span>{t.visualCategoryBar.filterSale}</span>
-                <span style={{ fontSize: "12px" }}>✕</span>
+                <span className="tag-prefix">{lang === "en" ? "Category:" : "Danh mục:"}</span>
+                <span>{activeCategoryLabel}</span>
+                <span className="tag-close">✕</span>
               </button>
             )}
 
-            {selectedCategory !== "all" && activeCategoryObject && (
+            {/* Brand Tag */}
+            {selectedBrand !== "all" && onSelectBrand && (
               <button
-                onClick={() => onSelectCategory("all")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "4px 10px",
-                  borderRadius: "9999px",
-                  fontSize: "11.5px",
-                  fontWeight: 600,
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  cursor: "pointer",
-                }}
+                type="button"
+                onClick={() => onSelectBrand("all")}
+                className="active-filter-tag"
+                title={lang === "en" ? "Remove brand filter" : "Bỏ lọc thương hiệu"}
               >
-                <span>{activeCategoryObject.name}</span>
-                <span style={{ fontSize: "12px" }}>✕</span>
+                <span className="tag-prefix">{lang === "en" ? "Brand:" : "Hãng:"}</span>
+                <span>{selectedBrandDisplayName || selectedBrand}</span>
+                <span className="tag-close">✕</span>
               </button>
             )}
 
+            {/* Price Tag */}
+            {activePriceLabel && onPriceRangeChange && (
+              <button
+                type="button"
+                onClick={() => onPriceRangeChange("all")}
+                className="active-filter-tag price-tag"
+                title={lang === "en" ? "Remove price filter" : "Bỏ lọc mức giá"}
+              >
+                <span className="tag-prefix">{lang === "en" ? "Price:" : "Mức giá:"}</span>
+                <span>{activePriceLabel}</span>
+                <span className="tag-close">✕</span>
+              </button>
+            )}
+
+            {/* Search Query Tag */}
             {searchQuery.trim() && (
               <button
+                type="button"
                 onClick={() => onSearchChange("")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "4px 10px",
-                  borderRadius: "9999px",
-                  fontSize: "11.5px",
-                  fontWeight: 600,
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  cursor: "pointer",
-                }}
+                className="active-filter-tag search-tag"
+                title={lang === "en" ? "Remove search keyword" : "Bỏ từ khóa tìm kiếm"}
               >
+                <span className="tag-prefix">{lang === "en" ? "Keyword:" : "Từ khóa:"}</span>
                 <span>&quot;{searchQuery}&quot;</span>
-                <span style={{ fontSize: "12px" }}>✕</span>
+                <span className="tag-close">✕</span>
               </button>
             )}
 
             <button
+              type="button"
               onClick={resetAllFilters}
-              style={{
-                marginLeft: "auto",
-                background: "none",
-                border: "none",
-                color: "#f87171",
-                fontSize: "12px",
-                fontWeight: 600,
-                cursor: "pointer",
-                padding: "4px 8px",
-                textDecoration: "underline",
-              }}
+              className="clear-all-filters-btn"
             >
-              {t.visualCategoryBar.clearFilters}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="1 4 1 10 7 10" />
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              </svg>
+              <span>{lang === "en" ? "Reset all" : "Xóa tất cả"}</span>
             </button>
           </div>
         )}
       </div>
 
+      {/* Styled JSX for the 2-tier Category Filter System & Obsidian Popovers */}
       <style>{`
-        .visual-category-card:hover {
-          transform: translateY(-4px) !important;
-          border-color: rgba(34, 197, 94, 0.5) !important;
-          background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, rgba(18, 20, 18, 0.95) 100%) !important;
+        .visual-category-system {
+          width: 100%;
         }
-        .visual-category-card:hover svg {
-          transform: scale(1.06);
+
+        /* Tier 1 Parent Tabs */
+        .category-tier1-container {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          overflow-x: auto;
+          padding: 10px 6px 14px 6px;
+          margin-top: -6px;
+          margin-bottom: 8px;
+          scrollbar-width: thin;
         }
+
+        .category-tier1-pill {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 20px;
+          background: rgba(18, 18, 20, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 9999px;
+          color: #d4d4d8;
+          font-size: 13.5px;
+          font-weight: 700;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          backdrop-filter: blur(12px);
+          outline: none;
+        }
+
+        .category-tier1-pill:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(34, 197, 94, 0.4);
+          color: #ffffff;
+          transform: translateY(-1px);
+        }
+
+        .category-tier1-pill.is-active {
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 26, 19, 0.95) 100%);
+          border-color: #22c55e;
+          color: #ffffff;
+          box-shadow: 0 0 16px rgba(34, 197, 94, 0.28), inset 0 1px 0 rgba(34, 197, 94, 0.4);
+        }
+
+        .tier1-label {
+          font-weight: 700;
+          letter-spacing: -0.01em;
+        }
+
+        .tier1-badge {
+          font-size: 11px;
+          font-weight: 800;
+          padding: 2px 7px;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.08);
+          color: #a1a1aa;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.2s ease;
+        }
+
+        .category-tier1-pill.is-active .tier1-badge {
+          background: #22c55e;
+          color: #000000;
+          border-color: #22c55e;
+        }
+
+        /* Tier 2 Subcategory Chips */
+        .category-tier2-wrapper {
+          background: rgba(12, 13, 16, 0.75);
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          border-radius: 14px;
+          padding: 8px 12px;
+          margin-bottom: 20px;
+          backdrop-filter: blur(16px);
+        }
+
+        .category-tier2-container {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          overflow-x: auto;
+          scrollbar-width: thin;
+          padding: 6px 4px;
+        }
+
+        .category-tier2-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 6px 14px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 9999px;
+          color: #a1a1aa;
+          font-size: 12.5px;
+          font-weight: 600;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.18s ease;
+          outline: none;
+        }
+
+        .category-tier2-chip:hover {
+          background: rgba(255, 255, 255, 0.09);
+          color: #ffffff;
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .category-tier2-chip.is-active {
+          background: #22c55e;
+          color: #000000;
+          font-weight: 800;
+          border-color: #22c55e;
+          box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+        }
+
+        .tier2-count {
+          font-size: 10.5px;
+          font-weight: 700;
+          opacity: 0.85;
+        }
+
+        /* Toolbar Box */
+        .category-toolbar-box {
+          background: #111215;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 14px;
+          padding: 14px 18px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .category-toolbar-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+
+        .category-mode-segmented {
+          display: inline-flex;
+          align-items: center;
+          background: rgba(0, 0, 0, 0.5);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 9999px;
+          padding: 3px;
+        }
+
+        .mode-btn {
+          padding: 7px 16px;
+          border-radius: 9999px;
+          border: none;
+          font-size: 12.5px;
+          font-weight: 700;
+          cursor: pointer;
+          background: transparent;
+          color: #a1a1aa;
+          transition: all 0.18s ease;
+        }
+
+        .mode-btn.is-active {
+          background: #22c55e;
+          color: #000000;
+          box-shadow: 0 2px 10px rgba(34, 197, 94, 0.35);
+        }
+
+        .category-dropdowns-wrap {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        /* Toolbar Quick Search Input */
+        .toolbar-search-wrap {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .toolbar-search-icon {
+          position: absolute;
+          left: 12px;
+          color: #71717a;
+          pointer-events: none;
+        }
+
+        .toolbar-search-input {
+          padding: 8px 30px 8px 32px;
+          background-color: rgba(0, 0, 0, 0.5);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 9999px;
+          color: #ffffff;
+          font-size: 12.5px;
+          font-weight: 500;
+          outline: none;
+          width: 175px;
+          transition: all 0.2s ease;
+        }
+
+        .toolbar-search-input:focus {
+          border-color: #22c55e;
+          background-color: rgba(0, 0, 0, 0.7);
+          box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+          width: 200px;
+        }
+
+        .toolbar-search-clear {
+          position: absolute;
+          right: 9px;
+          background: none;
+          border: none;
+          color: #a1a1aa;
+          font-size: 12px;
+          cursor: pointer;
+          padding: 2px 4px;
+        }
+
+        .toolbar-search-clear:hover {
+          color: #22c55e;
+        }
+
+        /* ============================================================
+           CUSTOM OBSIDIAN POPOVER DROPDOWNS
+           ============================================================ */
+        .obsidian-popover-wrap {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .obsidian-popover-trigger {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px;
+          background-color: rgba(0, 0, 0, 0.5);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 9999px;
+          color: #e4e4e7;
+          font-size: 12.5px;
+          font-weight: 600;
+          outline: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+        }
+
+        .obsidian-popover-trigger:hover {
+          background-color: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.25);
+          color: #ffffff;
+        }
+
+        .obsidian-popover-trigger.is-open {
+          border-color: #22c55e;
+          box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+          background-color: rgba(18, 20, 24, 0.95);
+        }
+
+        .obsidian-popover-trigger.has-active-value {
+          background-color: rgba(34, 197, 94, 0.15);
+          border-color: rgba(34, 197, 94, 0.5);
+          color: #4ade80;
+        }
+
+        .trigger-caret {
+          font-size: 10px;
+          color: #71717a;
+          transition: transform 0.2s ease;
+        }
+
+        .trigger-caret.is-flipped {
+          transform: rotate(180deg);
+          color: #22c55e;
+        }
+
+        /* Popover Menu Floating Container */
+        .obsidian-popover-menu {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 0;
+          background: #141519;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 16px;
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          z-index: 100;
+          min-width: 240px;
+          overflow: hidden;
+          animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .obsidian-popover-menu.brand-menu {
+          min-width: 270px;
+        }
+
+        .obsidian-popover-menu.price-menu {
+          min-width: 230px;
+        }
+
+        .obsidian-popover-menu.sort-menu {
+          min-width: 210px;
+          right: 0;
+          left: auto;
+        }
+
+        @keyframes popoverFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-6px) scale(0.97);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .popover-menu-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 14px;
+          background: rgba(0, 0, 0, 0.3);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .popover-menu-kicker {
+          font-size: 10.5px;
+          font-weight: 800;
+          letter-spacing: 0.06em;
+          color: #71717a;
+          text-transform: uppercase;
+        }
+
+        .popover-quick-clear {
+          background: none;
+          border: none;
+          color: #22c55e;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+
+        .popover-quick-clear:hover {
+          background: rgba(34, 197, 94, 0.15);
+        }
+
+        .popover-search-box {
+          padding: 8px 10px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          background: rgba(0, 0, 0, 0.2);
+        }
+
+        .popover-search-input {
+          width: 100%;
+          padding: 6px 12px;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          color: #ffffff;
+          font-size: 12px;
+          outline: none;
+        }
+
+        .popover-search-input:focus {
+          border-color: #22c55e;
+        }
+
+        .popover-scroll-list {
+          max-height: 260px;
+          overflow-y: auto;
+          padding: 6px;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .popover-scroll-list::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        .popover-scroll-list::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 999px;
+        }
+
+        .popover-option-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          width: 100%;
+          padding: 9px 14px;
+          background: transparent;
+          border: 1px solid transparent;
+          border-radius: 8px;
+          color: #d4d4d8;
+          font-size: 13px;
+          font-weight: 500;
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .popover-option-item:hover {
+          background: rgba(255, 255, 255, 0.06);
+          color: #ffffff;
+        }
+
+        .popover-option-item.is-selected {
+          background: rgba(34, 197, 94, 0.14);
+          border-color: rgba(34, 197, 94, 0.4);
+          color: #4ade80;
+          font-weight: 700;
+        }
+
+        .option-name {
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .option-count {
+          font-size: 11px;
+          font-weight: 700;
+          color: #71717a;
+          background: rgba(255, 255, 255, 0.06);
+          padding: 2px 8px;
+          border-radius: 999px;
+        }
+
+        .popover-option-item.is-selected .option-count {
+          background: rgba(34, 197, 94, 0.25);
+          color: #22c55e;
+        }
+
+        .popover-empty-msg {
+          padding: 16px;
+          text-align: center;
+          font-size: 12px;
+          color: #71717a;
+        }
+
+        .category-sort-wrap {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .results-counter-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          font-weight: 800;
+          color: #22c55e;
+          background-color: #12281c;
+          padding: 6px 16px;
+          border-radius: 9999px;
+          border: 1.5px solid #22c55e;
+          box-shadow: 0 0 14px rgba(34, 197, 94, 0.25);
+          white-space: nowrap;
+          letter-spacing: -0.01em;
+        }
+
+        .active-filters-strip {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+          padding-top: 12px;
+          margin-top: 12px;
+          border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .active-filters-label-wrap {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          color: #71717a;
+        }
+
+        .active-filters-label {
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .active-filter-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 12px;
+          border-radius: 9999px;
+          font-size: 12px;
+          font-weight: 700;
+          background-color: #12281c;
+          color: #22c55e;
+          border: 1.5px solid #22c55e;
+          box-shadow: 0 0 8px rgba(34, 197, 94, 0.2);
+          cursor: pointer;
+          transition: all 0.18s ease;
+        }
+
+        .active-filter-tag:hover {
+          background-color: rgba(34, 197, 94, 0.25);
+          border-color: #22c55e;
+          color: #ffffff;
+          box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+        }
+
+        .tag-prefix {
+          font-weight: 500;
+          color: #94a3b8;
+          font-size: 11px;
+        }
+
+        .tag-close {
+          font-size: 11px;
+          opacity: 0.8;
+          margin-left: 2px;
+        }
+
+        .clear-all-filters-btn {
+          margin-left: auto;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          background: rgba(34, 197, 94, 0.08);
+          border: 1px solid rgba(34, 197, 94, 0.25);
+          border-radius: 9999px;
+          color: #4ade80;
+          font-size: 11.5px;
+          font-weight: 700;
+          cursor: pointer;
+          padding: 5px 12px;
+          transition: all 0.2s ease;
+        }
+
+        .clear-all-filters-btn:hover {
+          background: #22c55e;
+          color: #000000;
+          border-color: #22c55e;
+        }
+
         @media (max-width: 768px) {
-          .category-showcase-container {
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
-            gap: 10px !important;
+          .category-toolbar-row {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .category-dropdowns-wrap,
+          .category-sort-wrap {
+            width: 100%;
+            justify-content: space-between;
+          }
+          .toolbar-search-wrap,
+          .toolbar-search-input {
+            width: 100%;
+          }
+          .toolbar-search-input:focus {
+            width: 100%;
+          }
+          .obsidian-popover-wrap {
+            width: 48%;
+          }
+          .obsidian-popover-trigger {
+            width: 100%;
+            justify-content: space-between;
+          }
+          .obsidian-popover-menu.sort-menu {
+            left: 0;
+            right: auto;
           }
         }
       `}</style>

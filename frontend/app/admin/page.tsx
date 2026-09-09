@@ -3362,29 +3362,38 @@ export default function AdminDashboardPage() {
                                   <button
                                     type="button"
                                     onClick={() => handleOpenEditModal(p)}
-                                    className="admin-action-btn-icon"
+                                    className="admin-action-btn-col edit"
                                     title="Chỉnh sửa sản phẩm"
                                   >
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                     </svg>
+                                    <span>Sửa</span>
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => handleDeleteProduct(p.id, p.name, p.sku)}
-                                    className="admin-action-btn-text delete"
+                                    className="admin-action-btn-col delete"
                                     title="Xóa sản phẩm"
                                   >
-                                    ✕ Xóa
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                      <line x1="18" y1="6" x2="6" y2="18" />
+                                      <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                    <span>Xóa</span>
                                   </button>
                                   <Link
-                                    href={`/san-pham/${p.slug}`}
+                                    href={`/products/${p.slug}`}
                                     target="_blank"
-                                    className="admin-action-btn-text view"
+                                    className="admin-action-btn-col view"
                                     title="Xem trên trang cửa hàng"
                                   >
-                                    Xem
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                      <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    <span>Xem</span>
                                   </Link>
                                 </div>
                               </td>
@@ -3953,10 +3962,14 @@ export default function AdminDashboardPage() {
                                 <button
                                   type="button"
                                   onClick={() => setSelectedOrderDetail(o)}
-                                  className="admin-action-btn-text view"
+                                  className="admin-action-btn-col view"
                                   title="Xem chi tiết đơn hàng"
                                 >
-                                  Xem
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                  </svg>
+                                  <span>Xem</span>
                                 </button>
                               </td>
                             </tr>
@@ -4093,7 +4106,6 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Tổng Nhân Sự</span>
-                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val">{staffUsers.length}</div>
@@ -4104,10 +4116,9 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Quản Trị Viên (Admin)</span>
-                    
                   </div>
                   <div className="shadcn-metric-main">
-                    <div className="shadcn-metric-val" style={{ color: "#c084fc" }}>
+                    <div className="shadcn-metric-val" style={{ color: "#eab308" }}>
                       {staffUsers.filter((u) => u.role === "admin").length}
                     </div>
                     <div className="shadcn-metric-subtext">Toàn quyền kiểm soát</div>
@@ -4117,7 +4128,6 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Nhân Viên (Staff)</span>
-                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
@@ -4130,7 +4140,6 @@ export default function AdminDashboardPage() {
                 <div className="shadcn-metric-card">
                   <div className="shadcn-metric-header">
                     <span className="shadcn-metric-title">Đang Hoạt Động</span>
-                    
                   </div>
                   <div className="shadcn-metric-main">
                     <div className="shadcn-metric-val" style={{ color: "#22c55e" }}>
@@ -4288,14 +4297,14 @@ export default function AdminDashboardPage() {
                                       borderRadius: "50%",
                                       backgroundColor:
                                         u.role === "admin"
-                                          ? "rgba(168, 85, 247, 0.2)"
+                                          ? "rgba(234, 179, 8, 0.18)"
                                           : "rgba(34, 197, 94, 0.2)",
                                       color:
                                         u.role === "admin"
-                                          ? "#c084fc"
+                                          ? "#facc15"
                                           : "#4ade80",
                                       border: `1px solid ${u.role === "admin"
-                                        ? "rgba(168, 85, 247, 0.4)"
+                                        ? "rgba(234, 179, 8, 0.4)"
                                         : "rgba(34, 197, 94, 0.4)"
                                         }`,
                                       display: "flex",
@@ -4342,7 +4351,19 @@ export default function AdminDashboardPage() {
                               {/* Role */}
                               <td style={{ padding: "12px 16px", textAlign: "center" }}>
                                 <span
-                                  className={`shadcn-badge-pill ${u.role === "admin" ? "purple" : u.role === "staff" ? "success" : "info"}`}
+                                  className={`shadcn-badge-pill ${u.role === "admin" ? "warning" : u.role === "staff" ? "info" : "neutral"}`}
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "3px 12px",
+                                    borderRadius: "9999px",
+                                    fontSize: "11.5px",
+                                    fontWeight: 700,
+                                    backgroundColor: u.role === "admin" ? "#eab308" : u.role === "staff" ? "#2563eb" : "#475569",
+                                    color: u.role === "admin" ? "#000000" : "#ffffff",
+                                    whiteSpace: "nowrap",
+                                  }}
                                 >
                                   {u.role === "admin" ? "Admin" : u.role === "staff" ? "Staff" : "User"}
                                 </span>
@@ -4354,14 +4375,15 @@ export default function AdminDashboardPage() {
                                   style={{
                                     display: "inline-flex",
                                     alignItems: "center",
+                                    justifyContent: "center",
                                     gap: "6px",
-                                    padding: "4px 10px",
+                                    padding: "3px 12px",
                                     borderRadius: "9999px",
                                     fontSize: "11.5px",
-                                    fontWeight: 700,
-                                    backgroundColor: u.is_active ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
-                                    color: u.is_active ? "#4ade80" : "#f87171",
-                                    border: u.is_active ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)",
+                                    fontWeight: 600,
+                                    backgroundColor: u.is_active ? "#16a34a" : "#dc2626",
+                                    color: "#ffffff",
+                                    whiteSpace: "nowrap",
                                   }}
                                 >
                                   <span
@@ -4369,7 +4391,7 @@ export default function AdminDashboardPage() {
                                       width: "6px",
                                       height: "6px",
                                       borderRadius: "50%",
-                                      backgroundColor: u.is_active ? "#22c55e" : "#ef4444",
+                                      backgroundColor: "#ffffff",
                                     }}
                                   />
                                   {u.is_active ? "Hoạt động" : "Đã khóa"}
@@ -4617,14 +4639,16 @@ export default function AdminDashboardPage() {
                             <td>
                               <span
                                 style={{
-                                  display: "inline-block",
-                                  padding: "3px 10px",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  padding: "3px 12px",
                                   borderRadius: "9999px",
                                   fontSize: "11.5px",
-                                  fontWeight: 700,
-                                  backgroundColor: prodCount > 0 ? "rgba(34, 197, 94, 0.12)" : "rgba(255, 255, 255, 0.05)",
-                                  color: prodCount > 0 ? "#4ade80" : "#a1a1aa",
-                                  border: prodCount > 0 ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid rgba(255, 255, 255, 0.1)",
+                                  fontWeight: 600,
+                                  backgroundColor: prodCount > 0 ? "#16a34a" : "rgba(255, 255, 255, 0.05)",
+                                  color: prodCount > 0 ? "#ffffff" : "#a1a1aa",
+                                  whiteSpace: "nowrap",
                                 }}
                               >
                                 {prodCount} sản phẩm
@@ -4641,18 +4665,26 @@ export default function AdminDashboardPage() {
                                     setCatDescInput(cat.description || "");
                                     setShowEditCategoryModal(true);
                                   }}
-                                  className="admin-action-btn-text"
+                                  className="admin-action-btn-col edit"
                                   title="Chỉnh sửa danh mục"
                                 >
-                                  Sửa
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                  </svg>
+                                  <span>Sửa</span>
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteCategory(cat)}
-                                  className="admin-action-btn-text delete"
+                                  className="admin-action-btn-col delete"
                                   title="Xóa danh mục"
                                 >
-                                  ✕ Xóa
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                  </svg>
+                                  <span>Xóa</span>
                                 </button>
                               </div>
                             </td>

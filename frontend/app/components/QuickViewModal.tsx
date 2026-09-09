@@ -7,7 +7,7 @@ import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
 import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
-import { getTranslatedProductName, getTranslatedProductDesc } from "../lib/product-i18n";
+import { getTranslatedProductName, getTranslatedProductDesc, getProductPlainExcerpt } from "../lib/product-i18n";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -39,6 +39,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
   const displayName = getTranslatedProductName(product, lang);
   const displayDesc = getTranslatedProductDesc(product, lang);
+  const cleanExcerpt = getProductPlainExcerpt(displayDesc, 260);
 
   const imagesList = product.images && product.images.length > 0
     ? product.images.map((i) => i.image_url)
@@ -298,7 +299,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             </div>
 
             {/* Description excerpt */}
-            {displayDesc && (
+            {cleanExcerpt && (
               <p
                 style={{
                   fontSize: "13.5px",
@@ -309,7 +310,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   overflowY: "auto",
                 }}
               >
-                {displayDesc}
+                {cleanExcerpt}
               </p>
             )}
 
