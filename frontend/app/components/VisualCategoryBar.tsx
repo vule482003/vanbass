@@ -181,9 +181,11 @@ export default function VisualCategoryBar({
   }, [selectedCategory]);
 
   const [activeGroupId, setActiveGroupId] = useState<string>(initialGroup);
+  const [prevSelectedCategory, setPrevSelectedCategory] = useState(selectedCategory);
 
   // Sync state if selectedCategory prop changes from external sources (URL, header dropdown)
-  useEffect(() => {
+  if (prevSelectedCategory !== selectedCategory) {
+    setPrevSelectedCategory(selectedCategory);
     if (selectedCategory === "all") {
       setActiveGroupId("all");
     } else if (selectedCategory.startsWith("group:")) {
@@ -194,7 +196,7 @@ export default function VisualCategoryBar({
         setActiveGroupId(parent.id);
       }
     }
-  }, [selectedCategory]);
+  }
 
   const activeGroup = CATEGORY_GROUPS.find((g) => g.id === activeGroupId);
 

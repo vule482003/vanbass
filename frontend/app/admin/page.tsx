@@ -297,20 +297,11 @@ export default function AdminDashboardPage() {
   // Products Tab Search, Filter & Pagination states
   const [productSearch, setProductSearch] = useState("");
   const [productCategoryFilter, setProductCategoryFilter] = useState("all");
-  const [productBrandFilter, setProductBrandFilter] = useState("all");
+  const [productBrandFilter] = useState("all");
   const [productStatusFilter, setProductStatusFilter] = useState("all");
-  const [productSortBy, setProductSortBy] = useState("newest");
+  const [productSortBy] = useState("newest");
   const [productPage, setProductPage] = useState(1);
-  const [productPageSize, setProductPageSize] = useState(20);
-
-  // Dynamic available brands list
-  const availableBrands = useMemo(() => {
-    const brandsSet = new Set<string>();
-    products.forEach((p) => {
-      if (p.brand && p.brand.trim()) brandsSet.add(p.brand.trim());
-    });
-    return Array.from(brandsSet).sort();
-  }, [products]);
+  const [productPageSize] = useState(20);
 
   // Filtered & Sorted Products
   const filteredProducts = useMemo(() => {
@@ -412,7 +403,7 @@ export default function AdminDashboardPage() {
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
   const [orderPaymentFilter, setOrderPaymentFilter] = useState("all");
   const [orderPage, setOrderPage] = useState(1);
-  const [orderPageSize, setOrderPageSize] = useState(15);
+  const [orderPageSize] = useState(15);
 
   const filteredOrders = useMemo(() => {
     let result = [...orders];

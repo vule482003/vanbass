@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Product, ProductImage } from "../lib/types";
+import { Product } from "../lib/types";
 import { useLanguage } from "../lib/language-context";
 
 interface ProductImageGalleryProps {

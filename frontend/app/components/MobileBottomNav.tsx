@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "../lib/cart-context";
@@ -17,11 +17,15 @@ export default function MobileBottomNav() {
 
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
-  // Close sheet on route change
-  useEffect(() => {
-    setIsCategorySheetOpen(false);
-  }, [pathname]);
+  // Close sheet on route change without calling setState in an effect
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    if (isCategorySheetOpen) {
+      setIsCategorySheetOpen(false);
+    }
+  }
 
   // Don't render on Admin dashboard
   if (pathname && pathname.startsWith("/admin")) {
