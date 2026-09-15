@@ -2,8 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { useLanguage } from "../lib/language-context";
-
 interface BrandItem {
   id: string;
   name: string;
@@ -13,187 +11,245 @@ interface BrandItem {
 }
 
 export default function BrandLogoCloud() {
-  const { lang } = useLanguage();
-
   const BRANDS: BrandItem[] = [
-    // 1. JBL (Row 1, Col 1 - above NEXO)
+    // Row 1
     {
       id: "jbl",
       name: "JBL",
       queryKey: "jbl",
       src: "/images/brands/jbl.svg?v=11",
-      maxHeight: 46,
+      maxHeight: 34,
     },
-    // 2. AlphaTheta (Row 1, Col 2)
     {
       id: "alphatheta",
       name: "AlphaTheta",
       queryKey: "alphatheta",
       src: "/images/brands/alphatheta.svg?v=11",
-      maxHeight: 36,
+      maxHeight: 26,
     },
-    // 3. Pioneer DJ (Row 1, Col 3 - right of AlphaTheta)
     {
       id: "pioneer-dj",
       name: "Pioneer DJ",
       queryKey: "pioneer dj",
       src: "/images/brands/pioneerdj.svg?v=12",
-      maxHeight: 32,
+      maxHeight: 25,
     },
-    // 4. B&C Speakers (Row 1, Col 4)
     {
       id: "bc-speakers",
       name: "B&C SPEAKERS",
       queryKey: "b&c speakers",
       src: "/images/brands/bc_speakers.svg?v=11",
-      maxHeight: 52,
+      maxHeight: 38,
     },
-    // 5. NEXO (Row 2, Col 1 - below JBL)
+    // Row 2
     {
       id: "nexo",
       name: "NEXO",
       queryKey: "nexo",
       src: "/images/brands/nexo.svg?v=11",
-      maxHeight: 44,
+      maxHeight: 32,
     },
-    // 6. YAMAHA (Row 2, Col 2 - below AlphaTheta)
     {
       id: "yamaha",
       name: "YAMAHA",
       queryKey: "yamaha",
       src: "/images/brands/yamaha.svg?v=11",
-      maxHeight: 36,
+      maxHeight: 26,
     },
-    // 7. Allen & Heath (Row 2, Col 3 - down to previous JBL spot)
     {
       id: "allen-heath",
       name: "ALLEN & HEATH",
       queryKey: "allen & heath",
       src: "/images/brands/allen_heath.svg?v=11",
-      maxHeight: 32,
+      maxHeight: 24,
     },
-    // 8. Behringer (Row 2, Col 4)
     {
       id: "behringer",
       name: "BEHRINGER",
       queryKey: "behringer",
       src: "/images/brands/behringer.svg?v=11",
-      maxHeight: 56,
+      maxHeight: 38,
     },
   ];
 
   return (
-    <section className="brand-showcase-section" aria-label="Thương hiệu phân phối và cho thuê chính hãng">
+    <section className="brand-crosshair-section" aria-label="Thương hiệu đối tác phân phối chính hãng">
       <div className="container">
-        {/* Minimalist Section Header */}
-        <div className="brand-showcase-header">
-          <h3 className="brand-title">
-            {lang === "en" ? "Top Audio & DJ Brands" : "Các Thương Hiệu Thiết Bị Hàng Đầu"}
-          </h3>
-        </div>
+        {/* Crosshair Grid Container (4 columns x 2 rows, wide & airy like Retool) */}
+        <div className="crosshair-grid-wrap">
+          {/* Row 1 */}
+          <div className="crosshair-row">
+            {BRANDS.slice(0, 4).map((brand) => (
+              <Link
+                key={brand.id}
+                href={`/products?brand=${encodeURIComponent(brand.queryKey)}`}
+                className="brand-logo-cell"
+                title={`Xem sản phẩm hãng ${brand.name}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={brand.src}
+                  alt={brand.name}
+                  className="brand-logo-monochrome"
+                  style={{ maxHeight: `${brand.maxHeight}px` }}
+                />
+              </Link>
+            ))}
+          </div>
 
-        {/* Framer-Style Clean Grid (2 Rows x 4 Columns, Pure Logos with NO Borders / Boxes) */}
-        <div className="brand-clean-grid">
-          {BRANDS.map((brand) => (
-            <Link
-              key={brand.id}
-              href={`/products?brand=${encodeURIComponent(brand.queryKey)}`}
-              className="brand-logo-link"
-              title={`Xem sản phẩm hãng ${brand.name}`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={brand.src}
-                alt={brand.name}
-                className="brand-official-img"
-                style={{ maxHeight: `${brand.maxHeight}px` }}
-              />
-            </Link>
-          ))}
+          {/* Center Crosshairs separator (+ marks between columns) */}
+          <div className="crosshairs-separator" aria-hidden="true">
+            <span className="crosshair-plus crosshair-p1">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.2">
+                <line x1="13" y1="2" x2="13" y2="24" />
+                <line x1="2" y1="13" x2="24" y2="13" />
+              </svg>
+            </span>
+            <span className="crosshair-plus crosshair-p2">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.2">
+                <line x1="13" y1="2" x2="13" y2="24" />
+                <line x1="2" y1="13" x2="24" y2="13" />
+              </svg>
+            </span>
+            <span className="crosshair-plus crosshair-p3">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.2">
+                <line x1="13" y1="2" x2="13" y2="24" />
+                <line x1="2" y1="13" x2="24" y2="13" />
+              </svg>
+            </span>
+          </div>
+
+          {/* Row 2 */}
+          <div className="crosshair-row">
+            {BRANDS.slice(4, 8).map((brand) => (
+              <Link
+                key={brand.id}
+                href={`/products?brand=${encodeURIComponent(brand.queryKey)}`}
+                className="brand-logo-cell"
+                title={`Xem sản phẩm hãng ${brand.name}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={brand.src}
+                  alt={brand.name}
+                  className="brand-logo-monochrome"
+                  style={{ maxHeight: `${brand.maxHeight}px` }}
+                />
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Scoped CSS */}
+      {/* Scoped Styling */}
       <style jsx>{`
-        .brand-showcase-section {
-          padding: 64px 0 74px 0;
+        .brand-crosshair-section {
+          padding: 80px 0;
           background: #09090b;
+          position: relative;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .crosshair-grid-wrap {
+          max-width: 1220px;
+          margin: 0 auto;
           position: relative;
         }
 
-        .brand-showcase-header {
-          text-align: center;
-          margin: 0 auto 48px auto;
-        }
-
-        .brand-title {
-          font-size: clamp(24px, 3.2vw, 32px);
-          font-weight: 800;
-          color: #ffffff;
-          letter-spacing: -0.02em;
-          margin: 0;
-        }
-
-        /* Framer-Style Clean Grid (2 Rows x 4 Columns, Pure Logos with NO Borders / Boxes) */
-        .brand-clean-grid {
+        .crosshair-row {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 36px 24px;
-          max-width: 940px;
-          margin: 0 auto;
           align-items: center;
           justify-items: center;
+          padding: 32px 0;
         }
 
-        .brand-logo-link {
+        .crosshairs-separator {
+          position: relative;
+          width: 100%;
+          height: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          text-decoration: none;
-          background: transparent !important;
-          border: none !important;
-          outline: none !important;
-          box-shadow: none !important;
-          opacity: 1;
-          transition: transform 0.2s ease, opacity 0.2s ease;
-          cursor: pointer;
+          pointer-events: none;
+        }
+
+        .crosshair-plus {
+          position: absolute;
+          transform: translate(-50%, -50%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255, 255, 255, 0.32);
+          user-select: none;
+          line-height: 1;
+        }
+
+        .crosshair-p1 {
+          left: 25%;
+        }
+
+        .crosshair-p2 {
+          left: 50%;
+        }
+
+        .crosshair-p3 {
+          left: 75%;
+        }
+
+        .brand-logo-cell {
+          display: flex;
+          align-items: center;
+          justify-content: center;
           width: 100%;
-          height: 76px;
+          height: 84px;
+          text-decoration: none;
+          padding: 0 28px;
+          opacity: 0.88;
+          transition: opacity 0.25s ease, transform 0.25s ease;
+          cursor: pointer;
         }
 
-        .brand-logo-link:hover {
+        .brand-logo-cell:hover {
+          opacity: 1;
           transform: translateY(-2px);
-          opacity: 0.85;
         }
 
-        .brand-official-img {
-          max-width: 210px;
+        .brand-logo-monochrome {
+          max-width: 185px;
           width: auto;
           object-fit: contain;
+          filter: brightness(0) invert(1);
           display: block;
         }
 
-        @media (max-width: 900px) {
-          .brand-clean-grid {
+        /* Mobile / Tablet Responsive */
+        @media (max-width: 860px) {
+          .brand-crosshair-section {
+            padding: 50px 0;
+          }
+
+          .crosshair-row {
             grid-template-columns: repeat(2, 1fr);
-            gap: 28px 16px;
-            max-width: 500px;
+            padding: 16px 0;
           }
 
-          .brand-showcase-section {
-            padding: 44px 0 54px 0;
+          .crosshair-p1,
+          .crosshair-p3 {
+            display: none;
           }
 
-          .brand-showcase-header {
-            margin-bottom: 32px;
+          .crosshair-p2 {
+            left: 50%;
           }
 
-          .brand-logo-link {
+          .brand-logo-cell {
             height: 64px;
+            padding: 0 16px;
           }
 
-          .brand-official-img {
-            max-width: 160px;
+          .brand-logo-monochrome {
+            max-width: 140px;
           }
         }
       `}</style>

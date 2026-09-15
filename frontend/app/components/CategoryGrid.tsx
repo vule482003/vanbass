@@ -327,7 +327,13 @@ export default function CategoryGrid({
               {lang === "en" ? t.categories.title.toUpperCase() : (config.kicker || t.categories.title.toUpperCase())}
             </p>
             <h2
-              style={{ fontSize: "clamp(26px, 3.2vw, 42px)", fontWeight: 800, letterSpacing: "-0.03em" }}
+              style={{
+                fontFamily: 'var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, serif',
+                fontSize: "clamp(26px, 3.2vw, 42px)",
+                fontWeight: 500,
+                letterSpacing: "-0.015em",
+                lineHeight: 1.2,
+              }}
               data-cms-key="categories_highlight.title"
               data-cms-label="Tiêu Đề Danh Mục"
               data-cms-type="text"

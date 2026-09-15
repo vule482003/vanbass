@@ -504,7 +504,7 @@ export const dictionaries = {
       panelHardwareTag: "HARDWARE & DJ DECKS",
       panelHardwareTitle: "Authentic DJ Gear",
       panelHardwareDesc: "Distributing top-tier All-in-One, Controllers, and Mixers from Pioneer DJ, AlphaTheta, and Allen & Heath.",
-      panelRentalTag: "EVENT SERVICES",
+      panelRentalTag: "SERVICES",
       panelRentalTitle: "Sound & DJ Gear Rental",
       panelRentalDesc: "Full-package performance systems for Clubs, Lounges, Weddings, and Music Festivals across Central Vietnam.",
       panelShowroomTag: "HANDS-ON EXPERIENCE",

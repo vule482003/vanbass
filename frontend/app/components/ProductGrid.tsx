@@ -33,52 +33,20 @@ export default function ProductGrid() {
   return (
     <section className="products-section reveal-on-scroll" id="featured-products" style={{ padding: "85px 0 160px 0", backgroundColor: "#090909", position: "relative", zIndex: 10 }}>
       <div className="container">
-        {/* Luxury Nightlife Section Header */}
-        <div
-          className="products-section-heading"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "28px",
-            paddingBottom: "16px",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span
-              style={{
-                backgroundColor: "#ffffff",
-                color: "#000000",
-                fontSize: "11px",
-                fontWeight: 900,
-                padding: "4px 10px",
-                borderRadius: "3px",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              {t.products.featuredBadge}
-            </span>
-            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff", margin: 0, letterSpacing: "-0.02em" }}>
-              {t.products.featuredTitle}
-            </h2>
-          </div>
+        {/* Luxury Minimalist Section Header */}
+        <div className="pg-header-wrap">
+          <h2 className="pg-main-title">
+            {t.products.featuredTitle}
+          </h2>
 
-          <Link
-            href="/products"
-            style={{
-              fontSize: "13px",
-              fontWeight: 700,
-              color: "#22c55e",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              textDecoration: "none",
-              transition: "opacity 0.2s ease",
-            }}
-          >
-            {t.products.viewAllCount} (50+) <span>→</span>
+          <Link href="/products" className="pg-cta-button" aria-label={`${t.products.viewAllCount} (50+)`}>
+            <span className="pg-cta-text">{t.products.viewAllCount} (50+)</span>
+            <span className="pg-cta-icon-wrap" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
           </Link>
         </div>
 

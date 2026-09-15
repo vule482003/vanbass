@@ -7,7 +7,6 @@ import ProductGrid from "./ProductGrid";
 import CategoryGrid from "./CategoryGrid";
 import RentalSection from "./RentalSection";
 import IntroSection from "./IntroSection";
-import LocalCTA from "./LocalCTA";
 import Footer from "./Footer";
 import ScrollObserver from "./ScrollObserver";
 import FloatingContact from "./FloatingContact";
@@ -229,11 +228,6 @@ export default function LiveHomePageClient({ initialHomeData }: LiveHomePageClie
         {/* 5. Giới thiệu VanBass */}
         {visibility.show_intro && (
           <IntroSection config={homeData.intro} />
-        )}
-
-        {/* 6. Kêu gọi hành động & Showroom */}
-        {visibility.show_cta && (
-          <LocalCTA config={homeData.local_cta} />
         )}
       </main>
 

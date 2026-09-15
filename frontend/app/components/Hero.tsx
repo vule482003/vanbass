@@ -48,22 +48,30 @@ export default function Hero({
   const centerBg = resolveImage(heroCenter?.bg_image, "/images/hero/hero_performance.jpg");
   const rightBg = resolveImage(heroRight?.bg_image, "/images/hero/hero_showroom.jpg");
 
-  const effectiveMarquee = lang === "en" ? t.hero.marqueeItems : marqueeItems;
+  const rawMarquee = lang === "en" ? t.hero.marqueeItems : (marqueeItems || DEFAULT_HOME_DATA.marquee_items);
+  const effectiveMarquee = rawMarquee.map((item) =>
+    item.replace(/[⚡🔥🎧]/g, "").trim()
+  );
 
-  const leftTag = lang === "en" ? t.hero.panelHardwareTag : (heroLeft?.tag || t.hero.panelHardwareTag);
-  const leftTitle = lang === "en" ? t.hero.panelHardwareTitle : (heroLeft?.title || t.hero.panelHardwareTitle);
+  const stripNumber = (text: string | undefined, fallback: string) => {
+    const s = text || fallback;
+    return s.replace(/^\s*\d+\s*[\/\.-—]\s*/, "").trim();
+  };
+
+  const leftTag = lang === "en" ? stripNumber(t.hero.panelHardwareTag, "HARDWARE & DJ DECKS") : stripNumber(heroLeft?.tag, "THIẾT BỊ");
+  const leftTitle = lang === "en" ? t.hero.panelHardwareTitle : (heroLeft?.title || "THIẾT BỊ DJ");
   const leftDesc = lang === "en" ? t.hero.panelHardwareDesc : (heroLeft?.desc || t.hero.panelHardwareDesc);
-  const leftBtnText = lang === "en" ? t.hero.exploreBtn : (heroLeft?.button_text || t.hero.exploreBtn);
+  const leftBtnText = lang === "en" ? t.hero.exploreBtn : (heroLeft?.button_text || "Khám phá");
 
-  const centerBadge = lang === "en" ? t.hero.panelHardwareTitle : (heroCenter?.badge || "THIẾT BỊ DJ CHÍNH HÃNG");
-  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : (heroCenter?.headline || t.hero.panelRentalTitle);
+  const centerBadge = lang === "en" ? stripNumber(t.hero.panelRentalTag, "SERVICES") : stripNumber(heroCenter?.badge === "THIẾT BỊ DJ CHÍNH HÃNG" ? "DỊCH VỤ" : heroCenter?.badge, "DỊCH VỤ");
+  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : (heroCenter?.headline === "HỆ THỐNG ÂM THANH & CHO THUÊ DJ" ? "CHO THUÊ SỰ KIỆN" : (heroCenter?.headline || "CHO THUÊ SỰ KIỆN"));
   const centerDesc = lang === "en" ? t.hero.panelRentalDesc : (heroCenter?.desc || t.hero.panelRentalDesc);
-  const centerBtnText = lang === "en" ? t.hero.rentalBtn : (heroCenter?.button_text || "THUÊ THIẾT BỊ NGAY");
+  const centerBtnText = lang === "en" ? t.hero.rentalBtn : (heroCenter?.button_text === "THUÊ THIẾT BỊ NGAY" ? "Bảng giá thuê" : (heroCenter?.button_text || "Bảng giá thuê"));
 
-  const rightTag = lang === "en" ? t.hero.panelShowroomTag : (heroRight?.tag || t.hero.panelShowroomTag);
-  const rightTitle = lang === "en" ? t.hero.panelShowroomTitle : (heroRight?.title || t.hero.panelShowroomTitle);
+  const rightTag = lang === "en" ? stripNumber(t.hero.panelShowroomTag, "HANDS-ON EXPERIENCE") : stripNumber(heroRight?.tag === "03 / SHOWROOM & STUDIO" ? "SHOWROOM" : heroRight?.tag, "SHOWROOM");
+  const rightTitle = lang === "en" ? t.hero.panelShowroomTitle : (heroRight?.title || "TRẢI NGHIỆM");
   const rightDesc = lang === "en" ? t.hero.panelShowroomDesc : (heroRight?.desc || t.hero.panelShowroomDesc);
-  const rightBtnText = lang === "en" ? t.hero.panelShowroomBtn : (heroRight?.button_text || t.hero.panelShowroomBtn);
+  const rightBtnText = lang === "en" ? t.hero.panelShowroomBtn : (heroRight?.button_text === "Ghé thăm showroom" ? "Ghé thăm" : (heroRight?.button_text || "Ghé thăm"));
 
   return (
     <>
@@ -139,7 +147,7 @@ export default function Hero({
                 data-cms-label="Chữ Nút Banner Trái"
                 data-cms-type="text"
               >
-                {leftBtnText} <span>→</span>
+                <span>{leftBtnText}</span> <span>→</span>
               </Link>
             </div>
           </div>
@@ -201,12 +209,11 @@ export default function Hero({
               </button>
             )}
 
-            <div className="triptych-content featured-content" style={{ zIndex: 2 }}>
-              <div className="triptych-badge" data-cms-key="hero_center.badge" data-cms-label="Huy Hiệu Banner Chính" data-cms-type="text">
-                <span />
+            <div className="triptych-content" style={{ zIndex: 2 }}>
+              <div className="triptych-tag" data-cms-key="hero_center.badge" data-cms-label="Huy Hiệu Banner Chính" data-cms-type="text">
                 {centerBadge}
               </div>
-              <h2 className="triptych-headline" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h2>
+              <h2 className="triptych-title" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h2>
               <p className="triptych-desc" data-cms-key="hero_center.desc" data-cms-label="Mô Tả Banner Chính" data-cms-type="textarea">{centerDesc}</p>
 
               <Link
@@ -215,12 +222,12 @@ export default function Hero({
                     ? heroCenter.link
                     : "/thue-ban-dj"
                 }
-                className="triptych-center-btn"
+                className="triptych-cta-link"
                 data-cms-key="hero_center.button_text"
                 data-cms-label="Nút Nổi Bật Banner Chính"
                 data-cms-type="text"
               >
-                <span>{centerBtnText}</span>
+                <span>{centerBtnText}</span> <span>→</span>
               </Link>
             </div>
           </div>
@@ -293,7 +300,7 @@ export default function Hero({
                 data-cms-label="Chữ Nút Banner Phải"
                 data-cms-type="text"
               >
-                {rightBtnText} <span>→</span>
+                <span>{rightBtnText}</span> <span>→</span>
               </Link>
             </div>
           </div>
