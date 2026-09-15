@@ -5,33 +5,33 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class HeroPanelLeft(BaseModel):
-    tag: str = "01 / HARDWARE & AUDIO"
+    tag: str = "01 / THIẾT BỊ"
     title: str = "THIẾT BỊ DJ"
     desc: str = (
         "Phân phối chính hãng Pioneer DJ, AlphaTheta, Mixer & Loa kiểm âm cao cấp."
     )
     link: str = "/products"
-    button_text: str = "Khám phá thiết bị"
+    button_text: str = "Khám phá"
     bg_image: str = "/images/hero/hero_hardware.jpg"
 
 
 class HeroPanelCenter(BaseModel):
-    badge: str = "THIẾT BỊ DJ CHÍNH HÃNG"
-    headline: str = "HỆ THỐNG ÂM THANH & CHO THUÊ DJ"
+    badge: str = "02 / DỊCH VỤ"
+    headline: str = "CHO THUÊ SỰ KIỆN"
     desc: str = "Giải pháp thiết bị biểu diễn sân khấu, party, club & sự kiện hàng đầu miền Trung."
     link: str = "/products"
-    button_text: str = "THUÊ THIẾT BỊ NGAY"
+    button_text: str = "Bảng giá thuê"
     bg_image: str = "/images/hero/hero_performance.jpg"
 
 
 class HeroPanelRight(BaseModel):
-    tag: str = "03 / SHOWROOM & STUDIO"
+    tag: str = "03 / SHOWROOM"
     title: str = "TRẢI NGHIỆM"
     desc: str = (
         "Nghe thử âm thanh trực tiếp tại Showroom Đà Nẵng & hỗ trợ kỹ thuật 24/7."
     )
     link: str = "/contact"
-    button_text: str = "Ghé thăm showroom"
+    button_text: str = "Ghé thăm"
     bg_image: str = "/images/hero/hero_showroom.jpg"
 
 
@@ -111,21 +111,21 @@ class VisibilityConfig(BaseModel):
     show_categories: bool = True
     show_rental: bool = True
     show_intro: bool = True
-    show_cta: bool = True
+    show_cta: bool = False
     show_floating_contact: bool = True
 
 
 class HomeData(BaseModel):
     marquee_items: list[str] = Field(
         default_factory=lambda: [
-            "⚡ PIONEER DJ OFFICIAL DISTRIBUTOR",
+            "PIONEER DJ OFFICIAL DISTRIBUTOR",
             "ALPHATHETA",
             "ALLEN & HEATH",
             "DENON DJ",
-            "🎧 SHOWROOM TEST MÁY ĐÀ NẴNG",
-            "⚡ HỖ TRỢ KỸ THUẬT 24/7",
+            "SHOWROOM TEST MÁY ĐÀ NẴNG",
+            "HỖ TRỢ KỸ THUẬT 24/7",
             "GIAO HÀNG HỎA TỐC",
-            "🔥 CHO THUÊ THIẾT BỊ SỰ KIỆN 24/7",
+            "CHO THUÊ THIẾT BỊ SỰ KIỆN 24/7",
         ]
     )
     hero_left: HeroPanelLeft = Field(default_factory=HeroPanelLeft)
