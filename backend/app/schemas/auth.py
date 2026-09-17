@@ -11,8 +11,24 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: str | None = None
+    login_id: str | None = None
     password: str = Field(min_length=1, max_length=128)
+
+    @property
+    def identifier(self) -> str:
+        val = (self.login_id or self.email or "").strip()
+        return val
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    otp: str = Field(min_length=6, max_length=6)
+    new_password: str = Field(min_length=8, max_length=128)
 
 
 class RefreshTokenRequest(BaseModel):

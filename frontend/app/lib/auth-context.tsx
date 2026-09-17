@@ -18,8 +18,10 @@ interface AuthContextType {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin" | "staff"; user?: AuthUser }>;
+  login: (identifier: string, password: string) => Promise<{ success: boolean; error?: string; role?: "customer" | "admin" | "staff"; user?: AuthUser }>;
   register: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
+  requestPasswordReset: (email: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+  confirmPasswordReset: (email: string, otp: string, newPassword: string) => Promise<{ success: boolean; message?: string; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => Promise<boolean>;
   refreshSession: () => Promise<boolean>;
@@ -243,12 +245,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [apiUrl, logout]);
 
-  const login = async (email: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     try {
+      const trimmed = identifier.trim();
       const response = await fetchWithTimeout(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ email: trimmed, login_id: trimmed, password }),
       });
 
       if (response.ok) {
@@ -402,6 +405,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  const requestPasswordReset = async (email: string) => {
+    try {
+      const response = await fetchWithTimeout(`${apiUrl}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, error: data.detail || "Không thể gửi mã xác thực. Vui lòng thử lại." };
+      }
+    } catch {
+      return { success: false, error: "Lỗi kết nối máy chủ. Vui lòng thử lại sau." };
+    }
+  };
+
+  const confirmPasswordReset = async (email: string, otp: string, newPassword: string) => {
+    try {
+      const response = await fetchWithTimeout(`${apiUrl}/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          otp: otp.trim(),
+          new_password: newPassword,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, error: data.detail || "Mã xác thực không chính xác hoặc đã hết hạn." };
+      }
+    } catch {
+      return { success: false, error: "Lỗi kết nối máy chủ. Vui lòng thử lại sau." };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -412,6 +455,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         login,
         register,
+        requestPasswordReset,
+        confirmPasswordReset,
         logout,
         updateProfile,
         refreshSession,
