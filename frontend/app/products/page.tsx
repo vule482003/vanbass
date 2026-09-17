@@ -14,6 +14,21 @@ import { useLanguage } from "../lib/language-context";
 import { getTranslatedProductName, getProductPlainExcerpt } from "../lib/product-i18n";
 import { CATEGORY_GROUPS } from "../lib/category-hierarchy";
 
+const ITEMS_PER_PAGE = 20;
+
+function getPageNumbers(current: number, total: number): (number | string)[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, "...", total];
+  }
+  if (current >= total - 3) {
+    return [1, "...", total - 4, total - 3, total - 2, total - 1, total];
+  }
+  return [1, "...", current - 1, current, current + 1, "...", total];
+}
+
 function ProductsContent() {
   const { t, lang } = useLanguage();
   const searchParams = useSearchParams();
@@ -23,6 +38,9 @@ function ProductsContent() {
   const initialMode: "all" | "sale" | "rental" =
     rawMode === "rental" ? "rental" : rawMode === "sale" ? "sale" : "all";
 
+  const rawPage = parseInt(searchParams.get("page") || "1", 10);
+  const initialPage = isNaN(rawPage) || rawPage < 1 ? 1 : rawPage;
+
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [categories, setCategories] = useState<Category[]>(MOCK_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
@@ -31,10 +49,23 @@ function ProductsContent() {
   const [priceRange, setPriceRange] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
   const [sortBy, setSortBy] = useState<string>("featured");
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
 
   // Group C Features States
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [comparedProducts, setComparedProducts] = useState<Product[]>([]);
+
+  const updateUrlPage = (page: number) => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (page <= 1) {
+        url.searchParams.delete("page");
+      } else {
+        url.searchParams.set("page", page.toString());
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   const handleToggleCompare = (product: Product) => {
     setComparedProducts((prev) => {
@@ -66,6 +97,16 @@ function ProductsContent() {
   }, [searchParams]);
 
   useEffect(() => {
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      const p = parseInt(pageParam, 10);
+      if (!isNaN(p) && p >= 1) {
+        startTransition(() => setCurrentPage(p));
+      }
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     const modeParam = searchParams.get("mode") || searchParams.get("type") || searchParams.get("filter");
     if (modeParam === "rental" || modeParam === "sale" || modeParam === "all") {
       startTransition(() => setFilterMode(modeParam));
@@ -82,8 +123,15 @@ function ProductsContent() {
     }
   }, [searchParams]);
 
+  const handleSelectCategory = (cat: string) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1);
+    updateUrlPage(1);
+  };
+
   const handleFilterModeChange = (mode: "all" | "sale" | "rental") => {
     setFilterMode(mode);
+    setCurrentPage(1);
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       if (mode === "all") {
@@ -91,8 +139,33 @@ function ProductsContent() {
       } else {
         url.searchParams.set("mode", mode);
       }
+      url.searchParams.delete("page");
       window.history.replaceState(null, "", url.toString());
     }
+  };
+
+  const handleSelectBrand = (brand: string) => {
+    setSelectedBrand(brand);
+    setCurrentPage(1);
+    updateUrlPage(1);
+  };
+
+  const handlePriceRangeChange = (range: string) => {
+    setPriceRange(range);
+    setCurrentPage(1);
+    updateUrlPage(1);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+    updateUrlPage(1);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSortBy(sort);
+    setCurrentPage(1);
+    updateUrlPage(1);
   };
 
   // Fetch live products & categories from PostgreSQL
@@ -221,6 +294,29 @@ function ProductsContent() {
     setSelectedBrand("all");
     setPriceRange("all");
     setSearchQuery("");
+    setCurrentPage(1);
+    updateUrlPage(1);
+  };
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredProducts, safeCurrentPage]);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === safeCurrentPage) return;
+    setCurrentPage(page);
+    updateUrlPage(page);
+    const section = document.getElementById("vb-products-section");
+    if (section) {
+      const topOffset = section.getBoundingClientRect().top + window.scrollY - 110;
+      window.scrollTo({ top: topOffset, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 300, behavior: "smooth" });
+    }
   };
 
   const fallbackRecommendations = useMemo(() => {
@@ -232,7 +328,7 @@ function ProductsContent() {
       <Header />
 
       <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "160px" }}>
-        <div className="container">
+        <div className="container" id="vb-products-section">
           {/* Page Heading */}
           <div style={{ marginBottom: "40px" }}>
             <p className="section-kicker">{t.productsPage.kicker}</p>
@@ -256,17 +352,17 @@ function ProductsContent() {
             categories={categories}
             products={products}
             selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
+            onSelectCategory={handleSelectCategory}
             filterMode={filterMode}
             onFilterModeChange={handleFilterModeChange}
             selectedBrand={selectedBrand}
-            onSelectBrand={setSelectedBrand}
+            onSelectBrand={handleSelectBrand}
             priceRange={priceRange}
-            onPriceRangeChange={setPriceRange}
+            onPriceRangeChange={handlePriceRangeChange}
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearchChange}
             sortBy={sortBy}
-            onSortChange={setSortBy}
+            onSortChange={handleSortChange}
             totalFiltered={filteredProducts.length}
           />
 
@@ -324,14 +420,14 @@ function ProductsContent() {
                       type="button"
                       className="vb-empty-suggestion-chip"
                       onClick={() => {
-                        setSelectedCategory("all");
-                        setSelectedBrand("all");
-                        setPriceRange("all");
-                        handleFilterModeChange("all");
-                        setSearchQuery(tag);
+                        handleResetAllFilters();
+                        handleSearchChange(tag);
                       }}
                     >
-                      <span className="chip-icon">🔍</span>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                      </svg>
                       <span>{tag}</span>
                     </button>
                   ))}
@@ -366,18 +462,199 @@ function ProductsContent() {
               )}
             </div>
           ) : (
-            <div className="vb-product-grid">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  currentMode={filterMode}
-                  onQuickView={setQuickViewProduct}
-                  isCompared={comparedProducts.some((p) => p.id === product.id)}
-                  onToggleCompare={handleToggleCompare}
-                />
-              ))}
-            </div>
+            <>
+              {/* 5 rows x 4 items = 20 products per page */}
+              <div className="vb-product-grid">
+                {paginatedProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    currentMode={filterMode}
+                    onQuickView={setQuickViewProduct}
+                    isCompared={comparedProducts.some((p) => p.id === product.id)}
+                    onToggleCompare={handleToggleCompare}
+                  />
+                ))}
+              </div>
+
+              {/* Modern Responsive Pagination Controls */}
+              {totalPages > 1 && (
+                <nav
+                  aria-label="Product catalog pagination"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "16px",
+                    marginTop: "52px",
+                    paddingTop: "32px",
+                    borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+                  }}
+                >
+                  <p style={{ margin: 0, fontSize: "14px", color: "#a1a1aa" }}>
+                    {t.productsPage.showingProducts || "Hiển thị"}{" "}
+                    <strong style={{ color: "#ffffff" }}>
+                      {(safeCurrentPage - 1) * ITEMS_PER_PAGE + 1}
+                      {" - "}
+                      {Math.min(safeCurrentPage * ITEMS_PER_PAGE, filteredProducts.length)}
+                    </strong>{" "}
+                    {t.productsPage.ofTotal || "trên tổng số"}{" "}
+                    <strong style={{ color: "#22c55e" }}>{filteredProducts.length}</strong>{" "}
+                    {t.productsPage.items || "sản phẩm"}
+                  </p>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {/* Previous Page Button */}
+                    <button
+                      type="button"
+                      onClick={() => handlePageChange(safeCurrentPage - 1)}
+                      disabled={safeCurrentPage <= 1}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "10px 16px",
+                        fontSize: "13.5px",
+                        fontWeight: 700,
+                        borderRadius: "8px",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        backgroundColor: safeCurrentPage <= 1 ? "rgba(255, 255, 255, 0.02)" : "rgba(255, 255, 255, 0.06)",
+                        color: safeCurrentPage <= 1 ? "rgba(255, 255, 255, 0.25)" : "#f4f4f5",
+                        cursor: safeCurrentPage <= 1 ? "not-allowed" : "pointer",
+                        transition: "all 150ms ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (safeCurrentPage > 1) {
+                          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+                          e.currentTarget.style.color = "#ffffff";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (safeCurrentPage > 1) {
+                          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
+                          e.currentTarget.style.color = "#f4f4f5";
+                        }
+                      }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                      <span>{t.productsPage.prevPage || "Trước"}</span>
+                    </button>
+
+                    {/* Page Numbers */}
+                    {getPageNumbers(safeCurrentPage, totalPages).map((p, idx) => {
+                      if (typeof p === "string") {
+                        return (
+                          <span
+                            key={`ellipsis-${idx}`}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "36px",
+                              height: "40px",
+                              color: "#71717a",
+                              fontSize: "14px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            ...
+                          </span>
+                        );
+                      }
+
+                      const isActive = p === safeCurrentPage;
+                      return (
+                        <button
+                          key={`page-${p}`}
+                          type="button"
+                          onClick={() => handlePageChange(p)}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            minWidth: "40px",
+                            height: "40px",
+                            padding: "0 12px",
+                            fontSize: "14px",
+                            fontWeight: isActive ? 800 : 600,
+                            borderRadius: "8px",
+                            border: isActive ? "1px solid #22c55e" : "1px solid rgba(255, 255, 255, 0.12)",
+                            backgroundColor: isActive ? "#22c55e" : "rgba(255, 255, 255, 0.05)",
+                            color: isActive ? "#000000" : "#f4f4f5",
+                            boxShadow: isActive ? "0 0 16px rgba(34, 197, 94, 0.4)" : "none",
+                            cursor: "pointer",
+                            transition: "all 150ms ease",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isActive) {
+                              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+                              e.currentTarget.style.color = "#ffffff";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isActive) {
+                              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+                              e.currentTarget.style.color = "#f4f4f5";
+                            }
+                          }}
+                        >
+                          {p}
+                        </button>
+                      );
+                    })}
+
+                    {/* Next Page Button */}
+                    <button
+                      type="button"
+                      onClick={() => handlePageChange(safeCurrentPage + 1)}
+                      disabled={safeCurrentPage >= totalPages}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "10px 16px",
+                        fontSize: "13.5px",
+                        fontWeight: 700,
+                        borderRadius: "8px",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        backgroundColor: safeCurrentPage >= totalPages ? "rgba(255, 255, 255, 0.02)" : "rgba(255, 255, 255, 0.06)",
+                        color: safeCurrentPage >= totalPages ? "rgba(255, 255, 255, 0.25)" : "#f4f4f5",
+                        cursor: safeCurrentPage >= totalPages ? "not-allowed" : "pointer",
+                        transition: "all 150ms ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (safeCurrentPage < totalPages) {
+                          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)";
+                          e.currentTarget.style.color = "#ffffff";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (safeCurrentPage < totalPages) {
+                          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
+                          e.currentTarget.style.color = "#f4f4f5";
+                        }
+                      }}
+                    >
+                      <span>{t.productsPage.nextPage || "Sau"}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </button>
+                  </div>
+                </nav>
+              )}
+            </>
           )}
         </div>
       </main>

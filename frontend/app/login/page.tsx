@@ -146,14 +146,14 @@ function LoginForm() {
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "20px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            {t.auth.emailLabel}
+            {t.auth.emailOrUsernameLabel || "Email hoặc Tên đăng nhập"}
           </label>
           <input
-            type="email"
+            type="text"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="example@gmail.com"
+            placeholder={t.auth.emailOrUsernamePlaceholder || "admin hoặc example@gmail.com"}
             style={{
               width: "100%",
               padding: "14px 16px",
@@ -169,9 +169,25 @@ function LoginForm() {
         </div>
 
         <div style={{ marginBottom: "24px" }}>
-          <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            {t.auth.passwordLabel}
-          </label>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>
+              {t.auth.passwordLabel}
+            </label>
+            <Link
+              href="/forgot-password"
+              style={{
+                fontSize: "12.5px",
+                color: "#22c55e",
+                fontWeight: 700,
+                textDecoration: "none",
+                transition: "opacity 150ms ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+            >
+              {t.auth.forgotPassword || "Quên mật khẩu?"}
+            </Link>
+          </div>
           <div style={{ position: "relative", width: "100%" }}>
             <input
               type={showPassword ? "text" : "password"}
