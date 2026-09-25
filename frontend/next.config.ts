@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/static/:path*",
+        destination: "http://127.0.0.1:8000/static/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

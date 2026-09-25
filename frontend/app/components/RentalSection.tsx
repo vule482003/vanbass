@@ -68,9 +68,12 @@ export default function RentalSection({
         <div className="rental-visual-banner">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/rental/rental_stage_setup.jpg"
+            src={config.stage_image || "/images/rental/rental_stage_setup.jpg"}
             alt="Hệ thống âm thanh & bàn DJ cho thuê VanBass"
             className="rental-banner-image"
+            data-cms-key="rental.stage_image"
+            data-cms-label="Ảnh sân khấu thuê bàn DJ"
+            data-cms-type="image"
           />
           <div className="rental-banner-gradient" />
         </div>
@@ -78,11 +81,21 @@ export default function RentalSection({
         {/* 3 Technical Spec Columns with + Crosshairs */}
         <div className="rental-specs-container">
           <div className="rental-spec-item">
-            <h3 className="spec-label">
-              {lang === "en" ? "SETUP SPEED" : "THỜI GIAN SETUP"}
+            <h3
+              className="spec-label"
+              data-cms-key="rental.spec_setup_label"
+              data-cms-label="Nhãn Spec 1 (Thời gian Setup)"
+              data-cms-type="text"
+            >
+              {lang === "en" ? "SETUP SPEED" : (config.spec_setup_label || "THỜI GIAN SETUP")}
             </h3>
-            <p className="spec-value">
-              {lang === "en" ? "Delivery & setup within 2 hours" : "Giao và lắp đặt trong 2 giờ"}
+            <p
+              className="spec-value"
+              data-cms-key="rental.spec_setup_value"
+              data-cms-label="Giá trị Spec 1 (Thời gian Setup)"
+              data-cms-type="text"
+            >
+              {lang === "en" ? "Delivery & setup within 2 hours" : (config.spec_setup_value || "Giao và lắp đặt trong 2 giờ")}
             </p>
           </div>
 
@@ -101,11 +114,21 @@ export default function RentalSection({
           </div>
 
           <div className="rental-spec-item">
-            <h3 className="spec-label">
-              {lang === "en" ? "EQUIPMENT" : "THIẾT BỊ"}
+            <h3
+              className="spec-label"
+              data-cms-key="rental.spec_equipment_label"
+              data-cms-label="Nhãn Spec 2 (Thiết bị)"
+              data-cms-type="text"
+            >
+              {lang === "en" ? "EQUIPMENT" : (config.spec_equipment_label || "THIẾT BỊ")}
             </h3>
-            <p className="spec-value">
-              {lang === "en" ? "100% Genuine Pioneer DJ" : "100% Pioneer DJ nguyên bản"}
+            <p
+              className="spec-value"
+              data-cms-key="rental.spec_equipment_value"
+              data-cms-label="Giá trị Spec 2 (Thiết bị)"
+              data-cms-type="text"
+            >
+              {lang === "en" ? "100% Genuine Pioneer DJ" : (config.spec_equipment_value || "100% Pioneer DJ nguyên bản")}
             </p>
           </div>
 
@@ -124,11 +147,21 @@ export default function RentalSection({
           </div>
 
           <div className="rental-spec-item">
-            <h3 className="spec-label">
-              {lang === "en" ? "SUPPORT" : "HỖ TRỢ"}
+            <h3
+              className="spec-label"
+              data-cms-key="rental.spec_support_label"
+              data-cms-label="Nhãn Spec 3 (Hỗ trợ)"
+              data-cms-type="text"
+            >
+              {lang === "en" ? "SUPPORT" : (config.spec_support_label || "HỖ TRỢ")}
             </h3>
-            <p className="spec-value">
-              {lang === "en" ? "24/7 on-site sound engineer" : "Kỹ thuật viên sound-man 24/7"}
+            <p
+              className="spec-value"
+              data-cms-key="rental.spec_support_value"
+              data-cms-label="Giá trị Spec 3 (Hỗ trợ)"
+              data-cms-type="text"
+            >
+              {lang === "en" ? "24/7 on-site sound engineer" : (config.spec_support_value || "Kỹ thuật viên sound-man 24/7")}
             </p>
           </div>
         </div>

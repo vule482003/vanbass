@@ -40,6 +40,17 @@ export interface IntroSectionConfig {
   button_link: string;
 }
 
+export interface HeaderConfig {
+  brand_title: string;
+  brand_subtitle: string;
+  nav_home: string;
+  nav_rental: string;
+  nav_products: string;
+  nav_about: string;
+  nav_contact: string;
+  search_placeholder: string;
+}
+
 export interface RentalSectionConfig {
   kicker: string;
   headline_top: string;
@@ -48,6 +59,13 @@ export interface RentalSectionConfig {
   features: string[];
   button_text: string;
   button_link: string;
+  stage_image?: string;
+  spec_setup_label?: string;
+  spec_setup_value?: string;
+  spec_equipment_label?: string;
+  spec_equipment_value?: string;
+  spec_support_label?: string;
+  spec_support_value?: string;
 }
 
 export interface LocalCtaConfig {
@@ -90,6 +108,7 @@ export interface VisibilityConfig {
 }
 
 export interface HomeData {
+  header: HeaderConfig;
   marquee_items: string[];
   hero_left: HeroPanelLeft;
   hero_center: HeroPanelCenter;
@@ -109,6 +128,16 @@ export interface HomeConfigResponse {
 }
 
 export const DEFAULT_HOME_DATA: HomeData = {
+  header: {
+    brand_title: "VANBASS",
+    brand_subtitle: "MUSIC CENTER",
+    nav_home: "TRANG CHỦ",
+    nav_rental: "THUÊ BÀN DJ",
+    nav_products: "SẢN PHẨM",
+    nav_about: "VỀ VANBASS",
+    nav_contact: "LIÊN HỆ",
+    search_placeholder: "Tìm kiếm thiết bị DJ, mixer, loa...",
+  },
   marquee_items: [
     "PIONEER DJ OFFICIAL DISTRIBUTOR",
     "ALPHATHETA",
@@ -174,6 +203,13 @@ export const DEFAULT_HOME_DATA: HomeData = {
     ],
     button_text: "Xem thiết bị cho thuê",
     button_link: "/products?mode=rental",
+    stage_image: "/images/rental/rental_stage_setup.jpg",
+    spec_setup_label: "THỜI GIAN SETUP",
+    spec_setup_value: "Giao và lắp đặt trong 2 giờ",
+    spec_equipment_label: "THIẾT BỊ",
+    spec_equipment_value: "100% Pioneer DJ nguyên bản",
+    spec_support_label: "HỖ TRỢ",
+    spec_support_value: "Kỹ thuật viên sound-man 24/7",
   },
   local_cta: {
     kicker: "SHOWROOM & TRẢI NGHIỆM THỰC TẾ",
@@ -205,3 +241,39 @@ export const DEFAULT_HOME_DATA: HomeData = {
     show_floating_contact: true,
   },
 };
+
+// postMessage Protocol Types between Admin CMS and /editor-preview iframe
+export type EditorIframeToCmsMessage =
+  | { type: "VANBASS_EDITOR_READY" }
+  | {
+      type: "VANBASS_ELEMENT_SELECTED";
+      elementId: string;
+      label?: string;
+      fieldType?: "text" | "textarea" | "image";
+      currentVal?: string;
+    }
+  | {
+      type: "VANBASS_ELEMENT_HOVERED";
+      elementId: string | null;
+      label?: string;
+    }
+  | {
+      type: "VANBASS_EDITOR_ERROR";
+      error: string;
+    }
+  | {
+      type: "VANBASS_SELECT_SECTION";
+      section: string;
+    };
+
+export type EditorCmsToIframeMessage =
+  | { type: "VANBASS_LOAD_STATE"; data: HomeData }
+  | { type: "VANBASS_LIVE_CONFIG"; data: HomeData }
+  | {
+      type: "VANBASS_UPDATE_ELEMENT";
+      elementId: string;
+      value: string;
+    }
+  | { type: "VANBASS_RESET"; data?: HomeData }
+  | { type: "VANBASS_SCROLL_TO"; section: string };
+

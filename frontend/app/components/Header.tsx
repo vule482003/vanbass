@@ -11,8 +11,14 @@ import { MOCK_PRODUCTS } from "../lib/mock-data";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { getTranslatedProductName } from "../lib/product-i18n";
 import { CATEGORY_GROUPS } from "../lib/category-hierarchy";
+import { HeaderConfig } from "../types/home_config";
 
-export default function Header() {
+interface HeaderProps {
+  config?: HeaderConfig;
+  isEditor?: boolean;
+}
+
+export default function Header({ config, isEditor = false }: HeaderProps = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const { items, totalItems, subtotal } = useCart();
@@ -21,13 +27,39 @@ export default function Header() {
 
   const navLinks = useMemo(
     () => [
-      { href: "/", label: t.nav.home },
-      { href: "/thue-ban-dj", label: lang === "vi" ? "Thuê Bàn DJ" : "DJ Rental" },
-      { href: "/products", label: t.nav.products, isMega: true },
-      { href: "/about", label: t.nav.about },
-      { href: "/contact", label: t.nav.contact },
+      {
+        href: "/",
+        label: config?.nav_home || t.nav.home,
+        cmsKey: "header.nav_home",
+        cmsLabel: "Menu Trang Chủ",
+      },
+      {
+        href: "/thue-ban-dj",
+        label: config?.nav_rental || (lang === "vi" ? "Thuê Bàn DJ" : "DJ Rental"),
+        cmsKey: "header.nav_rental",
+        cmsLabel: "Menu Thuê Bàn DJ",
+      },
+      {
+        href: "/products",
+        label: config?.nav_products || t.nav.products,
+        isMega: true,
+        cmsKey: "header.nav_products",
+        cmsLabel: "Menu Sản Phẩm",
+      },
+      {
+        href: "/about",
+        label: config?.nav_about || t.nav.about,
+        cmsKey: "header.nav_about",
+        cmsLabel: "Menu Về VanBass",
+      },
+      {
+        href: "/contact",
+        label: config?.nav_contact || t.nav.contact,
+        cmsKey: "header.nav_contact",
+        cmsLabel: "Menu Liên Hệ",
+      },
     ],
-    [t.nav.home, t.nav.products, t.nav.about, t.nav.contact, lang]
+    [t.nav.home, t.nav.products, t.nav.about, t.nav.contact, lang, config]
   );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -253,8 +285,20 @@ export default function Header() {
               />
             </div>
             <span className="brand-text">
-              VANBASS
-              <small>MUSIC CENTER</small>
+              <span
+                data-cms-key="header.brand_title"
+                data-cms-label="Tên thương hiệu Header"
+                data-cms-type="text"
+              >
+                {config?.brand_title || "VANBASS"}
+              </span>
+              <small
+                data-cms-key="header.brand_subtitle"
+                data-cms-label="Phụ đề thương hiệu Header"
+                data-cms-type="text"
+              >
+                {config?.brand_subtitle || "MUSIC CENTER"}
+              </small>
             </span>
           </Link>
 
@@ -288,6 +332,9 @@ export default function Header() {
                       }}
                       className={`nav-link-item ${isHighlighted ? "active" : ""}`}
                       onClick={() => setIsProductsMenuOpen(false)}
+                      data-cms-key={link.cmsKey}
+                      data-cms-label={link.cmsLabel}
+                      data-cms-type="text"
                     >
                       <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
                         {link.label}
@@ -433,6 +480,9 @@ export default function Header() {
                   }}
                   onMouseEnter={() => setHoveredHref(link.href)}
                   className={`nav-link-item ${isHighlighted ? "active" : ""}`}
+                  data-cms-key={link.cmsKey}
+                  data-cms-label={link.cmsLabel}
+                  data-cms-type="text"
                 >
                   {link.label}
                 </Link>
@@ -475,11 +525,16 @@ export default function Header() {
                   setIsSearchDropdownOpen(true);
                 }}
                 onFocus={() => {
-                  setIsSearchFocused(true);
-                  setIsSearchDropdownOpen(true);
+                  if (!isEditor) {
+                    setIsSearchFocused(true);
+                    setIsSearchDropdownOpen(true);
+                  }
                 }}
                 onBlur={() => setIsSearchFocused(false)}
-                placeholder={t.nav.searchPlaceholder}
+                placeholder={config?.search_placeholder || t.nav.searchPlaceholder}
+                data-cms-key="header.search_placeholder"
+                data-cms-label="Gợi ý ô tìm kiếm"
+                data-cms-type="text"
                 className="header-search-input"
               />
               {searchQuery && (
@@ -844,6 +899,9 @@ export default function Header() {
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`mobile-nav-link ${isCurrent ? "active" : ""}`}
+                    data-cms-key={link.cmsKey}
+                    data-cms-label={link.cmsLabel}
+                    data-cms-type="text"
                   >
                     <span>{link.label}</span>
                     {isCurrent && <span className="mobile-active-dot" />}

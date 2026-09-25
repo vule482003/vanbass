@@ -514,12 +514,13 @@ export default function AdminDashboardPage() {
 
   const sendLiveConfigToIframe = useCallback(() => {
     if (iframeRef.current?.contentWindow) {
+      const allowedOrigin = typeof window !== "undefined" ? window.location.origin : "*";
       iframeRef.current.contentWindow.postMessage(
         {
           type: "VANBASS_LIVE_CONFIG",
           data: homeConfig,
         },
-        "*"
+        allowedOrigin
       );
     }
   }, [homeConfig]);
@@ -530,18 +531,19 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     const handleIframeMessage = (e: MessageEvent) => {
+      if (typeof window !== "undefined" && e.origin !== window.location.origin) return;
       if (!e.data || typeof e.data !== "object") return;
-      if (e.data.type === "VANBASS_IFRAME_READY") {
+      if (e.data.type === "VANBASS_IFRAME_READY" || e.data.type === "VANBASS_EDITOR_READY") {
         sendLiveConfigToIframe();
       }
       if (e.data.type === "VANBASS_SELECT_SECTION" && e.data.section) {
         setActiveCmsAccordion(e.data.section);
       }
-      if (e.data.type === "VANBASS_OPEN_INLINE_EDITOR") {
-        const { fieldKey, label, fieldType, currentVal } = e.data;
+      if (e.data.type === "VANBASS_ELEMENT_SELECTED" || e.data.type === "VANBASS_OPEN_INLINE_EDITOR") {
+        const { fieldKey, elementId, label, fieldType, currentVal } = e.data;
         setInlineEditor({
           isOpen: true,
-          fieldKey,
+          fieldKey: elementId || fieldKey || "",
           label: label || "Chỉnh sửa phần tử",
           fieldType: fieldType || "text",
           currentVal: currentVal || "",
@@ -555,8 +557,8 @@ export default function AdminDashboardPage() {
   const handleSaveHomeConfig = async () => {
     setIsHomeConfigSaving(true);
     try {
-      const res = await fetch(`${apiUrl}/home-config`, {
-        method: "PUT",
+      const res = await fetch(`${apiUrl}/home-config/publish`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -566,20 +568,35 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         const json = await res.json();
         setSavedHomeConfig(json.data || homeConfig);
-        setActionSuccessMsg("✓ Đã lưu và xuất bản trang chủ thành công!");
+        setActionSuccessMsg("✓ Đã xuất bản trang chủ thành công (Published)!");
       } else {
         const err = await res.json().catch(() => ({ detail: "Lỗi lưu cấu hình" }));
-        setActionErrorMsg(err.detail || "Không thể lưu cấu hình trang chủ.");
+        setActionErrorMsg(err.detail || "Không thể xuất bản cấu hình trang chủ.");
       }
     } catch (err) {
       console.error("Error saving home config:", err);
-      setActionErrorMsg("Lỗi kết nối máy chủ khi lưu cấu hình.");
+      setActionErrorMsg("Lỗi kết nối máy chủ khi xuất bản cấu hình.");
     } finally {
       setIsHomeConfigSaving(false);
     }
   };
 
-  const handleCancelHomeConfig = () => {
+  const handleCancelHomeConfig = async () => {
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/home-config?${cacheBust}`, { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.data) {
+          setHomeConfig(json.data);
+          setSavedHomeConfig(json.data);
+          setActionSuccessMsg("✓ Đã hoàn nguyên về cấu hình đang xuất bản!");
+          return;
+        }
+      }
+    } catch {
+      // Fallback
+    }
     setHomeConfig(savedHomeConfig);
     setActionSuccessMsg("✓ Đã hoàn nguyên về cấu hình đã lưu gần nhất.");
   };
@@ -696,7 +713,13 @@ export default function AdminDashboardPage() {
     setIsHomeConfigLoading(true);
     try {
       const cacheBust = `_t=${Date.now()}`;
-      const homeRes = await fetch(`${apiUrl}/home-config?${cacheBust}`, { cache: "no-store" });
+      let homeRes = await fetch(`${apiUrl}/home-config/draft?${cacheBust}`, {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!homeRes.ok) {
+        homeRes = await fetch(`${apiUrl}/home-config?${cacheBust}`, { cache: "no-store" });
+      }
       if (homeRes.ok) {
         const homeJson = await homeRes.json();
         if (homeJson?.data) {
@@ -731,7 +754,7 @@ export default function AdminDashboardPage() {
     } finally {
       setIsHomeConfigLoading(false);
     }
-  }, [apiUrl]);
+  }, [apiUrl, token]);
 
   const loadAllData = useCallback(async () => {
     setIsDataLoading(true);
@@ -2669,8 +2692,8 @@ export default function AdminDashboardPage() {
                   <iframe
                     key={previewKey}
                     ref={iframeRef}
-                    src="/"
-                    title="VanBass Live Homepage Preview"
+                    src="/editor-preview"
+                    title="VanBass Live Homepage Editor Preview"
                     style={{
                       width: previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "390px",
                       height: "100%",
@@ -2746,14 +2769,34 @@ export default function AdminDashboardPage() {
                       ref={centerHeroFileRef}
                       accept="image/*"
                       style={{ display: "none" }}
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         if (e.target.files?.[0]) {
                           const file = e.target.files[0];
+                          try {
+                            const formData = new FormData();
+                            formData.append("file", file);
+                            const uploadRes = await fetch(`${apiUrl}/home-config/upload-image`, {
+                              method: "POST",
+                              headers: token ? { Authorization: `Bearer ${token}` } : {},
+                              body: formData,
+                            });
+                            if (uploadRes.ok) {
+                              const uploadJson = await uploadRes.json();
+                              if (uploadJson.url) {
+                                updateNestedVal(inlineEditor.fieldKey, uploadJson.url);
+                                setActionSuccessMsg("✓ Đã tải ảnh lên máy chủ và áp dụng thành công!");
+                                return;
+                              }
+                            }
+                          } catch (err) {
+                            console.error("Image upload error:", err);
+                          }
+                          // Fallback to local data URL if upload failed
                           const reader = new FileReader();
                           reader.onload = (ev) => {
                             if (ev.target?.result) {
                               updateNestedVal(inlineEditor.fieldKey, ev.target.result as string);
-                              setActionSuccessMsg("✓ Đã tải ảnh lên giao diện thành công!");
+                              setActionSuccessMsg("✓ Đã áp dụng ảnh xem trước!");
                             }
                           };
                           reader.readAsDataURL(file);

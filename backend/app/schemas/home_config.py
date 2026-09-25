@@ -56,6 +56,17 @@ class IntroSectionConfig(BaseModel):
     button_link: str = "/about"
 
 
+class HeaderConfig(BaseModel):
+    brand_title: str = "VANBASS"
+    brand_subtitle: str = "MUSIC CENTER"
+    nav_home: str = "TRANG CHỦ"
+    nav_rental: str = "THUÊ BÀN DJ"
+    nav_products: str = "SẢN PHẨM"
+    nav_about: str = "VỀ VANBASS"
+    nav_contact: str = "LIÊN HỆ"
+    search_placeholder: str = "Tìm kiếm thiết bị DJ, mixer, loa..."
+
+
 class RentalSectionConfig(BaseModel):
     kicker: str = "CHO THUÊ THIẾT BỊ"
     headline_top: str = "Cần thiết bị DJ"
@@ -70,6 +81,13 @@ class RentalSectionConfig(BaseModel):
     )
     button_text: str = "Xem thiết bị cho thuê"
     button_link: str = "/products?mode=rental"
+    stage_image: str = "/images/rental/rental_stage_setup.jpg"
+    spec_setup_label: str = "THỜI GIAN SETUP"
+    spec_setup_value: str = "Giao và lắp đặt trong 2 giờ"
+    spec_equipment_label: str = "THIẾT BỊ"
+    spec_equipment_value: str = "100% Pioneer DJ nguyên bản"
+    spec_support_label: str = "HỖ TRỢ"
+    spec_support_value: str = "Kỹ thuật viên sound-man 24/7"
 
 
 class LocalCtaConfig(BaseModel):
@@ -116,6 +134,7 @@ class VisibilityConfig(BaseModel):
 
 
 class HomeData(BaseModel):
+    header: HeaderConfig = Field(default_factory=HeaderConfig)
     marquee_items: list[str] = Field(
         default_factory=lambda: [
             "PIONEER DJ OFFICIAL DISTRIBUTOR",

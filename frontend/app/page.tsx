@@ -26,9 +26,14 @@ async function getHomeConfig(): Promise<HomeData> {
           hero_left: { ...DEFAULT_HOME_DATA.hero_left, ...(json.data.hero_left || {}), bg_image: sanitizeImg(json.data.hero_left?.bg_image, DEFAULT_HOME_DATA.hero_left.bg_image) },
           hero_center: { ...DEFAULT_HOME_DATA.hero_center, ...(json.data.hero_center || {}), bg_image: sanitizeImg(json.data.hero_center?.bg_image, DEFAULT_HOME_DATA.hero_center.bg_image) },
           hero_right: { ...DEFAULT_HOME_DATA.hero_right, ...(json.data.hero_right || {}), bg_image: sanitizeImg(json.data.hero_right?.bg_image, DEFAULT_HOME_DATA.hero_right.bg_image) },
+          header: { ...DEFAULT_HOME_DATA.header, ...(json.data.header || {}) },
           categories_highlight: { ...DEFAULT_HOME_DATA.categories_highlight, ...(json.data.categories_highlight || {}) },
           intro: { ...DEFAULT_HOME_DATA.intro, ...(json.data.intro || {}) },
-          rental: { ...DEFAULT_HOME_DATA.rental, ...(json.data.rental || {}) },
+          rental: {
+            ...DEFAULT_HOME_DATA.rental,
+            ...(json.data.rental || {}),
+            stage_image: sanitizeImg(json.data.rental?.stage_image, DEFAULT_HOME_DATA.rental.stage_image || "/images/rental/rental_stage_setup.jpg"),
+          },
           local_cta: { ...DEFAULT_HOME_DATA.local_cta, ...(json.data.local_cta || {}) },
           floating_contacts: { ...DEFAULT_HOME_DATA.floating_contacts, ...(json.data.floating_contacts || {}) },
         };
@@ -43,5 +48,5 @@ async function getHomeConfig(): Promise<HomeData> {
 export default async function Home() {
   const homeData = await getHomeConfig();
 
-  return <LiveHomePageClient initialHomeData={homeData} />;
+  return <LiveHomePageClient initialHomeData={homeData} mode="public" />;
 }
