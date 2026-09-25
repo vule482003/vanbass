@@ -18,17 +18,22 @@ interface LiveHomePageClientProps {
   mode?: "public" | "editor";
 }
 
-function updateNestedKey(obj: any, path: string, value: any): any {
+function updateNestedKey<T extends object>(obj: T, path: string, value: unknown): T {
   const parts = path.split(".");
-  const copy = Array.isArray(obj) ? [...obj] : { ...obj };
-  let curr = copy;
+  const copy = (Array.isArray(obj) ? [...obj] : { ...obj }) as Record<string, unknown>;
+  let curr: Record<string, unknown> = copy;
   for (let i = 0; i < parts.length - 1; i++) {
     const p = parts[i];
-    curr[p] = Array.isArray(curr[p]) ? [...curr[p]] : { ...(curr[p] || {}) };
-    curr = curr[p];
+    const nextVal = curr[p];
+    curr[p] = Array.isArray(nextVal)
+      ? [...nextVal]
+      : typeof nextVal === "object" && nextVal !== null
+        ? { ...(nextVal as Record<string, unknown>) }
+        : {};
+    curr = curr[p] as Record<string, unknown>;
   }
   curr[parts[parts.length - 1]] = value;
-  return copy;
+  return copy as T;
 }
 
 export default function LiveHomePageClient({ initialHomeData, mode = "public" }: LiveHomePageClientProps) {
