@@ -145,15 +145,7 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
           </nav>
 
           {/* Product Detail Layout */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "60px",
-              alignItems: "start",
-              marginBottom: "80px",
-            }}
-          >
+          <div className="product-detail-hero-grid">
             {/* Left: Interactive Multi-Image Gallery with Hover Zoom & Fullscreen Lightbox */}
             <div>
               <ProductImageGallery product={product} displayName={displayName} />

@@ -3865,14 +3865,14 @@ button, a {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .container {
-    width: min(100% - 32px, 1240px);
+    width: calc(100% - 20px) !important;
   }
 
   .site-header {
-    top: 12px;
-    width: calc(100% - 20px);
+    top: 10px;
+    width: calc(100% - 16px);
   }
 
   .dynamic-island-pill {
@@ -3880,22 +3880,22 @@ button, a {
   }
 
   .header-inner {
-    height: 54px;
-    padding: 0 10px 0 14px;
-    gap: 10px;
+    height: 50px;
+    padding: 0 10px 0 12px;
+    gap: 8px;
   }
 
   .site-header.scrolled .header-inner {
-    height: 52px;
+    height: 48px;
   }
 
   .brand-logo-wrap {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
 
-    .brand-text {
-    font-size: 14px;
+  .brand-text {
+    font-size: 13.5px;
   }
 
   .brand-text small {
@@ -3912,8 +3912,8 @@ button, a {
 
   .mobile-menu-btn {
     display: inline-flex !important;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
 
   .header-actions {
@@ -3921,7 +3921,7 @@ button, a {
   }
 
   .lang-btn {
-    height: 34px;
+    height: 32px;
     padding: 0 8px;
     font-size: 11px;
   }
@@ -3931,20 +3931,20 @@ button, a {
   }
 
   .header-cart-btn {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
 
   .header-login-btn {
-    height: 34px;
-    padding: 0 12px;
+    height: 32px;
+    padding: 0 10px;
     font-size: 11px;
   }
 
   .header-user-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 13px;
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
   }
 
   .mobile-stack {
@@ -3952,47 +3952,52 @@ button, a {
   }
 
   .intro-section,
-    .categories-strip-section,
+  .categories-strip-section,
   .rental-section,
   .products-section,
+  .community-gallery-section,
   .local-section {
-    padding: 70px 0;
+    padding: 36px 0 20px;
   }
 
   .intro-grid {
     grid-template-columns: 1fr;
-    gap: 35px;
+    gap: 24px;
   }
 
-  
+  .rental-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
   .rental-visual {
-    min-height: 480px;
+    min-height: 260px;
   }
 
   .rental-card-main {
-    width: 260px;
-    height: 320px;
+    width: 200px;
+    height: 240px;
   }
 
   .rental-card-main strong {
-    font-size: 55px;
+    font-size: 40px;
   }
 
   .rental-card-small {
     right: 4%;
     bottom: 8%;
-    width: 120px;
-    height: 130px;
+    width: 100px;
+    height: 110px;
   }
 
   .rental-content {
-    padding: 55px 28px;
+    padding: 24px 16px;
   }
 
   .footer-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 45px 25px;
-    padding: 60px 0;
+    gap: 28px 16px;
+    padding: 36px 0 20px;
   }
 
   .footer-brand {
@@ -6561,4 +6566,23 @@ body {
   line-height: 1.6;
   color: #a1a1aa;
   margin: 0;
+}
+
+/* =========================================================
+   PRODUCT DETAIL HERO RESPONSIVE GRID
+   ========================================================= */
+.product-detail-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 60px;
+}
+
+@media (max-width: 900px) {
+  .product-detail-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 36px;
+  }
 }
