@@ -99,4 +99,7 @@ def test_home_config_draft_and_publish_flow():
         assert pub_final.json()["data"]["header"]["brand_title"] == unique_brand
 
     finally:
+        db.execute(delete(HomeConfig))
+        db.commit()
         db.close()
+
