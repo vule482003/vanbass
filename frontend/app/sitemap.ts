@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { MOCK_PRODUCTS } from "./lib/mock-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
   const now = new Date();
 
   // Static routes

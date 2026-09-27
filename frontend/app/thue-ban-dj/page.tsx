@@ -4,35 +4,90 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import RentalFleetHero from "./RentalFleetHero";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000",
+  title: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ | Cho Thuê Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ | VanBass",
   description:
-    "Dịch vụ cho thuê bàn DJ Đà Nẵng & toàn quốc uy tín giá rẻ từ 400k/ngày: Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000. Máy mới 99%, giao và setup tận nơi 24/7, thủ tục nhanh không cần cọc.",
+    "Dịch vụ cho thuê bàn DJ & thiết bị âm thanh DJ chuyên nghiệp tại Đà Nẵng & Hội An: Pioneer DJ XDJ-RX3, XDJ-RX2, XDJ-RR, DDJ-FLX4, DDJ-FLX2, AlphaTheta Omnis-Duo, XDJ-AZ, CDJ-3000, loa biểu diễn B&C Speakers giá rẻ từ 400k/ngày. Thiết bị mới 99%, giao nhận và setup tận nơi 24/7. Professional DJ gear rental in Da Nang.",
   keywords: [
+    // Target Hot Keys
+    "XDJ RX3",
+    "xdj rx3",
+    "thuê xdj rx3",
+    "XDJ RX2",
+    "xdj rx2",
+    "thuê xdj rx2",
+    "XDJ RR",
+    "xdj rr",
+    "DDJ FLX4",
+    "ddj flx4",
+    "thuê ddj flx4",
+    "DDJ FLX2",
+    "ddj flx2",
+    "OMNIS DUO",
+    "omnis duo",
+    "AlphaTheta Omnis-Duo",
+    "XDJ AZ",
+    "xdj az",
+    "AlphaTheta XDJ-AZ",
+    "XDJ AN",
+    "xdj an",
+    // Tiếng Việt Cho Thuê Thiết Bị DJ Chuyên Nghiệp
     "thuê bàn dj",
     "thue ban dj",
     "thuê bàn dj đà nẵng",
     "thue ban dj da nang",
     "cho thuê bàn dj",
+    "cho thuê bàn dj đà nẵng",
+    "thuê bàn dj hội an",
+    "thuê dj đà nẵng",
+    "thue dj da nang",
+    "thuê thiết bị dj",
+    "cho thuê thiết bị dj đà nẵng",
+    "bảng giá thuê bàn dj đà nẵng",
+    "báo giá thuê bàn dj",
+    "giá thuê bàn dj đà nẵng",
+    "thuê bàn dj theo ngày",
+    "thuê bàn dj theo tháng",
+    "thuê bàn dj uy tín đà nẵng",
+    "thuê bàn dj all in one",
+    "thuê bàn dj độc lập",
+    "thuê bàn dj không cần máy tính",
     "thuê bàn dj giá rẻ",
+    "thuê cdj 3000 đà nẵng",
+    "thuê mixer dj đà nẵng",
+    "thuê mâm đĩa than đà nẵng",
+    "thuê loa dj đà nẵng",
+    "cho thuê loa biểu diễn đà nẵng",
+    "bàn dj pioneer",
     "vanbass rental fleet",
-    "DJ PIONEER DJ XDJ-RX3",
-    "DJ Pioneer DDJ-FLX4 – DJ Controller",
-    "thuê pioneer xdj-rx3",
-    "thuê pioneer flx4",
-    "thuê pioneer xdj-xz",
-    "thuê cdj 3000",
     "vanbass music center",
+    // English DJ Gear Rental
+    "DJ equipment rental Da Nang",
+    "DJ gear rental Da Nang",
+    "Rent DJ controller Da Nang",
+    "DJ gear hire Vietnam",
+    "Rent Pioneer XDJ RX3 Da Nang",
+    "Rent DDJ FLX4 Da Nang",
+    "Rent Omnis Duo Da Nang",
+    "Rent XDJ AZ Da Nang",
+    "Rent Pioneer CDJ Da Nang",
+    "DJ deck hire Da Nang",
+    "DJ equipment rental near me Da Nang",
+    "Where to rent DJ equipment in Da Nang",
+    "DJ gear hire Hoi An",
+    "Sound equipment rental Da Nang",
+    "All in one DJ system rental Da Nang",
+    "Expat DJ gear rental Vietnam",
   ],
   alternates: {
     canonical: "/thue-ban-dj",
   },
   openGraph: {
-    title: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4, XDJ-XZ | VanBass",
+    title: "Thuê Bàn DJ Đà Nẵng Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ | VanBass",
     description:
-      "Dịch vụ cho thuê bàn DJ Đà Nẵng & toàn quốc uy tín giá rẻ từ 400k/ngày: Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000. Máy mới 99%, giao và setup tận nơi 24/7.",
+      "Dịch vụ cho thuê bàn DJ Đà Nẵng & Hội An từ 400k/ngày: Pioneer DJ XDJ-RX3, RX2, RR, DDJ-FLX4, FLX2, Omnis-Duo, XDJ-AZ, loa B&C Speakers. Máy mới 99%, setup tận nơi 24/7. English support available.",
     url: `${baseUrl}/thue-ban-dj`,
     type: "website",
     images: [
@@ -40,7 +95,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/images/rental/rental_fleet_hero.jpg`,
         width: 1200,
         height: 675,
-        alt: "VanBass Rental Fleet - Thuê Bàn DJ Đà Nẵng",
+        alt: "VanBass Rental Fleet - Thuê Bàn DJ Đà Nẵng & DJ Gear Rental Vietnam",
       },
     ],
   },
@@ -48,24 +103,28 @@ export const metadata: Metadata = {
 
 const rentalFaqs = [
   {
-    q: "Thuê bàn DJ tại VanBass có những dòng máy nào?",
-    a: "VanBass cung cấp đầy đủ mọi phân khúc bàn DJ chuyên nghiệp: Từ DJ Controller nhỏ gọn (Pioneer DDJ-FLX4, DDJ-400, DDJ-FLX6) dùng với laptop, đến các hệ thống All-In-One cao cấp độc lập không cần máy tính (Pioneer DJ XDJ-RX3, XDJ-XZ, XDJ-RR), và dàn Club/Festival Standard quốc tế (Pioneer CDJ-3000 + DJM-900NXS2 hoặc DJM-A9).",
+    q: "Thuê bàn DJ tại VanBass có những dòng máy nào (XDJ-RX3, RX2, RR, FLX4, FLX2, Omnis-Duo, XDJ-AZ)?",
+    a: "VanBass cung cấp đầy đủ mọi phân khúc bàn DJ chuyên nghiệp: Từ DJ Controller nhỏ gọn (Pioneer DDJ-FLX4, DDJ-FLX2, DDJ-400, DDJ-FLX6), đến hệ thống All-In-One cao cấp độc lập không cần máy tính (Pioneer DJ XDJ-RX3, XDJ-RX2, XDJ-RR, AlphaTheta OMNIS-DUO không dây pin tích hợp, AlphaTheta XDJ-AZ 4 kênh), và dàn Club/Festival Standard quốc tế (Pioneer CDJ-3000 + DJM-A9).",
+  },
+  {
+    q: "Can foreigners, tourists, or expat DJs rent equipment in Da Nang & Hoi An?",
+    a: "Yes, absolutely! VanBass offers full English support for international DJs and tourists. You can rent Pioneer DJ XDJ-RX3, DDJ-FLX4, Omnis-Duo with a simple passport or hotel verification process. We deliver and setup directly to your hotel, villa, or beach party venue 24/7.",
   },
   {
     q: "Giá thuê bàn DJ tại VanBass là bao nhiêu một ngày (24h)?",
-    a: "Bảng giá thuê bàn DJ tại VanBass rất cạnh tranh: Dòng Controller như Pioneer DDJ-FLX4 từ 400.000đ/ngày; Dòng All-In-One cao cấp như Pioneer XDJ-RX3 từ 1.200.000đ/ngày; Dòng XDJ-XZ 4 kênh từ 1.800.000đ/ngày. Chúng tôi có chính sách giảm giá từ 20% - 40% cho khách hàng thuê từ 3 ngày trở lên hoặc theo tuần/tháng.",
+    a: "Bảng giá thuê bàn DJ tại VanBass rất cạnh tranh: Dòng Controller như Pioneer DDJ-FLX4, DDJ-FLX2 từ 400.000đ/ngày; Dòng All-In-One cao cấp như Pioneer XDJ-RX3, AlphaTheta Omnis-Duo từ 1.200.000đ/ngày; Dòng 4 kênh như XDJ-XZ / XDJ-AZ từ 1.800.000đ/ngày. Giảm 20% - 40% khi thuê dài ngày.",
   },
   {
     q: "Thủ tục và hồ sơ thuê bàn DJ như thế nào?",
-    a: "Thủ tục thuê tại VanBass cực kỳ đơn giản và nhanh gọn: Khách hàng chỉ cần xuất trình Căn cước công dân (CCCD)/Hộ chiếu và đặt cọc linh hoạt (hoặc ký kết hợp đồng thuê thiết bị đối với doanh nghiệp, bar/pub, sự kiện). Chúng tôi có biên bản bàn giao và kiểm tra thiết bị rõ ràng.",
+    a: "Thủ tục thuê tại VanBass cực kỳ đơn giản và nhanh gọn: Khách hàng chỉ cần xuất trình Căn cước công dân (CCCD)/Hộ chiếu (Passport) và đặt cọc linh hoạt. Chúng tôi có hợp đồng và biên bản bàn giao, kiểm tra máy rõ ràng.",
   },
   {
     q: "VanBass có hỗ trợ giao máy và hướng dẫn setup tận nơi không?",
-    a: "Có! VanBass hỗ trợ giao hàng, hỗ trợ lắp đặt, kết nối hệ thống âm thanh loa và test bàn DJ tận nơi tại khu vực Đà Nẵng, Hội An và lân cận. Đối với khách hàng ở các tỉnh thành khác, chúng tôi hỗ trợ đóng gói chuyên nghiệp và ship nhanh có bảo hiểm.",
+    a: "Có! VanBass hỗ trợ giao hàng, lắp đặt, kết nối hệ thống âm thanh loa và sound check tận nơi tại khu vực Đà Nẵng, Hội An và lân cận 24/7. Hỗ trợ ship nhanh liên tỉnh.",
   },
   {
     q: "Thiết bị bàn DJ cho thuê có chất lượng và phụ kiện như thế nào?",
-    a: "100% thiết bị tại VanBass là hàng chính hãng Pioneer DJ, mới 98-99%, được kỹ thuật viên vệ sinh fader, kiểm tra núm xoay và cổng kết nối kỹ lưỡng trước khi bàn giao. Mỗi bộ máy cho thuê đều đi kèm đầy đủ dây nguồn, dây tín hiệu RCA/XLR, cáp USB và túi/hộp chống sốc chuyên dụng.",
+    a: "100% thiết bị tại VanBass là hàng chính hãng Pioneer DJ / AlphaTheta, mới 98-99%, được kỹ thuật viên bảo dưỡng fader và linh kiện kỹ lưỡng trước khi giao. Đi kèm đầy đủ dây nguồn, dây tín hiệu RCA/XLR, cáp USB và hộp chống sốc chuyên dụng.",
   },
 ];
 

@@ -4,10 +4,13 @@ import { DEFAULT_HOME_DATA, HomeData } from "./types/home_config";
 async function getHomeConfig(): Promise<HomeData> {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+
     const res = await fetch(`${apiUrl}/home-config`, {
-      next: { revalidate: 5 },
-      signal: AbortSignal.timeout(3000),
-    });
+      next: { revalidate: 10 },
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
     if (res.ok) {
       const json = await res.json();
       if (json && json.data) {
