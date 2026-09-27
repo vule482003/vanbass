@@ -11,6 +11,7 @@ import Footer from "./Footer";
 import ScrollObserver from "./ScrollObserver";
 import FloatingContact from "./FloatingContact";
 import BrandLogoCloud from "./BrandLogoCloud";
+import CommunityShowcase from "./CommunityShowcase";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
 
 interface LiveHomePageClientProps {
@@ -346,6 +347,9 @@ export default function LiveHomePageClient({ initialHomeData, mode = "public" }:
             isInsideIframe={isEditor}
           />
         )}
+
+        {/* 1.2 One Through Music • Community & Festival Moments Showcase */}
+        <CommunityShowcase />
 
         {/* 1.5 Framer-Style Brand Logo Cloud (8 World Leading Brands) */}
         <BrandLogoCloud />

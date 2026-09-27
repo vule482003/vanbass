@@ -255,16 +255,34 @@ function ProductsContent() {
         if (priceRange === "over_100m" && price <= 100000000) return false;
       }
 
-      // Search filter
+      // Search filter (Smart Token + Accent Normalization)
       if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const trName = getTranslatedProductName(product, lang).toLowerCase();
-        const matchName = product.name.toLowerCase().includes(query) || trName.includes(query);
-        const matchBrand = product.brand?.toLowerCase().includes(query);
-        const plainDesc = getProductPlainExcerpt(product.description, 5000).toLowerCase();
-        const matchDesc = plainDesc.includes(query);
-        const matchSku = product.sku?.toLowerCase().includes(query);
-        if (!matchName && !matchBrand && !matchDesc && !matchSku) return false;
+        const cleanQ = searchQuery
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d")
+          .replace(/Đ/g, "D")
+          .toLowerCase()
+          .trim();
+
+        const prodName = (product.name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+        const trName = getTranslatedProductName(product, lang).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+        const prodBrand = (product.brand || "").toLowerCase();
+        const prodSku = (product.sku || "").toLowerCase();
+        const plainDesc = getProductPlainExcerpt(product.description, 5000).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+        const combined = `${prodName} ${trName} ${prodBrand} ${prodSku} ${plainDesc}`;
+
+        if (combined.includes(cleanQ)) {
+          // matched directly
+        } else {
+          const tokens = cleanQ.split(/\s+/).filter(Boolean);
+          const stopWords = new Set(["thue", "mua", "ban", "cho", "sua", "chua", "bao", "duong", "thay", "repair", "fix", "dn", "hue", "da", "nang", "hoi", "an", "mien", "trung", "tai", "o", "gia", "re", "chinh", "hang"]);
+          const coreTokens = tokens.filter((t) => !stopWords.has(t));
+          const effectiveTokens = coreTokens.length > 0 ? coreTokens : tokens;
+
+          const matchTokens = effectiveTokens.every((token) => combined.includes(token));
+          if (!matchTokens) return false;
+        }
       }
 
       return true;

@@ -218,17 +218,31 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
   const searchResults = searchQuery.trim()
     ? searchCatalog
         .filter((p) => {
-          const q = searchQuery.toLowerCase();
-          const trName = getTranslatedProductName(p, lang).toLowerCase();
-          return (
-            p.name.toLowerCase().includes(q) ||
-            trName.includes(q) ||
-            (p.brand || "").toLowerCase().includes(q) ||
-            (p.sku || "").toLowerCase().includes(q)
-          );
+          const cleanQ = searchQuery
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D")
+            .toLowerCase()
+            .trim();
+
+          const prodName = (p.name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+          const trName = getTranslatedProductName(p, lang).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+          const prodBrand = (p.brand || "").toLowerCase();
+          const prodSku = (p.sku || "").toLowerCase();
+          const combined = `${prodName} ${trName} ${prodBrand} ${prodSku}`;
+
+          if (combined.includes(cleanQ)) return true;
+
+          const tokens = cleanQ.split(/\s+/).filter(Boolean);
+          const stopWords = new Set(["thue", "mua", "ban", "cho", "sua", "chua", "bao", "duong", "thay", "repair", "fix", "dn", "hue", "da", "nang", "hoi", "an", "mien", "trung", "tai", "o", "gia", "re", "chinh", "hang"]);
+          const coreTokens = tokens.filter((t) => !stopWords.has(t));
+          const effectiveTokens = coreTokens.length > 0 ? coreTokens : tokens;
+
+          return effectiveTokens.every((token) => combined.includes(token));
         })
         .slice(0, 6)
-      : [];
+    : [];
 
   const handleSelectSearchResult = (slug: string) => {
     setIsSearchDropdownOpen(false);
@@ -278,8 +292,8 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
               <Image
                 src="/images/logo.png"
                 alt="VanBass Music Center Logo"
-                width={40}
-                height={40}
+                width={48}
+                height={48}
                 className="brand-logo-img"
                 priority
               />
@@ -552,10 +566,46 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
               )}
             </form>
 
-            {/* Floating Dropdown Results */}
-            {isSearchDropdownOpen && searchQuery.trim() && (
+            {/* Floating Dropdown Results & Hot Searches */}
+            {isSearchDropdownOpen && (
               <div className="search-dropdown-menu">
-                {searchResults.length === 0 ? (
+                {!searchQuery.trim() ? (
+                  <div className="search-hot-panel">
+                    <div className="search-hot-title">
+                      <span>🔥</span>
+                      <span>{lang === "en" ? "Trending & Popular Searches" : "Tìm kiếm phổ biến & Hot search"}</span>
+                    </div>
+                    <div className="search-hot-tags-grid">
+                      {[
+                        { label: "🔧 Sửa chữa bàn DJ", link: "/contact" },
+                        { label: "🛠️ Sửa loa & Mixer", link: "/contact" },
+                        { label: "⚙️ Bảo dưỡng thiết bị DJ", link: "/contact" },
+                        { label: "Sửa bàn DJ Đà Nẵng & Huế", link: "/contact" },
+                        { label: "Thuê bàn DJ Huế", link: "/thue-ban-dj" },
+                        { label: "Thuê bàn DJ Đà Nẵng", link: "/thue-ban-dj" },
+                        { label: "Thuê bàn DJ Miền Trung", link: "/thue-ban-dj" },
+                        { label: "Showroom Huế & ĐN", link: "/about" },
+                        { label: "Pioneer XDJ-RX3", link: "/products?search=RX3" },
+                        { label: "Pioneer DDJ-FLX4", link: "/products?search=FLX4" },
+                        { label: "AlphaTheta Omnis-Duo", link: "/products?search=Omnis" },
+                        { label: "Loa B&C Speakers", link: "/products?search=B%26C" },
+                      ].map((item, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setIsSearchDropdownOpen(false);
+                            router.push(item.link);
+                          }}
+                          className="search-hot-tag-btn"
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : searchResults.length === 0 ? (
                   <div style={{ padding: "16px", color: "#a1a1aa", fontSize: "13px", textAlign: "center" }}>
                     {t.nav.noResults}
                   </div>
@@ -637,39 +687,50 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                   ) : (
                     <>
                       <div className="cart-preview-items-list">
-                        {items.slice(0, 3).map((item) => (
-                          <Link
-                            key={item.product_id}
-                            href={`/products/${item.slug}`}
-                            onClick={() => setCartDropdownOpen(false)}
-                            className="cart-preview-item-row"
-                          >
-                            <div className="cart-preview-item-thumb">
-                              {item.image_url ? (
-                                <Image
-                                  src={item.image_url.startsWith("/") ? item.image_url : `/${item.image_url}`}
+                        {items.slice(0, 3).map((item) => {
+                          const rawImg = item.image_url || "";
+                          const resolvedImg = !rawImg.trim()
+                            ? "/images/placeholder.png"
+                            : rawImg.startsWith("http://") || rawImg.startsWith("https://") || rawImg.startsWith("data:") || rawImg.startsWith("blob:")
+                            ? rawImg
+                            : rawImg.startsWith("/")
+                            ? rawImg
+                            : `/${rawImg}`;
+
+                          return (
+                            <Link
+                              key={item.product_id}
+                              href={`/products/${item.slug}`}
+                              onClick={() => setCartDropdownOpen(false)}
+                              className="cart-preview-item-row"
+                            >
+                              <div className="cart-preview-item-thumb">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={resolvedImg}
                                   alt={item.name}
-                                  width={40}
-                                  height={40}
                                   className="cart-preview-thumb-img"
+                                  onError={(e) => {
+                                    const target = e.currentTarget as HTMLImageElement;
+                                    target.onerror = null;
+                                    target.src = "/images/logo.png";
+                                  }}
                                 />
-                              ) : (
-                                <div className="cart-preview-thumb-placeholder" />
-                              )}
-                            </div>
-                            <div className="cart-preview-item-info">
-                              <h5 className="cart-preview-item-name">{item.name}</h5>
-                              <div className="cart-preview-item-meta">
-                                <span className="cart-preview-item-qty">x{item.quantity}</span>
-                                <span className="cart-preview-item-price">
-                                  {lang === "en"
-                                    ? new Intl.NumberFormat("en-US").format(item.sale_price * item.quantity) + "₫"
-                                    : (item.sale_price * item.quantity).toLocaleString("vi-VN") + "₫"}
-                                </span>
                               </div>
-                            </div>
-                          </Link>
-                        ))}
+                              <div className="cart-preview-item-info">
+                                <h5 className="cart-preview-item-name">{item.name}</h5>
+                                <div className="cart-preview-item-meta">
+                                  <span className="cart-preview-item-qty">x{item.quantity}</span>
+                                  <span className="cart-preview-item-price">
+                                    {lang === "en"
+                                      ? new Intl.NumberFormat("en-US").format(item.sale_price * item.quantity) + "₫"
+                                      : (item.sale_price * item.quantity).toLocaleString("vi-VN") + "₫"}
+                                  </span>
+                                </div>
+                              </div>
+                            </Link>
+                          );
+                        })}
                         {items.length > 3 && (
                           <div className="cart-preview-more-count">
                             +{items.length - 3} {lang === "en" ? "other items in cart" : "sản phẩm khác trong giỏ"}
@@ -695,7 +756,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                             {lang === "en" ? "View Cart" : "Xem giỏ hàng"}
                           </Link>
                           <Link
-                            href="/checkout"
+                            href="/cart"
                             onClick={() => setCartDropdownOpen(false)}
                             className="cart-preview-checkout-btn"
                           >

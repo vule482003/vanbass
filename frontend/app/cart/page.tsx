@@ -634,24 +634,42 @@ function CartContent() {
                             alignItems: "center",
                           }}
                         >
-                          {/* Product Placeholder */}
+                          {/* Product Thumbnail */}
                           <div
                             style={{
                               width: "72px",
                               height: "72px",
                               backgroundColor: "#000",
                               border: "1px solid rgba(255,255,255,0.1)",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              fontSize: "12px",
-                              fontWeight: 900,
-                              color: "#22c55e",
+                              overflow: "hidden",
                               flexShrink: 0,
                             }}
                           >
-                            VB
+                            {item.image_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={
+                                  item.image_url.startsWith("http://") || item.image_url.startsWith("https://") || item.image_url.startsWith("data:")
+                                    ? item.image_url
+                                    : item.image_url.startsWith("/")
+                                    ? item.image_url
+                                    : `/${item.image_url}`
+                                }
+                                alt={getTranslatedProductName(item, lang)}
+                                style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px" }}
+                                onError={(e) => {
+                                  const target = e.currentTarget as HTMLImageElement;
+                                  target.onerror = null;
+                                  target.src = "/images/logo.png";
+                                }}
+                              />
+                            ) : (
+                              <span style={{ fontSize: "14px", fontWeight: 900, color: "#22c55e" }}>VB</span>
+                            )}
                           </div>
 
                           {/* Info */}

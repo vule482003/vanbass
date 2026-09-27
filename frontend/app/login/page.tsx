@@ -146,14 +146,14 @@ function LoginForm() {
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "20px" }}>
           <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "#d4d4d8", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            {t.auth.emailOrUsernameLabel || "Email hoặc Tên đăng nhập"}
+            {t.auth.emailOrUsernameLabel || "Email hoặc Số điện thoại"}
           </label>
           <input
             type="text"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={t.auth.emailOrUsernamePlaceholder || "admin hoặc example@gmail.com"}
+            placeholder={t.auth.emailOrUsernamePlaceholder || "example@gmail.com hoặc 0905..."}
             style={{
               width: "100%",
               padding: "14px 16px",
