@@ -803,12 +803,17 @@ export default function VisualCategoryBar({
         .category-tier1-container {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           overflow-x: auto;
-          padding: 10px 6px 14px 6px;
+          padding: 8px 4px 12px 4px;
           margin-top: -6px;
           margin-bottom: 8px;
-          scrollbar-width: thin;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tier1-container::-webkit-scrollbar {
+          display: none;
         }
 
         .category-tier1-pill {
@@ -881,8 +886,13 @@ export default function VisualCategoryBar({
           align-items: center;
           gap: 8px;
           overflow-x: auto;
-          scrollbar-width: thin;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
           padding: 6px 4px;
+        }
+
+        .category-tier2-container::-webkit-scrollbar {
+          display: none;
         }
 
         .category-tier2-chip {
@@ -1350,14 +1360,51 @@ export default function VisualCategoryBar({
         }
 
         @media (max-width: 768px) {
+          .category-tier1-pill {
+            padding: 7px 14px;
+            font-size: 12px;
+            gap: 6px;
+          }
+          .tier1-badge {
+            font-size: 10px;
+            padding: 1px 5px;
+          }
+          .category-tier2-wrapper {
+            padding: 6px 8px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+          }
+          .category-tier2-chip {
+            padding: 5px 11px;
+            font-size: 11.5px;
+            gap: 5px;
+          }
+          .category-toolbar-box {
+            padding: 10px 12px;
+            border-radius: 12px;
+          }
+          .category-mode-segmented {
+            width: 100%;
+            display: flex;
+          }
+          .mode-btn {
+            flex: 1;
+            text-align: center;
+            justify-content: center;
+            padding: 6px 8px;
+            font-size: 12px;
+          }
           .category-toolbar-row {
             flex-direction: column;
             align-items: stretch;
+            gap: 8px;
           }
           .category-dropdowns-wrap,
           .category-sort-wrap {
             width: 100%;
+            display: flex;
             justify-content: space-between;
+            gap: 6px;
           }
           .toolbar-search-wrap,
           .toolbar-search-input {
@@ -1367,15 +1414,22 @@ export default function VisualCategoryBar({
             width: 100%;
           }
           .obsidian-popover-wrap {
-            width: 48%;
+            flex: 1;
+            width: auto;
           }
           .obsidian-popover-trigger {
             width: 100%;
             justify-content: space-between;
+            font-size: 12px;
+            padding: 7px 10px;
           }
           .obsidian-popover-menu.sort-menu {
             left: 0;
             right: auto;
+          }
+          .results-counter-badge {
+            font-size: 11.5px;
+            padding: 4px 10px;
           }
         }
       `}</style>

@@ -481,7 +481,7 @@ export default function StickyProductActionBar({
 
         @media (max-width: 768px) {
           .sticky-action-bar-container {
-            bottom: 60px; /* Above mobile bottom nav bar */
+            bottom: calc(60px + env(safe-area-inset-bottom, 0px)); /* Above mobile bottom nav bar */
             padding: 10px 14px;
           }
 
