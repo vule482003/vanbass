@@ -593,7 +593,6 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                     </div>
                     <div className="search-hot-tags-grid">
                       {[
-<<<<<<< HEAD
                         // Mua bán thiết bị DJ
                         { label: "🎧 Mua bán DJ Đà Nẵng", link: "/products?search=DJ" },
                         { label: "🎧 Mua bán DJ Huế", link: "/products?search=DJ" },
@@ -606,6 +605,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
 
                         // Dịch vụ sửa chữa & bảo dưỡng
                         { label: "🔧 Sửa chữa bàn DJ", link: "/contact" },
+                        { label: "🔧 Sửa bàn DJ & Loa", link: "/contact" },
                         { label: "🛠️ Sửa loa & Mixer", link: "/contact" },
                         { label: "⚙️ Bảo dưỡng thiết bị DJ", link: "/contact" },
                         { label: "Sửa bàn DJ Đà Nẵng & Huế", link: "/contact" },
@@ -613,13 +613,10 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         { label: "📍 Sửa bàn DJ Huế", link: "/contact" },
                         { label: "🛠️ Sửa bàn DJ Miền Trung", link: "/contact" },
 
-                        // Địa điểm & dòng máy hot ban đầu
+                        // Địa điểm
                         { label: "Showroom Huế & ĐN", link: "/about" },
-                        { label: "Pioneer XDJ-RX3", link: "/products?search=RX3" },
-                        { label: "Pioneer DDJ-FLX4", link: "/products?search=FLX4" },
-                        { label: "AlphaTheta Omnis-Duo", link: "/products?search=Omnis" },
-                        { label: "Loa B&C Speakers", link: "/products?search=B%26C" },
-=======
+
+                        // Dòng máy hot & Loa B&C
                         { label: "🔥 Pioneer XDJ-RX3", link: "/products/xdj-rx3" },
                         { label: "🔥 Pioneer DDJ-FLX4", link: "/products/ddj-flx4" },
                         { label: "🔥 AlphaTheta OMNIS-DUO", link: "/products/omnis-duo" },
@@ -628,11 +625,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         { label: "⚡ Pioneer XDJ-RR", link: "/products/xdj-rr" },
                         { label: "⚡ AlphaTheta DDJ-FLX2", link: "/products/ddj-flx2" },
                         { label: "⚡ AlphaTheta XDJ-AN", link: "/products/xdj-an" },
-                        { label: "Thuê bàn DJ Đà Nẵng", link: "/thue-ban-dj" },
-                        { label: "Thuê bàn DJ Huế", link: "/thue-ban-dj" },
-                        { label: "🔧 Sửa bàn DJ & Loa", link: "/contact" },
                         { label: "Loa B&C Speakers", link: "/products?category=loa-roi" },
->>>>>>> 5068d35d8fbdd7ce22362f0b83267d9fe36b612c
                       ].map((item, idx) => (
                         <Link
                           key={idx}

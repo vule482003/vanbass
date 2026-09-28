@@ -40,7 +40,6 @@ export default function ProductDetailClient({
   initialProduct,
   slug,
   faqs = [],
-  modelKey = null,
 }: ProductDetailClientProps) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();

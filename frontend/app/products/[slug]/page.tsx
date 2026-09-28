@@ -419,7 +419,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
     const fullImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
     const plainDesc = hotSeo?.description || getProductPlainExcerpt(product.description, 250) || product.name;
 
-    const graph: any[] = [
+    const graph: Record<string, unknown>[] = [
       {
         "@type": "Product",
         "@id": `${baseUrl}/products/${canonicalSlug}#product`,
