@@ -32,9 +32,16 @@ function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
 interface ProductDetailClientProps {
   initialProduct?: Product | null;
   slug: string;
+  faqs?: { question: string; answer: string }[];
+  modelKey?: string | null;
 }
 
-export default function ProductDetailClient({ initialProduct, slug }: ProductDetailClientProps) {
+export default function ProductDetailClient({
+  initialProduct,
+  slug,
+  faqs = [],
+  modelKey = null,
+}: ProductDetailClientProps) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
@@ -48,6 +55,7 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "rental">("specs");
   const [addedNotice, setAddedNotice] = useState(false);
   const [facebookPageId, setFacebookPageId] = useState("vanbassmusiccenter");
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const heroActionRef = useRef<HTMLDivElement>(null);
 
@@ -65,8 +73,19 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
         const cacheBust = `_t=${Date.now()}`;
+        const targetSlug =
+          slug.toLowerCase() === "xdj-az"
+            ? "ban-dj-alphatheta-xdj-az"
+            : slug.toLowerCase() === "omnis-duo"
+            ? "ban-dj-alpha-theta-omnis-duo"
+            : slug.toLowerCase() === "ddj-flx2"
+            ? "alphatheta-ddj-flx2"
+            : slug.toLowerCase() === "xdj-an"
+            ? "alphatheta-xdj-an"
+            : slug;
+
         const [singleRes, allRes] = await Promise.all([
-          fetch(`${apiUrl}/products/by-slug/${slug}?${cacheBust}`, { cache: "no-store" }),
+          fetch(`${apiUrl}/products/by-slug/${targetSlug}?${cacheBust}`, { cache: "no-store" }),
           fetch(`${apiUrl}/products?${cacheBust}`, { cache: "no-store" }),
         ]);
 
@@ -74,6 +93,15 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
           const liveProduct = await singleRes.json();
           setProduct(liveProduct);
         } else if (singleRes.status === 404 && !initialProduct) {
+          // If targetSlug 404 and different from slug, try original slug
+          if (targetSlug !== slug) {
+            const fallbackRes = await fetch(`${apiUrl}/products/by-slug/${slug}?${cacheBust}`, { cache: "no-store" });
+            if (fallbackRes.ok) {
+              const liveProduct = await fallbackRes.json();
+              setProduct(liveProduct);
+              return;
+            }
+          }
           setProduct(null);
         }
 
@@ -445,6 +473,142 @@ export default function ProductDetailClient({ initialProduct, slug }: ProductDet
               </div>
             )}
           </div>
+
+          {/* Local Rental & Fast Delivery Cross-linking Banner */}
+          <div
+            style={{
+              marginBottom: "60px",
+              padding: "28px 32px",
+              backgroundColor: "rgba(34, 197, 94, 0.05)",
+              border: "1px solid rgba(34, 197, 94, 0.25)",
+              borderRadius: "14px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+              <div>
+                <span style={{ fontSize: "12px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px" }}>
+                  ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng & Miền Trung
+                </span>
+                <h3 style={{ fontSize: "22px", fontWeight: 800, color: "#ffffff", margin: 0 }}>
+                  Thuê Bàn DJ {displayName} Giao Lắp Tận Nơi 24/7
+                </h3>
+                <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "8px 0 0 0", maxWidth: "700px", lineHeight: 1.6 }}>
+                  VanBass Music Center cung cấp dịch vụ cho thuê {displayName} máy mới 99%, setup trọn gói trong 2 giờ tại Đà Nẵng, Hội An, Thừa Thiên Huế. Đầy đủ dây giắc, hướng dẫn sử dụng và hỗ trợ kỹ thuật trực tiếp.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+                <a
+                  href={getMessengerRentalUrl(displayName, facebookPageId)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button button-primary"
+                  style={{
+                    backgroundColor: "#22c55e",
+                    color: "#000",
+                    fontWeight: 800,
+                    padding: "12px 20px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span>Thuê máy này ngay</span>
+                </a>
+                <Link
+                  href="/thue-ban-dj"
+                  className="button button-secondary"
+                  style={{ padding: "12px 20px", fontWeight: 700 }}
+                >
+                  <span>Xem bảng giá thuê bàn DJ &rarr;</span>
+                </Link>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", paddingTop: "16px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", fontSize: "13px", color: "#d4d4d8" }}>
+              <div>🚚 <strong>Giao nhanh trong 2h:</strong> Đà Nẵng, Huế, Hội An</div>
+              <div>⚡ <strong>Thiết bị chuẩn:</strong> Mới 99%, fader & pad mượt mà</div>
+              <div>🌍 <strong>English Support:</strong> Cho DJ du lịch & sự kiện quốc tế</div>
+              <div>📑 <strong>Thủ tục linh hoạt:</strong> Đặt cọc nhanh, hỗ trợ 24/7</div>
+            </div>
+          </div>
+
+          {/* FAQ Accordion Section */}
+          {faqs && faqs.length > 0 && (
+            <div style={{ marginBottom: "60px" }}>
+              <div style={{ marginBottom: "24px" }}>
+                <span style={{ fontSize: "12px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px" }}>
+                  FAQ • Hỏi & Đáp
+                </span>
+                <h3 style={{ fontSize: "24px", fontWeight: 800, color: "#fff", margin: 0 }}>
+                  Câu Hỏi Thường Gặp Về {displayName}
+                </h3>
+                <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "6px 0 0 0" }}>
+                  Giải đáp chi tiết về thông số kỹ thuật, cách sử dụng, giá bán & dịch vụ thuê {displayName} tại VanBass.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {faqs.map((faq, idx) => {
+                  const isOpen = openFaqIndex === idx;
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        backgroundColor: "var(--surface)",
+                        border: isOpen ? "1px solid rgba(34, 197, 94, 0.4)" : "1px solid var(--border)",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                        style={{
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "18px 24px",
+                          background: "none",
+                          border: "none",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          gap: "16px",
+                        }}
+                      >
+                        <span style={{ fontSize: "15px", fontWeight: 700, color: isOpen ? "#4ade80" : "#ffffff", lineHeight: 1.4 }}>
+                          {faq.question}
+                        </span>
+                        <span style={{ fontSize: "18px", color: isOpen ? "#4ade80" : "#71717a", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>
+                          ▾
+                        </span>
+                      </button>
+
+                      {isOpen && (
+                        <div
+                          style={{
+                            padding: "0 24px 20px 24px",
+                            fontSize: "14px",
+                            color: "#d4d4d8",
+                            lineHeight: 1.7,
+                            borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+                            paddingTop: "16px",
+                          }}
+                        >
+                          {faq.answer}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Related Products */}
           {relatedProducts.length > 0 && (

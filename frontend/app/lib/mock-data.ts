@@ -907,9 +907,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "AlphaTheta XDJ-AN – Thiết bị DJ All-in-One nhỏ gọn cho thế hệ DJ mới XDJ-AN là máy DJ All-in-One 2 kênh mới nhất của AlphaTheta , hướng đến những DJ cần một thiết bị độc lập, gọn nhẹ nhưng vẫn đảm bảo trải nghiệm biểu diễn chuyên nghiệp. Thay vì tập trung vào số lượng nút điều khiển, AlphaTheta lựa chọn một hướng tiếp cận mới: đơn giản hóa thao tác vật lý, tăng cường khả năng điều khiển qua màn hình cảm ứng và giữ lại workflow quen thuộc của hệ sinh thái CDJ/XDJ . Thiết kế gọn gàng, tối ưu cho k",
     "sale_enabled": true,
     "sale_price": 37227600,
-    "rental_enabled": false,
-    "rental_price": null,
-    "stock_quantity": 1,
+    "rental_enabled": true,
+    "rental_price": 1500000,
+    "stock_quantity": 2,
     "is_active": true,
     "image_url": "/images/products/alphatheta-xdj-an.png",
     "images": [
@@ -918,7 +918,14 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/alphatheta-xdj-an.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh All-in-One độc lập",
+      "Màn hình": "Màn hình cảm ứng trực quan tối ưu workflow CDJ/XDJ",
+      "Cổng kết nối": "USB Type-A, USB Type-C, Master Out (XLR & RCA)",
+      "Tính năng nổi bật": "Thiết kế All-In-One thế hệ mới, điều khiển cảm ứng thông minh",
+      "Phần mềm": "rekordbox"
+    }
   },
   {
     "id": "58903264-1fd4-5378-94ab-a1069f6541c1",
@@ -1907,8 +1914,8 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "DDJ-FLX2 là controller DJ nhẹ nhất và nhỏ gọn nhất của chúng tôi. Thiết bị chạy bằng nguồn USB bus, nên không cần nguồn điện ngoài khi kết nối với PC/Mac hoặc thiết bị di động* qua USB Type-C. Bạn có thể dễ dàng bắt đầu DJ bằng cách phát nhạc qua loa tích hợp của PC/Mac/thiết bị di động. Hoặc, nếu kết nối loa vào cổng đầu ra âm thanh của DDJ-FLX2, bạn có thể tổ chức bữa tiệc sôi động với bạn bè. *Trừ một số thiết bị Android. DJ CONTROLLER ALPHATHETA DDJ-FLX2 Bạn có nghĩ DJing trông có vẻ khó khô",
     "sale_enabled": true,
     "sale_price": 6393600,
-    "rental_enabled": false,
-    "rental_price": null,
+    "rental_enabled": true,
+    "rental_price": 350000,
     "stock_quantity": 4,
     "is_active": true,
     "image_url": "/images/products/alphatheta-ddj-flx2.png",
@@ -1918,7 +1925,15 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/alphatheta-ddj-flx2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh DJ Controller",
+      "Kết nối thiết bị": "Smartphone, Tablet, iPhone, iPad, PC/Mac qua Bluetooth & USB-C",
+      "Tính năng thông minh": "Smart CFX và Smart Fader hỗ trợ chuyển bài chuyên nghiệp",
+      "Phần mềm tương thích": "rekordbox, djay, Serato DJ Lite",
+      "Nguồn điện": "Cấp nguồn qua cổng USB Type-C (Bus powered)",
+      "Trọng lượng": "Chỉ 1.2 kg siêu nhẹ"
+    }
   },
   {
     "id": "d9d16d59-f521-528b-84db-fdf2b3b10aea",
@@ -2007,9 +2022,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "Cân nặng : 13.5 kg Kích thước ( Dài x Rộng x Cao) : 895 × 504.1 × 133.4 mm Đầu ra: Cổng Master × 2 (XLR × 1, RCA × 1) , Cổng BOOTH × 1 (1/4” TRS jack) , Cổng PHONES × 2 (1/4” stereo jack × 1, 3.5 mm stereo mini jack × 1) Đầu vào: Line/ PHONO (2 cổng RCA), MIC (2 cổng XLR & 1/4” TRS jack) Cổng USB: 2 cổng USB type A, Type C Số kênh : 4 kênh độc lập Nút hiệu ứng: 6 hiệu ứng Color FX 13 hiệu ứng Beat FX Trong hộp có gì : Dây nguồn Hướng dẫn sử dụng Cảnh báo khio sử dụng Bảo hành Đặc điểm nổi bật XD",
     "sale_enabled": true,
     "sale_price": 105150000,
-    "rental_enabled": false,
-    "rental_price": null,
-    "stock_quantity": 1,
+    "rental_enabled": true,
+    "rental_price": 2200000,
+    "stock_quantity": 2,
     "is_active": true,
     "image_url": "/images/products/ban-dj-alphatheta-xdj-az.png",
     "images": [
@@ -2018,7 +2033,17 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ban-dj-alphatheta-xdj-az.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "4 kênh độc lập Flagship All-In-One",
+      "Màn hình": "10.1 inch cảm ứng điện dung độ phân giải cao",
+      "Mâm xoay Jog Wheel": "Full-size 206mm tương đương CDJ-3000 với On-Jog LCD màu",
+      "Kết nối không dây": "Tích hợp Wi-Fi chuẩn SonicLink và CloudDirectPlay",
+      "Cổng kết nối": "Master Out (XLR & RCA), Booth (TRS), 2 USB-A, 1 USB-C",
+      "Hiệu ứng FX": "14 Beat FX & 6 Sound Color FX chuẩn phòng thu",
+      "Kích thước": "895 mm x 133.4 mm x 504.1 mm",
+      "Trọng lượng": "13.5 kg"
+    }
   },
   {
     "id": "5c0bbf0f-77c5-5fa4-a877-c6d4c4452408",
@@ -2382,9 +2407,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "Cân nặng: 4.6 kg Kích thước ( Dài x Cao x Rộng) : 498 × 57 × 306 mm Pin : Pin sạc Lithium tích hợp sẵn - thời gian sử dụng lên đến 5 giờ Đầu vào : 2 cổng cho micro, 1 cổng dành cho Bluetooth Đầu ra: đa dạng với 1 XLR, 1 RCA, 1 Bluetooth, 1 đầu ra cho tai nghe Cổng USB: Có cổng USB và cổng USB dành cho điện thoại và máy tính Màu : Indigo Màn hình: 7.1' inch cảm ứng Số kênh : Bàn DJ 2 kênh độc lập không cần máy tính Nút hiệu ứng : 6 nút sound colour FX 8 nút hot cues / kênh Nút Beat Jump Xem nhanh",
     "sale_enabled": true,
     "sale_price": 45252000,
-    "rental_enabled": false,
-    "rental_price": null,
-    "stock_quantity": 1,
+    "rental_enabled": true,
+    "rental_price": 1200000,
+    "stock_quantity": 2,
     "is_active": true,
     "image_url": "/images/products/ban-dj-alpha-theta-omnis-duo.png",
     "images": [
@@ -2393,7 +2418,16 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ban-dj-alpha-theta-omnis-duo.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh All-in-One độc lập",
+      "Pin tích hợp": "Pin sạc Lithium-ion lên đến 5 giờ biểu diễn liên tục",
+      "Màn hình": "7.1 inch cảm ứng màu với chế độ Light/Dark Mode ngoài trời",
+      "Kết nối không dây": "Bluetooth Input (khách phát nhạc từ phone) + SonicLink Wireless Out",
+      "Cổng âm thanh": "Master Out XLR và RCA, Booth Out Bluetooth / RCA, 2 Micro XLR/TRS",
+      "Lưu trữ": "Cổng USB-A, Khe cắm thẻ nhớ SD card, USB-C PC/Mac",
+      "Trọng lượng": "4.6 kg siêu di động"
+    }
   },
   {
     "id": "d51c211c-4354-53b0-9c1f-1bfc4cdbad1a",
@@ -5857,9 +5891,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "DJ CONTROLLER DDJ-FLX4 DDJ FLX4 là bộ điều khiển controller 2 kênh phân khúc giá rẻ với thiết kế đơn giản, thân thiện với người dùng nhưng vẫn tạo cho người sử dụng cảm giác chuyên nghiệp. Bạn có thể sử dụng rekordbox và Serato DJ Lite chỉ cần kết nối DDJ-FLX4 với PC/Mac TÍNH NĂNG DJ CONTROLLER DDJ-FLX4 Tương Thích Với Cả Rekordbox DJ Và Serato DJ Bạn có thể sử dụng rekordbox và Serato DJ Lite chỉ cần kết nối DDJ-FLX4 với PC/Mac. Nếu bạn muốn sử dụng DDJ-FLX4 cùng Serato DJ Pro, bạn có thể mua l",
     "sale_enabled": true,
     "sale_price": 11650000,
-    "rental_enabled": false,
-    "rental_price": null,
-    "stock_quantity": 1,
+    "rental_enabled": true,
+    "rental_price": 400000,
+    "stock_quantity": 4,
     "is_active": true,
     "image_url": "/images/products/ddj-flx4.png",
     "images": [
@@ -5868,7 +5902,16 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-flx4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh DJ Controller",
+      "Phần mềm tương thích": "rekordbox (PC/Mac/iOS/Android), Serato DJ Lite, Serato DJ Pro",
+      "Tính năng thông minh": "Smart Fader (tự động điều chỉnh BPM & Volume) & Smart CFX",
+      "Kết nối máy tính": "Cổng USB Type-C cấp nguồn trực tiếp",
+      "Âm thanh đầu ra": "Master Out RCA, Cổng cắm tai nghe 3.5mm mini-jack, Ngõ vào micro",
+      "Kích thước": "482 mm x 59.2 mm x 272.8 mm",
+      "Trọng lượng": "2.1 kg siêu di động"
+    }
   },
   {
     "id": "4373c38c-dade-5bb0-8e18-9ed15ff5ed17",
@@ -13546,6 +13589,42 @@ export const MOCK_PRODUCTS: Product[] = [
     ]
   },
   {
+    "id": "pioneer-xdj-rx2-all-in-one",
+    "category_id": "31042f34-c3c9-59e6-820d-8e5518ba453b",
+    "category_name": "Hệ Thống DJ All-in-One",
+    "category_slug": "all-in-one-dj-systems",
+    "name": "MÁY DJ PIONEER DJ XDJ-RX2",
+    "slug": "xdj-rx2",
+    "sku": "XDJ-RX2",
+    "brand": "Pioneer DJ",
+    "description": "Bàn DJ Pioneer DJ XDJ-RX2 All-In-One 2 Kênh chuyên nghiệp kế thừa thiết kế chuẩn club NXS2 với màn hình cảm ứng 7 inch sắc nét, 16 Performance Pads đa màu sắc, Beat FX và Sound Color FX mạnh mẽ. Hỗ trợ chơi nhạc trực tiếp qua 2 cổng USB độc lập không cần máy tính hoặc kết nối Rekordbox DJ, mâm xoay chuẩn xác, độ bền cao. Phù hợp cho biểu diễn sự kiện, tiệc cưới, bar lounge, phòng tập DJ tại Đà Nẵng, Huế và toàn quốc.",
+    "sale_enabled": true,
+    "sale_price": 42500000,
+    "rental_enabled": true,
+    "rental_price": 1000000,
+    "stock_quantity": 2,
+    "is_active": true,
+    "image_url": "/images/products/xdj-rx2.png",
+    "images": [
+      {
+        "id": "img-xdj-rx2-main",
+        "image_url": "/images/products/xdj-rx2.png",
+        "sort_order": 0
+      }
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh độc lập",
+      "Màn hình": "7 inch cảm ứng LCD màu sắc nét",
+      "Cổng USB": "2 cổng USB-A phát nhạc & ghi âm, 1 cổng USB-B cắm máy tính",
+      "Performance Pads": "16 pad cao su cảm ứng đa màu sắc",
+      "Hiệu ứng FX": "Sound Color FX (Noise, Filter, Sweep, Dub Echo) & 8 Beat FX",
+      "Phần mềm tương thích": "rekordbox, Serato DJ Pro",
+      "Dải tần số": "20 - 20,000 Hz",
+      "Kích thước": "728.2 mm x 108.4 mm x 443.8 mm",
+      "Trọng lượng": "9.1 kg"
+    }
+  },
+  {
     "id": "ad0f029e-93d7-5a75-a9e3-5aa4be9614ef",
     "category_id": "31042f34-c3c9-59e6-820d-8e5518ba453b",
     "category_name": "Hệ Thống DJ All-in-One",
@@ -13554,12 +13633,12 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "xdj-rx3",
     "sku": "XDJ-RX3",
     "brand": "Pioneer DJ",
-    "description": "XDJ-RX3: Thiết bị DJ Đa Năng với Hiệu Năng Vượt Trội Nếu bạn đam mê âm nhạc và muốn trở thành một DJ chuyên nghiệp, thiết bị XDJ-RX3 là sự lựa chọn hoàn hảo cho bạn. Với sự kết hợp tuyệt vời giữa công nghệ và tính năng tiên tiến, XDJ-RX3 mang đến cho bạn một trải nghiệm DJ chất lượng cao mà bạn không thể bỏ qua. Với XDJ-RX3 , bạn không cần phải lo lắng về việc kết nối với máy tính hoặc sử dụng nhiều thiết bị khác nhau. Với màn hình cảm ứng mượt mà và giao diện người dùng thân thiện, bạn có thể d",
+    "description": "XDJ-RX3: Thiết bị DJ Đa Năng với Hiệu Năng Vượt Trội Nếu bạn đam mê âm nhạc và muốn trở thành một DJ chuyên nghiệp, thiết bị XDJ-RX3 là sự lựa chọn hoàn hảo cho bạn. Với sự kết hợp tuyệt vời giữa công nghệ và tính năng tiên tiến, XDJ-RX3 mang đến cho bạn một trải nghiệm DJ chất lượng cao mà bạn không thể bỏ qua. Với XDJ-RX3 , bạn không cần phải lo lắng về việc kết nối với máy tính hoặc sử dụng nhiều thiết bị khác nhau. Với màn hình cảm ứng mượt mà và giao diện người dùng thân thiện, bạn có thể dễ dàng kiểm soát set nhạc, tìm kiếm track bài hát và kích hoạt Release FX đầy uy lực.",
     "sale_enabled": true,
     "sale_price": 61506000,
-    "rental_enabled": false,
-    "rental_price": null,
-    "stock_quantity": 1,
+    "rental_enabled": true,
+    "rental_price": 1200000,
+    "stock_quantity": 2,
     "is_active": true,
     "image_url": "/images/products/xdj-rx3.png",
     "images": [
@@ -13568,7 +13647,19 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xdj-rx3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh All-in-One độc lập",
+      "Màn hình": "10.1 inch cảm ứng điện dung phân giải cao",
+      "Cổng USB": "2 cổng USB-A, 1 cổng USB-B",
+      "Performance Pads": "16 pad cao su cảm ứng đa màu sắc",
+      "Hiệu ứng FX": "14 Beat FX và 6 Sound Color FX từ DJM-900NXS2 + Release FX",
+      "Jog Wheel": "Color On Jog Display có màn hình LCD trung tâm mâm",
+      "Phần mềm tương thích": "rekordbox, Serato DJ Pro",
+      "Dải tần số": "20 - 20,000 Hz",
+      "Kích thước": "728.1 mm x 118.4 mm x 469.5 mm",
+      "Trọng lượng": "9.3 kg"
+    }
   },
   {
     "id": "89db7d2b-925b-5943-948a-0831a5b68a6a",
@@ -13579,12 +13670,12 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "xdj-rr",
     "sku": "XDJ-RR",
     "brand": "Pioneer DJ",
-    "description": "2-channel all-in-one DJ system Bedroom to main room Đưa màn trình diễn của bạn lên một tầm cao mới với XDJ-RR thiết bị ALL-IN-ONE DJ System sử dụng cùng rekordbox. XDJ-RR là thiết bị 2 channel được kế thừa các đặc điểm thiết kế và các tính năng ưu việt từ set up NXS2 chuyên nghiệp và tất cả được tích hợp vào trong 1 thiết bị gọn nhẹ, di động. #### Play your own way XDJ-RR là thiết bị độc lập và bạn có thể chơi nhạc trực tiếp trên XDJ-RR thông qua cổng USB, kết nối Link Export hoặc sử dụng Perfor",
+    "description": "2-channel all-in-one DJ system Bedroom to main room Đưa màn trình diễn của bạn lên một tầm cao mới với XDJ-RR thiết bị ALL-IN-ONE DJ System sử dụng cùng rekordbox. XDJ-RR là thiết bị 2 channel được kế thừa các đặc điểm thiết kế và các tính năng ưu việt từ set up NXS2 chuyên nghiệp và tất cả được tích hợp vào trong 1 thiết bị gọn nhẹ, di động.",
     "sale_enabled": true,
     "sale_price": 32832000,
-    "rental_enabled": false,
-    "rental_price": null,
-    "stock_quantity": 1,
+    "rental_enabled": true,
+    "rental_price": 800000,
+    "stock_quantity": 2,
     "is_active": true,
     "image_url": "/images/products/xdj-rr.jpg",
     "images": [
@@ -13593,7 +13684,15 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xdj-rr.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "specifications": {
+      "Số kênh": "2 kênh All-in-One",
+      "Màn hình": "7 inch màu hiển thị sóng âm song song",
+      "Cổng USB": "2 cổng USB-A phát nhạc độc lập",
+      "Hiệu ứng FX": "Sound Color FX (Pitch, Filter, Dub Echo, Noise) & Beat FX",
+      "Kích thước": "625 mm x 74.2 mm x 388.5 mm",
+      "Trọng lượng": "5.2 kg"
+    }
   },
   {
     "id": "c5608878-db92-5597-aa1a-0708b52e7da2",
