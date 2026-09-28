@@ -593,6 +593,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                     </div>
                     <div className="search-hot-tags-grid">
                       {[
+<<<<<<< HEAD
                         // Mua bán thiết bị DJ
                         { label: "🎧 Mua bán DJ Đà Nẵng", link: "/products?search=DJ" },
                         { label: "🎧 Mua bán DJ Huế", link: "/products?search=DJ" },
@@ -618,19 +619,33 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         { label: "Pioneer DDJ-FLX4", link: "/products?search=FLX4" },
                         { label: "AlphaTheta Omnis-Duo", link: "/products?search=Omnis" },
                         { label: "Loa B&C Speakers", link: "/products?search=B%26C" },
+=======
+                        { label: "🔥 Pioneer XDJ-RX3", link: "/products/xdj-rx3" },
+                        { label: "🔥 Pioneer DDJ-FLX4", link: "/products/ddj-flx4" },
+                        { label: "🔥 AlphaTheta OMNIS-DUO", link: "/products/omnis-duo" },
+                        { label: "🔥 AlphaTheta XDJ-AZ", link: "/products/xdj-az" },
+                        { label: "⚡ Pioneer XDJ-RX2", link: "/products/xdj-rx2" },
+                        { label: "⚡ Pioneer XDJ-RR", link: "/products/xdj-rr" },
+                        { label: "⚡ AlphaTheta DDJ-FLX2", link: "/products/ddj-flx2" },
+                        { label: "⚡ AlphaTheta XDJ-AN", link: "/products/xdj-an" },
+                        { label: "Thuê bàn DJ Đà Nẵng", link: "/thue-ban-dj" },
+                        { label: "Thuê bàn DJ Huế", link: "/thue-ban-dj" },
+                        { label: "🔧 Sửa bàn DJ & Loa", link: "/contact" },
+                        { label: "Loa B&C Speakers", link: "/products?category=loa-roi" },
+>>>>>>> 5068d35d8fbdd7ce22362f0b83267d9fe36b612c
                       ].map((item, idx) => (
-                        <button
+                        <Link
                           key={idx}
-                          type="button"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
+                          href={item.link}
+                          onClick={() => {
                             setIsSearchDropdownOpen(false);
-                            router.push(item.link);
+                            setSearchQuery("");
                           }}
                           className="search-hot-tag-btn"
+                          style={{ textDecoration: "none" }}
                         >
                           {item.label}
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -968,6 +983,46 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                   className="mobile-search-input"
                 />
               </form>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "6px",
+                  overflowX: "auto",
+                  paddingBottom: "4px",
+                  marginTop: "10px",
+                  scrollbarWidth: "none",
+                }}
+              >
+                {[
+                  { label: "RX3", link: "/products/xdj-rx3" },
+                  { label: "FLX4", link: "/products/ddj-flx4" },
+                  { label: "Omnis-Duo", link: "/products/omnis-duo" },
+                  { label: "XDJ-AZ", link: "/products/xdj-az" },
+                  { label: "RX2", link: "/products/xdj-rx2" },
+                  { label: "RR", link: "/products/xdj-rr" },
+                  { label: "FLX2", link: "/products/ddj-flx2" },
+                  { label: "XDJ-AN", link: "/products/xdj-an" },
+                ].map((item, idx) => (
+                  <Link
+                    key={idx}
+                    href={item.link}
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{
+                      whiteSpace: "nowrap",
+                      padding: "4px 10px",
+                      borderRadius: "14px",
+                      backgroundColor: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      fontSize: "11px",
+                      color: "#e4e4e7",
+                      textDecoration: "none",
+                      fontWeight: 600,
+                    }}
+                  >
+                    🔥 {item.label}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             <div className="mobile-drawer-links">

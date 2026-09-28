@@ -866,58 +866,153 @@ export default function ThueBanDjPage() {
                 </thead>
                 <tbody>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
-                    <td style={{ padding: "16px", fontWeight: 700, color: "#fff" }}>Pioneer DDJ-FLX4</td>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/ddj-flx2" style={{ color: "#fff", textDecoration: "none" }}>
+                        AlphaTheta DDJ-FLX2 ⚡
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller (Smartphone / PC)</td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>Dã ngoại, picnic, tiệc bạn bè, sinh viên</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>350.000đ</td>
+                    <td style={{ padding: "16px" }}>
+                      <Link href="/products/ddj-flx2" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/ddj-flx4" style={{ color: "#fff", textDecoration: "none" }}>
+                        Pioneer DDJ-FLX4 🔥
+                      </Link>
+                    </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller (cần Laptop)</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Tập luyện, tiệc gia đình, workshop nhỏ</td>
                     <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>400.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <a href="https://m.me/vanbassmusiccenter?text=Thue%20DDJ-FLX4" target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontWeight: 700 }}>
-                        Thuê &rarr;
-                      </a>
+                      <Link href="/products/ddj-flx4" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
                     </td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
-                    <td style={{ padding: "16px", fontWeight: 700, color: "#fff" }}>Pioneer DDJ-FLX6</td>
-                    <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller 4 kênh</td>
-                    <td style={{ padding: "16px", color: "#a1a1aa" }}>Tiệc sinh nhật, pool party, bar nhỏ</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>650.000đ</td>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/xdj-rr" style={{ color: "#fff", textDecoration: "none" }}>
+                        Pioneer DJ XDJ-RR ⚡
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>Tiệc villa, homestay, sinh nhật gọn nhẹ</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>800.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <a href="https://m.me/vanbassmusiccenter?text=Thue%20DDJ-FLX6" target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontWeight: 700 }}>
-                        Thuê &rarr;
-                      </a>
+                      <Link href="/products/xdj-rr" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/xdj-rx2" style={{ color: "#fff", textDecoration: "none" }}>
+                        Pioneer DJ XDJ-RX2 ⚡
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>Bar lounge, tiệc cưới, sự kiện chuẩn NXS2</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.000.000đ</td>
+                    <td style={{ padding: "16px" }}>
+                      <Link href="/products/xdj-rx2" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
                     </td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)", backgroundColor: "rgba(34, 197, 94, 0.04)" }}>
-                    <td style={{ padding: "16px", fontWeight: 800, color: "#4ade80" }}>Pioneer DJ XDJ-RX3</td>
-                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
+                    <td style={{ padding: "16px", fontWeight: 800 }}>
+                      <Link href="/products/xdj-rx3" style={{ color: "#4ade80", textDecoration: "none" }}>
+                        Pioneer DJ XDJ-RX3 🔥 (Best-seller)
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Màn 10.1&quot;</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Show sự kiện, Wedding, Bar Club, Lounge</td>
                     <td style={{ padding: "16px", color: "#22c55e", fontWeight: 800 }}>1.200.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <a href="https://m.me/vanbassmusiccenter?text=Thue%20XDJ-RX3" target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontWeight: 700 }}>
-                        Thuê &rarr;
-                      </a>
+                      <Link href="/products/xdj-rx3" style={{ color: "#22c55e", fontWeight: 800, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
                     </td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
-                    <td style={{ padding: "16px", fontWeight: 700, color: "#fff" }}>Pioneer DJ XDJ-XZ</td>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/omnis-duo" style={{ color: "#fff", textDecoration: "none" }}>
+                        AlphaTheta OMNIS-DUO 🔥
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Pin Không Dây</td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>Biển, du thuyền, villa, party ngoài trời</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.200.000đ</td>
+                    <td style={{ padding: "16px" }}>
+                      <Link href="/products/omnis-duo" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/xdj-an" style={{ color: "#fff", textDecoration: "none" }}>
+                        AlphaTheta XDJ-AN ⚡
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Thế Hệ Mới</td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ biểu diễn live, sự kiện trẻ trung</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.500.000đ</td>
+                    <td style={{ padding: "16px" }}>
+                      <Link href="/products/xdj-an" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/xdj-az" style={{ color: "#fff", textDecoration: "none" }}>
+                        AlphaTheta XDJ-AZ 🔥 (Flagship 4-kênh)
+                      </Link>
+                    </td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One 4 Kênh Wi-Fi</td>
+                    <td style={{ padding: "16px", color: "#a1a1aa" }}>Festival, Club Standard, DJ chuyên nghiệp</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>2.200.000đ</td>
+                    <td style={{ padding: "16px" }}>
+                      <Link href="/products/xdj-az" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/xdj-xz" style={{ color: "#fff", textDecoration: "none" }}>
+                        Pioneer DJ XDJ-XZ
+                      </Link>
+                    </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One 4 Kênh Flagship</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Sự kiện lớn, Bar Pub, DJ chuyên nghiệp</td>
                     <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.800.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <a href="https://m.me/vanbassmusiccenter?text=Thue%20XDJ-XZ" target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontWeight: 700 }}>
-                        Thuê &rarr;
-                      </a>
+                      <Link href="/products/xdj-xz" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
                     </td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
-                    <td style={{ padding: "16px", fontWeight: 700, color: "#fff" }}>Set 2x CDJ-3000 + DJM-900NXS2</td>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
+                      <Link href="/products/cdj-3000" style={{ color: "#fff", textDecoration: "none" }}>
+                        Set 2x CDJ-3000 + DJM-A9
+                      </Link>
+                    </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Club Standard Quốc Tế</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Lễ hội EDM, Concert, Club, DJ Quốc tế</td>
                     <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>Báo giá theo Show</td>
                     <td style={{ padding: "16px" }}>
-                      <a href="https://m.me/vanbassmusiccenter?text=Thue%20CDJ-3000" target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontWeight: 700 }}>
-                        Liên hệ &rarr;
-                      </a>
+                      <Link href="/products/cdj-3000" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                        Chi tiết &rarr;
+                      </Link>
                     </td>
                   </tr>
                 </tbody>

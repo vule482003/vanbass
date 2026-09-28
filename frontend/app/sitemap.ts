@@ -45,13 +45,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Dynamic product routes
-  const productRoutes: MetadataRoute.Sitemap = MOCK_PRODUCTS.map((product) => ({
+  // 8 Hot Search Priority Models
+  const hotSearchSlugs = [
+    "xdj-rx3",
+    "xdj-rx2",
+    "xdj-rr",
+    "ddj-flx4",
+    "ddj-flx2",
+    "omnis-duo",
+    "xdj-az",
+    "xdj-an",
+  ];
+
+  const hotModelRoutes: MetadataRoute.Sitemap = hotSearchSlugs.map((slug) => ({
+    url: `${baseUrl}/products/${slug}`,
+    lastModified: now,
+    changeFrequency: "daily",
+    priority: 0.95,
+  }));
+
+  // Dynamic product routes (excluding duplicates from hotSearchSlugs)
+  const productRoutes: MetadataRoute.Sitemap = MOCK_PRODUCTS.filter(
+    (product) => !hotSearchSlugs.includes(product.slug)
+  ).map((product) => ({
     url: `${baseUrl}/products/${product.slug}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...productRoutes];
+  return [...staticRoutes, ...hotModelRoutes, ...productRoutes];
 }
