@@ -36,6 +36,7 @@ export default function Footer() {
           <h3>{t.footer.explore}</h3>
           <Link href="/products">{t.footer.productsLink}</Link>
           <Link href="/thue-ban-dj">{t.footer.rentalLink}</Link>
+          <Link href="/contact">{t.nav?.contact ? (t.nav.home === "Trang Chủ" ? "Sửa Chữa & Bảo Dưỡng DJ" : "DJ Repair & Maintenance") : "Sửa Chữa & Bảo Dưỡng DJ"}</Link>
           <Link href="/about">{t.footer.aboutLink}</Link>
         </div>
 

@@ -215,6 +215,22 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
     };
   }, [pathname, hoveredHref, navLinks]);
 
+  const searchIntent = useMemo(() => {
+    if (!searchQuery.trim()) return null;
+    const q = searchQuery
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .toLowerCase();
+
+    const isRepair = /sua|chua|bao duong|ve sinh|thay|fader|jogwheel|knob|nut|hu|hong|loi|repair|fix|service/.test(q);
+    const isRental = /thue|cho thue|rent|hire|lease|muon|party|beach|villa/.test(q);
+    const isBuy = /mua|ban|gia ban|gia bao nhieu|chinh hang|buy|sell|order/.test(q);
+
+    return { isRepair, isRental, isBuy };
+  }, [searchQuery]);
+
   const searchResults = searchQuery.trim()
     ? searchCatalog
         .filter((p) => {
@@ -577,13 +593,26 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                     </div>
                     <div className="search-hot-tags-grid">
                       {[
+                        // Mua bán thiết bị DJ
+                        { label: "🎧 Mua bán DJ Đà Nẵng", link: "/products?search=DJ" },
+                        { label: "🎧 Mua bán DJ Huế", link: "/products?search=DJ" },
+                        { label: "🎧 Mua bán DJ Miền Trung", link: "/products?search=DJ" },
+
+                        // Thuê bàn DJ (Đầy đủ Đà Nẵng, Huế, Miền Trung)
+                        { label: "Thuê bàn DJ Đà Nẵng", link: "/thue-ban-dj" },
+                        { label: "Thuê bàn DJ Huế", link: "/thue-ban-dj" },
+                        { label: "Thuê bàn DJ Miền Trung", link: "/thue-ban-dj" },
+
+                        // Dịch vụ sửa chữa & bảo dưỡng
                         { label: "🔧 Sửa chữa bàn DJ", link: "/contact" },
                         { label: "🛠️ Sửa loa & Mixer", link: "/contact" },
                         { label: "⚙️ Bảo dưỡng thiết bị DJ", link: "/contact" },
                         { label: "Sửa bàn DJ Đà Nẵng & Huế", link: "/contact" },
-                        { label: "Thuê bàn DJ Huế", link: "/thue-ban-dj" },
-                        { label: "Thuê bàn DJ Đà Nẵng", link: "/thue-ban-dj" },
-                        { label: "Thuê bàn DJ Miền Trung", link: "/thue-ban-dj" },
+                        { label: "🔧 Sửa bàn DJ Đà Nẵng", link: "/contact" },
+                        { label: "📍 Sửa bàn DJ Huế", link: "/contact" },
+                        { label: "🛠️ Sửa bàn DJ Miền Trung", link: "/contact" },
+
+                        // Địa điểm & dòng máy hot ban đầu
                         { label: "Showroom Huế & ĐN", link: "/about" },
                         { label: "Pioneer XDJ-RX3", link: "/products?search=RX3" },
                         { label: "Pioneer DDJ-FLX4", link: "/products?search=FLX4" },
@@ -605,34 +634,110 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                       ))}
                     </div>
                   </div>
-                ) : searchResults.length === 0 ? (
-                  <div style={{ padding: "16px", color: "#a1a1aa", fontSize: "13px", textAlign: "center" }}>
-                    {t.nav.noResults}
-                  </div>
                 ) : (
                   <>
-                    {searchResults.map((item) => (
+                    {/* Smart Quick-Action Banner for Repair Service */}
+                    {searchIntent?.isRepair && (
                       <div
-                        key={item.id}
-                        onMouseDown={() => handleSelectSearchResult(item.slug)}
-                        className="search-result-row"
+                        onMouseDown={() => {
+                          setIsSearchDropdownOpen(false);
+                          router.push("/contact");
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 14px",
+                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(24, 24, 27, 0.9))",
+                          border: "1px solid rgba(34, 197, 94, 0.35)",
+                          borderRadius: "10px",
+                          margin: "8px 10px",
+                          cursor: "pointer",
+                        }}
                       >
-                        <div>
-                          <div style={{ fontSize: "13px", fontWeight: 700, color: "#ffffff", marginBottom: "2px" }}>
-                            {getTranslatedProductName(item, lang)}
-                          </div>
-                          <div style={{ fontSize: "11px", color: "#a1a1aa" }}>
-                            {item.brand} • {item.sku}
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <span style={{ fontSize: "18px" }}>🔧</span>
+                          <div>
+                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#22c55e" }}>
+                              {lang === "en" ? "DJ Equipment Repair & Maintenance" : "Dịch vụ Sửa chữa & Bảo dưỡng Bàn DJ"}
+                            </div>
+                            <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>
+                              {lang === "en" ? "Hotline / Zalo: 0706 067 799 • Da Nang & Hue" : "Sửa lấy liền tại Đà Nẵng & Huế • Hotline: 0706 067 799"}
+                            </div>
                           </div>
                         </div>
-                        <div style={{ fontSize: "13px", fontWeight: 800, color: "#22c55e", whiteSpace: "nowrap", marginLeft: "12px" }}>
-                          {item.sale_price ? (lang === "en" ? new Intl.NumberFormat("en-US").format(item.sale_price) + "₫" : item.sale_price.toLocaleString("vi-VN") + "₫") : t.products.contactPrice}
-                        </div>
+                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#22c55e" }}>
+                          {lang === "en" ? "Contact →" : "Liên hệ ngay →"}
+                        </span>
                       </div>
-                    ))}
-                    <div onMouseDown={handleSearchSubmit} className="search-view-all">
-                      {t.nav.viewAllResults} &quot;{searchQuery}&quot; →
-                    </div>
+                    )}
+
+                    {/* Smart Quick-Action Banner for Rental Service */}
+                    {searchIntent?.isRental && (
+                      <div
+                        onMouseDown={() => {
+                          setIsSearchDropdownOpen(false);
+                          router.push("/thue-ban-dj");
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 14px",
+                          background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(24, 24, 27, 0.9))",
+                          border: "1px solid rgba(59, 130, 246, 0.35)",
+                          borderRadius: "10px",
+                          margin: "8px 10px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <span style={{ fontSize: "18px" }}>🎛️</span>
+                          <div>
+                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#60a5fa" }}>
+                              {lang === "en" ? "DJ Gear Rental in Da Nang & Central Vietnam" : "Dịch vụ Cho Thuê Bàn DJ tại Đà Nẵng & Huế"}
+                            </div>
+                            <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>
+                              {lang === "en" ? "Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo from 400k/day" : "XDJ-RX3, DDJ-FLX4, Omnis-Duo giá từ 400k • Giao tận nơi 24/7"}
+                            </div>
+                          </div>
+                        </div>
+                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#60a5fa" }}>
+                          {lang === "en" ? "Fleet →" : "Bảng giá thuê →"}
+                        </span>
+                      </div>
+                    )}
+
+                    {searchResults.length === 0 ? (
+                      <div style={{ padding: "16px", color: "#a1a1aa", fontSize: "13px", textAlign: "center" }}>
+                        {t.nav.noResults}
+                      </div>
+                    ) : (
+                      <>
+                        {searchResults.map((item) => (
+                          <div
+                            key={item.id}
+                            onMouseDown={() => handleSelectSearchResult(item.slug)}
+                            className="search-result-row"
+                          >
+                            <div>
+                              <div style={{ fontSize: "13px", fontWeight: 700, color: "#ffffff", marginBottom: "2px" }}>
+                                {getTranslatedProductName(item, lang)}
+                              </div>
+                              <div style={{ fontSize: "11px", color: "#a1a1aa" }}>
+                                {item.brand} • {item.sku}
+                              </div>
+                            </div>
+                            <div style={{ fontSize: "13px", fontWeight: 800, color: "#22c55e", whiteSpace: "nowrap", marginLeft: "12px" }}>
+                              {item.sale_price ? (lang === "en" ? new Intl.NumberFormat("en-US").format(item.sale_price) + "₫" : item.sale_price.toLocaleString("vi-VN") + "₫") : t.products.contactPrice}
+                            </div>
+                          </div>
+                        ))}
+                        <div onMouseDown={handleSearchSubmit} className="search-view-all">
+                          {t.nav.viewAllResults} &quot;{searchQuery}&quot; →
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </div>
