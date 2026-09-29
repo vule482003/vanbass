@@ -41,9 +41,19 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const displayDesc = getTranslatedProductDesc(product, lang);
   const cleanExcerpt = getProductPlainExcerpt(displayDesc, 260);
 
-  const imagesList = product.images && product.images.length > 0
-    ? product.images.map((i) => i.image_url)
-    : [product.image_url || "/images/placeholder.jpg"];
+  const resolveModalImg = (url?: string) => {
+    if (!url) return "/images/placeholder.jpg";
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:") || url.startsWith("blob:")) return url;
+    if (url.startsWith("/images/")) return url;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+    const backendBase = apiUrl.replace(/\/api\/?$/, "");
+    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
+  };
+
+  const imagesList = (product.images && product.images.length > 0
+    ? product.images.map((i) => resolveModalImg(i.image_url))
+    : [resolveModalImg(product.image_url)]
+  ).filter(Boolean) as string[];
 
   const handleAddToCart = () => {
     addItem(product, 1);
@@ -146,6 +156,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                 src={imagesList[activeImgIndex]}
                 alt={displayName}
                 fill
+                unoptimized
                 style={{ objectFit: "contain", padding: "16px" }}
                 sizes="(max-width: 768px) 100vw, 450px"
               />
@@ -194,7 +205,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                     flexShrink: 0,
                   }}
                 >
-                  <Image src={img} alt="" fill style={{ objectFit: "contain", padding: "4px" }} sizes="64px" />
+                  <Image src={img} alt="" fill unoptimized style={{ objectFit: "contain", padding: "4px" }} sizes="64px" />
                 </button>
               ))}
             </div>

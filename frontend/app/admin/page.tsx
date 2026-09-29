@@ -3093,12 +3093,22 @@ export default function AdminDashboardPage() {
                               <td style={{ padding: "12px 16px" }}>
                                 <div className="admin-table-thumb-box">
                                   {primaryImg ? (
-                                    <Image
-                                      src={primaryImg.startsWith("/") ? primaryImg : `/${primaryImg}`}
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                      src={
+                                        primaryImg.startsWith("http://") || primaryImg.startsWith("https://") || primaryImg.startsWith("data:") || primaryImg.startsWith("blob:")
+                                          ? primaryImg
+                                          : primaryImg.startsWith("/")
+                                          ? primaryImg
+                                          : `/${primaryImg}`
+                                      }
                                       alt={p.name}
-                                      width={40}
-                                      height={40}
                                       style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                                      onError={(e) => {
+                                        const target = e.currentTarget as HTMLImageElement;
+                                        target.onerror = null;
+                                        target.src = "/images/logo.png";
+                                      }}
                                     />
                                   ) : (
                                     <span style={{ fontSize: "10px", color: "#71717a" }}>No img</span>
