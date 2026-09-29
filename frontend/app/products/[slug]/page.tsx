@@ -8,16 +8,38 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// 8 Hot Search Priority Models Mapping (Short URL -> Real Product Slug)
+// 8 Hot Search Priority Models Mapping (Short URL & Full Aliases -> Real Product Slug)
 export const PRODUCT_SLUG_ALIASES: Record<string, string> = {
   "xdj-rx3": "xdj-rx3",
+  "pioneer-xdj-rx3": "xdj-rx3",
+  "pioneer-dj-xdj-rx3": "xdj-rx3",
+
   "xdj-rx2": "xdj-rx2",
+  "pioneer-xdj-rx2": "xdj-rx2",
+  "pioneer-dj-xdj-rx2": "xdj-rx2",
+
   "xdj-rr": "xdj-rr",
+  "pioneer-xdj-rr": "xdj-rr",
+  "pioneer-dj-xdj-rr": "xdj-rr",
+
   "ddj-flx4": "ddj-flx4",
+  "pioneer-ddj-flx4": "ddj-flx4",
+  "pioneer-dj-ddj-flx4": "ddj-flx4",
+
   "ddj-flx2": "alphatheta-ddj-flx2",
+  "pioneer-ddj-flx2": "alphatheta-ddj-flx2",
+  "alphatheta-ddj-flx2": "alphatheta-ddj-flx2",
+
   "omnis-duo": "ban-dj-alpha-theta-omnis-duo",
+  "alpha-theta-omnis-duo": "ban-dj-alpha-theta-omnis-duo",
+  "alphatheta-omnis-duo": "ban-dj-alpha-theta-omnis-duo",
+
   "xdj-az": "ban-dj-alphatheta-xdj-az",
+  "pioneer-xdj-az": "ban-dj-alphatheta-xdj-az",
+  "alphatheta-xdj-az": "ban-dj-alphatheta-xdj-az",
+
   "xdj-an": "alphatheta-xdj-an",
+  "alphatheta-xdj-an": "alphatheta-xdj-an",
 };
 
 export const HOT_MODELS_SEO: Record<
@@ -298,7 +320,7 @@ async function getProduct(slug: string): Promise<Product | null> {
   const aliasTarget = PRODUCT_SLUG_ALIASES[slug.toLowerCase()] || (modelKey ? PRODUCT_SLUG_ALIASES[modelKey] : null);
 
   const localProduct = MOCK_PRODUCTS.find(
-    (p) => p.slug === slug || (aliasTarget && p.slug === aliasTarget) || (modelKey && p.slug.includes(modelKey))
+    (p) => p.slug === slug || (aliasTarget && p.slug === aliasTarget) || (modelKey && p.slug && p.slug.includes(modelKey))
   );
   if (localProduct) return localProduct;
 
@@ -418,6 +440,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
     const rawImg = hotSeo?.image || product.images?.[0]?.image_url || product.image_url || "/images/placeholder.png";
     const fullImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
     const plainDesc = hotSeo?.description || getProductPlainExcerpt(product.description, 250) || product.name;
+    const productPrice =
+      product.sale_price && product.sale_price > 0
+        ? product.sale_price
+        : product.rental_price && product.rental_price > 0
+        ? product.rental_price
+        : 1000000;
 
     const graph: Record<string, unknown>[] = [
       {
@@ -458,7 +486,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           "@type": "Offer",
           "url": `${baseUrl}/products/${canonicalSlug}`,
           "priceCurrency": "VND",
-          "price": product.sale_price || 0,
+          "price": productPrice,
           "priceValidUntil": "2027-12-31",
           "itemCondition": "https://schema.org/NewCondition",
           "availability":
