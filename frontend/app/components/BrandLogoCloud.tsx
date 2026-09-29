@@ -74,8 +74,8 @@ export default function BrandLogoCloud() {
 
   return (
     <section className="brand-crosshair-section" aria-label="Thương hiệu đối tác phân phối chính hãng">
-      <div className="container">
-        {/* Crosshair Grid Container (4 columns x 2 rows, wide & airy like Retool) */}
+      {/* 1. DESKTOP CROSSHAIR GRID (WIDE SCREENS > 860px) */}
+      <div className="container brand-desktop-grid">
         <div className="crosshair-grid-wrap">
           {/* Row 1 */}
           <div className="crosshair-row">
@@ -141,6 +141,46 @@ export default function BrandLogoCloud() {
         </div>
       </div>
 
+      {/* 2. MOBILE SEAMLESS LOGO MARQUEE TICKER (<= 860px) */}
+      <div className="brand-mobile-marquee-wrap">
+        <div className="brand-mobile-marquee-track">
+          {/* Set 1 */}
+          {BRANDS.map((brand) => (
+            <Link
+              key={`m1-${brand.id}`}
+              href={`/products?brand=${encodeURIComponent(brand.queryKey)}`}
+              className="brand-mobile-logo-item"
+              title={`Xem sản phẩm ${brand.name}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={brand.src}
+                alt={brand.name}
+                className="brand-logo-monochrome"
+                style={{ maxHeight: `${Math.min(brand.maxHeight, 26)}px` }}
+              />
+            </Link>
+          ))}
+          {/* Set 2 (Seamless loop duplication) */}
+          {BRANDS.map((brand) => (
+            <Link
+              key={`m2-${brand.id}`}
+              href={`/products?brand=${encodeURIComponent(brand.queryKey)}`}
+              className="brand-mobile-logo-item"
+              title={`Xem sản phẩm ${brand.name}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={brand.src}
+                alt={brand.name}
+                className="brand-logo-monochrome"
+                style={{ maxHeight: `${Math.min(brand.maxHeight, 26)}px` }}
+              />
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Scoped Styling */}
       <style jsx>{`
         .brand-crosshair-section {
@@ -148,6 +188,11 @@ export default function BrandLogoCloud() {
           background: #09090b;
           position: relative;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          overflow: hidden;
+        }
+
+        .brand-mobile-marquee-wrap {
+          display: none;
         }
 
         .crosshair-grid-wrap {
@@ -226,30 +271,57 @@ export default function BrandLogoCloud() {
         /* Mobile / Tablet Responsive */
         @media (max-width: 860px) {
           .brand-crosshair-section {
-            padding: 50px 0;
+            padding: 32px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
           }
 
-          .crosshair-row {
-            grid-template-columns: repeat(2, 1fr);
-            padding: 16px 0;
-          }
-
-          .crosshair-p1,
-          .crosshair-p3 {
+          .brand-desktop-grid {
             display: none;
           }
 
-          .crosshair-p2 {
-            left: 50%;
+          .brand-mobile-marquee-wrap {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
           }
 
-          .brand-logo-cell {
-            height: 64px;
-            padding: 0 16px;
+          .brand-mobile-marquee-track {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            width: max-content;
+            animation: mobileBrandMarquee 28s linear infinite;
+          }
+
+          .brand-mobile-logo-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            opacity: 0.85;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+          }
+
+          .brand-mobile-logo-item:hover,
+          .brand-mobile-logo-item:active {
+            opacity: 1;
           }
 
           .brand-logo-monochrome {
-            max-width: 140px;
+            max-width: 120px;
+          }
+
+          @keyframes mobileBrandMarquee {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
           }
         }
       `}</style>

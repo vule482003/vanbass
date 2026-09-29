@@ -48,10 +48,12 @@ class Settings(BaseSettings):
     @classmethod
     def assemble_database_url(cls, v: Any) -> Any:
         if isinstance(v, str):
+            if v.startswith("postgresql+"):
+                return v
             if v.startswith("postgres://"):
-                return v.replace("postgres://", "postgresql+psycopg://", 1)
-            if v.startswith("postgresql://") and not v.startswith("postgresql+psycopg://"):
-                return v.replace("postgresql://", "postgresql+psycopg://", 1)
+                return v.replace("postgres://", "postgresql+psycopg2://", 1)
+            if v.startswith("postgresql://"):
+                return v.replace("postgresql://", "postgresql+psycopg2://", 1)
         return v
 
     @field_validator("cors_origins", mode="before")

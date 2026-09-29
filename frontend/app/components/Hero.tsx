@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { DEFAULT_HOME_DATA, HeroPanelCenter, HeroPanelLeft, HeroPanelRight } from "../types/home_config";
 import { useLanguage } from "../lib/language-context";
@@ -48,6 +49,62 @@ export default function Hero({
   const centerBg = resolveImage(heroCenter?.bg_image, "/images/hero/hero_performance.jpg");
   const rightBg = resolveImage(heroRight?.bg_image, "/images/hero/hero_showroom.jpg");
 
+  // Mobile Banner Slider state & touch handlers
+  const mobileBanners = [
+    {
+      id: "banner-1",
+      image: centerBg,
+      link: heroCenter?.link && !heroCenter.link.startsWith("/rental") && heroCenter.link !== "/products?mode=rental" ? heroCenter.link : "/thue-ban-dj",
+      alt: "Cho thuê bàn DJ & Âm thanh biểu diễn",
+    },
+    {
+      id: "banner-2",
+      image: leftBg,
+      link: heroLeft?.link || "/products",
+      alt: "Thiết bị DJ & Hardware chính hãng",
+    },
+    {
+      id: "banner-3",
+      image: rightBg,
+      link: heroRight?.link || "/contact",
+      alt: "Showroom & Studio trải nghiệm âm thanh",
+    },
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const touchStartXRef = useRef<number>(0);
+  const touchEndXRef = useRef<number>(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % mobileBanners.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [mobileBanners.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartXRef.current - touchEndXRef.current;
+    if (touchEndXRef.current > 0 && Math.abs(diff) > 40) {
+      if (diff > 0) {
+        // Swipe left -> Next
+        setCurrentSlide((prev) => (prev + 1) % mobileBanners.length);
+      } else {
+        // Swipe right -> Prev
+        setCurrentSlide((prev) => (prev - 1 + mobileBanners.length) % mobileBanners.length);
+      }
+    }
+    touchStartXRef.current = 0;
+    touchEndXRef.current = 0;
+  };
+
   const rawMarquee = lang === "en" ? t.hero.marqueeItems : (marqueeItems || DEFAULT_HOME_DATA.marquee_items);
   const effectiveMarquee = rawMarquee.map((item) =>
     item.replace(/[⚡🔥🎧]/g, "").trim()
@@ -75,9 +132,52 @@ export default function Hero({
 
   return (
     <>
-      {/* 1. TRANG 1: 3-COLUMN FULL-BLEED DYNAMIC ACCORDION HERO (FULL SCREEN 100VH) */}
+      {/* 1. TRANG 1: 3-COLUMN FULL-BLEED DYNAMIC ACCORDION HERO (DESKTOP) & AUTO-SLIDING BANNER (MOBILE) */}
       {showHero && (
         <section className="hero-triptych-section" id="hero">
+          {/* A. MOBILE AUTO-SLIDING BANNER CAROUSEL (CLEAN, NO CLUTTERED TEXT, TOUCH SWIPE) */}
+          <div
+            className="hero-mobile-slider-container"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="hero-mobile-slider-track">
+              {mobileBanners.map((banner, index) => {
+                const isActive = currentSlide === index;
+                return (
+                  <Link
+                    key={banner.id}
+                    href={banner.link}
+                    className={`hero-mobile-slide ${isActive ? "is-active" : ""}`}
+                    aria-label={banner.alt}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={banner.image}
+                      alt={banner.alt}
+                      className="hero-mobile-banner-img"
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Slide Pagination Dots */}
+            <div className="hero-mobile-dots">
+              {mobileBanners.map((banner, index) => (
+                <button
+                  key={banner.id}
+                  type="button"
+                  className={`hero-mobile-dot ${currentSlide === index ? "active" : ""}`}
+                  onClick={() => setCurrentSlide(index)}
+                  aria-label={`Chuyển đến banner ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* B. DESKTOP 3-COLUMN ACCORDION HERO */}
           <div className="hero-triptych-container">
             {/* KHUNG 1 (BÊN TRÁI): THIẾT BỊ & HARDWARE */}
           <div className="triptych-panel panel-hardware" style={{ position: "relative", overflow: "hidden" }}>

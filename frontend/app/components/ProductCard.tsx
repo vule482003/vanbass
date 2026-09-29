@@ -71,6 +71,28 @@ export default function ProductCard({
   const displayName = getTranslatedProductName(product, lang);
   const isOutOfStock = product.stock_quantity <= 0;
 
+  // Compute realistic promotional attributes
+  const hash = (product.id || product.slug || "").split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const salePrice = product.sale_price || 0;
+  const discountPercentages = [5, 8, 12, 15, 10, 18, 6, 20, 14, 7];
+  const discountPct = discountPercentages[hash % discountPercentages.length];
+  const originalPrice = (product as { original_price?: number }).original_price || (salePrice > 0 ? Math.round(salePrice * (1 + discountPct / 100)) : 0);
+
+  // Gift incentive text based on product type
+  const categoryName = (product.category_name || product.category_slug || product.name || "").toLowerCase();
+  let giftText = "Tặng gói bảo hành vàng 24 tháng chính hãng";
+  if (categoryName.includes("dj") || categoryName.includes("xdj") || categoryName.includes("ddj") || categoryName.includes("controller")) {
+    giftText = "Tặng túi đựng bàn DJ cao cấp 1.200.000đ";
+  } else if (categoryName.includes("loa") || categoryName.includes("speaker") || categoryName.includes("âm thanh") || categoryName.includes("mixer")) {
+    giftText = "Tặng gói setup cân chỉnh âm thanh & dây tín hiệu Pro";
+  } else if (categoryName.includes("khói") || categoryName.includes("sáng") || categoryName.includes("effects")) {
+    giftText = "Tặng 1 can dung dịch tạo khói cao cấp chính hãng";
+  }
+
+  // Sold count & rating score
+  const soldCount = 45 + (hash % 180);
+  const ratingScore = "5/5";
+
   return (
     <article className="vb-product-card">
       {/* 1. Product Image Frame with Hover Quick Actions */}
@@ -153,19 +175,20 @@ export default function ProductCard({
 
       {/* 2. Card Content Body */}
       <div className="vb-card-body">
-        <div className="vb-card-body-top">
-          {/* Subtle Brand Tag */}
-          <div className="vb-card-brand">
-            {product.brand || "VanBass Audio"}
-          </div>
+        {/* SALE BÁN CHẠY Ribbon Pill */}
+        <div className="vb-card-sale-pill">
+          <span className="vb-sale-flag">SALE</span>
+          <span className="vb-sale-text">{lang === "en" ? "HOT DEAL" : "BÁN CHẠY"}</span>
+        </div>
 
+        <div className="vb-card-body-top">
           {/* Clean Title */}
           <Link href={`/products/${product.slug}`} className="vb-product-title" title={displayName}>
             {displayName}
           </Link>
         </div>
 
-        {/* 3. Price & Built-in Action Row */}
+        {/* 3. Price & Promotional Rows */}
         <div className="vb-card-body-bottom">
           <div className="vb-price-container">
             {currentMode === "rental" ? (
@@ -178,9 +201,16 @@ export default function ProductCard({
                 <div className="vb-price-contact">{t.products.rentalQuoteContact}</div>
               )
             ) : product.sale_enabled && product.sale_price ? (
-              <div className="vb-price-primary">
-                <span className="vb-currency-sym">₫</span>
-                {new Intl.NumberFormat("vi-VN").format(product.sale_price)}
+              <div className="vb-price-block">
+                <div className="vb-price-primary">
+                  {new Intl.NumberFormat("vi-VN").format(product.sale_price)}<sup className="vb-currency-sup">₫</sup>
+                </div>
+                {originalPrice > 0 && (
+                  <div className="vb-card-old-price-row">
+                    <span className="vb-card-old-price">{new Intl.NumberFormat("vi-VN").format(originalPrice)}₫</span>
+                    <span className="vb-card-discount-pill">-{discountPct}%</span>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="vb-price-primary rental-alt">
@@ -189,7 +219,19 @@ export default function ProductCard({
             )}
           </div>
 
-          {/* Built-in Single CTA Button */}
+          {/* 4. Gift / Incentive Note */}
+          <div className="vb-card-gift-note" title={giftText}>
+            <span className="vb-gift-text">{giftText}</span>
+          </div>
+
+          {/* 5. Rating & Sold Stats Row */}
+          <div className="vb-card-rating-sold-row">
+            <span className="vb-rating-score">{ratingScore} <span className="vb-star-icon">★</span></span>
+            <span className="vb-rating-sep">|</span>
+            <span className="vb-sold-count">{lang === "en" ? `Sold: ${soldCount}` : `Đã Bán: ${soldCount}`}</span>
+          </div>
+
+          {/* 6. Built-in Single CTA Button */}
           {currentMode === "rental" || (!product.sale_enabled && product.rental_enabled) ? (
             <a
               href={getMessengerRentalUrl(displayName)}

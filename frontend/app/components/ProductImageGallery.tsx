@@ -10,7 +10,7 @@ interface ProductImageGalleryProps {
 }
 
 export default function ProductImageGallery({ product, displayName }: ProductImageGalleryProps) {
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
 
   // Helper to resolve image URLs safely
   const resolveImageUrl = useCallback((url?: string) => {
@@ -105,116 +105,128 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
   return (
     <div className="product-gallery-system">
       {/* ============================================================
-          MAIN STAGE CONTAINER (With Smooth 60fps Hover Zoom Lens)
+          DESKTOP: VERTICAL THUMBNAIL STRIP (LEFT) + MAIN STAGE (RIGHT)
+          MOBILE: MAIN STAGE (TOP) + HORIZONTAL THUMBNAIL STRIP (BOTTOM)
          ============================================================ */}
-      <div
-        ref={containerRef}
-        className={`gallery-main-stage ${isZooming ? "is-zooming" : ""}`}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={() => setIsLightboxOpen(true)}
-      >
-        {currentImage ? (
-          <div className="gallery-image-wrapper">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={currentImage}
-              alt={`${displayName} - Ảnh ${activeIndex + 1}`}
-              className="gallery-main-image"
-              style={{
-                transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                transform: isZooming ? "scale(2.2)" : "scale(1)",
-              }}
-            />
-          </div>
-        ) : (
-          <div className="product-placeholder" style={{ width: "100%", height: "100%", maxWidth: "340px", maxHeight: "240px", display: "block" }}>
-            <div className="product-placeholder-top">
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className="product-placeholder-body">
-              <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
-              <div className="product-faders">
-                <i />
-                <i />
-              </div>
-              <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
-            </div>
+      <div className="gallery-layout-wrapper">
+        {/* Thumbnail Strip (Vertical on Desktop, Horizontal on Mobile) */}
+        {imageList.length > 1 && (
+          <div className="gallery-thumbnails-strip">
+            {imageList.map((imgUrl, idx) => {
+              const isSelected = activeIndex === idx;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveIndex(idx)}
+                  className={`gallery-thumb-btn ${isSelected ? "is-active" : ""}`}
+                  aria-label={`Xem ảnh ${idx + 1}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imgUrl} alt={`${displayName} thumb ${idx + 1}`} className="thumb-img" />
+                </button>
+              );
+            })}
           </div>
         )}
 
-        {/* Top-Left Status Badges */}
-        <div className="gallery-badge-stack">
-          {product.sale_enabled && product.stock_quantity > 0 && (
-            <span className="badge badge-sale">{t.productDetail.saleBadge}</span>
-          )}
-          {product.sale_enabled && product.stock_quantity <= 0 && (
-            <span
-              className="badge"
-              style={{
-                backgroundColor: "rgba(239,68,68,0.2)",
-                color: "#f87171",
-                border: "1px solid rgba(239,68,68,0.4)",
-              }}
-            >
-              {t.productDetail.outOfStockBadge}
-            </span>
-          )}
-          {product.rental_enabled && <span className="badge badge-rental">{t.productDetail.rentalBadge}</span>}
-        </div>
-
-        {/* Top-Right Lightbox Trigger Button */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsLightboxOpen(true);
-          }}
-          className="gallery-expand-btn"
-          aria-label={lang === "en" ? "Expand high resolution image" : "Phóng to toàn màn hình"}
-          title={lang === "en" ? "Click to view full screen" : "Bấm để xem ảnh phóng to full màn hình"}
+        {/* Main Stage Container */}
+        <div
+          ref={containerRef}
+          className={`gallery-main-stage ${isZooming ? "is-zooming" : ""}`}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={() => setIsLightboxOpen(true)}
         >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 3 21 3 21 9" />
-            <polyline points="9 21 3 21 3 15" />
-            <line x1="21" y1="3" x2="14" y2="10" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-          <span className="expand-label">{lang === "en" ? "Zoom" : "Phóng to"}</span>
-        </button>
+          {currentImage ? (
+            <div className="gallery-image-wrapper">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={currentImage}
+                alt={`${displayName} - Ảnh ${activeIndex + 1}`}
+                className="gallery-main-image"
+                style={{
+                  transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                  transform: isZooming ? "scale(2.2)" : "scale(1)",
+                }}
+              />
+            </div>
+          ) : (
+            <div className="product-placeholder" style={{ width: "100%", height: "100%", maxWidth: "340px", maxHeight: "240px", display: "block" }}>
+              <div className="product-placeholder-top">
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="product-placeholder-body">
+                <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
+                <div className="product-faders">
+                  <i />
+                  <i />
+                </div>
+                <div className="product-wheel" style={{ width: "64px", height: "64px" }} />
+              </div>
+            </div>
+          )}
 
-        {/* Bottom Hover Hint */}
-        <div className={`gallery-hover-hint ${isZooming ? "is-active" : ""}`}>
-          <span className="hint-dot" />
-          <span>{lang === "en" ? "Hover to zoom lens • Click for Lightbox" : "Rê chuột soi chi tiết • Nhấp để phóng to"}</span>
+          {/* Previous / Next Arrows on Main Stage */}
+          {imageList.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="gallery-stage-arrow prev-arrow"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
+                }}
+                aria-label="Ảnh trước"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                className="gallery-stage-arrow next-arrow"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveIndex((prev) => (prev + 1) % imageList.length);
+                }}
+                aria-label="Ảnh kế tiếp"
+              >
+                ›
+              </button>
+            </>
+          )}
+
+          {/* Top-Right Fullscreen / Lightbox Trigger Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsLightboxOpen(true);
+            }}
+            className="gallery-expand-btn"
+            aria-label={lang === "en" ? "Expand high resolution image" : "Phóng to toàn màn hình"}
+            title={lang === "en" ? "Click to view full screen" : "Bấm để xem ảnh phóng to full màn hình"}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
+            </svg>
+          </button>
+
+          {/* Bottom Hover Hint */}
+          <div className={`gallery-hover-hint ${isZooming ? "is-active" : ""}`}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span>{lang === "en" ? "Hover to zoom • Click to expand" : "Di chuyển chuột để phóng to"}</span>
+          </div>
         </div>
       </div>
-
-      {/* ============================================================
-          THUMBNAIL STRIP (Interactive selector)
-         ============================================================ */}
-      {imageList.length > 1 && (
-        <div className="gallery-thumbnails-strip">
-          {imageList.map((imgUrl, idx) => {
-            const isSelected = activeIndex === idx;
-            return (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setActiveIndex(idx)}
-                className={`gallery-thumb-btn ${isSelected ? "is-active" : ""}`}
-                aria-label={`Xem ảnh ${idx + 1}`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imgUrl} alt={`${displayName} thumb ${idx + 1}`} className="thumb-img" />
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {/* ============================================================
           FULLSCREEN LIGHTBOX MODAL (Obsidian Dark Theater Mode)
@@ -339,32 +351,85 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
       <style jsx>{`
         .product-gallery-system {
           width: 100%;
+        }
+
+        .gallery-layout-wrapper {
+          display: flex;
+          flex-direction: row;
+          gap: 14px;
+          align-items: stretch;
+          width: 100%;
+        }
+
+        /* Thumbnail Strip - Vertical on Desktop */
+        .gallery-thumbnails-strip {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 10px;
+          width: 72px;
+          flex-shrink: 0;
+          overflow-y: auto;
+          max-height: 480px;
+        }
+
+        .gallery-thumb-btn {
+          width: 72px;
+          height: 72px;
+          flex-shrink: 0;
+          border-radius: 8px;
+          background: #0d0f14;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          padding: 4px;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+
+        .gallery-thumb-btn:hover {
+          border-color: rgba(34, 197, 94, 0.5);
+          transform: translateY(-2px);
+        }
+
+        .gallery-thumb-btn.is-active {
+          border-color: #22c55e;
+          border-width: 2px;
+          box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+          background: rgba(34, 197, 94, 0.06);
+        }
+
+        .thumb-img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          user-select: none;
         }
 
         /* Main Image Stage */
         .gallery-main-stage {
+          flex: 1;
           position: relative;
-          background: #111216;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 14px;
+          background: #0c0d12;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 12px;
+          min-height: 360px;
+          max-height: 460px;
           aspect-ratio: 4 / 3;
-          min-height: 340px;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 24px;
+          padding: 20px;
           overflow: hidden;
           cursor: crosshair;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
           transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .gallery-main-stage:hover {
-          border-color: rgba(34, 197, 94, 0.4);
-          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(34, 197, 94, 0.15);
+          border-color: rgba(34, 197, 94, 0.35);
+          box-shadow: 0 14px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(34, 197, 94, 0.1);
         }
 
         .gallery-image-wrapper {
@@ -378,7 +443,7 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
 
         .gallery-main-image {
           max-width: 100%;
-          max-height: 300px;
+          max-height: 380px;
           object-fit: contain;
           filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
           transition: transform 0.1s ease-out;
@@ -387,15 +452,44 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           user-select: none;
         }
 
-        /* Badge Stack */
-        .gallery-badge-stack {
+        /* Nav Arrows on Main Stage */
+        .gallery-stage-arrow {
           position: absolute;
-          top: 16px;
-          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: rgba(18, 20, 26, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          color: #ffffff;
+          font-size: 24px;
+          font-weight: 300;
           display: flex;
-          gap: 8px;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           z-index: 10;
-          pointer-events: none;
+          user-select: none;
+        }
+
+        .gallery-stage-arrow:hover {
+          background: #22c55e;
+          border-color: #22c55e;
+          color: #000000;
+          transform: translateY(-50%) scale(1.08);
+          box-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
+        }
+
+        .prev-arrow {
+          left: 14px;
+        }
+
+        .next-arrow {
+          right: 14px;
         }
 
         /* Fullscreen Expand Button */
@@ -403,18 +497,17 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           position: absolute;
           top: 14px;
           right: 14px;
-          display: inline-flex;
+          width: 36px;
+          height: 36px;
+          display: flex;
           align-items: center;
-          gap: 6px;
-          padding: 6px 12px;
-          background: rgba(0, 0, 0, 0.65);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          border-radius: 9999px;
+          justify-content: center;
+          background: rgba(18, 20, 26, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 8px;
           color: #e4e4e7;
-          font-size: 11.5px;
-          font-weight: 700;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           cursor: pointer;
           transition: all 0.2s ease;
           z-index: 10;
@@ -424,7 +517,7 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           background: rgba(34, 197, 94, 0.2);
           border-color: #22c55e;
           color: #4ade80;
-          transform: scale(1.04);
+          transform: scale(1.06);
         }
 
         /* Hover Hint Bar */
@@ -435,73 +528,22 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           transform: translateX(-50%);
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 4px 12px;
-          background: rgba(0, 0, 0, 0.7);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          gap: 6px;
+          padding: 4px 14px;
+          background: rgba(10, 11, 15, 0.75);
+          border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 9999px;
-          color: #a1a1aa;
+          color: #8a8d9b;
           font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.02em;
+          font-weight: 500;
           pointer-events: none;
           backdrop-filter: blur(8px);
-          transition: opacity 0.2s ease, transform 0.2s ease;
+          transition: opacity 0.2s ease;
         }
 
         .gallery-hover-hint.is-active {
-          opacity: 0.9;
           color: #22c55e;
-          border-color: rgba(34, 197, 94, 0.35);
-        }
-
-        .hint-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #22c55e;
-          box-shadow: 0 0 6px #22c55e;
-        }
-
-        /* Thumbnail Strip */
-        .gallery-thumbnails-strip {
-          display: flex;
-          gap: 12px;
-          overflow-x: auto;
-          padding: 4px 2px;
-        }
-
-        .gallery-thumb-btn {
-          width: 68px;
-          height: 68px;
-          flex-shrink: 0;
-          border-radius: 10px;
-          background: #15161a;
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          padding: 6px;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-
-        .gallery-thumb-btn:hover {
-          border-color: rgba(255, 255, 255, 0.4);
-          transform: translateY(-2px);
-        }
-
-        .gallery-thumb-btn.is-active {
-          border-color: #22c55e;
-          box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
-          background: rgba(34, 197, 94, 0.08);
-        }
-
-        .thumb-img {
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
+          border-color: rgba(34, 197, 94, 0.3);
         }
 
         /* ============================================================
@@ -721,8 +763,26 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
         }
 
         @media (max-width: 768px) {
+          .gallery-layout-wrapper {
+            flex-direction: column-reverse;
+            gap: 12px;
+          }
+
+          .gallery-thumbnails-strip {
+            flex-direction: row;
+            width: 100%;
+            max-height: none;
+            overflow-x: auto;
+            padding-bottom: 4px;
+          }
+
+          .gallery-thumb-btn {
+            width: 60px;
+            height: 60px;
+          }
+
           .gallery-main-stage {
-            min-height: 260px;
+            min-height: 280px;
             aspect-ratio: 1 / 1;
             padding: 16px;
           }

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Newsreader } from "next/font/google";
+import { Montserrat, Newsreader, Inter } from "next/font/google";
 import { LanguageProvider } from "./lib/language-context";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
@@ -16,6 +16,12 @@ const montserrat = Montserrat({
 const newsreader = Newsreader({
   subsets: ["latin", "vietnamese"],
   variable: "--font-newsreader",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -238,7 +244,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className={`h-full antialiased ${montserrat.variable} ${newsreader.variable}`} suppressHydrationWarning>
+    <html lang="vi" className={`h-full antialiased ${montserrat.variable} ${newsreader.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="kVT29kH_KCrgKEpwrhUIHZNuYyK5NSNLs0PTC3nrruI" />
         <link rel="icon" href="/icon.png" type="image/png" />

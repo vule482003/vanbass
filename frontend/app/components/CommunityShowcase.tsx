@@ -168,14 +168,50 @@ export default function CommunityShowcase() {
   const [activeSlideIdx, setActiveSlideIdx] = useState<number>(0);
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
+  const touchStartXRef = React.useRef<number>(0);
+  const touchEndXRef = React.useRef<number>(0);
+
   const currentItem = GALLERY_ITEMS[activeSlideIdx] || GALLERY_ITEMS[0];
 
-  const handleNext = () => {
+  // Auto-slide every 4.5 seconds
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlideIdx((prev) => (prev + 1) % GALLERY_ITEMS.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setActiveSlideIdx((prev) => (prev + 1) % GALLERY_ITEMS.length);
   };
 
-  const handlePrev = () => {
+  const handlePrev = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setActiveSlideIdx((prev) => (prev - 1 + GALLERY_ITEMS.length) % GALLERY_ITEMS.length);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartXRef.current - touchEndXRef.current;
+    if (touchEndXRef.current > 0 && Math.abs(diff) > 40) {
+      if (diff > 0) {
+        // Swipe left -> Next
+        handleNext();
+      } else {
+        // Swipe right -> Prev
+        handlePrev();
+      }
+    }
+    touchStartXRef.current = 0;
+    touchEndXRef.current = 0;
   };
 
   return (
@@ -237,11 +273,37 @@ export default function CommunityShowcase() {
 
           {/* CỘT PHẢI: INTERACTIVE GLASS BENTO SHOWCASE */}
           <div className="community-showcase-col">
-            {/* Featured Hero Photo Card with Click-to-Enlarge */}
+            {/* Featured Hero Photo Card with Click-to-Enlarge & Touch Swipe */}
             <div
               className="community-featured-frame"
               onClick={() => setLightboxItem(currentItem)}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
+              {/* Overlaid Mobile Navigation Arrows */}
+              <button
+                type="button"
+                className="comm-mobile-arrow comm-mobile-arrow-prev"
+                onClick={handlePrev}
+                aria-label="Previous Slide"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                className="comm-mobile-arrow comm-mobile-arrow-next"
+                onClick={handleNext}
+                aria-label="Next Slide"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={currentItem.image}
@@ -268,6 +330,16 @@ export default function CommunityShowcase() {
                 <p className="comm-card-desc">
                   {lang === "en" ? currentItem.descEn : currentItem.descVi}
                 </p>
+              </div>
+
+              {/* Mobile Slide Dot Indicator */}
+              <div className="comm-mobile-dots">
+                {GALLERY_ITEMS.slice(0, 6).map((item, idx) => (
+                  <span
+                    key={item.id}
+                    className={`comm-mobile-dot ${idx === (activeSlideIdx % 6) ? "active" : ""}`}
+                  />
+                ))}
               </div>
 
               <div className="comm-zoom-hint">
