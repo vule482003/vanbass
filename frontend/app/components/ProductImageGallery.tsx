@@ -377,7 +377,7 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           height: 72px;
           flex-shrink: 0;
           border-radius: 8px;
-          background: #0d0f14;
+          background: #ffffff;
           border: 1px solid rgba(255, 255, 255, 0.12);
           padding: 4px;
           cursor: pointer;
@@ -397,7 +397,7 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           border-color: #22c55e;
           border-width: 2px;
           box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
-          background: rgba(34, 197, 94, 0.06);
+          background: #ffffff;
         }
 
         .thumb-img {
@@ -411,8 +411,8 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
         .gallery-main-stage {
           flex: 1;
           position: relative;
-          background: #0c0d12;
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.12);
           border-radius: 12px;
           min-height: 360px;
           max-height: 460px;
@@ -445,7 +445,6 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
           max-width: 100%;
           max-height: 380px;
           object-fit: contain;
-          filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
           transition: transform 0.1s ease-out;
           will-change: transform;
           pointer-events: none;

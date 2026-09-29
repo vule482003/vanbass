@@ -244,7 +244,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className={`h-full antialiased ${montserrat.variable} ${newsreader.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html
+      lang="vi"
+      className={`h-full antialiased ${montserrat.variable} ${newsreader.variable} ${inter.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <meta name="google-site-verification" content="kVT29kH_KCrgKEpwrhUIHZNuYyK5NSNLs0PTC3nrruI" />
         <link rel="icon" href="/icon.png" type="image/png" />

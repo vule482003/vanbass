@@ -55,8 +55,8 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // Only respond to main button (left click)
-    if (e.button !== 0 && e.pointerType === "mouse") return;
+    // Only handle mouse pointer events for desktop drag & rubber-band; leave touch gestures to native smooth mobile scrolling
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
     const track = trackRef.current;
     if (!track) return;
 
@@ -73,6 +73,7 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
     if (!isDraggingRef.current || !trackRef.current) return;
     const track = trackRef.current;
     const rawDx = e.clientX - startXRef.current;
@@ -117,6 +118,7 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
   };
 
   const handlePointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" && !isDraggingRef.current) return;
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
     setIsDragging(false);

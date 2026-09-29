@@ -455,7 +455,7 @@ export default function ProductDetailClient({
                 {product.sale_enabled ? (
                   product.stock_quantity > 0 ? (
                     <>
-                      {/* Row 1: Quantity Stepper + Add To Cart + Cart Icon Button */}
+                      {/* Row: Quantity Stepper + MUA NGAY + Cart Icon */}
                       <div className="pdetail-cta-row-1">
                         <div className="pdetail-stepper">
                           <button
@@ -479,15 +479,10 @@ export default function ProductDetailClient({
 
                         <button
                           type="button"
-                          onClick={handleAddToCart}
+                          onClick={handleBuyNow}
                           className="pdetail-btn-add-cart"
                         >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="9" cy="21" r="1" />
-                            <circle cx="20" cy="21" r="1" />
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                          </svg>
-                          <span>THÊM VÀO GIỎ HÀNG</span>
+                          <span>MUA NGAY</span>
                         </button>
 
                         <button
@@ -505,18 +500,6 @@ export default function ProductDetailClient({
                           <span className="cart-badge-dot">1</span>
                         </button>
                       </div>
-
-                      {/* Row 2: Full-Width Buy Now CTA */}
-                      <button
-                        type="button"
-                        onClick={handleBuyNow}
-                        className="pdetail-btn-buy-now"
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                        </svg>
-                        <span>MUA NGAY</span>
-                      </button>
                     </>
                   ) : (
                     <button disabled className="pdetail-btn-disabled">
@@ -923,7 +906,7 @@ export default function ProductDetailClient({
         .pdetail-sale-price {
           font-size: 28px;
           font-weight: 800;
-          color: #22c55e;
+          color: #ffffff;
           letter-spacing: -0.02em;
           font-variant-numeric: tabular-nums;
         }
@@ -1083,22 +1066,22 @@ export default function ProductDetailClient({
           color: #000000;
           border: none;
           border-radius: 8px;
-          font-size: 13px;
-          font-weight: 700;
-          letter-spacing: 0.02em;
+          font-size: 13.5px;
+          font-weight: 800;
+          letter-spacing: 0.03em;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
           cursor: pointer;
           transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+          box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
         }
 
         .pdetail-btn-add-cart:hover {
           background: #16a34a;
           transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(34, 197, 94, 0.45);
+          box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
         }
 
         .pdetail-btn-cart-icon {
