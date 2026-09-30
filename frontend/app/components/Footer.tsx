@@ -74,6 +74,55 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Hot Search DJ Equipment Internal Linking Strip */}
+      <div className="container" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", padding: "26px 0 20px" }}>
+        <div style={{ fontSize: "11px", fontWeight: 800, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
+          <span>🔥</span>
+          <span>Hot Search Bàn DJ (Mua Bán & Cho Thuê Chính Hãng)</span>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", fontSize: "12.5px" }}>
+          <Link href="/products/xdj-rx3" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            Pioneer XDJ-RX3 (Mua Bán & Thuê)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/xdj-rx2" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            Pioneer XDJ-RX2 (All-In-One 2 Kênh)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/xdj-rr" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            Pioneer XDJ-RR (All-In-One Mini)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/ddj-flx4" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            Pioneer DDJ-FLX4 (DJ Controller Quốc Dân)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/ddj-flx2" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            AlphaTheta DDJ-FLX2 (Bluetooth Siêu Gọn)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/omnis-duo" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            AlphaTheta OMNIS-DUO (Dùng Pin Không Dây)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/xdj-az" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            AlphaTheta XDJ-AZ (Flagship 4 Kênh)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/xdj-an" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            AlphaTheta XDJ-AN (All-In-One Thế Hệ Mới)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/products/xdj-xz" style={{ color: "#d4d4d8", textDecoration: "none" }}>
+            Pioneer DJ XDJ-XZ (Chuẩn Bar Club)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/thue-ban-dj" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+            Bảng Giá Thuê Bàn DJ 24/7 &rarr;
+          </Link>
+        </div>
+      </div>
+
       <div className="container footer-bottom">
         <span data-cms-key="local_cta.copyright" data-cms-label="Bản Quyền Footer" data-cms-type="text">© {new Date().getFullYear()} {t.footer.copyright}</span>
         <span style={{ color: "#22c55e" }}>{t.footer.brandsBottom}</span>

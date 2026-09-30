@@ -202,6 +202,9 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "kVT29kH_KCrgKEpwrhUIHZNuYyK5NSNLs0PTC3nrruI",
+    other: {
+      "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION || "8E04D1BBBC3506AA648937D52F1DBC90",
+    },
   },
   openGraph: {
     type: "website",
@@ -209,23 +212,23 @@ export const metadata: Metadata = {
     alternateLocale: ["en_US"],
     url: siteUrl,
     siteName: "VanBass Music Center",
-    title: "VanBass Music Center | Cho Thuê Bàn DJ & Thiết Bị Âm Thanh | DJ Equipment Rental",
+    title: "VanBass Music Center | Mua Bán & Cho Thuê Bàn DJ Chính Hãng Giá Tốt Nhất",
     description:
-      "Dịch vụ cho thuê bàn DJ Pioneer XDJ-RX3, XDJ-RX2, DDJ-FLX4, DDJ-FLX2, AlphaTheta Omnis-Duo, XDJ-AZ và loa B&C Speakers tại Đà Nẵng & Toàn quốc. English support available.",
+      "Đại lý phân phối & cho thuê bàn DJ chính hãng Pioneer DJ, AlphaTheta: XDJ-RX3, XDJ-RX2, XDJ-RR, DDJ-FLX4, DDJ-FLX2, Omnis-Duo, XDJ-AZ, XDJ-AN, XDJ-XZ và loa B&C Speakers tại Đà Nẵng, Huế & Toàn quốc. Trả góp 0%, bảo hành 12-24T, giao lắp tận nơi 24/7.",
     images: [
       {
         url: "/images/rental/rental_fleet_hero.jpg",
         width: 1200,
         height: 630,
-        alt: "VanBass Music Center - Cho Thuê Bàn DJ & Âm Thanh Chuyên Nghiệp",
+        alt: "VanBass Music Center - Mua Bán & Cho Thuê Bàn DJ Chính Hãng",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "VanBass Music Center | Cho Thuê Bàn DJ & DJ Equipment Rental Vietnam",
+    title: "VanBass Music Center | Mua Bán & Cho Thuê Bàn DJ Chính Hãng Pioneer & AlphaTheta",
     description:
-      "Dịch vụ cho thuê bàn DJ Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ tại Đà Nẵng. Professional DJ gear hire 24/7.",
+      "Phân phối & cho thuê bàn DJ Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, XDJ-RX2, DDJ-FLX2 tại Đà Nẵng, Huế & Toàn quốc. Bảo hành chính hãng, trả góp 0%, giao 24/7.",
     images: ["/images/rental/rental_fleet_hero.jpg"],
   },
   icons: {
@@ -252,6 +255,7 @@ export default function RootLayout({
     >
       <head>
         <meta name="google-site-verification" content="kVT29kH_KCrgKEpwrhUIHZNuYyK5NSNLs0PTC3nrruI" />
+        <meta name="msvalidate.01" content={process.env.NEXT_PUBLIC_BING_VERIFICATION || "8E04D1BBBC3506AA648937D52F1DBC90"} />
         <link rel="icon" href="/icon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
         <JsonLd />

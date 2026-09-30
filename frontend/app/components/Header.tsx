@@ -716,6 +716,42 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                       </div>
                     )}
 
+                    {/* Smart Quick-Action Banner for Sales / Buying Intent */}
+                    {searchIntent?.isBuy && (
+                      <div
+                        onMouseDown={() => {
+                          setIsSearchDropdownOpen(false);
+                          router.push("/products");
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 14px",
+                          background: "linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(24, 24, 27, 0.9))",
+                          border: "1px solid rgba(56, 189, 248, 0.35)",
+                          borderRadius: "10px",
+                          margin: "8px 10px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <span style={{ fontSize: "18px" }}>🛒</span>
+                          <div>
+                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#38bdf8" }}>
+                              {lang === "en" ? "Official DJ Gear Sales • Pioneer & AlphaTheta" : "Mua Bán Bàn DJ Chính Hãng • Trả Góp 0%"}
+                            </div>
+                            <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>
+                              {lang === "en" ? "100% Genuine, 12-24M Warranty, Nationwide Delivery" : "Bảo hành 12-24T • Tặng kèm USB nhạc Rekordbox • COD toàn quốc"}
+                            </div>
+                          </div>
+                        </div>
+                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#38bdf8" }}>
+                          {lang === "en" ? "Catalog →" : "Xem giá bán →"}
+                        </span>
+                      </div>
+                    )}
+
                     {searchResults.length === 0 ? (
                       <div style={{ padding: "16px", color: "#a1a1aa", fontSize: "13px", textAlign: "center" }}>
                         {t.nav.noResults}

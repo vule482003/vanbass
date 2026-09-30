@@ -6,7 +6,19 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: "*",
+        userAgent: [
+          "Googlebot",
+          "Googlebot-Image",
+          "Bingbot",
+          "MSNBot",
+          "Slurp",
+          "DuckDuckBot",
+          "Baiduspider",
+          "YandexBot",
+          "facebookexternalhit",
+          "Twitterbot",
+          "*",
+        ],
         allow: [
           "/",
           "/thue-ban-dj",
@@ -16,6 +28,8 @@ export default function robots(): MetadataRoute.Robots {
           "/about",
           "/contact",
           "/static/uploads/*",
+          "/*.txt",
+          "/*.xml",
         ],
         disallow: [
           "/admin",
@@ -25,7 +39,7 @@ export default function robots(): MetadataRoute.Robots {
           "/cart",
           "/login",
           "/register",
-          "/api/*",
+          "/api/admin/*",
         ],
       },
     ],

@@ -45,7 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // 8 Hot Search Priority Models
+  // Hot Search Priority Models (Top DJ Gear for Sales & Rental)
   const hotSearchSlugs = [
     "xdj-rx3",
     "xdj-rx2",
@@ -55,13 +55,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "omnis-duo",
     "xdj-az",
     "xdj-an",
+    "xdj-xz",
   ];
 
   const hotModelRoutes: MetadataRoute.Sitemap = hotSearchSlugs.map((slug) => ({
     url: `${baseUrl}/products/${slug}`,
     lastModified: now,
     changeFrequency: "daily",
-    priority: 0.95,
+    priority: 1.0,
   }));
 
   // Dynamic product routes (excluding duplicates from hotSearchSlugs)

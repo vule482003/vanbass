@@ -635,12 +635,103 @@ export default function ProductDetailClient({
             </div>
           </div>
 
+          {/* Official Sales & Distribution Trust Section */}
+          <div
+            style={{
+              marginBottom: "32px",
+              padding: "32px",
+              backgroundColor: "rgba(24, 24, 27, 0.7)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              borderRadius: "14px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "24px",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px" }}>
+              <div style={{ maxWidth: "720px" }}>
+                <span style={{ fontSize: "12px", color: "#38bdf8", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px" }}>
+                  🛒 MUA BÁN & PHÂN PHỐI CHÍNH HÃNG PIONEER DJ & ALPHATHETA
+                </span>
+                <h3 style={{ fontSize: "24px", fontWeight: 800, color: "#ffffff", margin: 0, lineHeight: 1.3 }}>
+                  Mua Bàn DJ {displayName} Chính Hãng Giá Tốt Nhất
+                </h3>
+                <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "10px 0 0 0", lineHeight: 1.6 }}>
+                  VanBass Music Center phân phối và cung ứng thiết bị DJ {displayName} mới 100% đập hộp và hàng like new 99% tuyển chọn. Cam kết chính hãng trọn đời, bảo hành 12 - 24 tháng, hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng, ship COD kiểm tra hàng tận nơi toàn quốc và hỗ trợ kỹ thuật cài đặt Rekordbox / Serato 24/7.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+                <a
+                  href="tel:0706067799"
+                  className="button button-primary"
+                  style={{
+                    backgroundColor: "#38bdf8",
+                    color: "#000",
+                    fontWeight: 800,
+                    padding: "12px 22px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  <span>Tư vấn mua: 0706.067.799</span>
+                </a>
+
+                <a
+                  href={`https://m.me/${facebookPageId}?text=${encodeURIComponent(`Xin chào, tôi muốn nhận báo giá mua bàn DJ ${displayName}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button button-secondary"
+                  style={{ padding: "12px 20px", fontWeight: 700 }}
+                >
+                  <span>Báo giá qua Messenger &rarr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", paddingTop: "20px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", fontSize: "13px", color: "#e4e4e7" }}>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <span style={{ fontSize: "18px" }}>🏆</span>
+                <div>
+                  <strong style={{ color: "#fff", display: "block" }}>100% Chính Hãng</strong>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Nguyên seal, CO/CQ đầy đủ từ Pioneer DJ & AlphaTheta</span>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <span style={{ fontSize: "18px" }}>🛡️</span>
+                <div>
+                  <strong style={{ color: "#fff", display: "block" }}>Bảo Hành 12 - 24 Tháng</strong>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Bảo dưỡng fader/jogwheel định kỳ, hỗ trợ kỹ thuật trọn đời</span>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <span style={{ fontSize: "18px" }}>💳</span>
+                <div>
+                  <strong style={{ color: "#fff", display: "block" }}>Trả Góp 0% Lãi Suất</strong>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Duyệt online 5 phút qua thẻ tín dụng hơn 25 ngân hàng</span>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <span style={{ fontSize: "18px" }}>🎁</span>
+                <div>
+                  <strong style={{ color: "#fff", display: "block" }}>Quà Tặng Độc Quyền</strong>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Tặng USB Sandisk nạp nhạc Rekordbox + Cáp xịn + Khóa học DJ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Local Rental & Fast Delivery Cross-linking Banner */}
           <div className="pdetail-cross-rental-banner">
             <div className="pdetail-banner-content">
               <div>
                 <span className="pdetail-banner-kicker">
-                  ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng & Miền Trung
+                  ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng, Huế & Miền Trung
                 </span>
                 <h3 className="pdetail-banner-title">
                   Thuê Bàn DJ {displayName} Giao Lắp Tận Nơi 24/7
