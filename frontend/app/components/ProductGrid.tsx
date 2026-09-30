@@ -5,11 +5,122 @@ import Link from "next/link";
 import { Product } from "../lib/types";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
 import { useLanguage } from "../lib/language-context";
+import { resolveProductImage } from "../lib/image-helper";
 import ProductCard from "./ProductCard";
 
 function formatPriceVND(amount?: number | null) {
   if (!amount) return "Liên hệ";
   return new Intl.NumberFormat("vi-VN").format(amount) + "₫";
+}
+
+// Sub-component for individual card with image fallback
+function Top10ProductCardItem({ product, idx }: { product: Product; idx: number }) {
+  const [prevProductId, setPrevProductId] = useState(product.id || product.slug);
+  const [imgSrc, setImgSrc] = useState(() =>
+    resolveProductImage(product.images?.[0]?.image_url || product.image_url)
+  );
+  const [fallbackStep, setFallbackStep] = useState(0);
+
+  if ((product.id || product.slug) !== prevProductId) {
+    setPrevProductId(product.id || product.slug);
+    setImgSrc(resolveProductImage(product.images?.[0]?.image_url || product.image_url));
+    setFallbackStep(0);
+  }
+
+  const handleImgError = () => {
+    if (fallbackStep === 0 && product.slug) {
+      setFallbackStep(1);
+      setImgSrc(`/images/products/${product.slug}.png`);
+    } else if (fallbackStep === 1 && product.slug) {
+      setFallbackStep(2);
+      setImgSrc(`/images/products/${product.slug}.jpg`);
+    } else {
+      setImgSrc("/images/products/placeholder.png");
+    }
+  };
+
+  const salePrice = product.sale_price || 0;
+  const originalPrice = salePrice > 0 ? Math.round(salePrice * 1.25) : 0;
+  const discountPct = [28, 36, 20, 15, 30, 22, 18, 25, 32, 16][idx % 10];
+
+  const categoryName = (product.category_name || product.category_slug || product.name || "").toLowerCase();
+  let giftText = "Tặng gói bảo hành vàng 24 tháng chính hãng";
+  if (categoryName.includes("dj") || categoryName.includes("xdj") || categoryName.includes("ddj") || categoryName.includes("controller")) {
+    giftText = "Tặng túi đựng bàn DJ 1.200.000đ";
+  } else if (categoryName.includes("loa") || categoryName.includes("speaker") || categoryName.includes("âm thanh") || categoryName.includes("mixer")) {
+    giftText = "Tặng gói setup cân chỉnh âm thanh Pro";
+  } else if (categoryName.includes("khói") || categoryName.includes("sáng") || categoryName.includes("effects")) {
+    giftText = "Tặng can dung dịch tạo khói cao cấp";
+  }
+
+  const soldCount = 85 + ((idx * 17) % 120);
+
+  return (
+    <div className="top10-product-card-wrap">
+      <div className="top10-product-card">
+        {/* Product Image */}
+        <Link
+          href={`/products/${product.slug}`}
+          className="top10-img-link"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imgSrc}
+            alt={product.name}
+            className="top10-img"
+            loading="lazy"
+            draggable={false}
+            onError={handleImgError}
+            onDragStart={(e) => e.preventDefault()}
+          />
+        </Link>
+
+        {/* Ribbon Badge */}
+        <div className="vb-card-sale-pill" style={{ marginBottom: "4px" }}>
+          <span className="vb-sale-flag">SALE</span>
+          <span className="vb-sale-text">BÁN CHẠY</span>
+        </div>
+
+        {/* Product Title */}
+        <Link
+          href={`/products/${product.slug}`}
+          className="top10-title"
+          title={product.name}
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+        >
+          {product.name}
+        </Link>
+
+        {/* Price Row */}
+        <div className="top10-price-row">
+          <span className="top10-sale-price">
+            {salePrice > 0 ? formatPriceVND(salePrice) : (product.rental_price ? `${formatPriceVND(product.rental_price)}/ngày` : "Giá liên hệ")}
+          </span>
+          {originalPrice > 0 && (
+            <div className="vb-card-old-price-row">
+              <span className="top10-old-price">{formatPriceVND(originalPrice)}</span>
+              <span className="vb-card-discount-pill">-{discountPct}%</span>
+            </div>
+          )}
+        </div>
+
+        {/* Gift Note */}
+        <div className="vb-card-gift-note" title={giftText}>
+          <span className="vb-gift-text">{giftText}</span>
+        </div>
+
+        {/* Rating & Sold Stats */}
+        <div className="vb-card-rating-sold-row" style={{ marginTop: "4px" }}>
+          <span className="vb-rating-score">5/5 <span className="vb-star-icon">★</span></span>
+          <span className="vb-rating-sep">|</span>
+          <span className="vb-sold-count">Đã Bán: {soldCount}</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // 1. TOP 10 BESTSELLER SHOWCASE BOX (INSPIRED BY DIENTULINHANH)
@@ -228,90 +339,9 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
           onDragStart={(e) => e.preventDefault()}
           onClickCapture={handleClickCapture}
         >
-          {products.map((p, idx) => {
-            const rawImg = p.images?.[0]?.image_url || p.image_url || "/images/products/xdj-rx3.png";
-            const salePrice = p.sale_price || 0;
-            const originalPrice = salePrice > 0 ? Math.round(salePrice * 1.25) : 0;
-            const discountPct = [28, 36, 20, 15, 30, 22, 18, 25, 32, 16][idx % 10];
-
-            const categoryName = (p.category_name || p.category_slug || p.name || "").toLowerCase();
-            let giftText = "Tặng gói bảo hành vàng 24 tháng chính hãng";
-            if (categoryName.includes("dj") || categoryName.includes("xdj") || categoryName.includes("ddj") || categoryName.includes("controller")) {
-              giftText = "Tặng túi đựng bàn DJ 1.200.000đ";
-            } else if (categoryName.includes("loa") || categoryName.includes("speaker") || categoryName.includes("âm thanh") || categoryName.includes("mixer")) {
-              giftText = "Tặng gói setup cân chỉnh âm thanh Pro";
-            } else if (categoryName.includes("khói") || categoryName.includes("sáng") || categoryName.includes("effects")) {
-              giftText = "Tặng can dung dịch tạo khói cao cấp";
-            }
-
-            const soldCount = 85 + ((idx * 17) % 120);
-
-            return (
-              <div key={p.id} className="top10-product-card-wrap">
-                <div className="top10-product-card">
-                  {/* Product Image */}
-                  <Link
-                    href={`/products/${p.slug}`}
-                    className="top10-img-link"
-                    draggable={false}
-                    onDragStart={(e) => e.preventDefault()}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={rawImg}
-                      alt={p.name}
-                      className="top10-img"
-                      loading="lazy"
-                      draggable={false}
-                      onDragStart={(e) => e.preventDefault()}
-                    />
-                  </Link>
-
-                  {/* Ribbon Badge */}
-                  <div className="vb-card-sale-pill" style={{ marginBottom: "4px" }}>
-                    <span className="vb-sale-flag">SALE</span>
-                    <span className="vb-sale-text">BÁN CHẠY</span>
-                  </div>
-
-                  {/* Product Title */}
-                  <Link
-                    href={`/products/${p.slug}`}
-                    className="top10-title"
-                    title={p.name}
-                    draggable={false}
-                    onDragStart={(e) => e.preventDefault()}
-                  >
-                    {p.name}
-                  </Link>
-
-                  {/* Price Row */}
-                  <div className="top10-price-row">
-                    <span className="top10-sale-price">
-                      {salePrice > 0 ? formatPriceVND(salePrice) : (p.rental_price ? `${formatPriceVND(p.rental_price)}/ngày` : "Giá liên hệ")}
-                    </span>
-                    {originalPrice > 0 && (
-                      <div className="vb-card-old-price-row">
-                        <span className="top10-old-price">{formatPriceVND(originalPrice)}</span>
-                        <span className="vb-card-discount-pill">-{discountPct}%</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Gift Note */}
-                  <div className="vb-card-gift-note" title={giftText}>
-                    <span className="vb-gift-text">{giftText}</span>
-                  </div>
-
-                  {/* Rating & Sold Stats */}
-                  <div className="vb-card-rating-sold-row" style={{ marginTop: "4px" }}>
-                    <span className="vb-rating-score">5/5 <span className="vb-star-icon">★</span></span>
-                    <span className="vb-rating-sep">|</span>
-                    <span className="vb-sold-count">Đã Bán: {soldCount}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {products.map((p, idx) => (
+            <Top10ProductCardItem key={p.id} product={p} idx={idx} />
+          ))}
         </div>
       </div>
     </div>

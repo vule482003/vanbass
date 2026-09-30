@@ -10,6 +10,8 @@ import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
 import { getTranslatedProductName } from "../lib/product-i18n";
 
+import { resolveProductImage } from "../lib/image-helper";
+
 interface ProductCardProps {
   product: Product;
   currentMode?: "all" | "sale" | "rental";
@@ -29,7 +31,6 @@ export default function ProductCard({
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
   const { t, lang } = useLanguage();
-  const [imageError, setImageError] = useState(false);
 
   function formatVND(amount?: number | null) {
     if (amount === undefined || amount === null) return t.products.contactPrice;
@@ -56,18 +57,31 @@ export default function ProductCard({
     e.stopPropagation();
   };
 
-  const resolveImageUrl = (url?: string) => {
-    if (!url) return null;
-    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
-    if (url.startsWith("/images/")) return url;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    const backendBase = apiUrl.replace(/\/api\/?$/, "");
-    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
+  const [prevProductId, setPrevProductId] = useState(product.id || product.slug);
+  const [currentImgSrc, setCurrentImgSrc] = useState(() =>
+    resolveProductImage(product.images?.[0]?.image_url || product.image_url)
+  );
+  const [imageError, setImageError] = useState(false);
+  const [triedFallback, setTriedFallback] = useState(false);
+
+  // Sync state during render when product changes
+  if ((product.id || product.slug) !== prevProductId) {
+    setPrevProductId(product.id || product.slug);
+    setCurrentImgSrc(resolveProductImage(product.images?.[0]?.image_url || product.image_url));
+    setImageError(false);
+    setTriedFallback(false);
+  }
+
+  const handleImageError = () => {
+    if (!triedFallback && product.slug) {
+      setTriedFallback(true);
+      setCurrentImgSrc(`/images/products/${product.slug}.png`);
+    } else {
+      setImageError(true);
+    }
   };
 
-  const rawImage = product.images?.[0]?.image_url || product.image_url;
-  const primaryImage = resolveImageUrl(rawImage);
-  const showImage = Boolean(primaryImage && !imageError);
+  const showImage = !imageError;
   const displayName = getTranslatedProductName(product, lang);
   const isOutOfStock = product.stock_quantity <= 0;
 
@@ -101,11 +115,11 @@ export default function ProductCard({
           {showImage ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
-              src={primaryImage!}
+              src={currentImgSrc}
               alt={displayName}
               className="vb-product-image"
               loading="lazy"
-              onError={() => setImageError(true)}
+              onError={handleImageError}
             />
           ) : (
             <div className="product-image-fallback">

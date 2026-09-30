@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { getMessengerRentalUrl } from "../lib/api";
 import { useLanguage } from "../lib/language-context";
 import { getTranslatedProductName } from "../lib/product-i18n";
+import { resolveProductImage } from "../lib/image-helper";
 
 interface CompareDrawerProps {
   products: Product[];
@@ -73,12 +73,11 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                   }}
                   title={displayName}
                 >
-                  <Image
-                    src={prod.image_url || "/images/placeholder.jpg"}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={resolveProductImage(prod.images?.[0]?.image_url || prod.image_url)}
                     alt={displayName}
-                    fill
-                    style={{ objectFit: "contain", padding: "4px" }}
-                    sizes="36px"
+                    style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px" }}
                   />
                   <button
                     onClick={() => onRemoveProduct(prod.id)}
@@ -230,8 +229,9 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
                           }}
                         >
                           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-                            <div style={{ position: "relative", width: "120px", height: "120px", marginBottom: "12px", borderRadius: "8px", backgroundColor: "#09090b", overflow: "hidden" }}>
-                              <Image src={prod.image_url || "/images/placeholder.jpg"} alt={displayName} fill style={{ objectFit: "contain", padding: "8px" }} />
+                            <div style={{ position: "relative", width: "120px", height: "120px", marginBottom: "12px", borderRadius: "8px", backgroundColor: "#09090b", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={resolveProductImage(prod.images?.[0]?.image_url || prod.image_url)} alt={displayName} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", padding: "8px" }} />
                             </div>
                             <Link href={`/products/${prod.slug}`} style={{ color: "#fff", fontWeight: 800, fontSize: "14px", textDecoration: "none", marginBottom: "6px" }}>
                               {displayName}

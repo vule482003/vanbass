@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Product } from "../lib/types";
 import { useLanguage } from "../lib/language-context";
+
+import { resolveProductImage } from "../lib/image-helper";
 
 interface ProductImageGalleryProps {
   product: Product;
@@ -12,32 +14,25 @@ interface ProductImageGalleryProps {
 export default function ProductImageGallery({ product, displayName }: ProductImageGalleryProps) {
   const { lang } = useLanguage();
 
-  // Helper to resolve image URLs safely
-  const resolveImageUrl = useCallback((url?: string) => {
-    if (!url) return null;
-    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
-    if (url.startsWith("/images/")) return url;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    const backendBase = apiUrl.replace(/\/api\/?$/, "");
-    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
-  }, []);
-
   // Assemble full image list
   const imageList: string[] = React.useMemo(() => {
     const list: string[] = [];
     if (product.images && product.images.length > 0) {
       const sorted = [...product.images].sort((a, b) => a.sort_order - b.sort_order);
       sorted.forEach((img) => {
-        const resolved = resolveImageUrl(img.image_url);
+        const resolved = resolveProductImage(img.image_url);
         if (resolved && !list.includes(resolved)) list.push(resolved);
       });
     }
     if (product.image_url) {
-      const resolved = resolveImageUrl(product.image_url);
+      const resolved = resolveProductImage(product.image_url);
       if (resolved && !list.includes(resolved)) list.unshift(resolved);
     }
+    if (list.length === 0 && product.slug) {
+      list.push(`/images/products/${product.slug}.png`);
+    }
     return list;
-  }, [product, resolveImageUrl]);
+  }, [product]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZooming, setIsZooming] = useState(false);

@@ -9,6 +9,8 @@ import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
 import { getTranslatedProductName, getTranslatedProductDesc, getProductPlainExcerpt } from "../lib/product-i18n";
 
+import { resolveProductImage } from "../lib/image-helper";
+
 interface QuickViewModalProps {
   product: Product | null;
   onClose: () => void;
@@ -41,18 +43,9 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const displayDesc = getTranslatedProductDesc(product, lang);
   const cleanExcerpt = getProductPlainExcerpt(displayDesc, 260);
 
-  const resolveModalImg = (url?: string) => {
-    if (!url) return "/images/placeholder.jpg";
-    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:") || url.startsWith("blob:")) return url;
-    if (url.startsWith("/images/")) return url;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    const backendBase = apiUrl.replace(/\/api\/?$/, "");
-    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
-  };
-
   const imagesList = (product.images && product.images.length > 0
-    ? product.images.map((i) => resolveModalImg(i.image_url))
-    : [resolveModalImg(product.image_url)]
+    ? product.images.map((i) => resolveProductImage(i.image_url))
+    : [resolveProductImage(product.image_url)]
   ).filter(Boolean) as string[];
 
   const handleAddToCart = () => {

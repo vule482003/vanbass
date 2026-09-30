@@ -9,6 +9,7 @@ import { useCart } from "../lib/cart-context";
 import { useAuth } from "../lib/auth-context";
 import { useLanguage } from "../lib/language-context";
 import { getTranslatedProductName } from "../lib/product-i18n";
+import { resolveProductImage } from "../lib/image-helper";
 
 function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
   if (amount === undefined || amount === null) return "0 ₫";
@@ -652,13 +653,7 @@ function CartContent() {
                             {item.image_url ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
-                                src={
-                                  item.image_url.startsWith("http://") || item.image_url.startsWith("https://") || item.image_url.startsWith("data:")
-                                    ? item.image_url
-                                    : item.image_url.startsWith("/")
-                                    ? item.image_url
-                                    : `/${item.image_url}`
-                                }
+                                src={resolveProductImage(item.image_url)}
                                 alt={getTranslatedProductName(item, lang)}
                                 style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px" }}
                                 onError={(e) => {
