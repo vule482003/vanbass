@@ -77,9 +77,8 @@ export default function Footer() {
 
       {/* Hot Search DJ Equipment Internal Linking Strip */}
       <div className="container" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", padding: "26px 0 20px" }}>
-        <div style={{ fontSize: "11px", fontWeight: 800, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
-          <span>🔥</span>
-          <span>Hot Search Bàn DJ (Mua Bán & Cho Thuê Chính Hãng)</span>
+        <div style={{ fontSize: "11px", fontWeight: 800, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "14px" }}>
+          Hot Search Bàn DJ (Mua Bán & Cho Thuê Chính Hãng)
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", fontSize: "12.5px" }}>
           <Link href="/products/xdj-rx3" style={{ color: "#d4d4d8", textDecoration: "none" }}>
@@ -119,7 +118,7 @@ export default function Footer() {
           </Link>
           <span style={{ color: "#3f3f46" }}>•</span>
           <Link href="/sua-chua-ban-dj" style={{ color: "#38bdf8", fontWeight: 700, textDecoration: "none" }}>
-            🛠️ Sửa Chữa & Thay Fader Bàn DJ Lấy Liền
+            Sửa Chữa & Thay Fader Bàn DJ Lấy Liền
           </Link>
           <span style={{ color: "#3f3f46" }}>•</span>
           <Link href="/thue-ban-dj" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
