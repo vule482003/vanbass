@@ -189,9 +189,7 @@ export default function SuaChuaBanDjPage() {
                 fontWeight: 800,
                 textTransform: "uppercase",
                 letterSpacing: "0.14em",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
+                display: "inline-block",
                 marginBottom: "12px",
                 backgroundColor: "rgba(34, 197, 94, 0.12)",
                 padding: "6px 14px",
@@ -199,8 +197,7 @@ export default function SuaChuaBanDjPage() {
                 border: "1px solid rgba(34, 197, 94, 0.3)",
               }}
             >
-              <span>⚡</span>
-              <span>DỊCH VỤ SỬA CHỮA LẤY LIỀN - BẢO HÀNH 6-12 THÁNG</span>
+              DỊCH VỤ SỬA CHỮA LẤY LIỀN - BẢO HÀNH 6-12 THÁNG
             </span>
 
             <h1
@@ -241,11 +238,10 @@ export default function SuaChuaBanDjPage() {
                   fontWeight: 800,
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "8px",
                   boxShadow: "0 0 25px rgba(34, 197, 94, 0.4)",
                 }}
               >
-                <span>📞 Hotline Kỹ Thuật: 0706 067 799</span>
+                Hotline Kỹ Thuật: 0706 067 799
               </a>
 
               <a
@@ -261,7 +257,7 @@ export default function SuaChuaBanDjPage() {
                   border: "1px solid rgba(255, 255, 255, 0.15)",
                 }}
               >
-                <span>💬 Nhắn Tin Báo Lỗi Ngay</span>
+                Nhắn Tin Báo Lỗi Ngay
               </a>
             </div>
           </div>
@@ -297,7 +293,6 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <div style={{ fontSize: "32px", marginBottom: "14px" }}>🎚️</div>
                 <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
                   Thay Fader & Crossfader Chính Hãng
                 </h3>
@@ -315,7 +310,6 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <div style={{ fontSize: "32px", marginBottom: "14px" }}>💿</div>
                 <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
                   Sửa Jogwheel & Cân Chỉnh Cảm Ứng Mâm
                 </h3>
@@ -333,7 +327,6 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <div style={{ fontSize: "32px", marginBottom: "14px" }}>🔌</div>
                 <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
                   Sửa Nguồn, Cổng Cắm USB & Jack Âm Thanh
                 </h3>
@@ -351,7 +344,6 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <div style={{ fontSize: "32px", marginBottom: "14px" }}>✨</div>
                 <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
                   Vệ Sinh & Bảo Dưỡng Chuyên Sâu Lấy Liền
                 </h3>
