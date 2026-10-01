@@ -35,22 +35,22 @@ export default function PoliciesPage() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#09090b",
+        backgroundColor: "#08090c",
         color: "#f4f4f5",
         fontFamily: "var(--font-primary)",
       }}
     >
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
+      <main style={{ flex: 1, paddingTop: "130px", paddingBottom: "100px" }}>
         <div className="container" style={{ maxWidth: "1140px", margin: "0 auto" }}>
           {/* Header */}
           <div style={{ maxWidth: "780px", marginBottom: "50px" }}>
             <span
               style={{
-                color: "#e6dec9",
+                color: "#1683FF",
                 fontSize: "12px",
-                fontWeight: 600,
+                fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
                 display: "inline-block",
@@ -69,7 +69,15 @@ export default function PoliciesPage() {
                 color: "#ffffff",
               }}
             >
-              {lang === "en" ? "Policies & Terms of Service" : "Chính sách & Quy định VanBass"}
+              {lang === "en" ? (
+                <>
+                  Policies & <span style={{ color: "#1683FF" }}>Terms of Service</span>
+                </>
+              ) : (
+                <>
+                  Chính sách & <span style={{ color: "#1683FF" }}>Quy định VanBass</span>
+                </>
+              )}
             </h1>
 
             <p style={{ color: "#a1a1aa", fontSize: "15px", lineHeight: 1.75, margin: 0 }}>
@@ -94,7 +102,7 @@ export default function PoliciesPage() {
               style={{
                 position: "sticky",
                 top: "100px",
-                backgroundColor: "#111114",
+                backgroundColor: "#0d0f15",
                 border: "1px solid rgba(255, 255, 255, 0.08)",
                 borderRadius: "14px",
                 padding: "24px 20px",
@@ -104,7 +112,7 @@ export default function PoliciesPage() {
                 style={{
                   fontSize: "12px",
                   fontWeight: 700,
-                  color: "#e6dec9",
+                  color: "#1683FF",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   marginBottom: "16px",
@@ -129,8 +137,8 @@ export default function PoliciesPage() {
                         textAlign: "left",
                         fontSize: "13.5px",
                         fontWeight: isActive ? 600 : 400,
-                        backgroundColor: isActive ? "rgba(230, 222, 201, 0.12)" : "transparent",
-                        color: isActive ? "#e6dec9" : "#a1a1aa",
+                        backgroundColor: isActive ? "rgba(22, 131, 255, 0.12)" : "transparent",
+                        color: isActive ? "#1683FF" : "#a1a1aa",
                         border: "none",
                         cursor: "pointer",
                         transition: "all 0.15s ease",
@@ -156,7 +164,7 @@ export default function PoliciesPage() {
                 <a
                   href="tel:0706067799"
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "13px",
                     fontWeight: 600,
                     textDecoration: "none",
@@ -173,7 +181,7 @@ export default function PoliciesPage() {
               <section
                 id="overview"
                 style={{
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
                   padding: "36px 32px",
@@ -181,9 +189,9 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "block",
@@ -220,15 +228,15 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>100% thiết bị có nguồn gốc xuất xứ rõ ràng từ Pioneer DJ, AlphaTheta, Allen & Heath, Yamaha.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Cung cấp hóa đơn chứng từ, tem niêm phong và bảo hành điện tử chính hãng.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Đội ngũ kỹ thuật viên được đào tạo chuyên sâu về âm học và thiết bị biểu diễn.</span>
                   </div>
                 </div>
@@ -238,7 +246,7 @@ export default function PoliciesPage() {
               <section
                 id="warranty"
                 style={{
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
                   padding: "36px 32px",
@@ -246,9 +254,9 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "block",
@@ -285,25 +293,25 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Phạm vi bảo hành:</strong> Miễn phí linh kiện và công sửa chữa cho các lỗi phần cứng từ nhà sản xuất (hỏng fader, lỗi cảm biến jogwheel, lỗi cổng DAC USB, nguồn...).
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Thời gian xử lý:</strong> Tiếp nhận và chuẩn đoán lỗi trong 24 giờ. Xử lý hoàn tất trong 2 - 3 ngày làm việc.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Hỗ trợ thiết bị thay thế:</strong> Đối với DJ biểu diễn chuyên nghiệp, VanBass hỗ trợ mượn máy tương đương trong thời gian thẩm định bảo hành.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Từ chối bảo hành:</strong> Các trường hợp vô nước, chập điện do nguồn điện không ổn định, rơi vỡ, nứt mâm hoặc tự ý can thiệp phần cứng ngoài trung tâm.
                     </span>
@@ -315,7 +323,7 @@ export default function PoliciesPage() {
               <section
                 id="returns"
                 style={{
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
                   padding: "36px 32px",
@@ -323,9 +331,9 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "block",
@@ -362,15 +370,15 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Thiết bị đổi trả phải còn nguyên tem bảo hành, không trầy xước ngoại quan.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Đầy đủ vỏ hộp nguyên vẹn, xốp bảo vệ, sách hướng dẫn, túi chống sốc và dây cáp kèm theo.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Hoàn tiền 100% qua chuyển khoản ngân hàng trong vòng 24 giờ nếu sản phẩm cùng loại tạm thời hết hàng.</span>
                   </div>
                 </div>
@@ -380,7 +388,7 @@ export default function PoliciesPage() {
               <section
                 id="rental"
                 style={{
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
                   padding: "36px 32px",
@@ -388,9 +396,9 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "block",
@@ -427,19 +435,19 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Thời gian thuê 1 ngày:</strong> Tính tròn 24 giờ kể từ thời điểm kỹ thuật viên bàn giao máy tại địa điểm sự kiện.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Biên bản bàn giao:</strong> Hai bên cùng kiểm tra test chức năng fader, jogwheel, màn hình, cổng xuất âm thanh trước khi ký biên bản.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>
                       <strong>Hoàn trả tiền cọc:</strong> VanBass chuyển khoản hoàn trả 100% tiền cọc ngay khi nhận lại thiết bị đầy đủ và nguyên vẹn.
                     </span>
@@ -451,7 +459,7 @@ export default function PoliciesPage() {
               <section
                 id="privacy"
                 style={{
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
                   padding: "36px 32px",
@@ -459,9 +467,9 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "block",
@@ -498,11 +506,11 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Thông tin chỉ được sử dụng cho việc xác nhận đơn hàng, giao hàng và kích hoạt bảo hành điện tử.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Tuyệt đối không chia sẻ, trao đổi hay bán dữ liệu khách hàng cho bất kỳ bên thứ ba nào.</span>
                   </div>
                 </div>
@@ -512,7 +520,7 @@ export default function PoliciesPage() {
               <section
                 id="terms"
                 style={{
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
                   padding: "36px 32px",
@@ -520,9 +528,9 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#e6dec9",
+                    color: "#1683FF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     display: "block",
@@ -559,11 +567,11 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>Giá niêm yết trên website là giá chính xác tại thời điểm tra cứu và đã bao gồm thuế tiêu chuẩn.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#e6dec9" }}>•</span>
+                    <span style={{ color: "#1683FF" }}>•</span>
                     <span>VanBass bảo lưu quyền điều chỉnh thông số hoặc cập nhật bảng giá thuê thiết bị theo từng mùa cao điểm sự kiện.</span>
                   </div>
                 </div>
@@ -579,7 +587,7 @@ export default function PoliciesPage() {
                     gap: "8px",
                     padding: "12px 24px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(255, 255, 255, 0.05)",
+                    backgroundColor: "rgba(255, 255, 255, 0.06)",
                     border: "1px solid rgba(255, 255, 255, 0.12)",
                     color: "#f4f4f5",
                     fontSize: "14px",
