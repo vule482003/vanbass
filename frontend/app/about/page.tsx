@@ -23,71 +23,26 @@ export default function AboutPage() {
 
       <main style={{ flex: 1 }}>
         {/* =========================================================================
-            1. HERO SECTION: Full-bleed Studio Composition + Gradient Fade
+            1. HERO SECTION: FULL-BLEED IMAGE + GRADIENT FADE + TEXT OVER DARK CANVAS
            ========================================================================= */}
-        <section
-          style={{
-            position: "relative",
-            minHeight: "82vh",
-            display: "flex",
-            alignItems: "center",
-            padding: "130px 0 90px 0",
-            overflow: "hidden",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          }}
-        >
-          {/* Full-Bleed Image on the Right (58% width) */}
+        <section className="fullbleed-hero-section">
+          {/* Full-Bleed Image Background (Right 62% on Desktop) */}
           <div
+            className="fullbleed-hero-image"
             style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: "60%",
               backgroundImage: "url('/images/about/studio_hero.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center 45%",
-              filter: "brightness(0.75) contrast(1.1)",
-              zIndex: 0,
             }}
           />
 
-          {/* Seamless Gradient Fade to Deep Black Background */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to right, #08090c 0%, #08090c 35%, rgba(8, 9, 12, 0.88) 55%, rgba(8, 9, 12, 0.35) 75%, rgba(8, 9, 12, 0.2) 100%), linear-gradient(to top, #08090c 0%, transparent 25%), linear-gradient(to bottom, #08090c 0%, transparent 20%)",
-              zIndex: 1,
-            }}
-          />
+          {/* Deep Dark Multi-Stop Gradient Mask Overlay */}
+          <div className="fullbleed-hero-overlay" />
 
-          {/* Subtle Ambient Blue Glow */}
-          <div
-            style={{
-              position: "absolute",
-              top: "20%",
-              right: "25%",
-              width: "420px",
-              height: "420px",
-              background: "radial-gradient(circle, rgba(22, 131, 255, 0.12) 0%, transparent 70%)",
-              pointerEvents: "none",
-              filter: "blur(60px)",
-              zIndex: 1,
-            }}
-          />
+          {/* Subtle Ambient Blue Lighting Glow */}
+          <div className="fullbleed-ambient-glow" />
 
-          {/* Content Layer (Left Aligned) */}
-          <div
-            className="container"
-            style={{
-              position: "relative",
-              zIndex: 2,
-            }}
-          >
-            <div style={{ maxWidth: "620px" }}>
+          {/* Content Layer (Left Aligned directly on dark canvas) */}
+          <div className="container" style={{ position: "relative", zIndex: 2 }}>
+            <div className="fullbleed-content-col">
               {/* Eyebrow */}
               <div
                 style={{
@@ -399,70 +354,24 @@ export default function AboutPage() {
         {/* =========================================================================
             3. SHOWROOM TRẢI NGHIỆM THỰC TẾ: FULL-BLEED IMAGE + GRADIENT FADE
            ========================================================================= */}
-        <section
-          id="showroom"
-          style={{
-            position: "relative",
-            minHeight: "560px",
-            display: "flex",
-            alignItems: "center",
-            padding: "100px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-            overflow: "hidden",
-          }}
-        >
-          {/* Full-Bleed Showroom Image on the Right (60% width, no card frame) */}
+        <section id="showroom" className="fullbleed-showroom-section">
+          {/* Full-Bleed Showroom Image across entire right side (No Card Container) */}
           <div
+            className="fullbleed-showroom-image"
             style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: "60%",
               backgroundImage: "url('/images/hero/hero_showroom.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              filter: "brightness(0.75) contrast(1.1)",
-              zIndex: 0,
             }}
           />
 
-          {/* Seamless Gradient Fade Mask (Left to Right + Top/Bottom edges) */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to right, #08090c 0%, #08090c 35%, rgba(8, 9, 12, 0.9) 55%, rgba(8, 9, 12, 0.3) 78%, rgba(8, 9, 12, 0.15) 100%), linear-gradient(to top, #08090c 0%, transparent 20%), linear-gradient(to bottom, #08090c 0%, transparent 20%)",
-              zIndex: 1,
-            }}
-          />
+          {/* Seamless Multi-Layer Gradient Fade to Background */}
+          <div className="fullbleed-showroom-overlay" />
 
-          {/* Subtle Ambient Blue Lighting */}
-          <div
-            style={{
-              position: "absolute",
-              top: "30%",
-              right: "20%",
-              width: "380px",
-              height: "380px",
-              background: "radial-gradient(circle, rgba(22, 131, 255, 0.14) 0%, transparent 65%)",
-              pointerEvents: "none",
-              filter: "blur(50px)",
-              zIndex: 1,
-            }}
-          />
+          {/* Subtle Ambient Blue Aura Glow */}
+          <div className="fullbleed-showroom-glow" />
 
-          {/* Content Layer (Left Aligned over dark composition) */}
-          <div
-            className="container"
-            style={{
-              position: "relative",
-              zIndex: 2,
-            }}
-          >
-            <div style={{ maxWidth: "580px" }}>
+          {/* Left Content Composition */}
+          <div className="container" style={{ position: "relative", zIndex: 2 }}>
+            <div className="fullbleed-content-col">
               {/* Eyebrow */}
               <span
                 style={{
@@ -508,7 +417,7 @@ export default function AboutPage() {
                   : "Tại VanBass, chúng tôi hiểu rằng thiết bị âm thanh cần được trực tiếp trải nghiệm và kiểm chứng. Không gian showroom được xử lý tiêu âm chuyên nghiệp cho phép khách hàng test máy, xoay jogwheel và cảm nhận chất âm chân thực nhất."}
               </p>
 
-              {/* Bullet Features (Checkmarks) */}
+              {/* Features with checkmarks */}
               <div
                 style={{
                   display: "flex",
@@ -898,6 +807,148 @@ export default function AboutPage() {
       </main>
 
       <Footer />
+
+      {/* Scoped Full-Bleed Composition Styles & Media Queries */}
+      <style jsx>{`
+        .fullbleed-hero-section {
+          position: relative;
+          min-height: 82vh;
+          display: flex;
+          align-items: center;
+          padding: 130px 0 90px 0;
+          overflow: hidden;
+          background-color: #08090c;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .fullbleed-hero-image {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 62%;
+          background-size: cover;
+          background-position: center 45%;
+          filter: brightness(0.75) contrast(1.1);
+          z-index: 0;
+        }
+
+        .fullbleed-hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+              to right,
+              #08090c 0%,
+              #08090c 35%,
+              rgba(8, 9, 12, 0.88) 55%,
+              rgba(8, 9, 12, 0.35) 75%,
+              rgba(8, 9, 12, 0.2) 100%
+            ),
+            linear-gradient(to top, #08090c 0%, transparent 25%),
+            linear-gradient(to bottom, #08090c 0%, transparent 20%);
+          z-index: 1;
+        }
+
+        .fullbleed-ambient-glow {
+          position: absolute;
+          top: 20%;
+          right: 25%;
+          width: 420px;
+          height: 420px;
+          background: radial-gradient(circle, rgba(22, 131, 255, 0.12) 0%, transparent 70%);
+          pointer-events: none;
+          filter: blur(60px);
+          z-index: 1;
+        }
+
+        .fullbleed-content-col {
+          max-width: 620px;
+        }
+
+        .fullbleed-showroom-section {
+          position: relative;
+          min-height: 560px;
+          display: flex;
+          align-items: center;
+          padding: 100px 0;
+          background-color: #08090c;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          overflow: hidden;
+        }
+
+        .fullbleed-showroom-image {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 60%;
+          background-size: cover;
+          background-position: center;
+          filter: brightness(0.75) contrast(1.1);
+          z-index: 0;
+        }
+
+        .fullbleed-showroom-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+              to right,
+              #08090c 0%,
+              #08090c 35%,
+              rgba(8, 9, 12, 0.9) 55%,
+              rgba(8, 9, 12, 0.3) 78%,
+              rgba(8, 9, 12, 0.15) 100%
+            ),
+            linear-gradient(to top, #08090c 0%, transparent 20%),
+            linear-gradient(to bottom, #08090c 0%, transparent 20%);
+          z-index: 1;
+        }
+
+        .fullbleed-showroom-glow {
+          position: absolute;
+          top: 30%;
+          right: 20%;
+          width: 380px;
+          height: 380px;
+          background: radial-gradient(circle, rgba(22, 131, 255, 0.14) 0%, transparent 65%);
+          pointer-events: none;
+          filter: blur(50px);
+          z-index: 1;
+        }
+
+        @media (max-width: 900px) {
+          .fullbleed-hero-section,
+          .fullbleed-showroom-section {
+            min-height: auto;
+            padding: 100px 0 60px 0;
+          }
+
+          .fullbleed-hero-image,
+          .fullbleed-showroom-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            opacity: 0.38;
+          }
+
+          .fullbleed-hero-overlay,
+          .fullbleed-showroom-overlay {
+            background: linear-gradient(
+              to bottom,
+              rgba(8, 9, 12, 0.7) 0%,
+              rgba(8, 9, 12, 0.95) 70%,
+              #08090c 100%
+            );
+          }
+
+          .fullbleed-content-col {
+            max-width: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 }
