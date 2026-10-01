@@ -527,20 +527,69 @@ async function getProduct(slug: string): Promise<Product | null> {
 
 function formatProductMetadataTitle(product: Product): string {
   const rawName = product.name.replace(/\s+/g, " ").trim();
-  const brand = product.brand?.trim();
+  const brand = product.brand?.trim() || "";
 
+  // 1. If name is very short (e.g. 'DDJ-FLX4-W'), prepend brand
   let fullTitle = rawName;
   if (rawName.length <= 15 && brand && !rawName.toLowerCase().includes(brand.toLowerCase())) {
     fullTitle = `${brand} ${rawName}`;
   }
 
+  // 2. If title fits comfortably
   if (fullTitle.length <= 44) {
     return `${fullTitle} Chính Hãng | VanBass`;
-  } else if (fullTitle.length <= 54) {
-    return `${fullTitle} | VanBass`;
-  } else {
-    return `${fullTitle.slice(0, 51)}... | VanBass`;
   }
+  if (fullTitle.length <= 54) {
+    return `${fullTitle} | VanBass`;
+  }
+
+  // 3. For long names (>54 chars), intelligently clean up verbose phrasing:
+  // a. If there is a subtitle after '–' or ' - ' that makes it too long, check if primary part is sufficient
+  if (fullTitle.includes(" – ") || fullTitle.includes(" - ")) {
+    const parts = fullTitle.split(/\s+[–-]\s+/);
+    if (parts.length >= 2) {
+      const mainPart = parts[0].trim();
+      const subPart = parts.slice(1).join(" - ").trim();
+
+      // If the first part already contains the model/brand or is substantial (e.g. 'Tai nghe kiểm âm Sennheiser HD 25 Plus')
+      if (mainPart.length >= 15 && mainPart.length <= 44) {
+        return `${mainPart} Chính Hãng | VanBass`;
+      } else if (mainPart.length > 44 && mainPart.length <= 54) {
+        return `${mainPart} | VanBass`;
+      }
+
+      // If first part is a short SKU (e.g. '18SW115') and second part has category (e.g. 'Loa bass rời B&C Speakers 5 tấc 18 inch')
+      if (mainPart.length < 15 && subPart.length <= 40) {
+        return `${mainPart} – ${subPart} | VanBass`;
+      }
+    }
+  }
+
+  // b. Handle verbose prefix in all-caps names (e.g. 'BỘ PHÁT VÀ THU TÍN HIỆU KHÔNG DÂY SENNHEISER EW 100 G4-CI1')
+  const cleaned = fullTitle
+    .replace(/^BỘ PHÁT VÀ THU TÍN HIỆU KHÔNG DÂY\s+/i, "Bộ Thu Phát ")
+    .replace(/^HỆ THỐNG MICRO KHÔNG DÂY\s+/i, "Micro Không Dây ")
+    .replace(/^THIẾT BỊ XỬ LÝ TÍN HIỆU\s+/i, "Bộ Xử Lý ")
+    .replace(/^MÁY DJ CONTROLLER\s+/i, "Bàn DJ ")
+    .replace(/^MÁY DJ\s+/i, "Bàn DJ ")
+    .trim();
+
+  if (cleaned.length <= 44) {
+    return `${cleaned} Chính Hãng | VanBass`;
+  }
+  if (cleaned.length <= 54) {
+    return `${cleaned} | VanBass`;
+  }
+
+  // c. Last-resort fallback: truncate intelligently while preserving SKU
+  const sku = product.sku?.trim() || "";
+  if (sku && !cleaned.toLowerCase().includes(sku.toLowerCase()) && !sku.startsWith("VB-")) {
+    const truncated = cleaned.slice(0, 42).trim().replace(/[,\-–\s]+$/, "");
+    return `${truncated}... ${sku} | VanBass`;
+  }
+
+  const truncated = cleaned.slice(0, 48).trim().replace(/[,\-–\s]+$/, "");
+  return `${truncated}... | VanBass`;
 }
 
 function formatProductMetadataDesc(product: Product): string {

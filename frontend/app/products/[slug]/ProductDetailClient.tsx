@@ -289,7 +289,7 @@ export default function ProductDetailClient({
                 {/* Tab: Description */}
                 {activeTab === "desc" && (
                   <div className="pdetail-tab-panel">
-                    {displayDesc ? (
+                    {displayDesc && displayDesc.length > 120 ? (
                       hasHtmlDesc ? (
                         <div
                           className="product-rich-desc"
@@ -301,9 +301,52 @@ export default function ProductDetailClient({
                         </div>
                       )
                     ) : (
-                      <p style={{ color: "#71717a", fontStyle: "italic", margin: 0 }}>
-                        {lang === "en" ? "No detailed description available." : "Chưa có mô tả chi tiết cho sản phẩm này."}
-                      </p>
+                      <div className="product-rich-desc">
+                        {displayDesc && <p style={{ marginBottom: "16px", color: "#e4e4e7", lineHeight: 1.6 }}>{displayDesc}</p>}
+                        <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "14px" }}>
+                          <div>
+                            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+                              {lang === "en" ? "Product Overview" : "Tổng Quan Sản Phẩm"}
+                            </h3>
+                            <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                              {lang === "en"
+                                ? `${displayName} is a genuine professional audio & DJ product from ${product.brand || "Pioneer DJ"}, categorized under ${product.category_name || "Pro Audio"}. Designed with high durability, authentic components, and optimal acoustic performance.`
+                                : `${displayName} là thiết bị thuộc danh mục ${product.category_name || "Thiết bị âm thanh & DJ chuyên nghiệp"}, được sản xuất bởi thương hiệu ${product.brand || "Pioneer DJ"}. Sản phẩm đáp ứng tiêu chuẩn kỹ thuật chuyên nghiệp, độ bền cao và chất lượng âm thanh ổn định.`}
+                            </p>
+                          </div>
+
+                          <div>
+                            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+                              {lang === "en" ? "Key Details & Specifications" : "Thông Tin & Thông Số Cơ Bản"}
+                            </h3>
+                            <ul style={{ color: "#d4d4d8", fontSize: "14px", lineHeight: 1.8, paddingLeft: "20px", margin: 0 }}>
+                              <li><strong>{lang === "en" ? "Model / SKU:" : "Mã sản phẩm / SKU:"}</strong> {product.sku || product.name}</li>
+                              <li><strong>{lang === "en" ? "Brand:" : "Thương hiệu:"}</strong> {product.brand || "Pioneer DJ"}</li>
+                              <li><strong>{lang === "en" ? "Category:" : "Danh mục:"}</strong> {product.category_name || "Thiết bị DJ & Âm Thanh"}</li>
+                              {product.specifications?.["Bảo hành"] && (
+                                <li><strong>{lang === "en" ? "Warranty:" : "Bảo hành:"}</strong> {product.specifications["Bảo hành"]}</li>
+                              )}
+                              {product.specifications?.["Xuất xứ"] && (
+                                <li><strong>{lang === "en" ? "Origin:" : "Xuất xứ:"}</strong> {product.specifications["Xuất xứ"]}</li>
+                              )}
+                              {product.specifications?.["Tình trạng"] && (
+                                <li><strong>{lang === "en" ? "Condition:" : "Tình trạng:"}</strong> {product.specifications["Tình trạng"]}</li>
+                              )}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+                              {lang === "en" ? "Distribution & Warranty at VanBass" : "Chính Sách Phân Phối & Bảo Hành"}
+                            </h3>
+                            <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                              {lang === "en"
+                                ? `100% authentic product distributed by VanBass Music Center. Fast shipping, genuine warranty, 0% installment support, and dedicated 24/7 technical customer service.`
+                                : `Sản phẩm được phân phối chính hãng bởi VanBass Music Center. Cam kết chất lượng chuẩn nhà sản xuất, hỗ trợ giao hàng toàn quốc, trả góp 0% lãi suất và dịch vụ hỗ trợ kỹ thuật tận tâm.`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
