@@ -224,7 +224,7 @@ export default function ProductDetailClient({
                 {/* Tab: Specifications (Compact luxury table) */}
                 {activeTab === "specs" && (
                   <div className="pdetail-tab-panel">
-                    <h3 className="pdetail-specs-title">THÔNG SỐ KỸ THUẬT</h3>
+                    <h2 className="pdetail-specs-title">THÔNG SỐ KỸ THUẬT</h2>
                     <div className="pdetail-specs-table-wrap">
                       <table className="pdetail-specs-table">
                         <tbody>
@@ -654,9 +654,9 @@ export default function ProductDetailClient({
                 <span style={{ fontSize: "12px", color: "#38bdf8", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px" }}>
                   🛒 MUA BÁN & PHÂN PHỐI CHÍNH HÃNG PIONEER DJ & ALPHATHETA
                 </span>
-                <h3 style={{ fontSize: "24px", fontWeight: 800, color: "#ffffff", margin: 0, lineHeight: 1.3 }}>
+                <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#ffffff", margin: 0, lineHeight: 1.3 }}>
                   Mua Bàn DJ {displayName} Chính Hãng Giá Tốt Nhất
-                </h3>
+                </h2>
                 <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "10px 0 0 0", lineHeight: 1.6 }}>
                   VanBass Music Center phân phối và cung ứng thiết bị DJ {displayName} mới 100% đập hộp và hàng like new 99% tuyển chọn. Cam kết chính hãng trọn đời, bảo hành 12 - 24 tháng, hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng, ship COD kiểm tra hàng tận nơi toàn quốc và hỗ trợ kỹ thuật cài đặt Rekordbox / Serato 24/7.
                 </p>
@@ -733,9 +733,9 @@ export default function ProductDetailClient({
                 <span className="pdetail-banner-kicker">
                   ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng, Huế & Miền Trung
                 </span>
-                <h3 className="pdetail-banner-title">
+                <h2 className="pdetail-banner-title">
                   Thuê Bàn DJ {displayName} Giao Lắp Tận Nơi 24/7
-                </h3>
+                </h2>
                 <p className="pdetail-banner-desc">
                   VanBass Music Center cung cấp dịch vụ cho thuê {displayName} máy mới 99%, setup trọn gói trong 2 giờ tại Đà Nẵng, Hội An, Thừa Thiên Huế. Đầy đủ dây giắc, hướng dẫn sử dụng và hỗ trợ kỹ thuật trực tiếp.
                 </p>
@@ -774,9 +774,9 @@ export default function ProductDetailClient({
                 <span className="pdetail-banner-kicker">
                   FAQ • Hỏi & Đáp
                 </span>
-                <h3 className="pdetail-faq-title">
+                <h2 className="pdetail-faq-title">
                   Câu Hỏi Thường Gặp Về {displayName}
-                </h3>
+                </h2>
                 <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "6px 0 0 0" }}>
                   Giải đáp chi tiết về thông số kỹ thuật, cách sử dụng, giá bán & dịch vụ thuê {displayName} tại VanBass.
                 </p>
@@ -818,9 +818,9 @@ export default function ProductDetailClient({
           {/* Related Products */}
           {relatedProducts.length > 0 && (
             <div style={{ marginTop: "40px" }}>
-              <h3 className="pdetail-related-heading">
+              <h2 className="pdetail-related-heading">
                 {t.productDetail.relatedTitle}
-              </h3>
+              </h2>
               <div className="vb-product-grid">
                 {relatedProducts.map((p) => (
                   <ProductCard key={p.id} product={p} />
