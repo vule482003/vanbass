@@ -34,9 +34,10 @@ export default function Footer() {
 
         <div className="footer-column">
           <h3>{t.footer.explore}</h3>
+          <Link href="/ban-dj">Bàn DJ Chính Hãng (Mua & Thuê)</Link>
           <Link href="/products">{t.footer.productsLink}</Link>
           <Link href="/thue-ban-dj">{t.footer.rentalLink}</Link>
-          <Link href="/contact">{t.nav?.contact ? (t.nav.home === "Trang Chủ" ? "Sửa Chữa & Bảo Dưỡng DJ" : "DJ Repair & Maintenance") : "Sửa Chữa & Bảo Dưỡng DJ"}</Link>
+          <Link href="/sua-chua-ban-dj">{t.nav?.contact ? (t.nav.home === "Trang Chủ" ? "Sửa Chữa & Bảo Dưỡng DJ" : "DJ Repair & Maintenance") : "Sửa Chữa & Bảo Dưỡng DJ"}</Link>
           <Link href="/about">{t.footer.aboutLink}</Link>
         </div>
 
@@ -115,6 +116,10 @@ export default function Footer() {
           <span style={{ color: "#3f3f46" }}>•</span>
           <Link href="/products/xdj-xz" style={{ color: "#d4d4d8", textDecoration: "none" }}>
             Pioneer DJ XDJ-XZ (Chuẩn Bar Club)
+          </Link>
+          <span style={{ color: "#3f3f46" }}>•</span>
+          <Link href="/sua-chua-ban-dj" style={{ color: "#38bdf8", fontWeight: 700, textDecoration: "none" }}>
+            🛠️ Sửa Chữa & Thay Fader Bàn DJ Lấy Liền
           </Link>
           <span style={{ color: "#3f3f46" }}>•</span>
           <Link href="/thue-ban-dj" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>

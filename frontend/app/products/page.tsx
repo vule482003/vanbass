@@ -674,6 +674,146 @@ function ProductsContent() {
               )}
             </>
           )}
+
+          {/* =========================================================================
+              LOCAL SEO CONTENT HUB: MUA BÁN BÀN DJ CHÍNH HÃNG TẠI ĐÀ NẴNG & MIỀN TRUNG
+             ========================================================================= */}
+          <section
+            style={{
+              marginTop: "80px",
+              paddingTop: "60px",
+              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            }}
+          >
+            {/* Header Lockup */}
+            <div style={{ textAlign: "center", marginBottom: "40px" }}>
+              <span
+                style={{
+                  color: "#22c55e",
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.14em",
+                  display: "inline-block",
+                  marginBottom: "8px",
+                }}
+              >
+                ĐẠI LÝ CHÍNH HÃNG PIONEER DJ & ALPHATHETA
+              </span>
+              <h2
+                style={{
+                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontSize: "clamp(22px, 3.2vw, 32px)",
+                  fontWeight: 900,
+                  color: "#ffffff",
+                  letterSpacing: "-0.02em",
+                  margin: 0,
+                  textTransform: "uppercase",
+                }}
+              >
+                Trung Tâm Mua Bán Bàn DJ Uy Tín Số 1 Tại Đà Nẵng & Miền Trung
+              </h2>
+              <p style={{ color: "#a1a1aa", fontSize: "14.5px", maxWidth: "780px", margin: "12px auto 0 auto", lineHeight: 1.6 }}>
+                VanBass Music Center là đơn vị chuyên phân phối bàn DJ Pioneer DJ, AlphaTheta mới 100% đập hộp và hàng like new 99% tuyển chọn kỹ thuật, bảo hành chính hãng từ 12 đến 24 tháng, hỗ trợ trả góp 0% và thu cũ đổi mới.
+              </p>
+            </div>
+
+            {/* 4 Feature Highlights Grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                gap: "20px",
+                marginBottom: "45px",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "rgba(18, 18, 22, 0.85)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "24px",
+                }}
+              >
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>🛡️</div>
+                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>100% Chính Hãng - Bảo Hành 12-24T</h3>
+                <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
+                  Cam kết thiết bị nguyên seal hoặc tuyển chọn like new 98-99% fader chuẩn. Đầy đủ hóa đơn, tem bảo hành chính hãng và hỗ trợ linh kiện thay thế trọn đời.
+                </p>
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: "rgba(18, 18, 22, 0.85)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "24px",
+                }}
+              >
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>🎧</div>
+                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>Test Máy Trực Tiếp Tại Showroom</h3>
+                <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
+                  Mời quý khách ghé Showroom tại Nguyễn Tất Thành (Đà Nẵng) hoặc 442 Chi Lăng (Huế) để trực tiếp cắm USB test thử âm thanh trên dàn loa biểu diễn trước khi mua.
+                </p>
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: "rgba(18, 18, 22, 0.85)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "24px",
+                }}
+              >
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>💳</div>
+                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>Trả Góp 0% & Thu Cũ Đổi Mới</h3>
+                <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
+                  Hỗ trợ quẹt thẻ trả góp 0% lãi suất qua 25+ ngân hàng. Chương trình Trade-in trợ giá thu mua bàn DJ cũ (FLX4, RX2, XZ...) để lên đời RX3, XDJ-AZ nhanh chóng.
+                </p>
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: "rgba(18, 18, 22, 0.85)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "24px",
+                }}
+              >
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>🎁</div>
+                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>Tặng Kèm USB Nhạc & Đào Tạo 1-1</h3>
+                <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
+                  Tặng ngay USB Sandisk chứa kho nhạc Lossless phân tích sẵn qua Rekordbox, khóa hướng dẫn cài đặt phần mềm và kỹ thuật mix nhạc cơ bản đến nâng cao.
+                </p>
+              </div>
+            </div>
+
+            {/* Buying Guide Articles Block */}
+            <div
+              style={{
+                backgroundColor: "rgba(24, 24, 28, 0.5)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "14px",
+                padding: "32px",
+                marginBottom: "35px",
+              }}
+            >
+              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff", marginBottom: "14px" }}>
+                Kinh Nghiệm Chọn Mua Bàn DJ Phù Hợp Cho Người Mới Và DJ Chuyên Nghiệp
+              </h3>
+              <div style={{ fontSize: "14px", color: "#d4d4d8", lineHeight: 1.7, display: "flex", flexDirection: "column", gap: "12px" }}>
+                <p>
+                  <strong>1. Phân khúc DJ Controller (Dành cho người mới học và biểu diễn tiệc nhỏ):</strong> Các mẫu như <em>Pioneer DDJ-FLX4</em>, <em>AlphaTheta DDJ-FLX2</em> có mức giá từ 5 đến 11 triệu đồng, kết nối dễ dàng với Laptop, iPad, Smartphone qua Rekordbox hoặc Serato DJ. Tính năng Smart Fader giúp người mới tập chuyển bài cực kỳ mượt mà.
+                </p>
+                <p>
+                  <strong>2. Phân khúc All-In-One Độc Lập (Dành cho DJ chuyên nghiệp, Bar, Pub, Villa):</strong> Các mẫu như <em>Pioneer DJ XDJ-RX3</em>, <em>AlphaTheta OMNIS-DUO</em>, <em>AlphaTheta XDJ-AZ 4 kênh</em> cho phép cắm trực tiếp USB chơi nhạc độc lập với màn hình cảm ứng sắc nét từ 7 đến 10.1 inch, không lo giật lag hay treo laptop khi đang biểu diễn.
+                </p>
+                <p>
+                  <strong>3. Địa chỉ mua hàng và hỗ trợ kỹ thuật trực tiếp:</strong> Quý khách hàng tại Đà Nẵng, Quảng Nam, Thừa Thiên Huế có thể liên hệ trực tiếp Hotline <strong>0706 067 799</strong> hoặc ghé Showroom tại <strong>Nguyễn Tất Thành (Đà Nẵng)</strong> và <strong>442 Chi Lăng (TP Huế)</strong> để nhận tư vấn cấu hình và báo giá ưu đãi nhất.
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
 

@@ -21,9 +21,13 @@ export default function robots(): MetadataRoute.Robots {
         ],
         allow: [
           "/",
+          "/ban-dj",
           "/thue-ban-dj",
+          "/sua-chua-ban-dj",
           "/products",
           "/products/*",
+          "/san-pham",
+          "/san-pham/*",
           "/images/*",
           "/about",
           "/contact",

@@ -14,7 +14,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/ban-dj`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+    {
       url: `${baseUrl}/thue-ban-dj`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/sua-chua-ban-dj`,
       lastModified: now,
       changeFrequency: "daily",
       priority: 1.0,

@@ -11,7 +11,9 @@ export async function GET(request: Request) {
   // Default core URLs to index immediately
   const coreUrls = [
     `${siteUrl}`,
+    `${siteUrl}/ban-dj`,
     `${siteUrl}/thue-ban-dj`,
+    `${siteUrl}/sua-chua-ban-dj`,
     `${siteUrl}/products`,
     `${siteUrl}/products/xdj-rx3`,
     `${siteUrl}/products/xdj-rx2`,
@@ -77,7 +79,9 @@ export async function POST(request: Request) {
       ? body.urls
       : [
           `${siteUrl}`,
+          `${siteUrl}/ban-dj`,
           `${siteUrl}/thue-ban-dj`,
+          `${siteUrl}/sua-chua-ban-dj`,
           `${siteUrl}/products`,
           `${siteUrl}/products/xdj-rx3`,
           `${siteUrl}/products/xdj-rx2`,

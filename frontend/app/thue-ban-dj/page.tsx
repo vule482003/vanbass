@@ -172,19 +172,19 @@ export default function ThueBanDjPage() {
           "priceRange": "400.000đ - 1.800.000đ",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Đà Nẵng",
+            "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
             "addressLocality": "Đà Nẵng",
             "addressRegion": "Đà Nẵng",
             "addressCountry": "VN",
           },
           "geo": {
             "@type": "GeoCoordinates",
-            "latitude": "16.054407",
-            "longitude": "108.202167",
+            "latitude": "16.0714",
+            "longitude": "108.1882",
           },
         },
         "description":
-          "Dịch vụ cho thuê bàn DJ Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000 phục vụ sự kiện, tiệc cưới, sinh nhật, bar pub, workshop.",
+          "Dịch vụ cho thuê bàn DJ Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000 phục vụ sự kiện, tiệc cưới, sinh nhật, bar pub, workshop tại Đà Nẵng (Nguyễn Tất Thành) & Huế (442 Chi Lăng).",
         "areaServed": "VN",
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
