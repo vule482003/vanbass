@@ -138,69 +138,24 @@ export default function SuaChuaBanDjPage() {
         {/* =========================================================================
             1. HERO SECTION: FULL-BLEED TECHNICIAN IMAGE + GRADIENT FADE
            ========================================================================= */}
-        <section
-          style={{
-            position: "relative",
-            minHeight: "82vh",
-            display: "flex",
-            alignItems: "center",
-            padding: "130px 0 90px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-            overflow: "hidden",
-          }}
-        >
-          {/* Full-Bleed Technician Image on the Right (60% width, no card frame) */}
+        <section className="repair-hero-section">
+          {/* Full-Bleed Technician Image on the Right (60% width) */}
           <div
+            className="repair-hero-image"
             style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: "60%",
               backgroundImage: "url('/images/repair/dj_repair_hero.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center 35%",
-              filter: "brightness(0.78) contrast(1.12)",
-              zIndex: 0,
             }}
           />
 
           {/* Seamless Gradient Fade Overlay to Deep Black Background */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to right, #08090c 0%, #08090c 35%, rgba(8, 9, 12, 0.9) 55%, rgba(8, 9, 12, 0.35) 75%, rgba(8, 9, 12, 0.15) 100%), linear-gradient(to top, #08090c 0%, transparent 25%), linear-gradient(to bottom, #08090c 0%, transparent 20%)",
-              zIndex: 1,
-            }}
-          />
+          <div className="repair-hero-overlay" />
 
           {/* Subtle Ambient Blue Lighting Glow */}
-          <div
-            style={{
-              position: "absolute",
-              top: "25%",
-              right: "25%",
-              width: "420px",
-              height: "420px",
-              background: "radial-gradient(circle, rgba(22, 131, 255, 0.15) 0%, transparent 65%)",
-              pointerEvents: "none",
-              filter: "blur(60px)",
-              zIndex: 1,
-            }}
-          />
+          <div className="repair-hero-glow" />
 
           {/* Content Layer (Left Aligned) */}
-          <div
-            className="container"
-            style={{
-              position: "relative",
-              zIndex: 2,
-            }}
-          >
-            <div style={{ maxWidth: "620px" }}>
+          <div className="container" style={{ position: "relative", zIndex: 2 }}>
+            <div className="repair-hero-content">
               {/* Eyebrow */}
               <div
                 style={{
