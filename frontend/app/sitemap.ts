@@ -77,9 +77,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1.0,
   }));
 
-  // Dynamic product routes (excluding duplicates from hotSearchSlugs)
+  // Dynamic product routes (excluding duplicates and alias slugs from hotSearchSlugs)
+  const excludedFromDynamic = new Set([
+    ...hotSearchSlugs,
+    "alphatheta-ddj-flx2",
+    "ban-dj-alpha-theta-omnis-duo",
+    "ban-dj-alphatheta-xdj-az",
+    "alphatheta-xdj-an",
+    "ddj-flx4-w",
+    "xdj-xz-n",
+  ]);
+
   const productRoutes: MetadataRoute.Sitemap = MOCK_PRODUCTS.filter(
-    (product) => !hotSearchSlugs.includes(product.slug)
+    (product) => !excludedFromDynamic.has(product.slug)
   ).map((product) => ({
     url: `${baseUrl}/products/${product.slug}`,
     lastModified: now,
