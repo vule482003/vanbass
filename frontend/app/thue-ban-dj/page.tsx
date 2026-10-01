@@ -868,7 +868,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/ddj-flx2" style={{ color: "#fff", textDecoration: "none" }}>
-                        AlphaTheta DDJ-FLX2 ⚡
+                        AlphaTheta DDJ-FLX2
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller (Smartphone / PC)</td>
@@ -883,7 +883,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/ddj-flx4" style={{ color: "#fff", textDecoration: "none" }}>
-                        Pioneer DDJ-FLX4 🔥
+                        Pioneer DDJ-FLX4
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller (cần Laptop)</td>
@@ -898,7 +898,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/xdj-rr" style={{ color: "#fff", textDecoration: "none" }}>
-                        Pioneer DJ XDJ-RR ⚡
+                        Pioneer DJ XDJ-RR
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
@@ -913,7 +913,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/xdj-rx2" style={{ color: "#fff", textDecoration: "none" }}>
-                        Pioneer DJ XDJ-RX2 ⚡
+                        Pioneer DJ XDJ-RX2
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
@@ -928,7 +928,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)", backgroundColor: "rgba(34, 197, 94, 0.04)" }}>
                     <td style={{ padding: "16px", fontWeight: 800 }}>
                       <Link href="/products/xdj-rx3" style={{ color: "#4ade80", textDecoration: "none" }}>
-                        Pioneer DJ XDJ-RX3 🔥 (Best-seller)
+                        Pioneer DJ XDJ-RX3 (Best-seller)
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Màn 10.1&quot;</td>
@@ -943,7 +943,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/omnis-duo" style={{ color: "#fff", textDecoration: "none" }}>
-                        AlphaTheta OMNIS-DUO 🔥
+                        AlphaTheta OMNIS-DUO
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Pin Không Dây</td>
@@ -958,7 +958,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/xdj-an" style={{ color: "#fff", textDecoration: "none" }}>
-                        AlphaTheta XDJ-AN ⚡
+                        AlphaTheta XDJ-AN
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Thế Hệ Mới</td>
@@ -973,7 +973,7 @@ export default function ThueBanDjPage() {
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/xdj-az" style={{ color: "#fff", textDecoration: "none" }}>
-                        AlphaTheta XDJ-AZ 🔥 (Flagship 4-kênh)
+                        AlphaTheta XDJ-AZ (Flagship 4-kênh)
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One 4 Kênh Wi-Fi</td>
