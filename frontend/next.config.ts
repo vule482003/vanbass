@@ -24,22 +24,27 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/en",
-        destination: "/dj-equipment-rental-danang",
+        destination: "/thue-ban-dj",
         permanent: true,
       },
       {
         source: "/en/rental",
-        destination: "/dj-equipment-rental-danang",
+        destination: "/thue-ban-dj",
         permanent: true,
       },
       {
         source: "/dj-rental-danang",
-        destination: "/dj-equipment-rental-danang",
+        destination: "/thue-ban-dj",
         permanent: true,
       },
       {
         source: "/rent-dj-da-nang",
-        destination: "/dj-equipment-rental-danang",
+        destination: "/thue-ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/dj-equipment-rental-danang",
+        destination: "/thue-ban-dj",
         permanent: true,
       },
       {

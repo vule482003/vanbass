@@ -32,12 +32,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/dj-equipment-rental-danang`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 1.0,
-    },
-    {
       url: `${baseUrl}/products`,
       lastModified: now,
       changeFrequency: "daily",

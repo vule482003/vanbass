@@ -24,7 +24,6 @@ export default function robots(): MetadataRoute.Robots {
           "/ban-dj",
           "/thue-ban-dj",
           "/sua-chua-ban-dj",
-          "/dj-equipment-rental-danang",
           "/products",
           "/products/*",
           "/san-pham",

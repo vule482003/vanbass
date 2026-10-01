@@ -14,7 +14,6 @@ export async function GET(request: Request) {
     `${siteUrl}/ban-dj`,
     `${siteUrl}/thue-ban-dj`,
     `${siteUrl}/sua-chua-ban-dj`,
-    `${siteUrl}/dj-equipment-rental-danang`,
     `${siteUrl}/products`,
     `${siteUrl}/products/xdj-rx3`,
     `${siteUrl}/products/xdj-rx2`,
