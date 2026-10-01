@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { DEFAULT_HOME_DATA, HeroPanelCenter, HeroPanelLeft, HeroPanelRight } from "../types/home_config";
 import { useLanguage } from "../lib/language-context";
@@ -48,51 +49,137 @@ export default function Hero({
   const centerBg = resolveImage(heroCenter?.bg_image, "/images/hero/hero_performance.jpg");
   const rightBg = resolveImage(heroRight?.bg_image, "/images/hero/hero_showroom.jpg");
 
-  const effectiveMarquee = lang === "en" ? t.hero.marqueeItems : marqueeItems;
+  // Mobile Banner Slider state & touch handlers
+  const mobileBanners = [
+    {
+      id: "banner-1",
+      image: centerBg,
+      link: heroCenter?.link && !heroCenter.link.startsWith("/rental") && heroCenter.link !== "/products?mode=rental" ? heroCenter.link : "/thue-ban-dj",
+      alt: "Cho thuê bàn DJ & Âm thanh biểu diễn",
+    },
+    {
+      id: "banner-2",
+      image: leftBg,
+      link: heroLeft?.link || "/products",
+      alt: "Thiết bị DJ & Hardware chính hãng",
+    },
+    {
+      id: "banner-3",
+      image: rightBg,
+      link: heroRight?.link || "/contact",
+      alt: "Showroom & Studio trải nghiệm âm thanh",
+    },
+  ];
 
-  const leftTag = lang === "en" ? t.hero.panelHardwareTag : (heroLeft?.tag || t.hero.panelHardwareTag);
-  const leftTitle = lang === "en" ? t.hero.panelHardwareTitle : (heroLeft?.title || t.hero.panelHardwareTitle);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const touchStartXRef = useRef<number>(0);
+  const touchEndXRef = useRef<number>(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % mobileBanners.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [mobileBanners.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartXRef.current - touchEndXRef.current;
+    if (touchEndXRef.current > 0 && Math.abs(diff) > 40) {
+      if (diff > 0) {
+        // Swipe left -> Next
+        setCurrentSlide((prev) => (prev + 1) % mobileBanners.length);
+      } else {
+        // Swipe right -> Prev
+        setCurrentSlide((prev) => (prev - 1 + mobileBanners.length) % mobileBanners.length);
+      }
+    }
+    touchStartXRef.current = 0;
+    touchEndXRef.current = 0;
+  };
+
+  const rawMarquee = lang === "en" ? t.hero.marqueeItems : (marqueeItems || DEFAULT_HOME_DATA.marquee_items);
+  const effectiveMarquee = rawMarquee.map((item) =>
+    item.replace(/[⚡🔥🎧]/g, "").trim()
+  );
+
+  const stripNumber = (text: string | undefined, fallback: string) => {
+    const s = text || fallback;
+    return s.replace(/^\s*\d+\s*[\/\.-—]\s*/, "").trim();
+  };
+
+  const leftTag = lang === "en" ? stripNumber(t.hero.panelHardwareTag, "HARDWARE & DJ DECKS") : stripNumber(heroLeft?.tag, "THIẾT BỊ");
+  const leftTitle = lang === "en" ? t.hero.panelHardwareTitle : (heroLeft?.title || "THIẾT BỊ DJ");
   const leftDesc = lang === "en" ? t.hero.panelHardwareDesc : (heroLeft?.desc || t.hero.panelHardwareDesc);
-  const leftBtnText = lang === "en" ? t.hero.exploreBtn : (heroLeft?.button_text || t.hero.exploreBtn);
+  const leftBtnText = lang === "en" ? t.hero.exploreBtn : (heroLeft?.button_text || "Khám phá");
 
-  const centerBadge = lang === "en" ? t.hero.panelHardwareTitle : (heroCenter?.badge || "THIẾT BỊ DJ CHÍNH HÃNG");
-  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : (heroCenter?.headline || t.hero.panelRentalTitle);
+  const centerBadge = lang === "en" ? stripNumber(t.hero.panelRentalTag, "SERVICES") : stripNumber(heroCenter?.badge === "THIẾT BỊ DJ CHÍNH HÃNG" ? "DỊCH VỤ" : heroCenter?.badge, "DỊCH VỤ");
+  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : (heroCenter?.headline === "HỆ THỐNG ÂM THANH & CHO THUÊ DJ" ? "CHO THUÊ SỰ KIỆN" : (heroCenter?.headline || "CHO THUÊ SỰ KIỆN"));
   const centerDesc = lang === "en" ? t.hero.panelRentalDesc : (heroCenter?.desc || t.hero.panelRentalDesc);
-  const centerBtnText = lang === "en" ? t.hero.rentalBtn : (heroCenter?.button_text || "THUÊ THIẾT BỊ NGAY");
+  const centerBtnText = lang === "en" ? t.hero.rentalBtn : (heroCenter?.button_text === "THUÊ THIẾT BỊ NGAY" ? "Bảng giá thuê" : (heroCenter?.button_text || "Bảng giá thuê"));
 
-  const rightTag = lang === "en" ? t.hero.panelShowroomTag : (heroRight?.tag || t.hero.panelShowroomTag);
-  const rightTitle = lang === "en" ? t.hero.panelShowroomTitle : (heroRight?.title || t.hero.panelShowroomTitle);
+  const rightTag = lang === "en" ? stripNumber(t.hero.panelShowroomTag, "HANDS-ON EXPERIENCE") : stripNumber(heroRight?.tag === "03 / SHOWROOM & STUDIO" ? "SHOWROOM" : heroRight?.tag, "SHOWROOM");
+  const rightTitle = lang === "en" ? t.hero.panelShowroomTitle : (heroRight?.title || "TRẢI NGHIỆM");
   const rightDesc = lang === "en" ? t.hero.panelShowroomDesc : (heroRight?.desc || t.hero.panelShowroomDesc);
-  const rightBtnText = lang === "en" ? t.hero.panelShowroomBtn : (heroRight?.button_text || t.hero.panelShowroomBtn);
+  const rightBtnText = lang === "en" ? t.hero.panelShowroomBtn : (heroRight?.button_text === "Ghé thăm showroom" ? "Ghé thăm" : (heroRight?.button_text || "Ghé thăm"));
 
   return (
-    <section className="hero-triptych-section" id="hero">
-      {/* 1. TOP GLOWING INFINITE MARQUEE TICKER (NIGHTLIFE & BRAND PARTNERS) */}
-      {showMarquee && effectiveMarquee.length > 0 && (
-        <div className="hero-marquee-bar">
-          <div className="hero-marquee-track">
-            {effectiveMarquee.map((item, idx) => (
-              <span key={`mq1-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
-                <span className="marquee-item">{item}</span>
-                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
-              </span>
-            ))}
-
-            {/* Seamless Loop duplication */}
-            {effectiveMarquee.map((item, idx) => (
-              <span key={`mq2-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
-                <span className="marquee-item">{item}</span>
-                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 2. 3-COLUMN FULL-BLEED DYNAMIC ACCORDION HERO */}
+    <>
+      {/* 1. TRANG 1: 3-COLUMN FULL-BLEED DYNAMIC ACCORDION HERO (DESKTOP) & AUTO-SLIDING BANNER (MOBILE) */}
       {showHero && (
-        <div className="hero-triptych-container">
-          {/* KHUNG 1 (BÊN TRÁI): THIẾT BỊ & HARDWARE */}
+        <section className="hero-triptych-section" id="hero">
+          {/* A. MOBILE AUTO-SLIDING BANNER CAROUSEL (CLEAN, NO CLUTTERED TEXT, TOUCH SWIPE) */}
+          <div
+            className="hero-mobile-slider-container"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="hero-mobile-slider-track">
+              {mobileBanners.map((banner, index) => {
+                const isActive = currentSlide === index;
+                return (
+                  <Link
+                    key={banner.id}
+                    href={banner.link}
+                    className={`hero-mobile-slide ${isActive ? "is-active" : ""}`}
+                    aria-label={banner.alt}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={banner.image}
+                      alt={banner.alt}
+                      className="hero-mobile-banner-img"
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Slide Pagination Dots */}
+            <div className="hero-mobile-dots">
+              {mobileBanners.map((banner, index) => (
+                <button
+                  key={banner.id}
+                  type="button"
+                  className={`hero-mobile-dot ${currentSlide === index ? "active" : ""}`}
+                  onClick={() => setCurrentSlide(index)}
+                  aria-label={`Chuyển đến banner ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* B. DESKTOP 3-COLUMN ACCORDION HERO */}
+          <div className="hero-triptych-container">
+            {/* KHUNG 1 (BÊN TRÁI): THIẾT BỊ & HARDWARE */}
           <div className="triptych-panel panel-hardware" style={{ position: "relative", overflow: "hidden" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -141,7 +228,10 @@ export default function Hero({
                   gap: "6px",
                 }}
               >
-                <span>📷</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
                 <span>Đổi ảnh</span>
               </button>
             )}
@@ -157,7 +247,7 @@ export default function Hero({
                 data-cms-label="Chữ Nút Banner Trái"
                 data-cms-type="text"
               >
-                {leftBtnText} <span>→</span>
+                <span>{leftBtnText}</span> <span>→</span>
               </Link>
             </div>
           </div>
@@ -211,35 +301,33 @@ export default function Hero({
                   gap: "6px",
                 }}
               >
-                <span>📷</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
                 <span>Đổi ảnh</span>
               </button>
             )}
 
-            <div className="triptych-content featured-content" style={{ zIndex: 2 }}>
-              <div className="triptych-badge" data-cms-key="hero_center.badge" data-cms-label="Huy Hiệu Banner Chính" data-cms-type="text">
-                <span />
+            <div className="triptych-content" style={{ zIndex: 2 }}>
+              <div className="triptych-tag" data-cms-key="hero_center.badge" data-cms-label="Huy Hiệu Banner Chính" data-cms-type="text">
                 {centerBadge}
               </div>
-              <h2 className="triptych-headline" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h2>
+              <h2 className="triptych-title" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h2>
               <p className="triptych-desc" data-cms-key="hero_center.desc" data-cms-label="Mô Tả Banner Chính" data-cms-type="textarea">{centerDesc}</p>
 
               <Link
                 href={
-                  heroCenter.link
-                    ? heroCenter.link.replace(/^\/rental(\?.*)?$/, "/products?mode=rental")
-                    : "/products?mode=rental"
+                  heroCenter.link && !heroCenter.link.startsWith("/rental") && heroCenter.link !== "/products?mode=rental"
+                    ? heroCenter.link
+                    : "/thue-ban-dj"
                 }
-                className="triptych-center-btn"
+                className="triptych-cta-link"
                 data-cms-key="hero_center.button_text"
                 data-cms-label="Nút Nổi Bật Banner Chính"
                 data-cms-type="text"
               >
-                <span>{centerBtnText}</span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
+                <span>{centerBtnText}</span> <span>→</span>
               </Link>
             </div>
           </div>
@@ -293,7 +381,10 @@ export default function Hero({
                   gap: "6px",
                 }}
               >
-                <span>📷</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
                 <span>Đổi ảnh</span>
               </button>
             )}
@@ -309,12 +400,35 @@ export default function Hero({
                 data-cms-label="Chữ Nút Banner Phải"
                 data-cms-type="text"
               >
-                {rightBtnText} <span>→</span>
+                <span>{rightBtnText}</span> <span>→</span>
               </Link>
             </div>
           </div>
         </div>
+      </section>
+    )}
+
+      {/* 2. CHUYỂN QUA PAGE 2: THANH GLOWING INFINITE MARQUEE TICKER */}
+      {showMarquee && effectiveMarquee.length > 0 && (
+        <div className="hero-marquee-bar marquee-page-2">
+          <div className="hero-marquee-track">
+            {effectiveMarquee.map((item, idx) => (
+              <span key={`mq1-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
+                <span className="marquee-item">{item}</span>
+                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
+              </span>
+            ))}
+
+            {/* Seamless Loop duplication */}
+            {effectiveMarquee.map((item, idx) => (
+              <span key={`mq2-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: "16px" }}>
+                <span className="marquee-item">{item}</span>
+                {idx % 2 === 0 ? <VuMeter /> : <span className="marquee-dot">•</span>}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
-    </section>
+    </>
   );
 }

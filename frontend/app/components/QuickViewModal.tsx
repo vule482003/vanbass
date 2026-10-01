@@ -7,7 +7,9 @@ import { Product } from "../lib/types";
 import { useCart } from "../lib/cart-context";
 import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
-import { getTranslatedProductName, getTranslatedProductDesc } from "../lib/product-i18n";
+import { getTranslatedProductName, getTranslatedProductDesc, getProductPlainExcerpt } from "../lib/product-i18n";
+
+import { resolveProductImage } from "../lib/image-helper";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -21,7 +23,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const [addedNotice, setAddedNotice] = useState(false);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
 
-  function formatVND(amount?: number) {
+  function formatVND(amount?: number | null) {
     if (!amount || isNaN(amount)) return t.products.contactPrice;
     return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN").format(amount) + " ₫";
   }
@@ -39,10 +41,12 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
   const displayName = getTranslatedProductName(product, lang);
   const displayDesc = getTranslatedProductDesc(product, lang);
+  const cleanExcerpt = getProductPlainExcerpt(displayDesc, 260);
 
-  const imagesList = product.images && product.images.length > 0
-    ? product.images.map((i) => i.image_url)
-    : [product.image_url || "/images/placeholder.jpg"];
+  const imagesList = (product.images && product.images.length > 0
+    ? product.images.map((i) => resolveProductImage(i.image_url))
+    : [resolveProductImage(product.image_url)]
+  ).filter(Boolean) as string[];
 
   const handleAddToCart = () => {
     addItem(product, 1);
@@ -145,6 +149,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                 src={imagesList[activeImgIndex]}
                 alt={displayName}
                 fill
+                unoptimized
                 style={{ objectFit: "contain", padding: "16px" }}
                 sizes="(max-width: 768px) 100vw, 450px"
               />
@@ -169,7 +174,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   letterSpacing: "0.05em",
                 }}
               >
-                🎧 CÓ CHO THUÊ
+                CÓ CHO THUÊ
               </span>
             )}
           </div>
@@ -193,7 +198,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                     flexShrink: 0,
                   }}
                 >
-                  <Image src={img} alt="" fill style={{ objectFit: "contain", padding: "4px" }} sizes="64px" />
+                  <Image src={img} alt="" fill unoptimized style={{ objectFit: "contain", padding: "4px" }} sizes="64px" />
                 </button>
               ))}
             </div>
@@ -298,7 +303,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             </div>
 
             {/* Description excerpt */}
-            {displayDesc && (
+            {cleanExcerpt && (
               <p
                 style={{
                   fontSize: "13.5px",
@@ -309,7 +314,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   overflowY: "auto",
                 }}
               >
-                {displayDesc}
+                {cleanExcerpt}
               </p>
             )}
 
@@ -345,7 +350,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   className="button button-primary"
                   style={{ flex: 1, padding: "13px 20px", fontSize: "13px" }}
                 >
-                  🛒 {t.products.addToCart}
+                  {t.products.addToCart}
                 </button>
               ) : (
                 <button
@@ -379,7 +384,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                     borderColor: "rgba(34, 197, 94, 0.4)",
                   }}
                 >
-                  💬 {t.products.rentBtnShort}
+                  {t.products.rentBtnShort}
                 </a>
               )}
             </div>

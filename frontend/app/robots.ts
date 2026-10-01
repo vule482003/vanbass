@@ -1,19 +1,39 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanbass.vn";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
   return {
     rules: [
       {
-        userAgent: "*",
+        userAgent: [
+          "Googlebot",
+          "Googlebot-Image",
+          "Bingbot",
+          "MSNBot",
+          "Slurp",
+          "DuckDuckBot",
+          "Baiduspider",
+          "YandexBot",
+          "facebookexternalhit",
+          "Twitterbot",
+          "*",
+        ],
         allow: [
           "/",
+          "/ban-dj",
+          "/thue-ban-dj",
+          "/sua-chua-ban-dj",
           "/products",
           "/products/*",
+          "/san-pham",
+          "/san-pham/*",
+          "/images/*",
           "/about",
           "/contact",
           "/static/uploads/*",
+          "/*.txt",
+          "/*.xml",
         ],
         disallow: [
           "/admin",
@@ -23,7 +43,7 @@ export default function robots(): MetadataRoute.Robots {
           "/cart",
           "/login",
           "/register",
-          "/api/*",
+          "/api/admin/*",
         ],
       },
     ],

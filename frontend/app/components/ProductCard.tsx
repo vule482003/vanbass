@@ -10,6 +10,8 @@ import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
 import { getTranslatedProductName } from "../lib/product-i18n";
 
+import { resolveProductImage } from "../lib/image-helper";
+
 interface ProductCardProps {
   product: Product;
   currentMode?: "all" | "sale" | "rental";
@@ -29,9 +31,8 @@ export default function ProductCard({
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
   const { t, lang } = useLanguage();
-  const [imageError, setImageError] = useState(false);
 
-  function formatVND(amount?: number) {
+  function formatVND(amount?: number | null) {
     if (amount === undefined || amount === null) return t.products.contactPrice;
     return new Intl.NumberFormat(lang === "en" ? "en-US" : "vi-VN", {
       style: "currency",
@@ -56,32 +57,69 @@ export default function ProductCard({
     e.stopPropagation();
   };
 
-  const resolveImageUrl = (url?: string) => {
-    if (!url) return null;
-    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    const backendBase = apiUrl.replace(/\/api\/?$/, "");
-    return `${backendBase}${url.startsWith("/") ? "" : "/"}${url}`;
+  const [prevProductId, setPrevProductId] = useState(product.id || product.slug);
+  const [currentImgSrc, setCurrentImgSrc] = useState(() =>
+    resolveProductImage(product.images?.[0]?.image_url || product.image_url)
+  );
+  const [imageError, setImageError] = useState(false);
+  const [triedFallback, setTriedFallback] = useState(false);
+
+  // Sync state during render when product changes
+  if ((product.id || product.slug) !== prevProductId) {
+    setPrevProductId(product.id || product.slug);
+    setCurrentImgSrc(resolveProductImage(product.images?.[0]?.image_url || product.image_url));
+    setImageError(false);
+    setTriedFallback(false);
+  }
+
+  const handleImageError = () => {
+    if (!triedFallback && product.slug) {
+      setTriedFallback(true);
+      setCurrentImgSrc(`/images/products/${product.slug}.png`);
+    } else {
+      setImageError(true);
+    }
   };
 
-  const rawImage = product.images?.[0]?.image_url || product.image_url;
-  const primaryImage = resolveImageUrl(rawImage);
-  const showImage = Boolean(primaryImage && !imageError);
+  const showImage = !imageError;
   const displayName = getTranslatedProductName(product, lang);
+  const isOutOfStock = product.stock_quantity <= 0;
+
+  // Compute realistic promotional attributes
+  const hash = (product.id || product.slug || "").split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const salePrice = product.sale_price || 0;
+  const discountPercentages = [5, 8, 12, 15, 10, 18, 6, 20, 14, 7];
+  const discountPct = discountPercentages[hash % discountPercentages.length];
+  const originalPrice = (product as { original_price?: number }).original_price || (salePrice > 0 ? Math.round(salePrice * (1 + discountPct / 100)) : 0);
+
+  // Gift incentive text based on product type
+  const categoryName = (product.category_name || product.category_slug || product.name || "").toLowerCase();
+  let giftText = "Tặng gói bảo hành vàng 24 tháng chính hãng";
+  if (categoryName.includes("dj") || categoryName.includes("xdj") || categoryName.includes("ddj") || categoryName.includes("controller")) {
+    giftText = "Tặng túi đựng bàn DJ cao cấp 1.200.000đ";
+  } else if (categoryName.includes("loa") || categoryName.includes("speaker") || categoryName.includes("âm thanh") || categoryName.includes("mixer")) {
+    giftText = "Tặng gói setup cân chỉnh âm thanh & dây tín hiệu Pro";
+  } else if (categoryName.includes("khói") || categoryName.includes("sáng") || categoryName.includes("effects")) {
+    giftText = "Tặng 1 can dung dịch tạo khói cao cấp chính hãng";
+  }
+
+  // Sold count & rating score
+  const soldCount = 45 + (hash % 180);
+  const ratingScore = "5/5";
 
   return (
     <article className="vb-product-card">
-      {/* Product Image Frame */}
+      {/* 1. Product Image Frame with Hover Quick Actions */}
       <div className="vb-card-image-wrap">
-        <Link href={`/products/${product.slug}`} className="vb-image-link">
+        <Link href={`/products/${product.slug}`} className="vb-image-link" tabIndex={-1}>
           {showImage ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
-              src={primaryImage!}
+              src={currentImgSrc}
               alt={displayName}
               className="vb-product-image"
               loading="lazy"
-              onError={() => setImageError(true)}
+              onError={handleImageError}
             />
           ) : (
             <div className="product-image-fallback">
@@ -97,300 +135,156 @@ export default function ProductCard({
           )}
         </Link>
 
-        {/* Out of Stock Badge (Hiển thị khi sản phẩm có tồn kho bằng 0) */}
-        {product.stock_quantity <= 0 && (
-          <span className="vb-badge-soldout">{t.products.outOfStock}</span>
-        )}
+        {/* Minimalist Top Status Badge */}
+        {isOutOfStock ? (
+          <span className="vb-card-badge soldout">{t.products.outOfStock}</span>
+        ) : currentMode === "rental" || (!product.sale_enabled && product.rental_enabled) ? (
+          <span className="vb-card-badge rental">{t.products.rentBtnShort}</span>
+        ) : null}
 
-        {/* Rental tag badge if rental enabled */}
-        {product.rental_enabled && (
-          <span
-            className="vb-badge-rental"
-            style={{
-              backgroundColor: currentMode === "rental" ? "rgba(34, 197, 94, 0.9)" : "rgba(34, 197, 94, 0.2)",
-              color: currentMode === "rental" ? "#000000" : "#4ade80",
-              fontWeight: 800,
-            }}
-          >
-            {currentMode === "rental" ? `🎧 ${t.products.rentBtnShort}` : t.products.rentBtnShort}
-          </span>
-        )}
-
-        {/* Quick Actions Overlay Bar inside Card Image Wrap */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "8px",
-            left: "8px",
-            right: "8px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            zIndex: 10,
-            pointerEvents: "auto",
-          }}
-        >
+        {/* Floating Quick Action Icons (Appear on Card Hover) */}
+        <div className="vb-card-quick-actions">
           {onQuickView && (
             <button
               type="button"
+              className="vb-quick-action-btn"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 onQuickView(product);
               }}
-              style={{
-                padding: "4px 10px",
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                borderRadius: "9999px",
-                color: "#fff",
-                fontSize: "11px",
-                fontWeight: 700,
-                cursor: "pointer",
-                backdropFilter: "blur(6px)",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                transition: "all 180ms ease",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#22c55e";
-                e.currentTarget.style.color = "#000";
-                e.currentTarget.style.borderColor = "#22c55e";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-                e.currentTarget.style.color = "#fff";
-                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
-              }}
               title={t.products.quickView}
+              aria-label={t.products.quickView}
             >
-              👁️ {t.products.quickView}
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
             </button>
           )}
 
           {onToggleCompare && (
             <button
               type="button"
+              className={`vb-quick-action-btn ${isCompared ? "active" : ""}`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 onToggleCompare(product);
               }}
-              style={{
-                padding: "4px 10px",
-                backgroundColor: isCompared ? "#22c55e" : "rgba(0, 0, 0, 0.8)",
-                border: isCompared ? "1px solid #22c55e" : "1px solid rgba(255, 255, 255, 0.2)",
-                borderRadius: "9999px",
-                color: isCompared ? "#000" : "#fff",
-                fontSize: "11px",
-                fontWeight: 800,
-                cursor: "pointer",
-                backdropFilter: "blur(6px)",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                transition: "all 180ms ease",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
-              }}
               title={isCompared ? t.products.compared : t.products.compare}
+              aria-label={isCompared ? t.products.compared : t.products.compare}
             >
-              {isCompared ? `✓ ${t.products.compared}` : `⚖️ ${t.products.compare}`}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 3h5v5" />
+                <path d="M4 20L21 3" />
+                <path d="M21 16v5h-5" />
+                <path d="M15 15l6 6" />
+                <path d="M4 4l5 5" />
+              </svg>
             </button>
           )}
         </div>
       </div>
 
-      {/* Card Content Body */}
+      {/* 2. Card Content Body */}
       <div className="vb-card-body">
-        <div>
-          {/* Title */}
+        {/* SALE BÁN CHẠY Ribbon Pill */}
+        <div className="vb-card-sale-pill">
+          <span className="vb-sale-flag">SALE</span>
+          <span className="vb-sale-text">{lang === "en" ? "HOT DEAL" : "BÁN CHẠY"}</span>
+        </div>
+
+        <div className="vb-card-body-top">
+          {/* Clean Title */}
           <Link href={`/products/${product.slug}`} className="vb-product-title" title={displayName}>
             {displayName}
           </Link>
+        </div>
 
-          {/* Tags */}
-          <div className="vb-tags-row">
-            {product.brand && <span className="vb-tag-brand">{product.brand}</span>}
-            <span className="vb-tag-item">{t.products.warranty12M}</span>
-            {product.stock_quantity > 0 ? (
-              <span className="vb-tag-item">{t.products.inStock}</span>
-            ) : (
-              <span className="vb-tag-item" style={{ color: "#f87171", borderColor: "rgba(239, 68, 68, 0.3)" }}>
-                {t.products.outOfStock}
-              </span>
-            )}
-          </div>
-
-          {/* Price Section */}
-          <div className="vb-price-row">
+        {/* 3. Price & Promotional Rows */}
+        <div className="vb-card-body-bottom">
+          <div className="vb-price-container">
             {currentMode === "rental" ? (
               product.rental_enabled && product.rental_price ? (
-                <div>
-                  <div style={{ fontSize: "11px", color: "#4ade80", fontWeight: 700, textTransform: "uppercase" }}>
-                    {t.products.rentalPriceLabel}
-                  </div>
-                  <div style={{ fontSize: "20px", fontWeight: 800, color: "#22c55e", display: "flex", alignItems: "baseline", gap: "3px" }}>
-                    {formatVND(product.rental_price)}
-                    <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 500 }}>{t.products.perDay}</span>
-                  </div>
-                  {product.sale_enabled && product.sale_price ? (
-                    <div style={{ fontSize: "11.5px", color: "#71717a", marginTop: "2px" }}>
-                      {t.products.purchasePriceLabel} {new Intl.NumberFormat("vi-VN").format(product.sale_price)}₫
-                    </div>
-                  ) : null}
+                <div className="vb-price-primary rental">
+                  {formatVND(product.rental_price)}
+                  <span className="vb-price-unit">{t.products.perDay}</span>
                 </div>
               ) : (
-                <div style={{ fontSize: "13px", color: "#22c55e", fontWeight: 700 }}>{t.products.rentalQuoteContact}</div>
+                <div className="vb-price-contact">{t.products.rentalQuoteContact}</div>
               )
-            ) : (
-              <>
-                {product.sale_enabled && product.sale_price ? (
-                  <div className="vb-sale-price">
-                    <small>₫</small>
-                    {new Intl.NumberFormat("vi-VN").format(product.sale_price)}
+            ) : product.sale_enabled && product.sale_price ? (
+              <div className="vb-price-block">
+                <div className="vb-price-primary">
+                  {new Intl.NumberFormat("vi-VN").format(product.sale_price)}<sup className="vb-currency-sup">₫</sup>
+                </div>
+                {originalPrice > 0 && (
+                  <div className="vb-card-old-price-row">
+                    <span className="vb-card-old-price">{new Intl.NumberFormat("vi-VN").format(originalPrice)}₫</span>
+                    <span className="vb-card-discount-pill">-{discountPct}%</span>
                   </div>
-                ) : (
-                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 700 }}>{t.products.rentalOnly}</div>
                 )}
-
-                {product.rental_enabled && product.rental_price ? (
-                  <div className="vb-rental-price" title={t.products.rentalPerDay}>
-                    <span className="vb-rental-label">{t.products.rentalPerDay}</span>
-                    <strong>{formatVND(product.rental_price)}</strong>
-                  </div>
-                ) : null}
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Footer info: Rating, location */}
-        <div className="vb-card-footer">
-          <div className="vb-rating">
-            <span>★</span>
-            <span>5.0</span>
-          </div>
-          <span className="vb-location">{t.products.locationDaNang}</span>
-        </div>
-      </div>
-
-      {/* Bottom Actions Drawer (Trượt xuống bên dưới thẻ khi hover) */}
-      <div className="vb-card-bottom-actions">
-        {currentMode === "rental" ? (
-          /* Khi ở chế độ Cho thuê, nút Thuê sản phẩm hiển thị rộng đầy đủ */
-          <a
-            href={getMessengerRentalUrl(displayName)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="vb-btn-rental"
-            onClick={handleRentProduct}
-            style={{ width: "100%", justifyContent: "center" }}
-            title={t.products.rentNowBtn}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            {t.products.rentNowBtn}
-          </a>
-        ) : (
-          <>
-            {/* Nút 1: Thêm vào giỏ hàng / Tạm hết hàng */}
-            {product.stock_quantity > 0 ? (
-              <button
-                type="button"
-                className="vb-btn-cart"
-                onClick={handleAddToCart}
-                title={t.products.addToCart}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                {t.products.addToCart}
-              </button>
+              </div>
             ) : (
-              <button
-                type="button"
-                className="vb-btn-cart"
-                disabled
-                style={{
-                  opacity: 0.55,
-                  cursor: "not-allowed",
-                  backgroundColor: "#27272a",
-                  color: "#a1a1aa",
-                }}
-                title={t.products.outOfStock}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                {t.products.outOfStock}
-              </button>
+              <div className="vb-price-primary rental-alt">
+                {product.rental_price ? `${formatVND(product.rental_price)} / ngày` : t.products.rentalOnly}
+              </div>
             )}
+          </div>
 
-            {/* Nút 2: Thuê sản phẩm -> Link sang Facebook Messenger VanBass */}
-            {product.rental_enabled && (
-              <a
-                href={getMessengerRentalUrl(displayName)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="vb-btn-rental"
-                onClick={handleRentProduct}
-                title={t.products.rentBtnShort}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-                {t.products.rentBtnShort}
-              </a>
-            )}
-          </>
-        )}
+          {/* 4. Gift / Incentive Note */}
+          <div className="vb-card-gift-note" title={giftText}>
+            <span className="vb-gift-text">{giftText}</span>
+          </div>
+
+          {/* 5. Rating & Sold Stats Row */}
+          <div className="vb-card-rating-sold-row">
+            <span className="vb-rating-score">{ratingScore} <span className="vb-star-icon">★</span></span>
+            <span className="vb-rating-sep">|</span>
+            <span className="vb-sold-count">{lang === "en" ? `Sold: ${soldCount}` : `Đã Bán: ${soldCount}`}</span>
+          </div>
+
+          {/* 6. Built-in Single CTA Button */}
+          {currentMode === "rental" || (!product.sale_enabled && product.rental_enabled) ? (
+            <a
+              href={getMessengerRentalUrl(displayName)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vb-card-cta-btn rental"
+              onClick={handleRentProduct}
+              title={t.products.rentNowBtn}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              <span>{t.products.rentNowBtn}</span>
+            </a>
+          ) : isOutOfStock ? (
+            <button
+              type="button"
+              className="vb-card-cta-btn disabled"
+              disabled
+              title={t.products.outOfStock}
+            >
+              {t.products.outOfStock}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="vb-card-cta-btn cart"
+              onClick={handleAddToCart}
+              title={t.products.addToCart}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              <span>{t.products.addToCart}</span>
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );

@@ -52,6 +52,120 @@ def get_home_config(
     )
 
 
+@router.get(
+    "/draft",
+    response_model=HomeConfigResponse,
+)
+def get_home_config_draft(
+    current_user: User = Depends(require_staff_or_admin),
+    db: Session = Depends(get_db),
+) -> HomeConfigResponse:
+    config = db.execute(
+        select(HomeConfig).order_by(HomeConfig.updated_at.desc()).limit(1)
+    ).scalar_one_or_none()
+
+    if config is None:
+        return HomeConfigResponse(
+            id=None,
+            data=HomeData(),
+            updated_at=None,
+        )
+
+    raw_data = config.draft_data if config.draft_data is not None else config.data
+    try:
+        data = HomeData(**raw_data) if isinstance(raw_data, dict) else HomeData()
+    except (TypeError, ValueError):
+        data = HomeData()
+
+    return HomeConfigResponse(
+        id=config.id,
+        data=data,
+        updated_at=config.updated_at,
+    )
+
+
+@router.put(
+    "/draft",
+    response_model=HomeConfigResponse,
+)
+def update_home_config_draft(
+    payload: HomeConfigUpdate,
+    current_user: User = Depends(require_staff_or_admin),
+    db: Session = Depends(get_db),
+) -> HomeConfigResponse:
+    config = db.execute(
+        select(HomeConfig).order_by(HomeConfig.updated_at.desc()).limit(1)
+    ).scalar_one_or_none()
+
+    dumped_data = payload.data.model_dump()
+
+    if config is None:
+        config = HomeConfig(
+            id=uuid.uuid4(),
+            data=HomeData().model_dump(),
+            draft_data=dumped_data,
+            updated_by=current_user.id,
+        )
+        db.add(config)
+    else:
+        config.draft_data = dumped_data
+        config.updated_by = current_user.id
+
+    db.commit()
+    db.refresh(config)
+
+    return HomeConfigResponse(
+        id=config.id,
+        data=HomeData(**config.draft_data),
+        updated_at=config.updated_at,
+    )
+
+
+@router.post(
+    "/publish",
+    response_model=HomeConfigResponse,
+)
+def publish_home_config(
+    payload: HomeConfigUpdate | None = None,
+    current_user: User = Depends(require_staff_or_admin),
+    db: Session = Depends(get_db),
+) -> HomeConfigResponse:
+    config = db.execute(
+        select(HomeConfig).order_by(HomeConfig.updated_at.desc()).limit(1)
+    ).scalar_one_or_none()
+
+    if payload and payload.data:
+        new_data = payload.data.model_dump()
+    elif config and config.draft_data is not None:
+        new_data = config.draft_data
+    elif config:
+        new_data = config.data
+    else:
+        new_data = HomeData().model_dump()
+
+    if config is None:
+        config = HomeConfig(
+            id=uuid.uuid4(),
+            data=new_data,
+            draft_data=new_data,
+            updated_by=current_user.id,
+        )
+        db.add(config)
+    else:
+        config.data = new_data
+        config.draft_data = new_data
+        config.updated_by = current_user.id
+
+    db.commit()
+    db.refresh(config)
+
+    return HomeConfigResponse(
+        id=config.id,
+        data=HomeData(**config.data),
+        updated_at=config.updated_at,
+    )
+
+
 @router.put(
     "",
     response_model=HomeConfigResponse,
@@ -71,11 +185,13 @@ def update_home_config(
         config = HomeConfig(
             id=uuid.uuid4(),
             data=dumped_data,
+            draft_data=dumped_data,
             updated_by=current_user.id,
         )
         db.add(config)
     else:
         config.data = dumped_data
+        config.draft_data = dumped_data
         config.updated_by = current_user.id
 
     db.commit()

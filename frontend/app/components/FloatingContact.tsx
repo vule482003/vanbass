@@ -42,6 +42,9 @@ export default function FloatingContact({
           <a
             href={phoneHref}
             className="floating-btn btn-phone"
+            data-cms-key="floating_contacts.hotline"
+            data-cms-label="Số Hotline 24/7"
+            data-cms-type="text"
             title={lang === "en" ? `Call 24/7 Hotline: ${phoneDisplay}` : `Gọi Hotline tư vấn miễn phí: ${phoneDisplay}`}
             aria-label={`Call Hotline ${phoneDisplay}`}
           >
@@ -65,6 +68,9 @@ export default function FloatingContact({
             target="_blank"
             rel="noopener noreferrer"
             className="floating-btn btn-zalo"
+            data-cms-key="floating_contacts.zalo_link"
+            data-cms-label="Link Chat Zalo"
+            data-cms-type="text"
             title={lang === "en" ? "Chat Zalo consultation" : "Chat Zalo tư vấn thiết bị & báo giá thuê ngay"}
             aria-label="Chat Zalo"
           >
@@ -87,6 +93,9 @@ export default function FloatingContact({
             target="_blank"
             rel="noopener noreferrer"
             className="floating-btn btn-messenger"
+            data-cms-key="floating_contacts.messenger_link"
+            data-cms-label="Link Facebook Messenger"
+            data-cms-type="text"
             title={lang === "en" ? "Message Facebook Fanpage" : "Nhắn tin Messenger Fanpage VanBass Music Center"}
             aria-label="Message Facebook Messenger"
           >
@@ -109,6 +118,9 @@ export default function FloatingContact({
             target="_blank"
             rel="noopener noreferrer"
             className="floating-btn btn-maps"
+            data-cms-key="floating_contacts.maps_link"
+            data-cms-label="Link Bản đồ Showroom"
+            data-cms-type="text"
             title={lang === "en" ? "Get directions to Da Nang Showroom" : "Chỉ đường đến Showroom VanBass Đà Nẵng để test máy trực tiếp"}
             aria-label="Directions Da Nang Showroom"
           >

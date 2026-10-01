@@ -463,3 +463,94 @@ class EmailService:
                 else "Đã tạo mock email thành công (Nhập SMTP_USER và SMTP_PASSWORD trong .env để gửi email thật qua Gmail)."
             ),
         }
+
+    @classmethod
+    def send_password_reset_otp(cls, to_email: str, otp: str):
+        """
+        Send a secure 6-digit OTP for password reset.
+        """
+        clean_to = to_email.strip()
+        if not clean_to:
+            return
+
+        html_body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mã xác thực đặt lại mật khẩu - VanBass</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f4f4f5;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #09090b; padding: 40px 10px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 540px; width: 100%; background-color: #121412; border: 1px solid #27272a; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #181c18 0%, #0d120d 100%); padding: 32px 24px; text-align: center; border-bottom: 2px solid #22c55e;">
+              <h1 style="margin: 0; color: #22c55e; font-size: 22px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">
+                VANBASS MUSIC CENTER
+              </h1>
+              <p style="margin: 6px 0 0 0; color: #a1a1aa; font-size: 13px; font-weight: 600;">
+                YÊU CẦU ĐẶT LẠI MẬT KHẨU
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding: 36px 28px; text-align: center;">
+              <p style="margin: 0 0 16px 0; font-size: 15px; color: #d4d4d8; line-height: 1.6;">
+                Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản liên kết với địa chỉ <strong>{clean_to}</strong>.
+              </p>
+              
+              <p style="margin: 0 0 24px 0; font-size: 14px; color: #a1a1aa;">
+                Vui lòng sử dụng mã xác thực bên dưới để hoàn tất việc đổi mật khẩu:
+              </p>
+
+              <!-- OTP Display Box -->
+              <div style="background-color: #181a18; border: 2px dashed #22c55e; border-radius: 12px; padding: 22px 16px; margin: 0 auto 28px auto; max-width: 320px;">
+                <span style="font-family: 'Courier New', Courier, monospace; font-size: 38px; font-weight: 900; letter-spacing: 10px; color: #22c55e; display: inline-block;">
+                  {otp}
+                </span>
+              </div>
+
+              <!-- Security Notices -->
+              <div style="background-color: rgba(239, 68, 68, 0.08); border-left: 4px solid #ef4444; border-radius: 6px; padding: 14px 18px; text-align: left; margin-bottom: 24px;">
+                <p style="margin: 0; font-size: 13px; color: #fca5a5; line-height: 1.5;">
+                  ⏱️ Mã xác thực này có hiệu lực trong <strong>5 phút</strong> và chỉ được sử dụng một lần.
+                </p>
+                <p style="margin: 6px 0 0 0; font-size: 12.5px; color: #a1a1aa; line-height: 1.5;">
+                  🔒 Tuyệt đối không chia sẻ mã này với bất kỳ ai (kể cả nhân viên VanBass). Nếu bạn không yêu cầu đặt lại mật khẩu, bạn có thể yên tâm bỏ qua email này.
+                </p>
+              </div>
+
+              <p style="margin: 0; font-size: 13px; color: #71717a;">
+                Hotline hỗ trợ kỹ thuật 24/7: <a href="tel:0706067799" style="color: #4ade80; text-decoration: none; font-weight: 700;">0706.067.799</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #0d0f0d; padding: 18px; text-align: center; border-top: 1px solid #27272a; color: #71717a; font-size: 12px;">
+              <p style="margin: 0;">© 2026 VanBass Music Center Đà Nẵng. Mọi quyền được bảo lưu.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+        """
+
+        cls.send_async(
+            to_emails=clean_to,
+            subject=f"[VanBass] Mã xác thực đặt lại mật khẩu của bạn là: {otp}",
+            html_content=html_body,
+        )
+

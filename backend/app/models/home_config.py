@@ -25,6 +25,11 @@ class HomeConfig(Base):
         nullable=False,
     )
 
+    draft_data: Mapped[dict[str, Any] | None] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+
     updated_by: Mapped[uuid.UUID | None] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("users.id", ondelete="SET NULL"),

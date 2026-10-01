@@ -5,33 +5,33 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class HeroPanelLeft(BaseModel):
-    tag: str = "01 / HARDWARE & AUDIO"
+    tag: str = "01 / THIẾT BỊ"
     title: str = "THIẾT BỊ DJ"
     desc: str = (
         "Phân phối chính hãng Pioneer DJ, AlphaTheta, Mixer & Loa kiểm âm cao cấp."
     )
     link: str = "/products"
-    button_text: str = "Khám phá thiết bị"
+    button_text: str = "Khám phá"
     bg_image: str = "/images/hero/hero_hardware.jpg"
 
 
 class HeroPanelCenter(BaseModel):
-    badge: str = "THIẾT BỊ DJ CHÍNH HÃNG"
-    headline: str = "HỆ THỐNG ÂM THANH & CHO THUÊ DJ"
+    badge: str = "02 / DỊCH VỤ"
+    headline: str = "CHO THUÊ SỰ KIỆN"
     desc: str = "Giải pháp thiết bị biểu diễn sân khấu, party, club & sự kiện hàng đầu miền Trung."
     link: str = "/products"
-    button_text: str = "THUÊ THIẾT BỊ NGAY"
+    button_text: str = "Bảng giá thuê"
     bg_image: str = "/images/hero/hero_performance.jpg"
 
 
 class HeroPanelRight(BaseModel):
-    tag: str = "03 / SHOWROOM & STUDIO"
+    tag: str = "03 / SHOWROOM"
     title: str = "TRẢI NGHIỆM"
     desc: str = (
         "Nghe thử âm thanh trực tiếp tại Showroom Đà Nẵng & hỗ trợ kỹ thuật 24/7."
     )
     link: str = "/contact"
-    button_text: str = "Ghé thăm showroom"
+    button_text: str = "Ghé thăm"
     bg_image: str = "/images/hero/hero_showroom.jpg"
 
 
@@ -56,6 +56,17 @@ class IntroSectionConfig(BaseModel):
     button_link: str = "/about"
 
 
+class HeaderConfig(BaseModel):
+    brand_title: str = "VANBASS"
+    brand_subtitle: str = "MUSIC CENTER"
+    nav_home: str = "TRANG CHỦ"
+    nav_rental: str = "THUÊ BÀN DJ"
+    nav_products: str = "SẢN PHẨM"
+    nav_about: str = "VỀ VANBASS"
+    nav_contact: str = "LIÊN HỆ"
+    search_placeholder: str = "Tìm kiếm thiết bị DJ, mixer, loa..."
+
+
 class RentalSectionConfig(BaseModel):
     kicker: str = "CHO THUÊ THIẾT BỊ"
     headline_top: str = "Cần thiết bị DJ"
@@ -70,6 +81,13 @@ class RentalSectionConfig(BaseModel):
     )
     button_text: str = "Xem thiết bị cho thuê"
     button_link: str = "/products?mode=rental"
+    stage_image: str = "/images/rental/rental_stage_setup.jpg"
+    spec_setup_label: str = "THỜI GIAN SETUP"
+    spec_setup_value: str = "Giao và lắp đặt trong 2 giờ"
+    spec_equipment_label: str = "THIẾT BỊ"
+    spec_equipment_value: str = "100% Pioneer DJ nguyên bản"
+    spec_support_label: str = "HỖ TRỢ"
+    spec_support_value: str = "Kỹ thuật viên sound-man 24/7"
 
 
 class LocalCtaConfig(BaseModel):
@@ -99,6 +117,9 @@ class FloatingContactsConfig(BaseModel):
         "https://www.facebook.com/vanbassmusiccenterdanangvietnam?locale=vi_VN"
     )
     maps_link: str = "https://www.google.com/maps?cid=3481175637981139835"
+    maps_link_hue: str = (
+        "https://www.google.com/maps/place/V%26B+STUDIO+(Training+DJ+Pioneer)/@16.4946002,107.5903409,17z/data=!3m1!4b1!4m6!3m5!1s0x3141a10047a15223:0x298a389a412fb2d1!8m2!3d16.4946002!4d107.5903409!16s%2Fg%2F11m6bydlgc?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D"
+    )
 
 
 class VisibilityConfig(BaseModel):
@@ -108,21 +129,22 @@ class VisibilityConfig(BaseModel):
     show_categories: bool = True
     show_rental: bool = True
     show_intro: bool = True
-    show_cta: bool = True
+    show_cta: bool = False
     show_floating_contact: bool = True
 
 
 class HomeData(BaseModel):
+    header: HeaderConfig = Field(default_factory=HeaderConfig)
     marquee_items: list[str] = Field(
         default_factory=lambda: [
-            "⚡ PIONEER DJ OFFICIAL DISTRIBUTOR",
+            "PIONEER DJ OFFICIAL DISTRIBUTOR",
             "ALPHATHETA",
             "ALLEN & HEATH",
             "DENON DJ",
-            "🎧 SHOWROOM TEST MÁY ĐÀ NẴNG",
-            "⚡ HỖ TRỢ KỸ THUẬT 24/7",
+            "SHOWROOM TEST MÁY ĐÀ NẴNG",
+            "HỖ TRỢ KỸ THUẬT 24/7",
             "GIAO HÀNG HỎA TỐC",
-            "🔥 CHO THUÊ THIẾT BỊ SỰ KIỆN 24/7",
+            "CHO THUÊ THIẾT BỊ SỰ KIỆN 24/7",
         ]
     )
     hero_left: HeroPanelLeft = Field(default_factory=HeroPanelLeft)

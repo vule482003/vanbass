@@ -455,3 +455,23 @@ def delete_staff_user(
     db.delete(target_user)
     db.commit()
     return {"message": "Đã xóa tài khoản thành công."}
+
+
+@router.post("/sync-catalog")
+def sync_catalog_database(
+    _: User = Depends(require_admin),
+) -> dict:
+    try:
+        from scripts.seed import seed_database
+
+        seed_database()
+        return {
+            "success": True,
+            "message": "Đã đồng bộ toàn bộ danh mục và sản phẩm vào cơ sở dữ liệu.",
+        }
+    except Exception as e:  # noqa: BLE001
+        logger.error("Lỗi khi sync catalog: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Lỗi khi đồng bộ dữ liệu: {e}",
+        )

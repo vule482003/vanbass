@@ -1,5 +1,7 @@
 from functools import lru_cache
+from typing import Any
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -35,12 +37,40 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = True
     shop_notify_emails: str = "admin@vanbass.vn"
 
-    cors_origins: list[str] = [
+    cors_origins: Any = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
     ]
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def assemble_database_url(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            if v.startswith("postgresql+"):
+                return v
+            if v.startswith("postgres://"):
+                return v.replace("postgres://", "postgresql+psycopg2://", 1)
+            if v.startswith("postgresql://"):
+                return v.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return v
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Any) -> list[str]:
+        if isinstance(v, str):
+            clean_v = v.strip()
+            if clean_v.startswith("[") and clean_v.endswith("]"):
+                clean_v = clean_v[1:-1]
+            return [
+                item.strip().strip('"').strip("'")
+                for item in clean_v.split(",")
+                if item.strip().strip('"').strip("'")
+            ]
+        if isinstance(v, (list, tuple, set)):
+            return [str(item) for item in v]
+        return []
 
     model_config = SettingsConfigDict(
         env_file=".env",
