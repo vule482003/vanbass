@@ -135,15 +135,77 @@ export default function ProductDetailClient({
     );
   }
 
-  const relatedProducts = allProducts
-    .filter((p) => p.category_id === product.category_id && p.brand === product.brand && p.id !== product.id)
-    .concat(
-      allProducts.filter((p) => p.category_id === product.category_id && p.brand !== product.brand && p.id !== product.id)
-    )
-    .concat(
-      allProducts.filter((p) => p.brand === product.brand && p.category_id !== product.category_id && p.id !== product.id)
-    )
-    .slice(0, 4);
+  // Deterministic, contextual related products algorithm for balanced link graph distribution
+  const relatedProducts = (() => {
+    if (!allProducts || allProducts.length <= 1) return [];
+
+    const rawKey = product.slug || product.id || "";
+    let seed = 0;
+    for (let i = 0; i < rawKey.length; i++) {
+      seed = (seed * 31 + rawKey.charCodeAt(i)) & 0xffffffff;
+    }
+    seed = Math.abs(seed);
+
+    // Bucket 1: Same Category & Same Brand (Highest Relevance)
+    const b1 = allProducts.filter(
+      (p) =>
+        p.category_id === product.category_id &&
+        p.brand === product.brand &&
+        p.id !== product.id &&
+        p.slug !== product.slug
+    );
+
+    // Bucket 2: Same Category & Different Brand
+    const b2 = allProducts.filter(
+      (p) =>
+        p.category_id === product.category_id &&
+        p.brand !== product.brand &&
+        p.id !== product.id &&
+        p.slug !== product.slug
+    );
+
+    // Bucket 3: Different Category & Same Brand
+    const b3 = allProducts.filter(
+      (p) =>
+        p.brand === product.brand &&
+        p.category_id !== product.category_id &&
+        p.id !== product.id &&
+        p.slug !== product.slug
+    );
+
+    // Bucket 4: Global Pool Fallback
+    const b4 = allProducts.filter((p) => p.id !== product.id && p.slug !== product.slug);
+
+    const rotate = (arr: Product[], s: number) => {
+      if (!arr.length) return [];
+      const offset = s % arr.length;
+      return [...arr.slice(offset), ...arr.slice(0, offset)];
+    };
+
+    const candidatePool = [
+      ...rotate(b1, seed),
+      ...rotate(b2, seed),
+      ...rotate(b3, seed),
+      ...rotate(b4, seed),
+    ];
+
+    const seenIds = new Set<string>();
+    const seenSlugs = new Set<string>();
+    const results: Product[] = [];
+
+    for (const p of candidatePool) {
+      if (!p.id || !p.slug) continue;
+      if (seenIds.has(p.id) || seenSlugs.has(p.slug)) continue;
+
+      seenIds.add(p.id);
+      seenSlugs.add(p.slug);
+      results.push(p);
+
+      if (results.length >= 4) break;
+    }
+
+    return results;
+  })();
 
   const displayName = getTranslatedProductName(product, lang);
   const displayDesc = getTranslatedProductDesc(product, lang);
@@ -189,7 +251,9 @@ export default function ProductDetailClient({
             <span className="pdetail-bc-sep">/</span>
             <Link
               href={
-                product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
+                product.category_slug
+                  ? `/products?category=${product.category_slug}`
+                  : product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
                   ? "/ban-dj"
                   : "/products"
               }
@@ -245,32 +309,47 @@ export default function ProductDetailClient({
                         <tbody>
                           <tr>
                             <td className="spec-name-col">Model</td>
-                            <td className="spec-value-col">{product.sku || "XDJ-RX3"}</td>
+                            <td className="spec-value-col">{product.sku || product.name}</td>
                           </tr>
                           <tr>
                             <td className="spec-name-col">Thương hiệu</td>
-                            <td className="spec-value-col">{product.brand || "Pioneer DJ"}</td>
+                            <td className="spec-value-col">{product.brand || "Chính Hãng"}</td>
                           </tr>
                           <tr>
-                            <td className="spec-name-col">Xuất xứ</td>
-                            <td className="spec-value-col">{product.specifications?.["Xuất xứ"] || "Nhật Bản"}</td>
+                            <td className="spec-name-col">Loại sản phẩm</td>
+                            <td className="spec-value-col">
+                              <Link
+                                href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
+                                style={{ color: "#38bdf8", textDecoration: "none" }}
+                              >
+                                {product.category_name || "Thiết bị âm thanh & DJ"}
+                              </Link>
+                            </td>
                           </tr>
-                          <tr>
-                            <td className="spec-name-col">Bảo hành</td>
-                            <td className="spec-value-col">{product.specifications?.["Bảo hành"] || "Chính hãng 12 tháng"}</td>
-                          </tr>
+                          {product.specifications?.["Bảo hành"] && (
+                            <tr>
+                              <td className="spec-name-col">Bảo hành</td>
+                              <td className="spec-value-col">{product.specifications["Bảo hành"]}</td>
+                            </tr>
+                          )}
+                          {product.specifications?.["Xuất xứ"] && (
+                            <tr>
+                              <td className="spec-name-col">Xuất xứ</td>
+                              <td className="spec-value-col">{product.specifications["Xuất xứ"]}</td>
+                            </tr>
+                          )}
                           <tr>
                             <td className="spec-name-col">Tình trạng</td>
                             <td className="spec-value-col">{product.specifications?.["Tình trạng"] || "Mới 100%"}</td>
                           </tr>
-                          <tr>
-                            <td className="spec-name-col">Loại sản phẩm</td>
-                            <td className="spec-value-col">Bàn DJ all-in-one</td>
-                          </tr>
-                          <tr>
-                            <td className="spec-name-col">Hỗ trợ phần mềm</td>
-                            <td className="spec-value-col">{product.specifications?.["Hỗ trợ phần mềm"] || "Rekordbox, Serato DJ"}</td>
-                          </tr>
+                          {(product.specifications?.["Hỗ trợ phần mềm"] ||
+                            product.category_slug?.includes("dj") ||
+                            product.category_name?.toLowerCase().includes("dj")) && (
+                            <tr>
+                              <td className="spec-name-col">Hỗ trợ phần mềm</td>
+                              <td className="spec-value-col">{product.specifications?.["Hỗ trợ phần mềm"] || "Rekordbox, Serato DJ"}</td>
+                            </tr>
+                          )}
                           {product.specifications &&
                             Object.entries(product.specifications)
                               .filter(([key]) => !["Thương hiệu", "Model", "Xuất xứ", "Bảo hành", "Tình trạng", "Hỗ trợ phần mềm"].includes(key))
@@ -310,19 +389,27 @@ export default function ProductDetailClient({
                             </h3>
                             <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
                               {lang === "en"
-                                ? `${displayName} is a genuine professional audio & DJ product from ${product.brand || "Pioneer DJ"}, categorized under ${product.category_name || "Pro Audio"}. Designed with high durability, authentic components, and optimal acoustic performance.`
-                                : `${displayName} là thiết bị thuộc danh mục ${product.category_name || "Thiết bị âm thanh & DJ chuyên nghiệp"}, được sản xuất bởi thương hiệu ${product.brand || "Pioneer DJ"}. Sản phẩm đáp ứng tiêu chuẩn kỹ thuật chuyên nghiệp, độ bền cao và chất lượng âm thanh ổn định.`}
+                                ? `${displayName} is an authentic audio & stage equipment in the ${product.category_name || "Professional Audio"} category, manufactured by ${product.brand || "genuine brands"}. Product identifier (SKU/Model): ${product.sku || product.name}.`
+                                : `${displayName} là thiết bị thuộc danh mục ${product.category_name || "Thiết bị âm thanh chuyên nghiệp"}, được cung cấp bởi thương hiệu ${product.brand || "chính hãng"}. Mã sản phẩm/SKU định danh: ${product.sku || product.name}.`}
                             </p>
                           </div>
 
                           <div>
                             <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-                              {lang === "en" ? "Key Details & Specifications" : "Thông Tin & Thông Số Cơ Bản"}
+                              {lang === "en" ? "Product Information & Verified Attributes" : "Thông Tin & Thuộc Tính Thực Tế"}
                             </h3>
                             <ul style={{ color: "#d4d4d8", fontSize: "14px", lineHeight: 1.8, paddingLeft: "20px", margin: 0 }}>
                               <li><strong>{lang === "en" ? "Model / SKU:" : "Mã sản phẩm / SKU:"}</strong> {product.sku || product.name}</li>
-                              <li><strong>{lang === "en" ? "Brand:" : "Thương hiệu:"}</strong> {product.brand || "Pioneer DJ"}</li>
-                              <li><strong>{lang === "en" ? "Category:" : "Danh mục:"}</strong> {product.category_name || "Thiết bị DJ & Âm Thanh"}</li>
+                              <li><strong>{lang === "en" ? "Brand:" : "Thương hiệu:"}</strong> {product.brand || "Chính Hãng"}</li>
+                              <li>
+                              <strong>{lang === "en" ? "Category:" : "Danh mục:"}</strong>{" "}
+                              <Link
+                                href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
+                                style={{ color: "#38bdf8", textDecoration: "none" }}
+                              >
+                                {product.category_name || (lang === "en" ? "Audio Equipment" : "Thiết bị âm thanh")}
+                              </Link>
+                            </li>
                               {product.specifications?.["Bảo hành"] && (
                                 <li><strong>{lang === "en" ? "Warranty:" : "Bảo hành:"}</strong> {product.specifications["Bảo hành"]}</li>
                               )}
@@ -332,17 +419,25 @@ export default function ProductDetailClient({
                               {product.specifications?.["Tình trạng"] && (
                                 <li><strong>{lang === "en" ? "Condition:" : "Tình trạng:"}</strong> {product.specifications["Tình trạng"]}</li>
                               )}
+                              {product.specifications &&
+                                Object.entries(product.specifications)
+                                  .filter(([k]) => !["Thương hiệu", "Model", "Xuất xứ", "Bảo hành", "Tình trạng", "Hỗ trợ phần mềm"].includes(k))
+                                  .map(([k, v]) => (
+                                    <li key={k}>
+                                      <strong>{getTranslatedSpecKey(k, lang)}:</strong> {String(v)}
+                                    </li>
+                                  ))}
                             </ul>
                           </div>
 
                           <div>
                             <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-                              {lang === "en" ? "Distribution & Warranty at VanBass" : "Chính Sách Phân Phối & Bảo Hành"}
+                              {lang === "en" ? "Distribution & Support at VanBass" : "Chính Sách Phân Phối Tại VanBass"}
                             </h3>
                             <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
                               {lang === "en"
-                                ? `100% authentic product distributed by VanBass Music Center. Fast shipping, genuine warranty, 0% installment support, and dedicated 24/7 technical customer service.`
-                                : `Sản phẩm được phân phối chính hãng bởi VanBass Music Center. Cam kết chất lượng chuẩn nhà sản xuất, hỗ trợ giao hàng toàn quốc, trả góp 0% lãi suất và dịch vụ hỗ trợ kỹ thuật tận tâm.`}
+                                ? `Distributed by VanBass Music Center with genuine quality commitment, full warranty support, nationwide delivery, and technical guidance.`
+                                : `Sản phẩm được phân phối bởi VanBass Music Center với cam kết hàng chính hãng, hỗ trợ bảo hành theo tiêu chuẩn nhà sản xuất, giao hàng toàn quốc và tư vấn kỹ thuật chuyên môn.`}
                             </p>
                           </div>
                         </div>
@@ -463,7 +558,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Model</span>
-                    <span className="quick-spec-val">{product.sku || "XDJ-RX3"}</span>
+                    <span className="quick-spec-val">{product.sku || product.name}</span>
                   </div>
                 </div>
 
@@ -476,7 +571,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Bảo hành</span>
-                    <span className="quick-spec-val">{product.specifications?.["Bảo hành"] || "12 tháng"}</span>
+                    <span className="quick-spec-val">{product.specifications?.["Bảo hành"] || "Chính hãng"}</span>
                   </div>
                 </div>
 
@@ -490,7 +585,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Xuất xứ</span>
-                    <span className="quick-spec-val">{product.specifications?.["Xuất xứ"] || "Nhật Bản"}</span>
+                    <span className="quick-spec-val">{product.specifications?.["Xuất xứ"] || "Đang cập nhật"}</span>
                   </div>
                 </div>
 

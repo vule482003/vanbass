@@ -808,12 +808,20 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "Thiết Bị DJ (Mua Bán & Thuê)",
+            "name": "Sản phẩm",
             "item": `${baseUrl}/products`,
           },
           {
             "@type": "ListItem",
             "position": 3,
+            "name": product.category_name || "Thiết bị âm thanh",
+            "item": product.category_slug
+              ? `${baseUrl}/products?category=${product.category_slug}`
+              : `${baseUrl}/products`,
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
             "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
             "item": `${baseUrl}/products/${canonicalSlug}`,
           },
