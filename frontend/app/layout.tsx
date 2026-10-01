@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Newsreader, Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { LanguageProvider } from "./lib/language-context";
 import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
@@ -7,21 +7,10 @@ import JsonLd from "./components/JsonLd";
 import MobileBottomNav from "./components/MobileBottomNav";
 import "./globals.css";
 
-const montserrat = Montserrat({
+const manrope = Manrope({
   subsets: ["latin", "vietnamese"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin", "vietnamese"],
-  variable: "--font-newsreader",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin", "vietnamese"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -261,7 +250,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`h-full antialiased ${montserrat.variable} ${newsreader.variable} ${inter.variable}`}
+      className={`h-full antialiased ${manrope.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
@@ -272,7 +261,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-icon.png" />
         <JsonLd />
       </head>
-      <body className={`min-h-full flex flex-col ${montserrat.className}`} suppressHydrationWarning>
+      <body className={`min-h-full flex flex-col ${manrope.className}`} suppressHydrationWarning>
         <LanguageProvider>
           <AuthProvider>
             <CartProvider>

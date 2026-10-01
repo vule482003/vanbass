@@ -323,15 +323,100 @@ export const SPEC_KEY_TRANSLATIONS: Record<string, string> = {
 };
 
 /**
- * Get the translated product name based on language
+ * Format product title cleanly for display:
+ * Converts shouty all-caps strings into clean, elegant presentation casing
+ * Preserves brand and model hierarchy without touching underlying database or losing details.
+ */
+export function formatCleanProductTitle(rawName: string): string {
+  if (!rawName) return "";
+  let name = rawName.trim();
+
+  // If the title is mostly uppercase or all-caps
+  const lettersOnly = name.replace(/[^a-zA-ZÀ-ỹ]/g, "");
+  const upperLetters = name.replace(/[^A-ZÀ-Ỹ]/g, "");
+  const isShouting = lettersOnly.length > 3 && upperLetters.length / lettersOnly.length > 0.65;
+
+  if (isShouting) {
+    // 1. Replace shouting Vietnamese product prefixes with clean Title Case
+    const prefixMap: [RegExp, string][] = [
+      [/^MÁY\s+DJ\s+CONTROLLER\s+/i, "Máy DJ Controller "],
+      [/^BÀN\s+DJ\s+ALL[- ]IN[- ]ONE\s+/i, "Bàn DJ All-in-One "],
+      [/^BÀN\s+DJ\s+CONTROLLER\s+/i, "Bàn DJ Controller "],
+      [/^BÀN\s+DJ\s+/i, "Bàn DJ "],
+      [/^LOA\s+KIỂM\s+ÂM\s+/i, "Loa kiểm âm "],
+      [/^LOA\s+LINE\s+ARRAY\s+/i, "Loa Line Array "],
+      [/^LOA\s+SUBWOOFER\s+/i, "Loa Subwoofer "],
+      [/^LOA\s+BIỂU\s+DIỄN\s+/i, "Loa biểu diễn "],
+      [/^LOA\s+RỜI\s+/i, "Loa rời "],
+      [/^CỦ\s+LOA\s+TREBLE\s+/i, "Củ loa Treble "],
+      [/^CỦ\s+LOA\s+BASS\s+/i, "Củ loa Bass "],
+      [/^BÀN\s+MIXER\s+/i, "Bàn Mixer "],
+      [/^MÂM\s+ĐĨA\s+THAN\s+/i, "Mâm đĩa than "],
+      [/^TAI\s+NGHE\s+DJ\s+/i, "Tai nghe DJ "],
+      [/^MICRO\s+KHÔNG\s+DÂY\s+/i, "Micro không dây "],
+      [/^MICRO\s+CÓ\s+DÂY\s+/i, "Micro có dây "],
+      [/^CỤC\s+ĐẨY\s+CÔNG\s+SUẤT\s+/i, "Cục đẩy công suất "],
+      [/^VANG\s+SỐ\s+/i, "Vang số "],
+      [/^MÁY\s+PHUN\s+KHÓI\s+/i, "Máy phun khói "],
+      [/^DÂY\s+TÍN\s+HIỆU\s+/i, "Dây tín hiệu "],
+      [/^DÂY\s+LOA\s+/i, "Dây loa "],
+      [/^PHỤ\s+KIỆN\s+/i, "Phụ kiện "],
+      [/^ĐẦU\s+PHÁT\s+DJ\s+/i, "Đầu phát DJ "],
+      [/^HỆ\s+THỐNG\s+DJ\s+/i, "Hệ thống DJ "],
+    ];
+
+    for (const [pattern, replacement] of prefixMap) {
+      if (pattern.test(name)) {
+        name = name.replace(pattern, replacement);
+        break;
+      }
+    }
+
+    // 2. Normalize shouting brand names to standard casing
+    const brandMap: [RegExp, string][] = [
+      [/\bALPHATHETA\b/i, "AlphaTheta"],
+      [/\bPIONEER\s+DJ\b/i, "Pioneer DJ"],
+      [/\bPIONEER\b/i, "Pioneer"],
+      [/\bALLEN\s*&\s*HEATH\b/i, "Allen & Heath"],
+      [/\bSENNHEISER\b/i, "Sennheiser"],
+      [/\bB&C\s+SPEAKERS\b/i, "B&C Speakers"],
+      [/\bBEHRINGER\b/i, "Behringer"],
+      [/\bMARANI\b/i, "Marani"],
+      [/\bMACKIE\b/i, "Mackie"],
+      [/\bSOUNDCRAFT\b/i, "Soundcraft"],
+      [/\bDENON\s+DJ\b/i, "Denon DJ"],
+      [/\bJBL\s+PROFESSIONAL\b/i, "JBL Professional"],
+      [/\bJBL\b/i, "JBL"],
+      [/\bSHURE\b/i, "Shure"],
+      [/\bANTARI\b/i, "Antari"],
+      [/\bCHAUVET\s+DJ\b/i, "Chauvet DJ"],
+      [/\bNEXO\b/i, "Nexo"],
+      [/\bYAMAHA\b/i, "Yamaha"],
+      [/\bKLOTZ\s+AIS\b/i, "Klotz AIS"],
+      [/\bKLOTZ\b/i, "Klotz"],
+      [/\bROLAND\b/i, "Roland"],
+      [/\bZOOM\b/i, "Zoom"],
+      [/\bTURBOSOUND\b/i, "Turbosound"],
+    ];
+
+    for (const [pattern, replacement] of brandMap) {
+      name = name.replace(pattern, replacement);
+    }
+  }
+
+  return name;
+}
+
+/**
+ * Get the translated product name based on language with clean presentation casing
  */
 export function getTranslatedProductName(
   productOrSlugOrName: { slug?: string; name?: string } | string,
   lang: string = "vi"
 ): string {
   if (lang !== "en") {
-    if (typeof productOrSlugOrName === "string") return productOrSlugOrName;
-    return productOrSlugOrName.name || "";
+    if (typeof productOrSlugOrName === "string") return formatCleanProductTitle(productOrSlugOrName);
+    return formatCleanProductTitle(productOrSlugOrName.name || "");
   }
 
   // If object has slug
@@ -366,10 +451,10 @@ export function getTranslatedProductName(
     for (const rule of VIETNAMESE_PREFIX_RULES) {
       if (rule.pattern.test(translated)) {
         translated = translated.replace(rule.pattern, rule.replace);
-        return translated.trim();
+        return formatCleanProductTitle(translated.trim());
       }
     }
-    return originalName;
+    return formatCleanProductTitle(originalName);
   }
 
   return "";

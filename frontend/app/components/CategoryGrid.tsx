@@ -328,11 +328,11 @@ export default function CategoryGrid({
             </p>
             <h2
               style={{
-                fontFamily: 'var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, serif',
-                fontSize: "clamp(26px, 3.2vw, 42px)",
-                fontWeight: 500,
+                fontFamily: "var(--font-primary)",
+                fontSize: "clamp(24px, 3.2vw, 36px)",
+                fontWeight: 700,
                 letterSpacing: "-0.015em",
-                lineHeight: 1.2,
+                lineHeight: 1.18,
               }}
               data-cms-key="categories_highlight.title"
               data-cms-label="Tiêu Đề Danh Mục"

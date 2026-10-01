@@ -255,7 +255,7 @@ export default function ThueBanDjPage() {
         flexDirection: "column",
         backgroundColor: "#09090b",
         color: "#f4f4f5",
-        fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+        fontFamily: "var(--font-primary)",
       }}
     >
       <script
@@ -294,7 +294,7 @@ export default function ThueBanDjPage() {
                 style={{
                   color: "#22c55e",
                   fontSize: "12px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.14em",
                   display: "inline-block",
@@ -305,9 +305,9 @@ export default function ThueBanDjPage() {
               </span>
               <h2
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "clamp(26px, 3.6vw, 40px)",
-                  fontWeight: 900,
+                  fontWeight: 700,
                   color: "#ffffff",
                   letterSpacing: "-0.03em",
                   margin: 0,
@@ -352,7 +352,7 @@ export default function ThueBanDjPage() {
                     color: "#4ade80",
                     border: "1px solid #22c55e",
                     fontSize: "11px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     padding: "4px 10px",
                     borderRadius: "4px",
                     textTransform: "uppercase",
@@ -384,14 +384,14 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   ALL-IN-ONE SYSTEM
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     margin: "6px 0 12px 0",
                     letterSpacing: "-0.02em",
@@ -416,7 +416,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "24px", fontWeight: 900, color: "#22c55e", letterSpacing: "-0.02em" }}>1.200.000đ</span>
+                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>1.200.000đ</span>
                       <span style={{ fontSize: "12px", color: "#a1a1aa" }}> / 24h</span>
                     </div>
                   </div>
@@ -473,7 +473,7 @@ export default function ThueBanDjPage() {
                     color: "#4ade80",
                     border: "1px solid #22c55e",
                     fontSize: "11px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     padding: "4px 10px",
                     borderRadius: "4px",
                     textTransform: "uppercase",
@@ -505,14 +505,14 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   DJ CONTROLLER 2-CHANNEL
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     margin: "6px 0 12px 0",
                     letterSpacing: "-0.02em",
@@ -537,7 +537,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "24px", fontWeight: 900, color: "#22c55e", letterSpacing: "-0.02em" }}>400.000đ</span>
+                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>400.000đ</span>
                       <span style={{ fontSize: "12px", color: "#a1a1aa" }}> / 24h</span>
                     </div>
                   </div>
@@ -594,7 +594,7 @@ export default function ThueBanDjPage() {
                     color: "#f4f4f5",
                     border: "1px solid rgba(255, 255, 255, 0.2)",
                     fontSize: "11px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     padding: "4px 10px",
                     borderRadius: "4px",
                     textTransform: "uppercase",
@@ -626,14 +626,14 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   ALL-IN-ONE 4-CHANNEL
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     margin: "6px 0 12px 0",
                     letterSpacing: "-0.02em",
@@ -658,7 +658,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "24px", fontWeight: 900, color: "#22c55e", letterSpacing: "-0.02em" }}>1.800.000đ</span>
+                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>1.800.000đ</span>
                       <span style={{ fontSize: "12px", color: "#a1a1aa" }}> / 24h</span>
                     </div>
                   </div>
@@ -715,7 +715,7 @@ export default function ThueBanDjPage() {
                     color: "#facc15",
                     border: "1px solid rgba(234, 179, 8, 0.35)",
                     fontSize: "11px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     padding: "4px 10px",
                     borderRadius: "4px",
                     textTransform: "uppercase",
@@ -747,14 +747,14 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   MULTI PLAYER & MIXER
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     margin: "6px 0 12px 0",
                     letterSpacing: "-0.02em",
@@ -779,7 +779,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "20px", fontWeight: 800, color: "#22c55e", letterSpacing: "-0.02em" }}>Liên hệ báo giá</span>
+                      <span style={{ fontSize: "20px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>Liên hệ báo giá</span>
                     </div>
                   </div>
                 </div>
@@ -809,14 +809,14 @@ export default function ThueBanDjPage() {
         <section style={{ padding: "75px 0", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", backgroundColor: "#0b0b0e" }}>
           <div className="container" style={{ maxWidth: "960px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "36px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
                 MINH BẠCH & TẬN TÂM
               </span>
               <h2
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "clamp(24px, 3.2vw, 34px)",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: "#ffffff",
                   letterSpacing: "-0.02em",
                   margin: 0,
@@ -840,7 +840,7 @@ export default function ThueBanDjPage() {
                 marginBottom: "32px",
               }}
             >
-              <h3 style={{ fontSize: "15px", fontWeight: 800, color: "#4ade80", margin: "0 0 12px 0", letterSpacing: "-0.01em" }}>
+              <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#4ade80", margin: "0 0 12px 0", letterSpacing: "-0.01em" }}>
                 Giá thuê bàn DJ tại khu vực Đà Nẵng dao động từ 400.000 VNĐ đến 1.800.000 VNĐ mỗi ngày tùy theo dòng máy:
               </h3>
               <ul style={{ paddingLeft: "20px", margin: 0, fontSize: "13.5px", color: "#d4d4d8", lineHeight: 1.8 }}>
@@ -926,16 +926,16 @@ export default function ThueBanDjPage() {
                     </td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)", backgroundColor: "rgba(34, 197, 94, 0.04)" }}>
-                    <td style={{ padding: "16px", fontWeight: 800 }}>
+                    <td style={{ padding: "16px", fontWeight: 700 }}>
                       <Link href="/products/xdj-rx3" style={{ color: "#4ade80", textDecoration: "none" }}>
                         Pioneer DJ XDJ-RX3 (Best-seller)
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Màn 10.1&quot;</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Show sự kiện, Wedding, Bar Club, Lounge</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 800 }}>1.200.000đ</td>
+                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.200.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-rx3" style={{ color: "#22c55e", fontWeight: 800, textDecoration: "none" }}>
+                      <Link href="/products/xdj-rx3" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -1028,14 +1028,14 @@ export default function ThueBanDjPage() {
         <section style={{ padding: "75px 0", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", backgroundColor: "#09090b" }}>
           <div className="container" style={{ maxWidth: "960px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "48px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
                 TIỆN LỢI & NHANH CHÓNG
               </span>
               <h2
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "clamp(24px, 3.2vw, 34px)",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: "#ffffff",
                   letterSpacing: "-0.02em",
                   margin: 0,
@@ -1048,7 +1048,7 @@ export default function ThueBanDjPage() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "20px" }}>
               <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 900, display: "block", marginBottom: "10px" }}>01</span>
+                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>01</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Chọn Máy & Ngày Thuê</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Nhắn tin qua Messenger hoặc gọi Hotline để chọn mẫu bàn DJ (XDJ-RX3, FLX4, XZ...) và ngày nhận máy.
@@ -1056,7 +1056,7 @@ export default function ThueBanDjPage() {
               </div>
 
               <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 900, display: "block", marginBottom: "10px" }}>02</span>
+                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>02</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Xác Nhận Thủ Tục</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Xác nhận lịch thuê, đặt cọc giữ máy (hoặc làm hợp đồng thuê thiết bị cho sự kiện). Thủ tục trong 5 phút.
@@ -1064,7 +1064,7 @@ export default function ThueBanDjPage() {
               </div>
 
               <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 900, display: "block", marginBottom: "10px" }}>03</span>
+                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>03</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Bàn Giao & Test Máy</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Nhận máy tại showroom hoặc kỹ thuật viên giao tận nơi. Test fader, jogwheel và soundcheck âm thanh.
@@ -1072,7 +1072,7 @@ export default function ThueBanDjPage() {
               </div>
 
               <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 900, display: "block", marginBottom: "10px" }}>04</span>
+                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>04</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Hoàn Trả & Tất Toán</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Sau khi xong show/sự kiện, VanBass nhận lại máy và hoàn trả cọc nhanh chóng cho khách hàng.
@@ -1087,14 +1087,14 @@ export default function ThueBanDjPage() {
         <section style={{ padding: "75px 0", backgroundColor: "#0b0b0e" }}>
           <div className="container" style={{ maxWidth: "840px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
                 GIẢI ĐÁP THẮC MẮC
               </span>
               <h2
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "clamp(24px, 3.2vw, 34px)",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: "#ffffff",
                   letterSpacing: "-0.02em",
                   margin: 0,
@@ -1140,9 +1140,9 @@ export default function ThueBanDjPage() {
             >
               <h3
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "24px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: "#ffffff",
                   margin: "0 0 12px 0",
                   letterSpacing: "-0.02em",

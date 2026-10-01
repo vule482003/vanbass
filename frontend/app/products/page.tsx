@@ -353,7 +353,7 @@ function ProductsContent() {
             <h1
               style={{
                 fontSize: "clamp(32px, 5vw, 56px)",
-                fontWeight: 800,
+                fontWeight: 700,
                 letterSpacing: "-0.03em",
                 margin: "0 0 12px 0",
               }}
@@ -691,7 +691,7 @@ function ProductsContent() {
                 style={{
                   color: "#22c55e",
                   fontSize: "12px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.14em",
                   display: "inline-block",
@@ -702,9 +702,9 @@ function ProductsContent() {
               </span>
               <h2
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "clamp(22px, 3.2vw, 32px)",
-                  fontWeight: 900,
+                  fontWeight: 700,
                   color: "#ffffff",
                   letterSpacing: "-0.02em",
                   margin: 0,
@@ -736,7 +736,7 @@ function ProductsContent() {
                 }}
               >
                 <div style={{ fontSize: "28px", marginBottom: "12px" }}>🛡️</div>
-                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>100% Chính Hãng - Bảo Hành 12-24T</h3>
+                <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#ffffff", marginBottom: "8px" }}>100% Chính Hãng - Bảo Hành 12-24T</h3>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Cam kết thiết bị nguyên seal hoặc tuyển chọn like new 98-99% fader chuẩn. Đầy đủ hóa đơn, tem bảo hành chính hãng và hỗ trợ linh kiện thay thế trọn đời.
                 </p>
@@ -751,7 +751,7 @@ function ProductsContent() {
                 }}
               >
                 <div style={{ fontSize: "28px", marginBottom: "12px" }}>🎧</div>
-                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>Test Máy Trực Tiếp Tại Showroom</h3>
+                <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#ffffff", marginBottom: "8px" }}>Test Máy Trực Tiếp Tại Showroom</h3>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Mời quý khách ghé Showroom tại Nguyễn Tất Thành (Đà Nẵng) hoặc 442 Chi Lăng (Huế) để trực tiếp cắm USB test thử âm thanh trên dàn loa biểu diễn trước khi mua.
                 </p>
@@ -766,7 +766,7 @@ function ProductsContent() {
                 }}
               >
                 <div style={{ fontSize: "28px", marginBottom: "12px" }}>💳</div>
-                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>Trả Góp 0% & Thu Cũ Đổi Mới</h3>
+                <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#ffffff", marginBottom: "8px" }}>Trả Góp 0% & Thu Cũ Đổi Mới</h3>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Hỗ trợ quẹt thẻ trả góp 0% lãi suất qua 25+ ngân hàng. Chương trình Trade-in trợ giá thu mua bàn DJ cũ (FLX4, RX2, XZ...) để lên đời RX3, XDJ-AZ nhanh chóng.
                 </p>
@@ -781,7 +781,7 @@ function ProductsContent() {
                 }}
               >
                 <div style={{ fontSize: "28px", marginBottom: "12px" }}>🎁</div>
-                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#ffffff", marginBottom: "8px" }}>Tặng Kèm USB Nhạc & Đào Tạo 1-1</h3>
+                <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#ffffff", marginBottom: "8px" }}>Tặng Kèm USB Nhạc & Đào Tạo 1-1</h3>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Tặng ngay USB Sandisk chứa kho nhạc Lossless phân tích sẵn qua Rekordbox, khóa hướng dẫn cài đặt phần mềm và kỹ thuật mix nhạc cơ bản đến nâng cao.
                 </p>
@@ -798,7 +798,7 @@ function ProductsContent() {
                 marginBottom: "35px",
               }}
             >
-              <h3 style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff", marginBottom: "14px" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: 700, color: "#ffffff", marginBottom: "14px" }}>
                 Kinh Nghiệm Chọn Mua Bàn DJ Phù Hợp Cho Người Mới Và DJ Chuyên Nghiệp
               </h3>
               <div style={{ fontSize: "14px", color: "#d4d4d8", lineHeight: 1.7, display: "flex", flexDirection: "column", gap: "12px" }}>

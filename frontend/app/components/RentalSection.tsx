@@ -203,8 +203,7 @@ export default function RentalSection({
 
 
         .rental-title {
-          font-family: var(--font-montserrat), "Montserrat", -apple-system,
-            BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+          font-family: var(--font-primary) !important;
           font-size: clamp(30px, 3.8vw, 46px);
           font-weight: 700;
           letter-spacing: -0.025em;
@@ -276,8 +275,7 @@ export default function RentalSection({
         }
 
         .spec-label {
-          font-family: var(--font-montserrat), "Montserrat", -apple-system,
-            BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+          font-family: var(--font-primary) !important;
           font-size: clamp(15px, 1.4vw, 17px);
           font-weight: 700;
           letter-spacing: -0.01em;
