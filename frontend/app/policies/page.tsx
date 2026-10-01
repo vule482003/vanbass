@@ -48,7 +48,7 @@ export default function PoliciesPage() {
           <div style={{ maxWidth: "780px", marginBottom: "50px" }}>
             <span
               style={{
-                color: "#1683FF",
+                color: "#22c55e",
                 fontSize: "12px",
                 fontWeight: 700,
                 letterSpacing: "0.14em",
@@ -71,11 +71,11 @@ export default function PoliciesPage() {
             >
               {lang === "en" ? (
                 <>
-                  Policies & <span style={{ color: "#1683FF" }}>Terms of Service</span>
+                  Policies & <span style={{ color: "#22c55e" }}>Terms of Service</span>
                 </>
               ) : (
                 <>
-                  Chính sách & <span style={{ color: "#1683FF" }}>Quy định VanBass</span>
+                  Chính sách & <span style={{ color: "#22c55e" }}>Quy định VanBass</span>
                 </>
               )}
             </h1>
@@ -112,7 +112,7 @@ export default function PoliciesPage() {
                 style={{
                   fontSize: "12px",
                   fontWeight: 700,
-                  color: "#1683FF",
+                  color: "#22c55e",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   marginBottom: "16px",
@@ -136,9 +136,9 @@ export default function PoliciesPage() {
                         borderRadius: "8px",
                         textAlign: "left",
                         fontSize: "13.5px",
-                        fontWeight: isActive ? 600 : 400,
-                        backgroundColor: isActive ? "rgba(22, 131, 255, 0.12)" : "transparent",
-                        color: isActive ? "#1683FF" : "#a1a1aa",
+                        fontWeight: isActive ? 700 : 400,
+                        backgroundColor: isActive ? "rgba(34, 197, 94, 0.12)" : "transparent",
+                        color: isActive ? "#22c55e" : "#a1a1aa",
                         border: "none",
                         cursor: "pointer",
                         transition: "all 0.15s ease",
@@ -164,9 +164,9 @@ export default function PoliciesPage() {
                 <a
                   href="tel:0706067799"
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "13px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     textDecoration: "none",
                   }}
                 >
@@ -189,7 +189,7 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
@@ -228,15 +228,15 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>100% thiết bị có nguồn gốc xuất xứ rõ ràng từ Pioneer DJ, AlphaTheta, Allen & Heath, Yamaha.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Cung cấp hóa đơn chứng từ, tem niêm phong và bảo hành điện tử chính hãng.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Đội ngũ kỹ thuật viên được đào tạo chuyên sâu về âm học và thiết bị biểu diễn.</span>
                   </div>
                 </div>
@@ -254,7 +254,7 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
@@ -293,25 +293,25 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Phạm vi bảo hành:</strong> Miễn phí linh kiện và công sửa chữa cho các lỗi phần cứng từ nhà sản xuất (hỏng fader, lỗi cảm biến jogwheel, lỗi cổng DAC USB, nguồn...).
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Thời gian xử lý:</strong> Tiếp nhận và chuẩn đoán lỗi trong 24 giờ. Xử lý hoàn tất trong 2 - 3 ngày làm việc.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Hỗ trợ thiết bị thay thế:</strong> Đối với DJ biểu diễn chuyên nghiệp, VanBass hỗ trợ mượn máy tương đương trong thời gian thẩm định bảo hành.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Từ chối bảo hành:</strong> Các trường hợp vô nước, chập điện do nguồn điện không ổn định, rơi vỡ, nứt mâm hoặc tự ý can thiệp phần cứng ngoài trung tâm.
                     </span>
@@ -331,7 +331,7 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
@@ -370,15 +370,15 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Thiết bị đổi trả phải còn nguyên tem bảo hành, không trầy xước ngoại quan.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Đầy đủ vỏ hộp nguyên vẹn, xốp bảo vệ, sách hướng dẫn, túi chống sốc và dây cáp kèm theo.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Hoàn tiền 100% qua chuyển khoản ngân hàng trong vòng 24 giờ nếu sản phẩm cùng loại tạm thời hết hàng.</span>
                   </div>
                 </div>
@@ -396,7 +396,7 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
@@ -435,19 +435,19 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Thời gian thuê 1 ngày:</strong> Tính tròn 24 giờ kể từ thời điểm kỹ thuật viên bàn giao máy tại địa điểm sự kiện.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Biên bản bàn giao:</strong> Hai bên cùng kiểm tra test chức năng fader, jogwheel, màn hình, cổng xuất âm thanh trước khi ký biên bản.
                     </span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>
                       <strong>Hoàn trả tiền cọc:</strong> VanBass chuyển khoản hoàn trả 100% tiền cọc ngay khi nhận lại thiết bị đầy đủ và nguyên vẹn.
                     </span>
@@ -467,7 +467,7 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
@@ -506,11 +506,11 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Thông tin chỉ được sử dụng cho việc xác nhận đơn hàng, giao hàng và kích hoạt bảo hành điện tử.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Tuyệt đối không chia sẻ, trao đổi hay bán dữ liệu khách hàng cho bất kỳ bên thứ ba nào.</span>
                   </div>
                 </div>
@@ -528,7 +528,7 @@ export default function PoliciesPage() {
               >
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
@@ -567,11 +567,11 @@ export default function PoliciesPage() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>Giá niêm yết trên website là giá chính xác tại thời điểm tra cứu và đã bao gồm thuế tiêu chuẩn.</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#1683FF" }}>•</span>
+                    <span style={{ color: "#22c55e" }}>•</span>
                     <span>VanBass bảo lưu quyền điều chỉnh thông số hoặc cập nhật bảng giá thuê thiết bị theo từng mùa cao điểm sự kiện.</span>
                   </div>
                 </div>
@@ -604,19 +604,6 @@ export default function PoliciesPage() {
       </main>
 
       <Footer />
-
-      <style jsx>{`
-        @media (max-width: 860px) {
-          .policies-grid {
-            grid-template-columns: 1fr !important;
-            gap: 24px !important;
-          }
-          aside {
-            position: relative !important;
-            top: 0 !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -37,7 +37,7 @@ export default function AboutPage() {
           {/* Deep Dark Multi-Stop Gradient Mask Overlay */}
           <div className="fullbleed-hero-overlay" />
 
-          {/* Subtle Ambient Blue Lighting Glow */}
+          {/* Subtle Ambient Green Lighting Glow */}
           <div className="fullbleed-ambient-glow" />
 
           {/* Content Layer (Left Aligned directly on dark canvas) */}
@@ -51,9 +51,9 @@ export default function AboutPage() {
                   gap: "8px",
                   padding: "6px 16px",
                   borderRadius: "999px",
-                  backgroundColor: "rgba(22, 131, 255, 0.1)",
-                  border: "1px solid rgba(22, 131, 255, 0.25)",
-                  color: "#1683FF",
+                  backgroundColor: "rgba(34, 197, 94, 0.12)",
+                  border: "1px solid rgba(34, 197, 94, 0.3)",
+                  color: "#22c55e",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -66,8 +66,8 @@ export default function AboutPage() {
                     width: "6px",
                     height: "6px",
                     borderRadius: "50%",
-                    backgroundColor: "#1683FF",
-                    boxShadow: "0 0 8px #1683FF",
+                    backgroundColor: "#22c55e",
+                    boxShadow: "0 0 8px #22c55e",
                   }}
                 />
                 VANBASS MUSIC CENTER
@@ -87,11 +87,11 @@ export default function AboutPage() {
               >
                 {lang === "en" ? (
                   <>
-                    About <span style={{ color: "#1683FF" }}>VanBass</span> Music Center
+                    About <span style={{ color: "#22c55e" }}>VanBass</span> Music Center
                   </>
                 ) : (
                   <>
-                    Giới thiệu về <span style={{ color: "#1683FF" }}>VanBass</span> Music Center
+                    Giới thiệu về <span style={{ color: "#22c55e" }}>VanBass</span> Music Center
                   </>
                 )}
               </h1>
@@ -121,12 +121,12 @@ export default function AboutPage() {
                     gap: "8px",
                     padding: "13px 28px",
                     borderRadius: "10px",
-                    backgroundColor: "#1683FF",
-                    color: "#ffffff",
+                    backgroundColor: "#22c55e",
+                    color: "#000000",
                     fontSize: "14px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     textDecoration: "none",
-                    boxShadow: "0 4px 20px rgba(22, 131, 255, 0.35)",
+                    boxShadow: "0 4px 20px rgba(34, 197, 94, 0.35)",
                     transition: "all 0.2s ease",
                   }}
                 >
@@ -173,7 +173,7 @@ export default function AboutPage() {
             <div style={{ maxWidth: "680px", marginBottom: "50px" }}>
               <span
                 style={{
-                  color: "#1683FF",
+                  color: "#22c55e",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -221,12 +221,12 @@ export default function AboutPage() {
                     width: "42px",
                     height: "42px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(22, 131, 255, 0.1)",
-                    border: "1px solid rgba(22, 131, 255, 0.25)",
+                    backgroundColor: "rgba(34, 197, 94, 0.12)",
+                    border: "1px solid rgba(34, 197, 94, 0.3)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontWeight: 700,
                     fontSize: "14px",
                     marginBottom: "22px",
@@ -269,12 +269,12 @@ export default function AboutPage() {
                     width: "42px",
                     height: "42px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(22, 131, 255, 0.1)",
-                    border: "1px solid rgba(22, 131, 255, 0.25)",
+                    backgroundColor: "rgba(34, 197, 94, 0.12)",
+                    border: "1px solid rgba(34, 197, 94, 0.3)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontWeight: 700,
                     fontSize: "14px",
                     marginBottom: "22px",
@@ -317,12 +317,12 @@ export default function AboutPage() {
                     width: "42px",
                     height: "42px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(22, 131, 255, 0.1)",
-                    border: "1px solid rgba(22, 131, 255, 0.25)",
+                    backgroundColor: "rgba(34, 197, 94, 0.12)",
+                    border: "1px solid rgba(34, 197, 94, 0.3)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontWeight: 700,
                     fontSize: "14px",
                     marginBottom: "22px",
@@ -366,7 +366,7 @@ export default function AboutPage() {
           {/* Seamless Multi-Layer Gradient Fade to Background */}
           <div className="fullbleed-showroom-overlay" />
 
-          {/* Subtle Ambient Blue Aura Glow */}
+          {/* Subtle Ambient Green Aura Glow */}
           <div className="fullbleed-showroom-glow" />
 
           {/* Left Content Composition */}
@@ -375,7 +375,7 @@ export default function AboutPage() {
               {/* Eyebrow */}
               <span
                 style={{
-                  color: "#1683FF",
+                  color: "#22c55e",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -432,8 +432,8 @@ export default function AboutPage() {
                       width: "20px",
                       height: "20px",
                       borderRadius: "50%",
-                      backgroundColor: "rgba(22, 131, 255, 0.15)",
-                      color: "#1683FF",
+                      backgroundColor: "rgba(34, 197, 94, 0.16)",
+                      color: "#22c55e",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -458,8 +458,8 @@ export default function AboutPage() {
                       width: "20px",
                       height: "20px",
                       borderRadius: "50%",
-                      backgroundColor: "rgba(22, 131, 255, 0.15)",
-                      color: "#1683FF",
+                      backgroundColor: "rgba(34, 197, 94, 0.16)",
+                      color: "#22c55e",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -484,8 +484,8 @@ export default function AboutPage() {
                       width: "20px",
                       height: "20px",
                       borderRadius: "50%",
-                      backgroundColor: "rgba(22, 131, 255, 0.15)",
-                      color: "#1683FF",
+                      backgroundColor: "rgba(34, 197, 94, 0.16)",
+                      color: "#22c55e",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -515,12 +515,12 @@ export default function AboutPage() {
                     gap: "8px",
                     padding: "13px 28px",
                     borderRadius: "10px",
-                    backgroundColor: "#1683FF",
-                    color: "#ffffff",
+                    backgroundColor: "#22c55e",
+                    color: "#000000",
                     fontSize: "14px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     textDecoration: "none",
-                    boxShadow: "0 4px 20px rgba(22, 131, 255, 0.35)",
+                    boxShadow: "0 4px 20px rgba(34, 197, 94, 0.35)",
                   }}
                 >
                   <span>{lang === "en" ? "Book a Visit" : "Đặt lịch ghé thăm"}</span>
@@ -582,7 +582,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#1683FF",
+                    color: "#22c55e",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -609,7 +609,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#1683FF",
+                    color: "#22c55e",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -636,7 +636,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#1683FF",
+                    color: "#22c55e",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -663,7 +663,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#1683FF",
+                    color: "#22c55e",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -700,7 +700,7 @@ export default function AboutPage() {
                 overflow: "hidden",
               }}
             >
-              {/* Subtle ambient blue light glow */}
+              {/* Subtle ambient green light glow */}
               <div
                 style={{
                   position: "absolute",
@@ -709,7 +709,7 @@ export default function AboutPage() {
                   transform: "translateX(-50%)",
                   width: "400px",
                   height: "260px",
-                  background: "radial-gradient(circle, rgba(22, 131, 255, 0.15) 0%, transparent 70%)",
+                  background: "radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)",
                   pointerEvents: "none",
                   filter: "blur(50px)",
                 }}
@@ -718,7 +718,7 @@ export default function AboutPage() {
               <div style={{ position: "relative", zIndex: 1 }}>
                 <span
                   style={{
-                    color: "#1683FF",
+                    color: "#22c55e",
                     fontSize: "12px",
                     fontWeight: 700,
                     letterSpacing: "0.14em",
@@ -769,12 +769,12 @@ export default function AboutPage() {
                       gap: "8px",
                       padding: "13px 30px",
                       borderRadius: "10px",
-                      backgroundColor: "#1683FF",
-                      color: "#ffffff",
+                      backgroundColor: "#22c55e",
+                      color: "#000000",
                       fontSize: "14px",
-                      fontWeight: 600,
+                      fontWeight: 700,
                       textDecoration: "none",
-                      boxShadow: "0 4px 20px rgba(22, 131, 255, 0.35)",
+                      boxShadow: "0 4px 20px rgba(34, 197, 94, 0.35)",
                     }}
                   >
                     <span>{lang === "en" ? "Contact Us" : "Liên hệ ngay"}</span>
@@ -807,148 +807,6 @@ export default function AboutPage() {
       </main>
 
       <Footer />
-
-      {/* Scoped Full-Bleed Composition Styles & Media Queries */}
-      <style jsx>{`
-        .fullbleed-hero-section {
-          position: relative;
-          min-height: 82vh;
-          display: flex;
-          align-items: center;
-          padding: 130px 0 90px 0;
-          overflow: hidden;
-          background-color: #08090c;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .fullbleed-hero-image {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          width: 62%;
-          background-size: cover;
-          background-position: center 45%;
-          filter: brightness(0.75) contrast(1.1);
-          z-index: 0;
-        }
-
-        .fullbleed-hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-              to right,
-              #08090c 0%,
-              #08090c 35%,
-              rgba(8, 9, 12, 0.88) 55%,
-              rgba(8, 9, 12, 0.35) 75%,
-              rgba(8, 9, 12, 0.2) 100%
-            ),
-            linear-gradient(to top, #08090c 0%, transparent 25%),
-            linear-gradient(to bottom, #08090c 0%, transparent 20%);
-          z-index: 1;
-        }
-
-        .fullbleed-ambient-glow {
-          position: absolute;
-          top: 20%;
-          right: 25%;
-          width: 420px;
-          height: 420px;
-          background: radial-gradient(circle, rgba(22, 131, 255, 0.12) 0%, transparent 70%);
-          pointer-events: none;
-          filter: blur(60px);
-          z-index: 1;
-        }
-
-        .fullbleed-content-col {
-          max-width: 620px;
-        }
-
-        .fullbleed-showroom-section {
-          position: relative;
-          min-height: 560px;
-          display: flex;
-          align-items: center;
-          padding: 100px 0;
-          background-color: #08090c;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          overflow: hidden;
-        }
-
-        .fullbleed-showroom-image {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          width: 60%;
-          background-size: cover;
-          background-position: center;
-          filter: brightness(0.75) contrast(1.1);
-          z-index: 0;
-        }
-
-        .fullbleed-showroom-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-              to right,
-              #08090c 0%,
-              #08090c 35%,
-              rgba(8, 9, 12, 0.9) 55%,
-              rgba(8, 9, 12, 0.3) 78%,
-              rgba(8, 9, 12, 0.15) 100%
-            ),
-            linear-gradient(to top, #08090c 0%, transparent 20%),
-            linear-gradient(to bottom, #08090c 0%, transparent 20%);
-          z-index: 1;
-        }
-
-        .fullbleed-showroom-glow {
-          position: absolute;
-          top: 30%;
-          right: 20%;
-          width: 380px;
-          height: 380px;
-          background: radial-gradient(circle, rgba(22, 131, 255, 0.14) 0%, transparent 65%);
-          pointer-events: none;
-          filter: blur(50px);
-          z-index: 1;
-        }
-
-        @media (max-width: 900px) {
-          .fullbleed-hero-section,
-          .fullbleed-showroom-section {
-            min-height: auto;
-            padding: 100px 0 60px 0;
-          }
-
-          .fullbleed-hero-image,
-          .fullbleed-showroom-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            opacity: 0.38;
-          }
-
-          .fullbleed-hero-overlay,
-          .fullbleed-showroom-overlay {
-            background: linear-gradient(
-              to bottom,
-              rgba(8, 9, 12, 0.7) 0%,
-              rgba(8, 9, 12, 0.95) 70%,
-              #08090c 100%
-            );
-          }
-
-          .fullbleed-content-col {
-            max-width: 100%;
-          }
-        }
-      `}</style>
     </div>
   );
 }

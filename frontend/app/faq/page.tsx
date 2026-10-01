@@ -189,7 +189,7 @@ export default function FAQPage() {
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <span
               style={{
-                color: "#1683FF",
+                color: "#22c55e",
                 fontSize: "12px",
                 fontWeight: 700,
                 letterSpacing: "0.14em",
@@ -212,11 +212,11 @@ export default function FAQPage() {
             >
               {lang === "en" ? (
                 <>
-                  Frequently Asked <span style={{ color: "#1683FF" }}>Questions</span>
+                  Frequently Asked <span style={{ color: "#22c55e" }}>Questions</span>
                 </>
               ) : (
                 <>
-                  Câu hỏi <span style={{ color: "#1683FF" }}>thường gặp</span>
+                  Câu hỏi <span style={{ color: "#22c55e" }}>thường gặp</span>
                 </>
               )}
             </h1>
@@ -300,12 +300,12 @@ export default function FAQPage() {
                       padding: "8px 18px",
                       borderRadius: "8px",
                       fontSize: "13.5px",
-                      fontWeight: isActive ? 600 : 500,
-                      backgroundColor: isActive ? "#1683FF" : "rgba(255, 255, 255, 0.04)",
-                      color: isActive ? "#ffffff" : "#a1a1aa",
-                      border: isActive ? "1px solid #1683FF" : "1px solid rgba(255, 255, 255, 0.08)",
+                      fontWeight: isActive ? 700 : 500,
+                      backgroundColor: isActive ? "#22c55e" : "rgba(255, 255, 255, 0.04)",
+                      color: isActive ? "#000000" : "#a1a1aa",
+                      border: isActive ? "1px solid #22c55e" : "1px solid rgba(255, 255, 255, 0.08)",
                       cursor: "pointer",
-                      boxShadow: isActive ? "0 2px 10px rgba(22, 131, 255, 0.3)" : "none",
+                      boxShadow: isActive ? "0 2px 10px rgba(34, 197, 94, 0.3)" : "none",
                       transition: "all 0.2s ease",
                     }}
                   >
@@ -349,7 +349,7 @@ export default function FAQPage() {
                     style={{
                       backgroundColor: "#0d0f15",
                       border: isOpen
-                        ? "1px solid rgba(22, 131, 255, 0.35)"
+                        ? "1px solid rgba(34, 197, 94, 0.35)"
                         : "1px solid rgba(255, 255, 255, 0.08)",
                       borderRadius: "12px",
                       overflow: "hidden",
@@ -387,7 +387,7 @@ export default function FAQPage() {
                       <span
                         style={{
                           fontSize: "18px",
-                          color: isOpen ? "#1683FF" : "#71717a",
+                          color: isOpen ? "#22c55e" : "#71717a",
                           transition: "transform 0.2s ease",
                           transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
                           flexShrink: 0,
@@ -447,7 +447,7 @@ export default function FAQPage() {
               </h3>
               <p style={{ color: "#a1a1aa", margin: 0, fontSize: "14px" }}>
                 {lang === "en" ? "Hotline technical support:" : "Hotline tư vấn kỹ thuật trực tiếp:"}{" "}
-                <strong style={{ color: "#1683FF" }}>0706.067.799</strong>
+                <strong style={{ color: "#22c55e" }}>0706.067.799</strong>
               </p>
             </div>
 
@@ -460,12 +460,12 @@ export default function FAQPage() {
                   gap: "8px",
                   padding: "12px 24px",
                   borderRadius: "10px",
-                  backgroundColor: "#1683FF",
-                  color: "#ffffff",
+                  backgroundColor: "#22c55e",
+                  color: "#000000",
                   fontSize: "14px",
-                  fontWeight: 600,
+                  fontWeight: 700,
                   textDecoration: "none",
-                  boxShadow: "0 4px 18px rgba(22, 131, 255, 0.35)",
+                  boxShadow: "0 4px 18px rgba(34, 197, 94, 0.35)",
                 }}
               >
                 <span>{lang === "en" ? "Contact Now" : "Liên hệ ngay"}</span>
