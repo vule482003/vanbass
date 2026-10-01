@@ -12,7 +12,7 @@ import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
 import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
-import { fetchStoreSettings, getMessengerRentalUrl } from "../../lib/api";
+import { fetchStoreSettings, getMessengerRentalUrl, getApiBaseUrl } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
 import {
   getTranslatedProductName,
@@ -70,7 +70,7 @@ export default function ProductDetailClient({
   useEffect(() => {
     const fetchLiveProduct = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const apiUrl = getApiBaseUrl();
         const cacheBust = `_t=${Date.now()}`;
         const targetSlug =
           slug.toLowerCase() === "xdj-az"

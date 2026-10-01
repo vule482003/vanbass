@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { Product } from "../lib/types";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
+import { getApiBaseUrl } from "../lib/api";
 import { useLanguage } from "../lib/language-context";
 import { resolveProductImage } from "../lib/image-helper";
 import ProductCard from "./ProductCard";
@@ -414,7 +415,7 @@ export default function ProductGrid() {
   useEffect(() => {
     const fetchLiveProducts = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const apiUrl = getApiBaseUrl();
         const res = await fetch(`${apiUrl}/products?_t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const liveData = await res.json();

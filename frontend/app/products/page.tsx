@@ -13,6 +13,7 @@ import { Product, Category } from "../lib/types";
 import { useLanguage } from "../lib/language-context";
 import { getTranslatedProductName, getProductPlainExcerpt } from "../lib/product-i18n";
 import { CATEGORY_GROUPS } from "../lib/category-hierarchy";
+import { getApiBaseUrl } from "../lib/api";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -172,7 +173,7 @@ function ProductsContent() {
   useEffect(() => {
     const fetchLiveData = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const apiUrl = getApiBaseUrl();
         const cacheBust = `_t=${Date.now()}`;
         const [prodRes, catRes] = await Promise.all([
           fetch(`${apiUrl}/products?${cacheBust}`, { cache: "no-store" }),

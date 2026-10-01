@@ -1,7 +1,17 @@
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "./mock-data";
 import { Category, Product } from "./types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+export function getApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== "undefined") {
+    return "/api";
+  }
+  return process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000/api";
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 interface ApiValidationError {
   msg?: string;
@@ -16,11 +26,10 @@ interface OrderResponse {
   [key: string]: unknown;
 }
 
-
-
 export async function fetchCategories(): Promise<Category[]> {
+  const baseUrl = getApiBaseUrl();
   try {
-    const res = await fetch(`${API_BASE_URL}/categories`, {
+    const res = await fetch(`${baseUrl}/categories`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) throw new Error("Failed to fetch categories");
@@ -38,13 +47,14 @@ export async function fetchProducts(params?: {
   rental_only?: boolean;
   search?: string;
 }): Promise<Product[]> {
+  const baseUrl = getApiBaseUrl();
   try {
     const searchParams = new URLSearchParams();
     if (params?.sale_only) searchParams.set("sale_only", "true");
     if (params?.rental_only) searchParams.set("rental_only", "true");
     if (params?.search) searchParams.set("search", params.search);
 
-    const url = `${API_BASE_URL}/products${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    const url = `${baseUrl}/products${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     const res = await fetch(url, {
       next: { revalidate: 30 },
     });
@@ -58,16 +68,17 @@ export async function fetchProducts(params?: {
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
+  const baseUrl = getApiBaseUrl();
   try {
-    const res = await fetch(`${API_BASE_URL}/products/by-slug/${slug}`, {
+    const res = await fetch(`${baseUrl}/products/by-slug/${slug}`, {
       next: { revalidate: 30 },
     });
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      if (data && data.id) {
+        return data;
+      }
     }
-    const products = await fetchProducts();
-    const found = products.find((p) => p.slug === slug);
-    if (found) return found;
 
     return MOCK_PRODUCTS.find((p) => p.slug === slug) || null;
   } catch {
@@ -121,7 +132,8 @@ export async function submitOrder(payload: {
       headers["Authorization"] = `Bearer ${payload.token}`;
     }
 
-    const res = await fetch(`${API_BASE_URL}/orders`, {
+    const baseUrl = getApiBaseUrl();
+    const res = await fetch(`${baseUrl}/orders`, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -176,7 +188,8 @@ export interface StoreSettings {
 
 export async function fetchStoreSettings(): Promise<StoreSettings | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/store-settings`, {
+    const baseUrl = getApiBaseUrl();
+    const res = await fetch(`${baseUrl}/store-settings`, {
       cache: "no-store",
     });
     if (res.ok) {

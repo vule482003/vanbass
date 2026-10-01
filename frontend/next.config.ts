@@ -166,10 +166,15 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
+    const backendInternalUrl = process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000";
     return [
       {
+        source: "/api/:path*",
+        destination: `${backendInternalUrl}/api/:path*`,
+      },
+      {
         source: "/static/:path*",
-        destination: "http://127.0.0.1:8000/static/:path*",
+        destination: `${backendInternalUrl}/static/:path*`,
       },
     ];
   },

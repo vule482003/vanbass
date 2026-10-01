@@ -3,6 +3,7 @@ import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import ProductDetailClient from "./ProductDetailClient";
 import { Product } from "../../lib/types";
 import { getProductPlainExcerpt } from "../../lib/product-i18n";
+import { getApiBaseUrl } from "../../lib/api";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -482,36 +483,47 @@ function createFallbackProduct(modelKey: string): Product {
 }
 
 async function getProduct(slug: string): Promise<Product | null> {
+  const normalizedSlug = slug.toLowerCase();
   const modelKey = resolveModelKey(slug);
-  const aliasTarget = PRODUCT_SLUG_ALIASES[slug.toLowerCase()] || (modelKey ? PRODUCT_SLUG_ALIASES[modelKey] : null);
+  const aliasTarget = PRODUCT_SLUG_ALIASES[normalizedSlug] || null;
+  const targetSlug = aliasTarget || slug;
+  const apiUrl = getApiBaseUrl();
 
-  const localProduct = MOCK_PRODUCTS.find(
-    (p) => p.slug === slug || (aliasTarget && p.slug === aliasTarget) || (modelKey && p.slug && p.slug.includes(modelKey))
-  );
-  if (localProduct) return localProduct;
-
+  // 1. PRIMARY SOURCE: Real PostgreSQL / FastAPI API
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    const res = await fetch(`${apiUrl}/products/by-slug/${slug}`, {
+    const res = await fetch(`${apiUrl}/products/by-slug/${encodeURIComponent(targetSlug)}`, {
       next: { revalidate: 60 },
     });
     if (res.ok) {
-      return await res.json();
+      const realProduct = await res.json();
+      if (realProduct && realProduct.id && realProduct.slug) {
+        return realProduct;
+      }
     }
-    if (aliasTarget) {
-      const aliasRes = await fetch(`${apiUrl}/products/by-slug/${aliasTarget}`, {
+
+    if (targetSlug !== slug) {
+      const fallbackRes = await fetch(`${apiUrl}/products/by-slug/${encodeURIComponent(slug)}`, {
         next: { revalidate: 60 },
       });
-      if (aliasRes.ok) {
-        return await aliasRes.json();
+      if (fallbackRes.ok) {
+        const realProduct = await fallbackRes.json();
+        if (realProduct && realProduct.id && realProduct.slug) {
+          return realProduct;
+        }
       }
     }
   } catch {
-    // fallback
+    // API/Database offline or network error -> proceed to fallback
   }
 
-  // Safety fallback for all hot search models so they NEVER 404
-  if (modelKey) {
+  // 2. FALLBACK ONLY: Exact match in MOCK_PRODUCTS (Strict exact slug match, NO substring matching!)
+  const localProduct = MOCK_PRODUCTS.find(
+    (p) => p.slug === slug || (aliasTarget && p.slug === aliasTarget)
+  );
+  if (localProduct) return localProduct;
+
+  // 3. Hot search model synthetic fallback
+  if (modelKey && HOT_MODELS_SEO[modelKey]) {
     return createFallbackProduct(modelKey);
   }
 
