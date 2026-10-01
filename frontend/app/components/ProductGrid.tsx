@@ -408,8 +408,28 @@ function MobileCarouselSection({
   );
 }
 
+const CANONICAL_HOT_SLUG_MAP: Record<string, string> = {
+  "ban-dj-alpha-theta-omnis-duo": "omnis-duo",
+  "ban-dj-alphatheta-xdj-az": "xdj-az",
+  "alphatheta-ddj-flx2": "ddj-flx2",
+  "alphatheta-xdj-an": "xdj-an",
+  "ban-dj-omnis-duo": "omnis-duo",
+  "alpha-theta-omnis-duo": "omnis-duo",
+  "alphatheta-omnis-duo": "omnis-duo",
+  "pioneer-xdj-az": "xdj-az",
+  "alphatheta-xdj-az": "xdj-az",
+  "ban-dj-xdj-az": "xdj-az",
+  "pioneer-ddj-flx2": "ddj-flx2",
+  "ban-dj-flx2": "ddj-flx2",
+};
+
 export default function ProductGrid() {
-  const [allProducts, setAllProducts] = useState<Product[]>(MOCK_PRODUCTS);
+  const [allProducts, setAllProducts] = useState<Product[]>(() =>
+    MOCK_PRODUCTS.map((p) => {
+      const canonical = CANONICAL_HOT_SLUG_MAP[p.slug];
+      return canonical ? { ...p, slug: canonical } : p;
+    })
+  );
   const { t, lang } = useLanguage();
 
   useEffect(() => {
@@ -420,7 +440,12 @@ export default function ProductGrid() {
         if (res.ok) {
           const liveData = await res.json();
           if (Array.isArray(liveData) && liveData.length > 0) {
-            setAllProducts(liveData);
+            setAllProducts(
+              liveData.map((p: Product) => {
+                const canonical = CANONICAL_HOT_SLUG_MAP[p.slug];
+                return canonical ? { ...p, slug: canonical } : p;
+              })
+            );
           }
         }
       } catch {
@@ -440,9 +465,9 @@ export default function ProductGrid() {
     const prioritySlugs = [
       "xdj-rx3",
       "ddj-flx4",
-      "ban-dj-alpha-theta-omnis-duo",
-      "ban-dj-alphatheta-xdj-az",
-      "alphatheta-ddj-flx2",
+      "omnis-duo",
+      "xdj-az",
+      "ddj-flx2",
       "bc-speakers-10bg76",
       "tai-nghe-sennheiser-hd-25",
       "ban-mixer-mackie-profx16v3-16-kenh",

@@ -141,6 +141,8 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
                 src={currentImage}
                 alt={`${displayName} - Ảnh ${activeIndex + 1}`}
                 className="gallery-main-image"
+                loading="eager"
+                fetchPriority="high"
                 style={{
                   transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                   transform: isZooming ? "scale(2.2)" : "scale(1)",
@@ -332,7 +334,7 @@ export default function ProductImageGallery({ product, displayName }: ProductIma
                   className={`lightbox-mini-thumb ${activeIndex === idx ? "is-active" : ""}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imgUrl} alt="Thumbnail" />
+                  <img src={imgUrl} alt={`${displayName} thumb ${idx + 1}`} />
                 </button>
               ))}
             </div>

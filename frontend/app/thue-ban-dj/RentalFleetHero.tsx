@@ -202,6 +202,8 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             <img
               src="/images/rental/rental_fleet_hardware_transparent.png"
               alt="VanBass Rental Fleet Pioneer DJ XDJ-RX3 Hardware"
+              loading="eager"
+              fetchPriority="high"
               style={{
                 width: "185%",
                 maxWidth: "none",

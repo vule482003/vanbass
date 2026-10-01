@@ -7,9 +7,9 @@ import RentalFleetHero from "./RentalFleetHero";
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Thuê Bàn DJ Đà Nẵng, Huế & Miền Trung Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ | VanBass",
+  title: "Thuê Bàn DJ Đà Nẵng, Huế Uy Tín Giá Rẻ",
   description:
-    "Dịch vụ cho thuê bàn DJ & thiết bị âm thanh DJ chuyên nghiệp tại Đà Nẵng, Thừa Thiên Huế, Hội An & Miền Trung: Pioneer DJ XDJ-RX3, XDJ-RX2, XDJ-RR, DDJ-FLX4, DDJ-FLX2, AlphaTheta Omnis-Duo, XDJ-AZ, CDJ-3000, loa biểu diễn B&C Speakers giá rẻ từ 400k/ngày. Thiết bị mới 99%, giao nhận và setup tận nơi 24/7.",
+    "Dịch vụ cho thuê bàn DJ Pioneer DJ, AlphaTheta XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ giá từ 400k/ngày tại Đà Nẵng & Huế. Máy mới 99%, giao setup tận nơi 24/7.",
   keywords: [
     // Target Hot Keys
     "XDJ RX3",
@@ -109,9 +109,9 @@ export const metadata: Metadata = {
     canonical: "/thue-ban-dj",
   },
   openGraph: {
-    title: "Thuê Bàn DJ Đà Nẵng, Huế & Miền Trung Uy Tín Giá Rẻ | Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ | VanBass",
+    title: "Thuê Bàn DJ Đà Nẵng, Huế Uy Tín Giá Rẻ | VanBass Music Center",
     description:
-      "Dịch vụ cho thuê bàn DJ Đà Nẵng, Huế, Hội An & Miền Trung từ 400k/ngày: Pioneer DJ XDJ-RX3, RX2, RR, DDJ-FLX4, FLX2, Omnis-Duo, XDJ-AZ, loa B&C Speakers. Máy mới 99%, setup tận nơi 24/7. English support available.",
+      "Dịch vụ cho thuê bàn DJ Pioneer DJ, AlphaTheta XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ giá từ 400k/ngày tại Đà Nẵng & Huế. Máy mới 99%, giao setup tận nơi 24/7.",
     url: `${baseUrl}/thue-ban-dj`,
     type: "website",
     images: [

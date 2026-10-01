@@ -440,15 +440,10 @@ export const HOT_MODELS_SEO: Record<
 function resolveModelKey(rawSlug: string): string | null {
   const s = rawSlug.toLowerCase();
   if (HOT_MODELS_SEO[s]) return s;
-  if (s.includes("rx3")) return "xdj-rx3";
-  if (s.includes("rx2")) return "xdj-rx2";
-  if (s.includes("xdj-rr") || s.includes("-rr") || s === "rr") return "xdj-rr";
-  if (s.includes("flx4")) return "ddj-flx4";
-  if (s.includes("flx2")) return "ddj-flx2";
-  if (s.includes("omnis")) return "omnis-duo";
-  if (s.includes("xdj-az") || s.includes("az")) return "xdj-az";
-  if (s.includes("xdj-an") || s.includes("an")) return "xdj-an";
-  if (s.includes("xdj-xz") || s.includes("xz")) return "xdj-xz";
+  if (PRODUCT_SLUG_ALIASES[s]) {
+    const target = PRODUCT_SLUG_ALIASES[s];
+    if (HOT_MODELS_SEO[target]) return target;
+  }
   return null;
 }
 
@@ -530,13 +525,50 @@ async function getProduct(slug: string): Promise<Product | null> {
   return null;
 }
 
+function formatProductMetadataTitle(product: Product): string {
+  const rawName = product.name.replace(/\s+/g, " ").trim();
+  const brand = product.brand?.trim();
+
+  let fullTitle = rawName;
+  if (rawName.length <= 15 && brand && !rawName.toLowerCase().includes(brand.toLowerCase())) {
+    fullTitle = `${brand} ${rawName}`;
+  }
+
+  if (fullTitle.length <= 44) {
+    return `${fullTitle} Chính Hãng | VanBass`;
+  } else if (fullTitle.length <= 54) {
+    return `${fullTitle} | VanBass`;
+  } else {
+    return `${fullTitle.slice(0, 51)}... | VanBass`;
+  }
+}
+
+function formatProductMetadataDesc(product: Product): string {
+  const rawName = product.name.replace(/\s+/g, " ").trim();
+  const brand = product.brand?.trim() || "Pioneer DJ";
+  const cat = product.category_name || "Thiết bị âm thanh & DJ";
+
+  let excerpt = "";
+  if (product.description) {
+    excerpt = product.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+    if (excerpt.length > 105) excerpt = `${excerpt.slice(0, 102)}...`;
+  }
+
+  const desc = excerpt
+    ? `Mua ${rawName} chính hãng ${brand} (${cat}). ${excerpt} Phân phối uy tín tại VanBass.`
+    : `Mua ${rawName} chính hãng ${brand} (${cat}). Bảo hành 12-24T, trả góp 0%, giao hàng toàn quốc tại VanBass Music Center.`;
+
+  return desc.length > 160 ? `${desc.slice(0, 157)}...` : desc;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
+  const normalizedSlug = slug.toLowerCase();
   const modelKey = resolveModelKey(slug);
 
-  // 1. If it matches a hot priority model, ALWAYS return dedicated rich SEO metadata
-  if (modelKey && HOT_MODELS_SEO[modelKey]) {
+  // 1. If it matches a hot priority model (exact slug or exact alias), ALWAYS return dedicated rich SEO metadata
+  if (modelKey && HOT_MODELS_SEO[modelKey] && (normalizedSlug === modelKey || PRODUCT_SLUG_ALIASES[normalizedSlug] === modelKey)) {
     const seo = HOT_MODELS_SEO[modelKey];
     const canonicalPath = `/products/${seo.canonicalSlug}`;
     const fullImg = seo.image.startsWith("http") ? seo.image : `${baseUrl}${seo.image.startsWith("/") ? "" : "/"}${seo.image}`;
@@ -585,13 +617,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  // General product metadata - strict limits for Bing (Title <= 65 chars, Desc <= 160 chars)
-  const cleanName = product.name.replace(/\s+/g, " ").trim();
-  const title = cleanName.length > 45 ? `${cleanName.slice(0, 42)}... | VanBass` : `${cleanName} | VanBass`;
-  const plainDesc = getProductPlainExcerpt(product.description, 145) || `Mua bán và cho thuê ${cleanName} chính hãng`;
-  const description = `${plainDesc}. Phân phối & cho thuê chính hãng tại VanBass.`.slice(0, 160);
+  // General product metadata - strict limits for Bing/Google (Title <= 65 chars, Desc <= 160 chars)
+  const title = formatProductMetadataTitle(product);
+  const description = formatProductMetadataDesc(product);
   const rawImg = product.images?.[0]?.image_url || product.image_url || "/images/placeholder.png";
   const ogImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+  const canonicalPath = `/products/${product.slug || slug}`;
 
   return {
     title: {
@@ -612,12 +643,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       "vanbass",
     ],
     alternates: {
-      canonical: `/products/${slug}`,
+      canonical: canonicalPath,
     },
     openGraph: {
       title,
       description,
-      url: `${baseUrl}/products/${slug}`,
+      url: `${baseUrl}${canonicalPath}`,
       type: "website",
       images: [
         {
@@ -633,12 +664,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;
+  const normalizedSlug = slug.toLowerCase();
   const modelKey = resolveModelKey(slug);
-  const hotSeo = modelKey ? HOT_MODELS_SEO[modelKey] : null;
+  const isDirectHotModel = Boolean(
+    modelKey && (normalizedSlug === modelKey || PRODUCT_SLUG_ALIASES[normalizedSlug] === modelKey)
+  );
+  const hotSeo = isDirectHotModel && modelKey ? HOT_MODELS_SEO[modelKey] : null;
   const canonicalSlug = hotSeo?.canonicalSlug || slug;
 
   let product = await getProduct(slug);
-  if (!product && modelKey) {
+  if (!product && modelKey && isDirectHotModel) {
     product = createFallbackProduct(modelKey);
   }
 
@@ -656,125 +691,61 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
     const brandName = product.brand || (modelKey?.includes("alphatheta") ? "AlphaTheta" : "Pioneer DJ");
 
-    const graph: Record<string, unknown>[] = [
-      {
-        "@type": "Product",
-        "@id": `${baseUrl}/products/${canonicalSlug}#product`,
-        "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
-        "image": [fullImg],
-        "description": plainDesc,
-        "sku": product.sku || canonicalSlug.toUpperCase(),
-        "mpn": product.sku || canonicalSlug.toUpperCase(),
-        "brand": {
-          "@type": "Brand",
-          "name": brandName,
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "68",
-          "bestRating": "5",
-          "worstRating": "1",
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person",
-              "name": "Hoàng Minh (DJ M-Tronic)",
-            },
-            "datePublished": "2026-03-01",
-            "reviewBody": "Mua máy chính hãng tại VanBass cực kỳ yên tâm, nguyên seal bảo hành 12 tháng và được tặng kèm USB nhạc Rekordbox phân tích sẵn. Dịch vụ hậu mãi số 1 miền Trung!",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5",
-            },
-          },
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person",
-              "name": "Alex Johnson (Expat DJ)",
-            },
-            "datePublished": "2026-02-20",
-            "reviewBody": "Excellent DJ gear rental and sales service in Da Nang! Rented for our festival show and then decided to buy directly. Fast delivery and reliable English support.",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5",
-            },
-          },
-        ],
-        "offers": [
-          // 1. Direct Purchase Offer
-          {
-            "@type": "Offer",
-            "name": `Mua mới bàn DJ ${product.name} chính hãng`,
-            "url": `${baseUrl}/products/${canonicalSlug}`,
-            "priceCurrency": "VND",
-            "price": productPrice,
-            "priceValidUntil": "2027-12-31",
-            "itemCondition": "https://schema.org/NewCondition",
-            "availability": "https://schema.org/InStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "VanBass Music Center",
-              "url": baseUrl,
-            },
-            "hasMerchantReturnPolicy": {
-              "@type": "MerchantReturnPolicy",
-              "applicableCountry": "VN",
-              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-              "merchantReturnDays": 7,
-              "returnMethod": "https://schema.org/ReturnInStore",
-              "returnFees": "https://schema.org/FreeReturn",
-            },
-            "shippingDetails": {
-              "@type": "OfferShippingDetails",
-              "shippingRate": {
-                "@type": "MonetaryAmount",
-                "value": "0",
-                "currency": "VND",
-              },
-              "shippingDestination": {
-                "@type": "DefinedRegion",
-                "addressCountry": "VN",
-              },
-              "deliveryTime": {
-                "@type": "ShippingDeliveryTime",
-                "handlingTime": {
-                  "@type": "QuantitativeValue",
-                  "minValue": 0,
-                  "maxValue": 1,
-                  "unitCode": "DAY",
-                },
-                "transitTime": {
-                  "@type": "QuantitativeValue",
-                  "minValue": 1,
-                  "maxValue": 3,
-                  "unitCode": "DAY",
-                },
-              },
-            },
-          },
-          // 2. Rental Service Offer
-          {
-            "@type": "Offer",
-            "name": `Thuê bàn DJ ${product.name} biểu diễn 24h`,
-            "url": `${baseUrl}/thue-ban-dj`,
-            "priceCurrency": "VND",
-            "price": hotSeo?.rentalPrice || product.rental_price || 1000000,
-            "priceValidUntil": "2027-12-31",
-            "availability": "https://schema.org/InStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "VanBass Music Center",
-              "url": baseUrl,
-            },
-          },
-        ],
+    const productSchema: Record<string, unknown> = {
+      "@type": "Product",
+      "@id": `${baseUrl}/products/${canonicalSlug}#product`,
+      "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
+      "image": [fullImg],
+      "description": plainDesc,
+      "sku": product.sku || canonicalSlug.toUpperCase(),
+      "mpn": product.sku || canonicalSlug.toUpperCase(),
+      "brand": {
+        "@type": "Brand",
+        "name": brandName,
       },
+      "offers": [
+        // 1. Direct Purchase Offer
+        {
+          "@type": "Offer",
+          "name": `Mua mới bàn DJ ${product.name} chính hãng`,
+          "url": `${baseUrl}/products/${canonicalSlug}`,
+          "priceCurrency": "VND",
+          "price": productPrice,
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "VanBass Music Center",
+            "url": baseUrl,
+          },
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "VN",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 7,
+            "returnMethod": "https://schema.org/ReturnInStore",
+            "returnFees": "https://schema.org/FreeReturn",
+          },
+        },
+        // 2. Rental Service Offer
+        {
+          "@type": "Offer",
+          "name": `Thuê bàn DJ ${product.name} biểu diễn 24h`,
+          "url": `${baseUrl}/thue-ban-dj`,
+          "priceCurrency": "VND",
+          "price": hotSeo?.rentalPrice || product.rental_price || 1000000,
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "VanBass Music Center",
+            "url": baseUrl,
+          },
+        },
+      ],
+    };
+
+    const graph: Record<string, unknown>[] = [
+      productSchema,
       {
         "@type": "BreadcrumbList",
         "@id": `${baseUrl}/products/${canonicalSlug}#breadcrumb`,

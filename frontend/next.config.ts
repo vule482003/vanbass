@@ -92,6 +92,16 @@ const nextConfig: NextConfig = {
         destination: "/sua-chua-ban-dj",
         permanent: true,
       },
+      {
+        source: "/san-pham",
+        destination: "/products",
+        permanent: true,
+      },
+      {
+        source: "/san-pham/:slug*",
+        destination: "/products/:slug*",
+        permanent: true,
+      },
       // 301 Permanent Redirects for alias slugs to canonical hot model URLs (Bing & Google Best Practice)
       {
         source: "/products/ban-dj-alphatheta-xdj-az",

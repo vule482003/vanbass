@@ -136,7 +136,13 @@ export default function ProductDetailClient({
   }
 
   const relatedProducts = allProducts
-    .filter((p) => p.category_id === product.category_id && p.id !== product.id)
+    .filter((p) => p.category_id === product.category_id && p.brand === product.brand && p.id !== product.id)
+    .concat(
+      allProducts.filter((p) => p.category_id === product.category_id && p.brand !== product.brand && p.id !== product.id)
+    )
+    .concat(
+      allProducts.filter((p) => p.brand === product.brand && p.category_id !== product.category_id && p.id !== product.id)
+    )
     .slice(0, 4);
 
   const displayName = getTranslatedProductName(product, lang);
@@ -181,7 +187,16 @@ export default function ProductDetailClient({
             <span className="pdetail-bc-sep">/</span>
             <Link href="/products" className="pdetail-bc-link">{t.productDetail.breadcrumbProducts}</Link>
             <span className="pdetail-bc-sep">/</span>
-            <span className="pdetail-bc-category">{product.brand ? `Bàn DJ ${product.brand}` : "Bàn DJ"}</span>
+            <Link
+              href={
+                product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
+                  ? "/ban-dj"
+                  : "/products"
+              }
+              className="pdetail-bc-link"
+            >
+              {product.category_name || (product.brand ? `Bàn DJ ${product.brand}` : "Bàn DJ")}
+            </Link>
             <span className="pdetail-bc-sep">/</span>
             <span className="pdetail-bc-current">{displayName}</span>
           </nav>
