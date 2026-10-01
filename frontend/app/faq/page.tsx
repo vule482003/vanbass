@@ -174,14 +174,14 @@ export default function FAQPage() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#09090b",
+        backgroundColor: "#08090c",
         color: "#f4f4f5",
         fontFamily: "var(--font-primary)",
       }}
     >
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "120px", paddingBottom: "100px" }}>
+      <main style={{ flex: 1, paddingTop: "130px", paddingBottom: "100px" }}>
         <div className="container" style={{ maxWidth: "880px", margin: "0 auto" }}>
           {/* =========================================================================
               HERO: Câu hỏi thường gặp
@@ -189,9 +189,9 @@ export default function FAQPage() {
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <span
               style={{
-                color: "#e6dec9",
+                color: "#1683FF",
                 fontSize: "12px",
-                fontWeight: 600,
+                fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
                 display: "inline-block",
@@ -210,7 +210,15 @@ export default function FAQPage() {
                 color: "#ffffff",
               }}
             >
-              {lang === "en" ? "Frequently Asked Questions" : "Câu hỏi thường gặp"}
+              {lang === "en" ? (
+                <>
+                  Frequently Asked <span style={{ color: "#1683FF" }}>Questions</span>
+                </>
+              ) : (
+                <>
+                  Câu hỏi <span style={{ color: "#1683FF" }}>thường gặp</span>
+                </>
+              )}
             </h1>
 
             <p
@@ -242,8 +250,8 @@ export default function FAQPage() {
                   width: "100%",
                   padding: "14px 20px",
                   borderRadius: "12px",
-                  backgroundColor: "#111114",
-                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  backgroundColor: "#0d0f15",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
                   color: "#ffffff",
                   fontSize: "14.5px",
                   outline: "none",
@@ -293,10 +301,11 @@ export default function FAQPage() {
                       borderRadius: "8px",
                       fontSize: "13.5px",
                       fontWeight: isActive ? 600 : 500,
-                      backgroundColor: isActive ? "#e6dec9" : "rgba(255, 255, 255, 0.04)",
-                      color: isActive ? "#09090b" : "#a1a1aa",
-                      border: isActive ? "1px solid #e6dec9" : "1px solid rgba(255, 255, 255, 0.08)",
+                      backgroundColor: isActive ? "#1683FF" : "rgba(255, 255, 255, 0.04)",
+                      color: isActive ? "#ffffff" : "#a1a1aa",
+                      border: isActive ? "1px solid #1683FF" : "1px solid rgba(255, 255, 255, 0.08)",
                       cursor: "pointer",
+                      boxShadow: isActive ? "0 2px 10px rgba(22, 131, 255, 0.3)" : "none",
                       transition: "all 0.2s ease",
                     }}
                   >
@@ -316,7 +325,7 @@ export default function FAQPage() {
                 style={{
                   padding: "40px",
                   textAlign: "center",
-                  backgroundColor: "#111114",
+                  backgroundColor: "#0d0f15",
                   borderRadius: "12px",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   color: "#a1a1aa",
@@ -338,9 +347,9 @@ export default function FAQPage() {
                   <div
                     key={item.id}
                     style={{
-                      backgroundColor: "#111114",
+                      backgroundColor: "#0d0f15",
                       border: isOpen
-                        ? "1px solid rgba(230, 222, 201, 0.25)"
+                        ? "1px solid rgba(22, 131, 255, 0.35)"
                         : "1px solid rgba(255, 255, 255, 0.08)",
                       borderRadius: "12px",
                       overflow: "hidden",
@@ -378,7 +387,7 @@ export default function FAQPage() {
                       <span
                         style={{
                           fontSize: "18px",
-                          color: isOpen ? "#e6dec9" : "#71717a",
+                          color: isOpen ? "#1683FF" : "#71717a",
                           transition: "transform 0.2s ease",
                           transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
                           flexShrink: 0,
@@ -414,7 +423,7 @@ export default function FAQPage() {
           <div
             style={{
               padding: "40px 36px",
-              backgroundColor: "#111114",
+              backgroundColor: "#0d0f15",
               border: "1px solid rgba(255, 255, 255, 0.08)",
               borderRadius: "14px",
               display: "flex",
@@ -438,7 +447,7 @@ export default function FAQPage() {
               </h3>
               <p style={{ color: "#a1a1aa", margin: 0, fontSize: "14px" }}>
                 {lang === "en" ? "Hotline technical support:" : "Hotline tư vấn kỹ thuật trực tiếp:"}{" "}
-                <strong style={{ color: "#e6dec9" }}>0706.067.799</strong>
+                <strong style={{ color: "#1683FF" }}>0706.067.799</strong>
               </p>
             </div>
 
@@ -451,11 +460,12 @@ export default function FAQPage() {
                   gap: "8px",
                   padding: "12px 24px",
                   borderRadius: "10px",
-                  backgroundColor: "#e6dec9",
-                  color: "#09090b",
+                  backgroundColor: "#1683FF",
+                  color: "#ffffff",
                   fontSize: "14px",
                   fontWeight: 600,
                   textDecoration: "none",
+                  boxShadow: "0 4px 18px rgba(22, 131, 255, 0.35)",
                 }}
               >
                 <span>{lang === "en" ? "Contact Now" : "Liên hệ ngay"}</span>
