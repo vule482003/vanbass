@@ -6,24 +6,15 @@ import Footer from "../components/Footer";
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Sửa Chữa Bàn DJ Đà Nẵng, Huế Lấy Liền | Thay Fader, Sửa Jogwheel, Nguồn Pioneer DJ - VanBass",
+  title: "Sửa Chữa Bàn DJ Chuyên Nghiệp Đà Nẵng, Huế | VanBass Music Center",
   description:
-    "Trung tâm sửa chữa bàn DJ, Mixer, CDJ Pioneer DJ & AlphaTheta chuyên nghiệp tại Đà Nẵng & Miền Trung. Thay fader, crossfader, sửa lỗi jogwheel, mất nguồn, rè âm thanh, bảo dưỡng vệ sinh lấy liền trong ngày. Linh kiện chính hãng 100%, bảo hành 6-12T. Hotline: 0706.067.799.",
+    "Dịch vụ kỹ thuật sửa chữa bàn DJ, Mixer, CDJ Pioneer DJ & AlphaTheta chuyên nghiệp tại Đà Nẵng & Miền Trung. Thay fader, sửa jogwheel, xử lý nguồn, bảo dưỡng vệ sinh lấy liền trong ngày. Linh kiện chính hãng 100%, bảo hành 6-12T.",
   keywords: [
-    // Core Repair Keywords Da Nang & Central Vietnam
     "sửa bàn dj đà nẵng",
-    "sua ban dj da nang",
     "sửa chữa bàn dj đà nẵng",
-    "sua chua ban dj da nang",
     "sửa bàn dj huế",
-    "sua ban dj hue",
     "sửa chữa bàn dj huế",
-    "sua chua ban dj hue",
     "sửa bàn dj",
-    "sua ban dj",
-    "sửa chữa bàn dj",
-    "sua chua ban dj",
-    "sửa bàn dj miền trung",
     "thay fader bàn dj",
     "thay fader pioneer",
     "thay crossfader bàn dj",
@@ -32,26 +23,24 @@ export const metadata: Metadata = {
     "bảo dưỡng bàn dj",
     "vệ sinh bàn dj",
     "sửa mixer dj đà nẵng",
-    "sửa loa đà nẵng",
     "sửa xdj rx3",
     "sửa xdj rx2",
     "sửa ddj flx4",
     "sửa cdj 3000",
-    "linh kiện bàn dj chính hãng",
     "vanbass music center",
   ],
   alternates: {
     canonical: "/sua-chua-ban-dj",
   },
   openGraph: {
-    title: "Sửa Chữa Bàn DJ Đà Nẵng, Huế Lấy Liền | VanBass Music Center",
+    title: "Sửa Chữa Bàn DJ Chuyên Nghiệp | VanBass Music Center",
     description:
-      "Dịch vụ sửa chữa bàn DJ Pioneer DJ, AlphaTheta lấy liền tại Đà Nẵng: Thay fader, sửa jogwheel, xử lý nguồn, bảo dưỡng vệ sinh định kỳ. Linh kiện chính hãng, bảo hành 6-12 tháng.",
+      "Dịch vụ kỹ thuật sửa chữa bàn DJ Pioneer DJ, AlphaTheta lấy liền tại Đà Nẵng: Thay fader, sửa jogwheel, xử lý nguồn, bảo dưỡng vệ sinh định kỳ.",
     url: `${baseUrl}/sua-chua-ban-dj`,
     type: "website",
     images: [
       {
-        url: `${baseUrl}/images/rental/rental_fleet_hero.jpg`,
+        url: `${baseUrl}/images/repair/dj_repair_hero.jpg`,
         width: 1200,
         height: 630,
         alt: "Sửa Chữa Bàn DJ Chuyên Nghiệp Đà Nẵng - VanBass Music Center",
@@ -93,60 +82,37 @@ export default function SuaChuaBanDjPage() {
       {
         "@type": ["Service", "LocalBusiness"],
         "@id": `${baseUrl}/sua-chua-ban-dj#service`,
-        "name": "Dịch Vụ Sửa Chữa & Bảo Dưỡng Bàn DJ Chuyên Nghiệp Đà Nẵng - VanBass",
-        "url": `${baseUrl}/sua-chua-ban-dj`,
-        "provider": {
+        name: "Dịch Vụ Sửa Chữa & Bảo Dưỡng Bàn DJ Chuyên Nghiệp Đà Nẵng - VanBass",
+        url: `${baseUrl}/sua-chua-ban-dj`,
+        provider: {
           "@type": ["MusicStore", "LocalBusiness"],
-          "name": "VanBass Music Center",
-          "url": baseUrl,
-          "telephone": "+84706067799",
-          "priceRange": "200.000đ - 2.500.000đ",
-          "address": {
+          name: "VanBass Music Center",
+          url: baseUrl,
+          telephone: "+84706067799",
+          priceRange: "200.000đ - 2.500.000đ",
+          address: {
             "@type": "PostalAddress",
-            "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-            "addressLocality": "Đà Nẵng",
-            "addressRegion": "Đà Nẵng",
-            "addressCountry": "VN",
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "16.0714",
-            "longitude": "108.1882",
+            streetAddress: "77 Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
+            addressLocality: "Đà Nẵng",
+            addressRegion: "Đà Nẵng",
+            addressCountry: "VN",
           },
         },
-        "description":
+        description:
           "Trung tâm sửa chữa bàn DJ, thay fader, sửa jogwheel, sửa nguồn bo mạch bàn DJ Pioneer DJ, AlphaTheta tại Đà Nẵng, Huế & Miền Trung.",
-        "areaServed": ["Đà Nẵng", "Thừa Thiên Huế", "Hội An", "Quảng Nam", "Miền Trung"],
+        areaServed: ["Đà Nẵng", "Thừa Thiên Huế", "Hội An", "Quảng Nam", "Miền Trung"],
       },
       {
         "@type": "FAQPage",
         "@id": `${baseUrl}/sua-chua-ban-dj#faq`,
-        "mainEntity": repairFaqs.map((faq) => ({
+        mainEntity: repairFaqs.map((faq) => ({
           "@type": "Question",
-          "name": faq.q,
-          "acceptedAnswer": {
+          name: faq.q,
+          acceptedAnswer: {
             "@type": "Answer",
-            "text": faq.a,
+            text: faq.a,
           },
         })),
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${baseUrl}/sua-chua-ban-dj#breadcrumb`,
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Trang chủ",
-            "item": baseUrl,
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Sửa Chữa Bàn DJ",
-            "item": `${baseUrl}/sua-chua-ban-dj`,
-          },
-        ],
       },
     ],
   };
@@ -168,333 +134,853 @@ export default function SuaChuaBanDjPage() {
       />
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "80px" }}>
-        
+      <main style={{ flex: 1 }}>
         {/* =========================================================================
-            HERO SECTION: SỬA CHỮA BÀN DJ ĐÀ NẴNG
+            1. HERO SECTION: SỬA CHỮA BÀN DJ CHUYÊN NGHIỆP
            ========================================================================= */}
         <section
           style={{
             position: "relative",
-            padding: "70px 0 60px",
-            background: "radial-gradient(circle at 50% 20%, rgba(34, 197, 94, 0.12) 0%, rgba(9, 9, 11, 0.98) 75%)",
+            padding: "130px 0 85px 0",
+            backgroundColor: "#09090b",
             borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            overflow: "hidden",
           }}
         >
-          <div className="container" style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center" }}>
-            <span
+          <div className="container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <div
               style={{
-                color: "#22c55e",
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.14em",
-                display: "inline-block",
-                marginBottom: "12px",
-                backgroundColor: "rgba(34, 197, 94, 0.12)",
-                padding: "6px 14px",
-                borderRadius: "999px",
-                border: "1px solid rgba(34, 197, 94, 0.3)",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                gap: "50px",
+                alignItems: "center",
               }}
             >
-              DỊCH VỤ SỬA CHỮA LẤY LIỀN - BẢO HÀNH 6-12 THÁNG
-            </span>
+              {/* Left Column: Headline, narrative, CTA */}
+              <div>
+                <span
+                  style={{
+                    color: "#e6dec9",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    display: "inline-block",
+                    marginBottom: "16px",
+                    backgroundColor: "rgba(230, 222, 201, 0.1)",
+                    padding: "6px 16px",
+                    borderRadius: "999px",
+                    border: "1px solid rgba(230, 222, 201, 0.25)",
+                  }}
+                >
+                  DỊCH VỤ KỸ THUẬT LẤY LIỀN • BẢO HÀNH 6-12T
+                </span>
 
-            <h1
-              style={{
-                fontFamily: "var(--font-primary)",
-                fontSize: "clamp(26px, 4vw, 46px)",
-                fontWeight: 700,
-                color: "#ffffff",
-                letterSpacing: "-0.03em",
-                margin: "8px 0 16px 0",
-                textTransform: "uppercase",
-                lineHeight: 1.15,
-              }}
-            >
-              Sửa Chữa Bàn DJ Chuyên Nghiệp Tại Đà Nẵng & Huế
-            </h1>
+                <h1
+                  style={{
+                    fontFamily: "var(--font-primary)",
+                    fontSize: "clamp(32px, 4.2vw, 52px)",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    letterSpacing: "-0.03em",
+                    lineHeight: 1.16,
+                    margin: "0 0 20px 0",
+                  }}
+                >
+                  Sửa Chữa Bàn DJ
+                  <br />
+                  <span style={{ color: "#e6dec9" }}>Chuyên Nghiệp</span>
+                </h1>
 
-            <p
-              style={{
-                color: "#a1a1aa",
-                fontSize: "16px",
-                maxWidth: "760px",
-                margin: "0 auto 30px auto",
-                lineHeight: 1.6,
-              }}
-            >
-              Trung tâm tiếp nhận sửa chữa, thay thế linh kiện chính hãng và bảo dưỡng định kỳ các dòng máy Pioneer DJ & AlphaTheta: Pioneer XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000, Omnis-Duo. Chuẩn đoán miễn phí, báo đúng giá, lấy liền trong ngày.
-            </p>
+                <p
+                  style={{
+                    color: "#a1a1aa",
+                    fontSize: "16px",
+                    lineHeight: 1.75,
+                    margin: "0 0 32px 0",
+                    maxWidth: "540px",
+                  }}
+                >
+                  Dịch vụ kỹ thuật chuyên nghiệp, trang thiết bị hiện đại và đội ngũ kỹ thuật viên giàu kinh nghiệm. Tiếp nhận sửa chữa lấy liền, thay linh kiện chính hãng Pioneer DJ & AlphaTheta tại Đà Nẵng & Miền Trung.
+                </p>
 
-            {/* Quick Action Buttons */}
-            <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
-              <a
-                href={`tel:${hotline}`}
-                className="button button-primary"
+                {/* CTAs */}
+                <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+                  <a
+                    href={`tel:${hotline}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "14px 28px",
+                      borderRadius: "10px",
+                      backgroundColor: "#e6dec9",
+                      color: "#09090b",
+                      fontSize: "14.5px",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      transition: "opacity 0.2s ease",
+                    }}
+                  >
+                    <span>Gọi Hotline: 0706.067.799</span>
+                  </a>
+
+                  <a
+                    href={`${messengerUrl}?text=Toi%20can%20dat%20lich%20sua%20chua%20ban%20DJ`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "14px 24px",
+                      borderRadius: "10px",
+                      backgroundColor: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      color: "#f4f4f5",
+                      fontSize: "14.5px",
+                      fontWeight: 500,
+                      textDecoration: "none",
+                    }}
+                  >
+                    <span>Đặt lịch sửa chữa</span>
+                    <span>→</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Right Column: Hero Image with Cinematic Glow */}
+              <div
                 style={{
-                  padding: "14px 28px",
-                  fontSize: "14.5px",
-                  fontWeight: 700,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  boxShadow: "0 0 25px rgba(34, 197, 94, 0.4)",
+                  position: "relative",
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  minHeight: "420px",
+                  boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
                 }}
               >
-                Hotline Kỹ Thuật: 0706 067 799
-              </a>
-
-              <a
-                href={`${messengerUrl}?text=Toi%20can%20tu%20van%20sua%20chua%20ban%20DJ`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button button-secondary"
-                style={{
-                  padding: "14px 24px",
-                  fontSize: "14.5px",
-                  fontWeight: 700,
-                  backgroundColor: "rgba(255, 255, 255, 0.08)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                }}
-              >
-                Nhắn Tin Báo Lỗi Ngay
-              </a>
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundImage: "url('/images/repair/dj_repair_hero.jpg')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to top, rgba(9, 9, 11, 0.9) 0%, rgba(9, 9, 11, 0.15) 60%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "24px",
+                    left: "24px",
+                    right: "24px",
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "inline-block",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      backgroundColor: "rgba(230, 222, 201, 0.15)",
+                      border: "1px solid rgba(230, 222, 201, 0.3)",
+                      color: "#e6dec9",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    VANBASS LAB
+                  </span>
+                  <p style={{ color: "#ffffff", fontSize: "14px", fontWeight: 500, margin: 0 }}>
+                    Kỹ thuật viên chuyên nghiệp với trang thiết bị đo kiểm hiện đại
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* =========================================================================
-            SERVICES GRID: CÁC DỊCH VỤ SỬA CHỮA PHỔ BIẾN
+            2. SERVICES GRID: Dịch vụ sửa chữa của chúng tôi
            ========================================================================= */}
-        <section style={{ padding: "70px 0", borderBottom: "1px solid rgba(255, 255, 255, 0.08)" }}>
+        <section
+          style={{
+            padding: "90px 0",
+            backgroundColor: "#09090b",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          }}
+        >
           <div className="container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: "45px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                DANH MỤC DỊCH VỤ KỸ THUẬT
+            <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 50px auto" }}>
+              <span
+                style={{
+                  color: "#e6dec9",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: "8px",
+                }}
+              >
+                DANH MỤC DỊCH VỤ
               </span>
-              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 34px)", fontWeight: 700, color: "#fff", margin: "6px 0 0" }}>
-                Các Lỗi Bàn DJ Được Xử Lý Nhanh Chóng
+              <h2
+                style={{
+                  fontSize: "clamp(24px, 3.2vw, 36px)",
+                  fontWeight: 700,
+                  color: "#ffffff",
+                  letterSpacing: "-0.025em",
+                  margin: 0,
+                }}
+              >
+                Dịch Vụ Sửa Chữa Của Chúng Tôi
               </h2>
             </div>
 
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
                 gap: "24px",
               }}
             >
-              {/* Service 1 */}
+              {/* Service 1: Fader / Crossfader */}
               <div
                 style={{
-                  backgroundColor: "rgba(18, 18, 22, 0.8)",
+                  backgroundColor: "#111114",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
-                  padding: "26px",
+                  padding: "32px 26px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transition: "transform 0.2s ease, border-color 0.2s ease",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
-                  Thay Fader & Crossfader Chính Hãng
-                </h3>
-                <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
-                  Xử lý dứt điểm các hiện tượng: Kéo cần fader bị nhảy volume bất thường, rột rẹt âm thanh, gãy chân fader hoặc kẹt cứng do bụi bẩn, nước đổ. Sử dụng linh kiện fader Alps cao cấp chuẩn Pioneer.
-                </p>
+                <div>
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "10px",
+                      backgroundColor: "rgba(230, 222, 201, 0.08)",
+                      border: "1px solid rgba(230, 222, 201, 0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#e6dec9",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {/* Minimal Slider/Fader Icon */}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="4" y1="21" x2="4" y2="14" />
+                      <line x1="4" y1="10" x2="4" y2="3" />
+                      <line x1="12" y1="21" x2="12" y2="12" />
+                      <line x1="12" y1="8" x2="12" y2="3" />
+                      <line x1="20" y1="21" x2="20" y2="16" />
+                      <line x1="20" y1="12" x2="20" y2="3" />
+                      <line x1="1" y1="14" x2="7" y2="14" />
+                      <line x1="9" y1="8" x2="15" y2="8" />
+                      <line x1="17" y1="16" x2="23" y2="16" />
+                    </svg>
+                  </div>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                    Fader / Crossfader
+                  </h3>
+                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                    Thay thế cần volume, crossfader Magvel / Alps chính hãng. Khắc phục triệt để lỗi nhảy âm lượng, rè tín hiệu hoặc kẹt cứng.
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: "16px",
+                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <span style={{ fontSize: "13.5px", color: "#e6dec9", fontWeight: 600 }}>
+                    Giá từ 250.000đ
+                  </span>
+                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                </div>
               </div>
 
-              {/* Service 2 */}
+              {/* Service 2: Jogwheel */}
               <div
                 style={{
-                  backgroundColor: "rgba(18, 18, 22, 0.8)",
+                  backgroundColor: "#111114",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
-                  padding: "26px",
+                  padding: "32px 26px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transition: "transform 0.2s ease, border-color 0.2s ease",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
-                  Sửa Jogwheel & Cân Chỉnh Cảm Ứng Mâm
-                </h3>
-                <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
-                  Cân chỉnh cảm ứng mặt mâm xoay, sửa lỗi jogwheel không nhận lực tay khi scratch, jogwheel bị nặng, kẹt cơ học hoặc màn hình On-Jog LCD trong mâm không hiển thị artwork.
-                </p>
+                <div>
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "10px",
+                      backgroundColor: "rgba(230, 222, 201, 0.08)",
+                      border: "1px solid rgba(230, 222, 201, 0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#e6dec9",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {/* Minimal Disc / Jogwheel Icon */}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="12" r="4" />
+                      <line x1="12" y1="2" x2="12" y2="4" />
+                    </svg>
+                  </div>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                    Jogwheel & Cảm Ứng Mâm
+                  </h3>
+                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                    Cân chỉnh cảm ứng mặt mâm, xử lý mâm xoay bị nặng, kẹt cơ học hoặc màn hình LCD On-Jog không hiển thị artwork.
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: "16px",
+                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <span style={{ fontSize: "13.5px", color: "#e6dec9", fontWeight: 600 }}>
+                    Giá từ 350.000đ
+                  </span>
+                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                </div>
               </div>
 
-              {/* Service 3 */}
+              {/* Service 3: USB / Audio Jack */}
               <div
                 style={{
-                  backgroundColor: "rgba(18, 18, 22, 0.8)",
+                  backgroundColor: "#111114",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
-                  padding: "26px",
+                  padding: "32px 26px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transition: "transform 0.2s ease, border-color 0.2s ease",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
-                  Sửa Nguồn, Cổng Cắm USB & Jack Âm Thanh
-                </h3>
-                <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
-                  Xử lý bàn DJ bị chập nguồn, không lên đèn, chập chờn cổng cắm USB nhận nhạc, sửa jack tai nghe 3.5mm/6.35mm bị lỏng, jack canon XLR ra loa bị mất 1 vế tín hiệu.
-                </p>
+                <div>
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "10px",
+                      backgroundColor: "rgba(230, 222, 201, 0.08)",
+                      border: "1px solid rgba(230, 222, 201, 0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#e6dec9",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {/* Minimal Audio Jack / Plug Icon */}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 2v6" />
+                      <path d="M10 8h4v4h-4z" />
+                      <path d="M8 12h8v4a4 4 0 0 1-8 0v-4z" />
+                      <path d="M12 16v6" />
+                    </svg>
+                  </div>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                    USB / Audio Jack & Nguồn
+                  </h3>
+                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                    Xử lý mất nguồn bo mạch, sửa cổng USB chập chờn không nhận nhạc, thay jack tai nghe 3.5mm/6.35mm và jack XLR canon.
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: "16px",
+                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <span style={{ fontSize: "13.5px", color: "#e6dec9", fontWeight: 600 }}>
+                    Giá từ 300.000đ
+                  </span>
+                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                </div>
               </div>
 
-              {/* Service 4 */}
+              {/* Service 4: Vệ sinh & Bảo dưỡng */}
               <div
                 style={{
-                  backgroundColor: "rgba(18, 18, 22, 0.8)",
+                  backgroundColor: "#111114",
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "14px",
-                  padding: "26px",
+                  padding: "32px 26px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transition: "transform 0.2s ease, border-color 0.2s ease",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
-                  Vệ Sinh & Bảo Dưỡng Chuyên Sâu Lấy Liền
-                </h3>
-                <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
-                  Dung dịch chuyên dụng làm sạch bụi bẩn, tra dầu trơn fader, làm sạch mắt đọc cảm biến quang, bôi mỡ nhiệt mâm xoay giúp bàn DJ vận hành êm ái, kéo dài tuổi thọ gấp 3 lần.
-                </p>
+                <div>
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "10px",
+                      backgroundColor: "rgba(230, 222, 201, 0.08)",
+                      border: "1px solid rgba(230, 222, 201, 0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#e6dec9",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {/* Minimal Shield / Maintenance Icon */}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                  </div>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                    Vệ Sinh & Bảo Dưỡng
+                  </h3>
+                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                    Vệ sinh toàn bộ bo mạch bằng dung dịch chuyên dụng, tra dầu mâm xoay, làm sạch mắt quang cảm biến kéo dài tuổi thọ máy.
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: "16px",
+                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <span style={{ fontSize: "13.5px", color: "#e6dec9", fontWeight: 600 }}>
+                    300.000đ - 500.000đ
+                  </span>
+                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* =========================================================================
-            PRICE TABLE: BẢNG GIÁ THAM KHẢO
+            3. PRICING TABLE: Bảng giá tham khảo
            ========================================================================= */}
-        <section style={{ padding: "70px 0", backgroundColor: "#0c0c0e", borderBottom: "1px solid rgba(255, 255, 255, 0.08)" }}>
-          <div className="container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
+        <section
+          style={{
+            padding: "90px 0",
+            backgroundColor: "#0d0e12",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          }}
+        >
+          <div className="container" style={{ maxWidth: "980px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                MINH BẠCH - BÁO TRƯỚC GIÁ
+              <span
+                style={{
+                  color: "#e6dec9",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: "8px",
+                }}
+              >
+                CHI PHÍ MINH BẠCH
               </span>
-              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 32px)", fontWeight: 700, color: "#fff", margin: "6px 0 0" }}>
-                Bảng Giá Dịch Vụ Sửa Chữa Tham Khảo
+              <h2
+                style={{
+                  fontSize: "clamp(24px, 3.2vw, 34px)",
+                  fontWeight: 700,
+                  color: "#ffffff",
+                  letterSpacing: "-0.025em",
+                  margin: 0,
+                }}
+              >
+                Bảng Giá Tham Khảo
               </h2>
             </div>
 
             <div
               style={{
-                backgroundColor: "rgba(18, 18, 22, 0.9)",
-                border: "1px solid rgba(255, 255, 255, 0.09)",
+                backgroundColor: "#111114",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
                 borderRadius: "14px",
                 overflow: "hidden",
               }}
             >
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                 <thead>
-                  <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.05)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
-                    <th style={{ padding: "16px 20px", color: "#ffffff", fontWeight: 700 }}>Hạng Mục Dịch Vụ</th>
-                    <th style={{ padding: "16px 20px", color: "#ffffff", fontWeight: 700 }}>Thời Gian Xử Lý</th>
-                    <th style={{ padding: "16px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Chi Phí Tham Khảo</th>
+                  <tr
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.04)",
+                      borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                    }}
+                  >
+                    <th style={{ padding: "18px 24px", color: "#ffffff", fontWeight: 600 }}>Hạng Mục Dịch Vụ</th>
+                    <th style={{ padding: "18px 24px", color: "#ffffff", fontWeight: 600 }}>Thời Gian Xử Lý</th>
+                    <th style={{ padding: "18px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>Giá Từ</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "14px 20px", color: "#e4e4e7" }}>Thay Fader Volume / Pitch Tempo (Pioneer Controller)</td>
-                    <td style={{ padding: "14px 20px", color: "#a1a1aa" }}>30 - 60 phút (Lấy liền)</td>
-                    <td style={{ padding: "14px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Từ 250.000đ</td>
+                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Thay Fader Volume / Pitch Tempo (Pioneer Controller)</td>
+                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>30 - 60 phút (Lấy liền)</td>
+                    <td style={{ padding: "16px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>250.000đ</td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "14px 20px", color: "#e4e4e7" }}>Thay Fader Magvel / Alps (Dòng All-In-One RX3, XZ, CDJ)</td>
-                    <td style={{ padding: "14px 20px", color: "#a1a1aa" }}>1 - 2 giờ</td>
-                    <td style={{ padding: "14px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Từ 450.000đ</td>
+                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Thay Fader Magvel / Alps (Dòng RX3, XZ, CDJ-3000)</td>
+                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>1 - 2 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>450.000đ</td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "14px 20px", color: "#e4e4e7" }}>Thay nút bấm CUE / PLAY / PAD cao su biểu diễn</td>
-                    <td style={{ padding: "14px 20px", color: "#a1a1aa" }}>30 - 45 phút</td>
-                    <td style={{ padding: "14px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Từ 200.000đ</td>
+                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Thay nút bấm CUE / PLAY / Pad cao su biểu diễn</td>
+                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>30 - 45 phút</td>
+                    <td style={{ padding: "16px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>200.000đ</td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "14px 20px", color: "#e4e4e7" }}>Cân chỉnh cảm ứng Jogwheel, sửa kẹt mâm xoay</td>
-                    <td style={{ padding: "14px 20px", color: "#a1a1aa" }}>1 - 3 giờ</td>
-                    <td style={{ padding: "14px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Từ 350.000đ</td>
+                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Cân chỉnh cảm ứng Jogwheel, sửa kẹt mâm xoay</td>
+                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>1 - 3 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>350.000đ</td>
                   </tr>
                   <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "14px 20px", color: "#e4e4e7" }}>Vệ sinh bảo dưỡng toàn bộ máy bằng dung dịch chuyên dụng</td>
-                    <td style={{ padding: "14px 20px", color: "#a1a1aa" }}>1 - 2 giờ</td>
-                    <td style={{ padding: "14px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>300.000đ - 500.000đ</td>
+                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Vệ sinh bảo dưỡng toàn bộ máy bằng dung dịch chuyên dụng</td>
+                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>1 - 2 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>300.000đ</td>
                   </tr>
                   <tr>
-                    <td style={{ padding: "14px 20px", color: "#e4e4e7" }}>Sửa bo mạch nguồn, cứu firmware, thay IC âm thanh</td>
-                    <td style={{ padding: "14px 20px", color: "#a1a1aa" }}>24 - 48 giờ</td>
-                    <td style={{ padding: "14px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Báo giá sau khi kiểm tra</td>
+                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Sửa bo mạch nguồn, cứu firmware, thay IC âm thanh DAC</td>
+                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>24 - 48 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#e6dec9", fontWeight: 600, textAlign: "right" }}>Báo giá sau kiểm tra</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
             <p style={{ textAlign: "center", color: "#71717a", fontSize: "13px", marginTop: "16px" }}>
-              * Lưu ý: Giá trên đã bao gồm công thay thế và bảo hành 6 - 12 tháng. Kiểm tra chuẩn đoán lỗi hoàn toàn MIỄN PHÍ.
+              * Chuẩn đoán lỗi ban đầu hoàn toàn MIỄN PHÍ. Giá trên đã bao gồm công tháo lắp và bảo hành 6 - 12 tháng.
             </p>
           </div>
         </section>
 
         {/* =========================================================================
-            FAQ SECTION
-           ========================================================================= */}
-        <section style={{ padding: "70px 0" }}>
-          <div className="container" style={{ maxWidth: "860px", margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                HỎI ĐÁP KỸ THUẬT
-              </span>
-              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 32px)", fontWeight: 700, color: "#fff", margin: "6px 0 0" }}>
-                Câu Hỏi Thường Gặp Về Sửa Chữa Bàn DJ
-              </h2>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {repairFaqs.map((faq, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    backgroundColor: "rgba(18, 18, 22, 0.8)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    borderRadius: "12px",
-                    padding: "20px 24px",
-                  }}
-                >
-                  <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", margin: "0 0 8px 0" }}>
-                    {faq.q}
-                  </h3>
-                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
-                    {faq.a}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================================
-            CONTACT BANNER
+            4. REPAIR PROCESS: Quy trình sửa chữa (4 Bước)
            ========================================================================= */}
         <section
           style={{
-            padding: "60px 0",
-            backgroundColor: "rgba(34, 197, 94, 0.08)",
-            borderTop: "1px solid rgba(34, 197, 94, 0.2)",
-            textAlign: "center",
+            padding: "90px 0",
+            backgroundColor: "#09090b",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
-          <div className="container" style={{ maxWidth: "800px", margin: "0 auto" }}>
-            <h2 style={{ fontSize: "26px", fontWeight: 700, color: "#ffffff", marginBottom: "12px" }}>
-              Cần Kiểm Tra & Sửa Máy DJ Ngay Hôm Nay?
-            </h2>
-            <p style={{ color: "#d4d4d8", fontSize: "15px", marginBottom: "26px" }}>
-              Ghé ngay Showroom VanBass tại: <strong>Nguyễn Tất Thành (Đà Nẵng)</strong> hoặc chi nhánh <strong>442 Chi Lăng (TP Huế)</strong> hoặc gọi trực tiếp Hotline để kỹ thuật viên tư vấn chuẩn đoán miễn phí.
-            </p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
-              <a
-                href="tel:0706067799"
-                className="button button-primary"
-                style={{ padding: "12px 26px", fontSize: "14px", fontWeight: 700 }}
+          <div className="container" style={{ maxWidth: "1100px", margin: "0 auto" }}>
+            <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 50px auto" }}>
+              <span
+                style={{
+                  color: "#e6dec9",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  display: "block",
+                  marginBottom: "8px",
+                }}
               >
-                Gọi Hotline: 0706.067.799
-              </a>
-              <Link
-                href="/contact"
-                className="button button-secondary"
-                style={{ padding: "12px 22px", fontSize: "14px", fontWeight: 700, backgroundColor: "rgba(255,255,255,0.08)" }}
+                QUY TRÌNH CHUYÊN NGHIỆP
+              </span>
+              <h2
+                style={{
+                  fontSize: "clamp(24px, 3.2vw, 36px)",
+                  fontWeight: 700,
+                  color: "#ffffff",
+                  letterSpacing: "-0.025em",
+                  margin: 0,
+                }}
               >
-                Xem Bản Đồ Đường Đi
-              </Link>
+                Quy Trình Sửa Chữa Tại VanBass
+              </h2>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+                gap: "24px",
+              }}
+            >
+              {/* Step 1 */}
+              <div
+                style={{
+                  backgroundColor: "#111114",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "14px",
+                  padding: "32px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#e6dec9",
+                    letterSpacing: "0.1em",
+                    marginBottom: "14px",
+                  }}
+                >
+                  BƯỚC 01
+                </span>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  Tiếp Nhận Thiết Bị
+                </h3>
+                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                  Kỹ thuật viên tiếp nhận bàn DJ tại Showroom hoặc qua vận chuyển liên tỉnh. Lập phiếu kiểm tra ngoại quan và mô tả lỗi chi tiết.
+                </p>
+              </div>
+
+              {/* Step 2 */}
+              <div
+                style={{
+                  backgroundColor: "#111114",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "14px",
+                  padding: "32px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#e6dec9",
+                    letterSpacing: "0.1em",
+                    marginBottom: "14px",
+                  }}
+                >
+                  BƯỚC 02
+                </span>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  Báo Giá Minh Bạch
+                </h3>
+                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                  Chuẩn đoán lỗi miễn phí, đưa ra phương án xử lý tối ưu và báo giá linh kiện rõ ràng trước khi tiến hành sửa.
+                </p>
+              </div>
+
+              {/* Step 3 */}
+              <div
+                style={{
+                  backgroundColor: "#111114",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "14px",
+                  padding: "32px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#e6dec9",
+                    letterSpacing: "0.1em",
+                    marginBottom: "14px",
+                  }}
+                >
+                  BƯỚC 03
+                </span>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  Tiến Hành Sửa Chữa
+                </h3>
+                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                  Thay thế linh kiện chính hãng trong phòng kỹ thuật tiêu chuẩn, vệ sinh sạch sẽ và kiểm tra toàn diện chức năng máy.
+                </p>
+              </div>
+
+              {/* Step 4 */}
+              <div
+                style={{
+                  backgroundColor: "#111114",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "14px",
+                  padding: "32px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#e6dec9",
+                    letterSpacing: "0.1em",
+                    marginBottom: "14px",
+                  }}
+                >
+                  BƯỚC 04
+                </span>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  Bàn Giao & Bảo Hành
+                </h3>
+                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                  Cùng khách hàng test lại máy, dán tem bảo hành điện tử 6 - 12 tháng và hướng dẫn bảo quản thiết bị đúng cách.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            5. BOTTOM CTA: Thiết bị của bạn đang gặp vấn đề?
+           ========================================================================= */}
+        <section
+          style={{
+            padding: "90px 0 100px 0",
+            backgroundColor: "#09090b",
+          }}
+        >
+          <div className="container" style={{ maxWidth: "920px", margin: "0 auto" }}>
+            <div
+              style={{
+                position: "relative",
+                padding: "54px 44px",
+                backgroundColor: "#111114",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "16px",
+                textAlign: "center",
+                overflow: "hidden",
+              }}
+            >
+              {/* Subtle ambient light glow */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "-50%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "360px",
+                  height: "240px",
+                  background: "radial-gradient(circle, rgba(230, 222, 201, 0.12) 0%, transparent 70%)",
+                  pointerEvents: "none",
+                  filter: "blur(50px)",
+                }}
+              />
+
+              <div style={{ position: "relative", zIndex: 1 }}>
+                <span
+                  style={{
+                    color: "#e6dec9",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    display: "block",
+                    marginBottom: "12px",
+                  }}
+                >
+                  HỖ TRỢ KỸ THUẬT NHANH CHÓNG
+                </span>
+
+                <h2
+                  style={{
+                    fontSize: "clamp(26px, 3.6vw, 38px)",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    letterSpacing: "-0.025em",
+                    lineHeight: 1.25,
+                    margin: "0 auto 16px auto",
+                    maxWidth: "640px",
+                  }}
+                >
+                  Thiết Bị Của Bạn Đang Gặp Vấn Đề?
+                </h2>
+
+                <p
+                  style={{
+                    color: "#a1a1aa",
+                    fontSize: "15px",
+                    lineHeight: 1.8,
+                    maxWidth: "580px",
+                    margin: "0 auto 30px auto",
+                  }}
+                >
+                  Ghé ngay trung tâm kỹ thuật VanBass tại <strong>77 Nguyễn Tất Thành, Đà Nẵng</strong> hoặc liên hệ hotline để kỹ thuật viên chuẩn đoán lỗi miễn phí.
+                </p>
+
+                <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
+                  <a
+                    href="tel:0706067799"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "13px 28px",
+                      borderRadius: "10px",
+                      backgroundColor: "#e6dec9",
+                      color: "#09090b",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                    }}
+                  >
+                    <span>Liên hệ ngay: 0706.067.799</span>
+                    <span>→</span>
+                  </a>
+
+                  <Link
+                    href="/contact"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "13px 24px",
+                      borderRadius: "10px",
+                      backgroundColor: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      color: "#f4f4f5",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      textDecoration: "none",
+                    }}
+                  >
+                    <span>Xem địa chỉ Showroom</span>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </section>
