@@ -16,7 +16,7 @@ export default function AboutPage() {
         flexDirection: "column",
         backgroundColor: "#09090b",
         color: "#f4f4f5",
-        fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+        fontFamily: "var(--font-primary)",
       }}
     >
       <Header />
@@ -105,9 +105,9 @@ export default function AboutPage() {
             {/* Main Headline - Architectural High-Contrast Typography */}
             <h1
               style={{
-                fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                fontFamily: "var(--font-primary)",
                 fontSize: "clamp(34px, 5.2vw, 64px)",
-                fontWeight: 900,
+                fontWeight: 700,
                 letterSpacing: "-0.035em",
                 lineHeight: 1.15,
                 margin: "0 auto 28px auto",
@@ -213,7 +213,7 @@ export default function AboutPage() {
                   style={{
                     color: "#22c55e",
                     fontSize: "12px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     textTransform: "uppercase",
                     letterSpacing: "0.14em",
                     display: "block",
@@ -224,9 +224,9 @@ export default function AboutPage() {
                 </span>
                 <h2
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "clamp(24px, 3.2vw, 36px)",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     letterSpacing: "-0.025em",
                     margin: 0,
@@ -301,7 +301,7 @@ export default function AboutPage() {
                   >
                     SHOWROOM & AUDITION BOOTH
                   </span>
-                  <h3 style={{ fontSize: "22px", fontWeight: 800, color: "#ffffff", margin: "0 0 8px 0" }}>
+                  <h3 style={{ fontSize: "22px", fontWeight: 700, color: "#ffffff", margin: "0 0 8px 0" }}>
                     {lang === "en" ? "Private Audition Environment" : "Phòng Nghe & Test Máy Tiêu Âm Chuẩn"}
                   </h3>
                   <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
@@ -363,7 +363,7 @@ export default function AboutPage() {
                   >
                     FLAGSHIP HARDWARE
                   </span>
-                  <h3 style={{ fontSize: "22px", fontWeight: 800, color: "#ffffff", margin: "0 0 8px 0" }}>
+                  <h3 style={{ fontSize: "22px", fontWeight: 700, color: "#ffffff", margin: "0 0 8px 0" }}>
                     {lang === "en" ? "Precision in Every Jogwheel" : "Độ Chuẩn Xác Trên Từng Nốt Fader"}
                   </h3>
                   <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
@@ -395,7 +395,7 @@ export default function AboutPage() {
                 style={{
                   color: "#22c55e",
                   fontSize: "12px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.14em",
                   display: "inline-block",
@@ -406,9 +406,9 @@ export default function AboutPage() {
               </span>
               <h2
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                  fontFamily: "var(--font-primary)",
                   fontSize: "clamp(26px, 3.8vw, 42px)",
-                  fontWeight: 900,
+                  fontWeight: 700,
                   color: "#ffffff",
                   letterSpacing: "-0.03em",
                   margin: 0,
@@ -442,7 +442,7 @@ export default function AboutPage() {
                 <span
                   style={{
                     fontSize: "14px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#22c55e",
                     letterSpacing: "0.12em",
                     marginBottom: "16px",
@@ -453,9 +453,9 @@ export default function AboutPage() {
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     marginBottom: "14px",
                     letterSpacing: "-0.02em",
@@ -489,7 +489,7 @@ export default function AboutPage() {
                 <span
                   style={{
                     fontSize: "14px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#22c55e",
                     letterSpacing: "0.12em",
                     marginBottom: "16px",
@@ -500,9 +500,9 @@ export default function AboutPage() {
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     marginBottom: "14px",
                     letterSpacing: "-0.02em",
@@ -536,7 +536,7 @@ export default function AboutPage() {
                 <span
                   style={{
                     fontSize: "14px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#22c55e",
                     letterSpacing: "0.12em",
                     marginBottom: "16px",
@@ -547,9 +547,9 @@ export default function AboutPage() {
                 </span>
                 <h3
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "21px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#ffffff",
                     marginBottom: "14px",
                     letterSpacing: "-0.02em",
@@ -599,7 +599,7 @@ export default function AboutPage() {
                   style={{
                     color: "#22c55e",
                     fontSize: "12px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     textTransform: "uppercase",
                     letterSpacing: "0.14em",
                     display: "block",
@@ -610,9 +610,9 @@ export default function AboutPage() {
                 </span>
                 <blockquote
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "clamp(24px, 3.2vw, 36px)",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     lineHeight: 1.3,
                     color: "#ffffff",
                     letterSpacing: "-0.025em",
@@ -687,7 +687,7 @@ export default function AboutPage() {
                   style={{
                     color: "#22c55e",
                     fontSize: "12px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     letterSpacing: "0.14em",
                     marginBottom: "10px",
                   }}
@@ -697,9 +697,9 @@ export default function AboutPage() {
 
                 <h2
                   style={{
-                    fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                    fontFamily: "var(--font-primary)",
                     fontSize: "clamp(24px, 3.2vw, 34px)",
-                    fontWeight: 900,
+                    fontWeight: 700,
                     margin: "0 0 12px 0",
                     color: "#ffffff",
                     letterSpacing: "-0.025em",
@@ -738,7 +738,7 @@ export default function AboutPage() {
                     textAlign: "center",
                     padding: "14px 28px",
                     borderRadius: "999px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     fontSize: "14px",
                     boxShadow: "0 0 20px rgba(34, 197, 94, 0.4)",
                   }}

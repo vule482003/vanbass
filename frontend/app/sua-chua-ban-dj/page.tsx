@@ -159,7 +159,7 @@ export default function SuaChuaBanDjPage() {
         flexDirection: "column",
         backgroundColor: "#09090b",
         color: "#f4f4f5",
-        fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+        fontFamily: "var(--font-primary)",
       }}
     >
       <script
@@ -186,7 +186,7 @@ export default function SuaChuaBanDjPage() {
               style={{
                 color: "#22c55e",
                 fontSize: "12px",
-                fontWeight: 800,
+                fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.14em",
                 display: "inline-block",
@@ -202,9 +202,9 @@ export default function SuaChuaBanDjPage() {
 
             <h1
               style={{
-                fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                fontFamily: "var(--font-primary)",
                 fontSize: "clamp(26px, 4vw, 46px)",
-                fontWeight: 900,
+                fontWeight: 700,
                 color: "#ffffff",
                 letterSpacing: "-0.03em",
                 margin: "8px 0 16px 0",
@@ -235,7 +235,7 @@ export default function SuaChuaBanDjPage() {
                 style={{
                   padding: "14px 28px",
                   fontSize: "14.5px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   display: "inline-flex",
                   alignItems: "center",
                   boxShadow: "0 0 25px rgba(34, 197, 94, 0.4)",
@@ -269,10 +269,10 @@ export default function SuaChuaBanDjPage() {
         <section style={{ padding: "70px 0", borderBottom: "1px solid rgba(255, 255, 255, 0.08)" }}>
           <div className="container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "45px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em" }}>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                 DANH MỤC DỊCH VỤ KỸ THUẬT
               </span>
-              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 34px)", fontWeight: 900, color: "#fff", margin: "6px 0 0" }}>
+              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 34px)", fontWeight: 700, color: "#fff", margin: "6px 0 0" }}>
                 Các Lỗi Bàn DJ Được Xử Lý Nhanh Chóng
               </h2>
             </div>
@@ -293,7 +293,7 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
                   Thay Fader & Crossfader Chính Hãng
                 </h3>
                 <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
@@ -310,7 +310,7 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
                   Sửa Jogwheel & Cân Chỉnh Cảm Ứng Mâm
                 </h3>
                 <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
@@ -327,7 +327,7 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
                   Sửa Nguồn, Cổng Cắm USB & Jack Âm Thanh
                 </h3>
                 <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
@@ -344,7 +344,7 @@ export default function SuaChuaBanDjPage() {
                   padding: "26px",
                 }}
               >
-                <h3 style={{ fontSize: "19px", fontWeight: 800, color: "#fff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
                   Vệ Sinh & Bảo Dưỡng Chuyên Sâu Lấy Liền
                 </h3>
                 <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
@@ -361,10 +361,10 @@ export default function SuaChuaBanDjPage() {
         <section style={{ padding: "70px 0", backgroundColor: "#0c0c0e", borderBottom: "1px solid rgba(255, 255, 255, 0.08)" }}>
           <div className="container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em" }}>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                 MINH BẠCH - BÁO TRƯỚC GIÁ
               </span>
-              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 32px)", fontWeight: 900, color: "#fff", margin: "6px 0 0" }}>
+              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 32px)", fontWeight: 700, color: "#fff", margin: "6px 0 0" }}>
                 Bảng Giá Dịch Vụ Sửa Chữa Tham Khảo
               </h2>
             </div>
@@ -380,9 +380,9 @@ export default function SuaChuaBanDjPage() {
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                 <thead>
                   <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.05)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
-                    <th style={{ padding: "16px 20px", color: "#ffffff", fontWeight: 800 }}>Hạng Mục Dịch Vụ</th>
-                    <th style={{ padding: "16px 20px", color: "#ffffff", fontWeight: 800 }}>Thời Gian Xử Lý</th>
-                    <th style={{ padding: "16px 20px", color: "#22c55e", fontWeight: 800, textAlign: "right" }}>Chi Phí Tham Khảo</th>
+                    <th style={{ padding: "16px 20px", color: "#ffffff", fontWeight: 700 }}>Hạng Mục Dịch Vụ</th>
+                    <th style={{ padding: "16px 20px", color: "#ffffff", fontWeight: 700 }}>Thời Gian Xử Lý</th>
+                    <th style={{ padding: "16px 20px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Chi Phí Tham Khảo</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -431,10 +431,10 @@ export default function SuaChuaBanDjPage() {
         <section style={{ padding: "70px 0" }}>
           <div className="container" style={{ maxWidth: "860px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em" }}>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                 HỎI ĐÁP KỸ THUẬT
               </span>
-              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 32px)", fontWeight: 900, color: "#fff", margin: "6px 0 0" }}>
+              <h2 style={{ fontSize: "clamp(22px, 3.2vw, 32px)", fontWeight: 700, color: "#fff", margin: "6px 0 0" }}>
                 Câu Hỏi Thường Gặp Về Sửa Chữa Bàn DJ
               </h2>
             </div>
@@ -450,7 +450,7 @@ export default function SuaChuaBanDjPage() {
                     padding: "20px 24px",
                   }}
                 >
-                  <h3 style={{ fontSize: "16px", fontWeight: 800, color: "#ffffff", margin: "0 0 8px 0" }}>
+                  <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", margin: "0 0 8px 0" }}>
                     {faq.q}
                   </h3>
                   <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
@@ -474,7 +474,7 @@ export default function SuaChuaBanDjPage() {
           }}
         >
           <div className="container" style={{ maxWidth: "800px", margin: "0 auto" }}>
-            <h2 style={{ fontSize: "26px", fontWeight: 900, color: "#ffffff", marginBottom: "12px" }}>
+            <h2 style={{ fontSize: "26px", fontWeight: 700, color: "#ffffff", marginBottom: "12px" }}>
               Cần Kiểm Tra & Sửa Máy DJ Ngay Hôm Nay?
             </h2>
             <p style={{ color: "#d4d4d8", fontSize: "15px", marginBottom: "26px" }}>
@@ -484,7 +484,7 @@ export default function SuaChuaBanDjPage() {
               <a
                 href="tel:0706067799"
                 className="button button-primary"
-                style={{ padding: "12px 26px", fontSize: "14px", fontWeight: 800 }}
+                style={{ padding: "12px 26px", fontSize: "14px", fontWeight: 700 }}
               >
                 Gọi Hotline: 0706.067.799
               </a>

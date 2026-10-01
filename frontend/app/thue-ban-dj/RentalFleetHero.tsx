@@ -38,7 +38,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             {/* Headline - H1 Chữ Xám Chuẩn, Nét Vuông Mảnh Sang Trọng */}
             <h1
               style={{
-                fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
+                fontFamily: "var(--font-primary)",
                 fontSize: "clamp(34px, 5vw, 62px)",
                 fontWeight: 600,
                 letterSpacing: "0.02em",
@@ -160,7 +160,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 style={{
                   padding: "12px 24px",
                   borderRadius: "6px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   fontSize: "13px",
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
@@ -249,7 +249,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                   padding: "4px 12px",
                   borderRadius: "3px",
                   fontSize: "11px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                   display: "inline-block",
@@ -260,12 +260,12 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             </div>
 
             <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 800, color: "#71717a", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "#71717a", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
                 {isVi ? "GIÁ CHỈ TỪ" : "FROM"}
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                <strong style={{ fontSize: "36px", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1 }}>400.000đ</strong>
-                <span style={{ fontSize: "14px", fontWeight: 800, color: "#71717a" }}>{isVi ? "/ NGÀY" : "/ DAY"}</span>
+                <strong style={{ fontSize: "36px", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>400.000đ</strong>
+                <span style={{ fontSize: "14px", fontWeight: 700, color: "#71717a" }}>{isVi ? "/ NGÀY" : "/ DAY"}</span>
               </div>
             </div>
 
@@ -273,7 +273,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
 
             {/* What's included (Điền thông tin SEO tối ưu) */}
             <div style={{ flex: 1, marginBottom: "32px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 800, display: "block", marginBottom: "14px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px" }}>
                 {isVi ? "Dịch vụ bao gồm:" : "What's included:"}
               </span>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#3f3f46" }}>
@@ -308,7 +308,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 padding: "14px 20px",
                 backgroundColor: "#111114",
                 color: "#ffffff",
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: "13px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
@@ -342,7 +342,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                   padding: "4px 12px",
                   borderRadius: "3px",
                   fontSize: "11px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                   display: "inline-block",
@@ -353,12 +353,12 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             </div>
 
             <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 800, color: "#71717a", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "#71717a", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
                 {isVi ? "GIÁ CHỈ TỪ" : "FROM"}
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                <strong style={{ fontSize: "36px", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1 }}>1.200.000đ</strong>
-                <span style={{ fontSize: "14px", fontWeight: 800, color: "#71717a" }}>{isVi ? "/ CUỐI TUẦN" : "/ WEEKEND"}</span>
+                <strong style={{ fontSize: "36px", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>1.200.000đ</strong>
+                <span style={{ fontSize: "14px", fontWeight: 700, color: "#71717a" }}>{isVi ? "/ CUỐI TUẦN" : "/ WEEKEND"}</span>
               </div>
             </div>
 
@@ -366,7 +366,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
 
             {/* What's included (Điền thông tin SEO tối ưu) */}
             <div style={{ flex: 1, marginBottom: "32px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 800, display: "block", marginBottom: "14px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px" }}>
                 {isVi ? "Dịch vụ bao gồm:" : "What's included:"}
               </span>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#3f3f46" }}>
@@ -403,7 +403,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 padding: "14px 20px",
                 backgroundColor: "#111114",
                 color: "#ffffff",
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: "13px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
@@ -437,7 +437,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                   padding: "4px 12px",
                   borderRadius: "3px",
                   fontSize: "11px",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                   color: "#ffffff",
@@ -453,7 +453,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 style={{
                   display: "block",
                   fontSize: "26px",
-                  fontWeight: 900,
+                  fontWeight: 700,
                   letterSpacing: "-0.03em",
                   lineHeight: 1.15,
                   textTransform: "uppercase",
@@ -477,7 +477,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
 
             {/* What's included (Điền thông tin SEO tối ưu) */}
             <div style={{ flex: 1, marginBottom: "32px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 800, display: "block", marginBottom: "14px", color: "#e4e4e7" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px", color: "#e4e4e7" }}>
                 {isVi ? "Dịch vụ bao gồm:" : "What's included:"}
               </span>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#a1a1aa" }}>
@@ -512,7 +512,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 padding: "14px 20px",
                 backgroundColor: "#ffffff",
                 color: "#111114",
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: "13px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",

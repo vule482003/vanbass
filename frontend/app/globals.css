@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -38,6 +38,45 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-full: 9999px;
+
+  /* =========================================================
+     VANBASS UNIFIED TYPOGRAPHY DESIGN TOKENS (MANROPE)
+     ========================================================= */
+  --font-primary: var(--font-manrope), 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-montserrat: var(--font-primary);
+  --font-inter: var(--font-primary);
+  --font-newsreader: var(--font-primary);
+
+  /* Font Weights */
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Type Scale */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 15px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 26px;
+  --text-3xl: 32px;
+  --text-4xl: 40px;
+  --text-5xl: 56px;
+
+  /* Line Heights */
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-normal: 1.38;
+  --leading-relaxed: 1.55;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.025em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
 }
 
 *, *::before, *::after {
@@ -79,7 +118,7 @@
 }
 
 html {
-  font-family: var(--font-montserrat), 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-primary);
   scroll-behavior: smooth;
 }
 
@@ -87,25 +126,50 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-montserrat), 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-primary);
+  font-weight: var(--font-regular);
+  line-height: var(--leading-relaxed);
+  letter-spacing: var(--tracking-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography Hierarchy - Elegant Serif for Headings */
+/* Typography Hierarchy - Clean Modern Sans Headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, "Times New Roman", serif;
-  color: var(--foreground);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  font-family: var(--font-primary);
+  color: #ffffff;
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
   margin: 0;
+}
+
+h1 {
+  font-size: clamp(34px, 4.5vw, 56px);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tighter);
+}
+
+h2 {
+  font-size: clamp(24px, 3.2vw, 36px);
+  line-height: 1.18;
+  letter-spacing: var(--tracking-tight);
+}
+
+h3 {
+  font-size: clamp(18px, 2.2vw, 24px);
+  line-height: var(--leading-snug);
+}
+
+h4 {
+  font-size: 18px;
+  line-height: 1.3;
 }
 
 p {
   color: var(--muted);
   font-size: 14.5px;
-  line-height: 1.6;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -135,27 +199,27 @@ button, a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .section-title {
-  font-family: var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, "Times New Roman", serif;
-  font-size: clamp(26px, 3.2vw, 36px);
-  font-weight: 500;
+  font-family: var(--font-primary);
+  font-size: clamp(24px, 3.2vw, 36px);
+  font-weight: var(--font-bold);
   color: #ffffff;
-  letter-spacing: -0.015em;
-  margin: 0 0 6px 0;
-  line-height: 1.25;
+  letter-spacing: var(--tracking-tight);
+  margin: 0 0 8px 0;
+  line-height: 1.18;
 }
 
 .section-subtitle {
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 14.5px;
+  font-weight: var(--font-regular);
   color: var(--muted);
   max-width: 580px;
   line-height: 1.55;
@@ -170,20 +234,22 @@ button, a {
   gap: 8px;
   background-color: #16a34a;
   color: #ffffff;
-  font-weight: 600;
-  font-size: 13.5px;
+  font-family: var(--font-primary);
+  font-weight: var(--font-semibold);
+  font-size: 14px;
   padding: 10px 22px;
   border-radius: 9999px;
   border: none;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
+  letter-spacing: 0;
 }
 
 .vb-btn-primary:hover {
   background-color: #22c55e;
   color: #000000;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(34, 197, 94, 0.35);
 }
@@ -195,14 +261,16 @@ button, a {
   gap: 8px;
   background-color: rgba(255, 255, 255, 0.06);
   color: #ffffff;
-  font-weight: 600;
-  font-size: 13.5px;
+  font-family: var(--font-primary);
+  font-weight: var(--font-semibold);
+  font-size: 14px;
   padding: 10px 22px;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  letter-spacing: 0;
 }
 
 .vb-btn-secondary:hover {
@@ -405,23 +473,22 @@ button, a {
 .desktop-nav .nav-link-item {
   position: relative;
   z-index: 2;
-  color: #f4f4f5;
-  font-size: 12.5px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: all 0.2s ease;
+  color: #e4e4e7;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0;
+  text-transform: none;
+  transition: color 0.18s ease;
   white-space: nowrap;
   padding: 6px 14px;
   border-radius: 9999px;
   text-decoration: none;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
 }
 
 .desktop-nav .nav-link-item:hover,
 .desktop-nav .nav-link-item.active {
   color: #ffffff;
-  text-shadow: 0 0 12px rgba(34, 197, 94, 0.8), 0 1px 4px rgba(0, 0, 0, 0.9);
 }
 
 .nav-sliding-indicator {
@@ -3618,10 +3685,11 @@ button, a {
 }
 
 .vb-product-title {
-  font-size: 13.5px;
-  font-weight: 700;
-  line-height: 1.4;
-  height: 38px;
+  font-family: var(--font-primary);
+  font-size: 15.5px;
+  font-weight: var(--font-semibold);
+  line-height: 1.35;
+  height: 42px;
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -3630,7 +3698,8 @@ button, a {
   color: #f4f4f5;
   text-decoration: none;
   transition: color 0.18s ease;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  letter-spacing: -0.005em;
 }
 
 .vb-product-title:hover {
@@ -3641,7 +3710,7 @@ button, a {
 .vb-card-body-bottom {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-top: auto;
 }
 
@@ -3653,87 +3722,94 @@ button, a {
 .vb-price-block {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   width: 100%;
 }
 
 .vb-price-primary {
-  font-size: 16.5px;
-  font-weight: 900;
+  font-family: var(--font-primary);
+  font-size: 21px;
+  font-weight: var(--font-bold);
   color: #ffffff;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
 .vb-currency-sup {
-  font-size: 12px;
-  font-weight: 700;
-  margin-left: 1px;
-  top: -0.3em;
+  font-size: 13px;
+  font-weight: var(--font-semibold);
+  margin-left: 1.5px;
+  top: -0.25em;
 }
 
 .vb-card-old-price-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .vb-card-old-price {
-  font-size: 11px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: var(--font-regular);
   color: #71717a;
   text-decoration: line-through;
+  line-height: 1.2;
 }
 
 .vb-card-discount-pill {
-  background: #f97316;
+  background: #ef4444;
   color: #ffffff;
-  font-size: 9.5px;
-  font-weight: 800;
-  padding: 1px 5px;
+  font-size: 11px;
+  font-weight: var(--font-bold);
+  padding: 1px 6px;
   border-radius: 4px;
+  letter-spacing: 0.02em;
 }
 
 .vb-card-gift-note {
-  font-size: 11px;
-  font-weight: 700;
-  color: #fbbf24;
-  line-height: 1.35;
+  font-size: 12.5px;
+  font-weight: var(--font-medium);
+  color: #f59e0b;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-  min-height: 28px;
+  min-height: 35px;
 }
 
 .vb-card-rating-sold-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10.5px;
-  color: #94a3b8;
+  font-size: 12px;
+  color: #a1a1aa;
+  font-weight: var(--font-regular);
 }
 
 .vb-rating-score {
   color: #f97316;
-  font-weight: 700;
+  font-weight: var(--font-semibold);
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
 }
 
 .vb-star-icon {
   color: #f59e0b;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .vb-rating-sep {
-  color: #475569;
+  color: #3f3f46;
 }
 
 .vb-sold-count {
-  color: #94a3b8;
-  font-weight: 600;
+  color: #a1a1aa;
+  font-weight: var(--font-medium);
 }
 
 .vb-price-primary.rental {
@@ -3744,36 +3820,38 @@ button, a {
 }
 
 .vb-price-primary.rental-alt {
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: #22c55e;
+  font-weight: var(--font-semibold);
 }
 
 .vb-price-unit {
-  font-size: 12px;
+  font-size: 13px;
   color: #a1a1aa;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 .vb-currency-sym {
   color: #22c55e;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: var(--font-bold);
   margin-right: 2px;
 }
 
 .vb-price-contact {
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: var(--font-bold);
   color: #22c55e;
 }
 
 /* Built-in Single CTA Button */
 .vb-card-cta-btn {
   width: 100%;
-  height: 38px;
+  height: 40px;
   border-radius: 8px;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: var(--font-semibold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3781,6 +3859,7 @@ button, a {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
+  letter-spacing: 0;
 }
 
 .vb-card-cta-btn span {
@@ -3889,73 +3968,73 @@ button, a {
   }
 
   .vb-product-title {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.35;
-    height: 33px;
+    height: 38px;
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
 
   .vb-card-body-bottom {
-    gap: 4px;
+    gap: 6px;
   }
 
   .vb-price-primary {
-    font-size: 14px;
-    font-weight: 900;
+    font-size: 18px;
+    font-weight: 700;
   }
 
   .vb-currency-sup {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .vb-card-old-price {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .vb-card-discount-pill {
-    font-size: 8.5px;
-    padding: 1px 4px;
+    font-size: 10px;
+    padding: 1px 5px;
   }
 
   .vb-card-gift-note {
-    font-size: 9.5px;
-    line-height: 1.3;
-    min-height: 24px;
+    font-size: 11px;
+    line-height: 1.35;
+    min-height: 28px;
   }
 
   .vb-card-rating-sold-row {
-    font-size: 9.5px;
-    gap: 4px;
+    font-size: 11px;
+    gap: 5px;
   }
 
   .vb-star-icon {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .vb-price-primary.rental-alt {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .vb-price-contact {
-    font-size: 11.5px;
+    font-size: 13px;
   }
 
   .vb-currency-sym {
-    font-size: 10.5px;
+    font-size: 12px;
   }
 
   .vb-price-unit {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .vb-card-cta-btn {
-    height: 32px;
-    font-size: 11px;
-    font-weight: 700;
+    height: 36px;
+    font-size: 13px;
+    font-weight: 600;
     border-radius: 6px;
-    gap: 4px;
-    padding: 0 6px;
+    gap: 5px;
+    padding: 0 8px;
   }
 
   .vb-card-cta-btn svg {

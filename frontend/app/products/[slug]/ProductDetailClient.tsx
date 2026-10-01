@@ -847,9 +847,9 @@ export default function ProductDetailClient({
 
       {/* Scoped Styling for Product Detail Page */}
       <style jsx>{`
-        /* Scope Inter font strictly to Product Detail page root */
+        /* Scope Manrope font strictly to Product Detail page root */
         :global(.product-detail-page-root) {
-          font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+          font-family: var(--font-primary) !important;
         }
 
         /* Breadcrumb */
@@ -859,9 +859,9 @@ export default function ProductDetailClient({
           flex-wrap: wrap;
           gap: 8px;
           margin-bottom: 22px;
-          font-size: 13px;
+          font-size: 13.5px;
           color: #71717a;
-          font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          font-family: var(--font-primary);
         }
 
         .pdetail-bc-link {
@@ -940,13 +940,13 @@ export default function ProductDetailClient({
 
         /* Product Title (H1) */
         .pdetail-title {
-          font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-          font-size: 24px;
+          font-family: var(--font-primary) !important;
+          font-size: clamp(22px, 2.5vw, 28px);
           font-weight: 700;
-          line-height: 1.35;
+          line-height: 1.25;
           color: #ffffff;
           margin: 0 0 10px 0;
-          letter-spacing: -0.01em;
+          letter-spacing: -0.015em;
         }
 
         /* Rating Row */
@@ -976,7 +976,7 @@ export default function ProductDetailClient({
 
         /* Short Description */
         .pdetail-short-desc {
-          font-size: 13.5px;
+          font-size: 14px;
           font-weight: 400;
           color: #a1a1aa;
           line-height: 1.6;
@@ -995,8 +995,8 @@ export default function ProductDetailClient({
         }
 
         .pdetail-sale-price {
-          font-size: 28px;
-          font-weight: 800;
+          font-size: clamp(26px, 3vw, 32px);
+          font-weight: 700;
           color: #ffffff;
           letter-spacing: -0.02em;
           font-variant-numeric: tabular-nums;
@@ -1013,7 +1013,7 @@ export default function ProductDetailClient({
         }
 
         .pdetail-old-price {
-          font-size: 13.5px;
+          font-size: 14px;
           font-weight: 400;
           color: #71717a;
           text-decoration: line-through;
