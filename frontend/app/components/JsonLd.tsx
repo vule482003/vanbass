@@ -50,15 +50,15 @@ export default function JsonLd() {
         ],
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Đà Nẵng & Huế",
+          "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê (Đà Nẵng) & 442 Chi Lăng (TP Huế)",
           "addressLocality": "Đà Nẵng",
           "addressRegion": "Miền Trung",
           "addressCountry": "VN",
         },
         "geo": {
           "@type": "GeoCoordinates",
-          "latitude": "16.054407",
-          "longitude": "108.202167",
+          "latitude": "16.0714",
+          "longitude": "108.1882",
         },
         "openingHoursSpecification": [
           {

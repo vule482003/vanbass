@@ -19,7 +19,52 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/rental",
-        destination: "/products?mode=rental",
+        destination: "/thue-ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/mua-ban-dj",
+        destination: "/ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/mua-ban-ban-dj",
+        destination: "/ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/ban-dj-da-nang",
+        destination: "/ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/mua-ban-dj-da-nang",
+        destination: "/ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/thue-dj",
+        destination: "/thue-ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/thue-dj-da-nang",
+        destination: "/thue-ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/sua-ban-dj",
+        destination: "/sua-chua-ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/sua-ban-dj-da-nang",
+        destination: "/sua-chua-ban-dj",
+        permanent: true,
+      },
+      {
+        source: "/sua-chua-ban-dj-da-nang",
+        destination: "/sua-chua-ban-dj",
         permanent: true,
       },
       // 301 Permanent Redirects for alias slugs to canonical hot model URLs (Bing & Google Best Practice)
