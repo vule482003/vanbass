@@ -23,6 +23,26 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/en",
+        destination: "/dj-equipment-rental-danang",
+        permanent: true,
+      },
+      {
+        source: "/en/rental",
+        destination: "/dj-equipment-rental-danang",
+        permanent: true,
+      },
+      {
+        source: "/dj-rental-danang",
+        destination: "/dj-equipment-rental-danang",
+        permanent: true,
+      },
+      {
+        source: "/rent-dj-da-nang",
+        destination: "/dj-equipment-rental-danang",
+        permanent: true,
+      },
+      {
         source: "/mua-ban-dj",
         destination: "/ban-dj",
         permanent: true,
