@@ -32,11 +32,19 @@ export async function fetchCategories(): Promise<Category[]> {
     const res = await fetch(`${baseUrl}/categories`, {
       next: { revalidate: 60 },
     });
-    if (!res.ok) throw new Error("Failed to fetch categories");
+    if (!res.ok) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(`[Data Architecture] /api/categories returned HTTP ${res.status}, falling back to MOCK_CATEGORIES`);
+      }
+      return MOCK_CATEGORIES;
+    }
     const data = await res.json();
-    if (Array.isArray(data) && data.length > 0) return data;
+    if (Array.isArray(data)) return data;
     return MOCK_CATEGORIES;
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[Data Architecture] Failed to fetch categories from backend, falling back to MOCK_CATEGORIES:", error);
+    }
     return MOCK_CATEGORIES;
   }
 }
@@ -58,11 +66,19 @@ export async function fetchProducts(params?: {
     const res = await fetch(url, {
       next: { revalidate: 30 },
     });
-    if (!res.ok) throw new Error("Failed to fetch products");
+    if (!res.ok) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(`[Data Architecture] /api/products returned HTTP ${res.status}, falling back to MOCK_PRODUCTS`);
+      }
+      return filterMockProducts(params);
+    }
     const data = await res.json();
-    if (Array.isArray(data) && data.length > 0) return data;
+    if (Array.isArray(data)) return data;
     return filterMockProducts(params);
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[Data Architecture] Failed to fetch products from backend, falling back to MOCK_PRODUCTS:", error);
+    }
     return filterMockProducts(params);
   }
 }
