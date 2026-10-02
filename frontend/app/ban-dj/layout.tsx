@@ -3,42 +3,32 @@ import type { Metadata } from "next";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Bàn DJ Chính Hãng Giá Tốt Nhất 2026 | Mua Bán & Cho Thuê Uy Tín - VanBass",
+  title: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta - VanMusic",
   description:
-    "Tổng kho bàn DJ chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng, Huế & Toàn quốc: Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, XDJ-RX2, XDJ-RR, CDJ-3000. Cam kết 100% chính hãng, bảo hành 12-24 tháng, hỗ trợ trả góp 0%, quà tặng USB nhạc Rekordbox, test máy trực tiếp tại Showroom Đà Nẵng (Nguyễn Tất Thành) & Huế (442 Chi Lăng). Hotline: 0706.067.799.",
+    "Đại lý phân phối bàn DJ Pioneer DJ, AlphaTheta chính hãng tại Đà Nẵng & Miền Trung: Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2, XDJ-RX2. Máy mới 100% fullbox & like new 99%, bảo hành 12-24T, trả góp 0%, test máy tại showroom.",
   keywords: [
-    // Core Seed & Trust Keywords
+    // Core Commercial Keywords
     "bàn dj",
     "ban dj",
     "bàn dj chính hãng",
     "ban dj chinh hang",
-    "mua bàn dj",
-    "mua ban dj",
-    "bán bàn dj",
-    "ban ban dj",
-    "mua bán bàn dj",
-    "mua ban ban dj",
-    "mua bàn dj uy tín",
-    "mua ban dj uy tin",
-    "mua bàn dj ở đâu uy tín",
-    "mua ban dj o dau uy tin",
-    "mua bàn dj ở đâu đà nẵng",
-    "mua ban dj o dau da nang",
-    "địa chỉ mua bàn dj uy tín",
-    "shop bán bàn dj uy tín",
-    "cửa hàng bán bàn dj",
-    "giá bàn dj",
-    "gia ban dj",
-    "bàn dj giá rẻ",
-    "ban dj gia re",
-    "bàn dj cho người mới bắt đầu",
     "bàn dj đà nẵng",
     "ban dj da nang",
-    "bàn dj huế",
-    "ban dj hue",
-    "bàn dj miền trung",
+    "mua bàn dj",
+    "mua ban dj",
+    "mua bàn dj đà nẵng",
+    "mua ban dj da nang",
+    "bán bàn dj đà nẵng",
+    "ban ban dj da nang",
     "bàn dj pioneer",
     "bàn dj alphatheta",
+    "bàn dj pioneer đà nẵng",
+    "bàn dj alphatheta đà nẵng",
+    "mua bàn dj pioneer",
+    "cửa hàng bán bàn dj đà nẵng",
+    "địa chỉ mua bàn dj đà nẵng",
+    "giá bàn dj",
+    "bàn dj cho người mới",
     "dj controller",
     "bàn dj all in one",
     // Hot Search Models
@@ -58,19 +48,16 @@ export const metadata: Metadata = {
     "xdj rr",
     "XDJ XZ",
     "xdj xz",
-    "thuê bàn dj",
-    "thue ban dj",
-    "sửa bàn dj",
     "vanbass music center",
-    "vanbass",
+    "vanmusic",
   ],
   alternates: {
     canonical: "/ban-dj",
   },
   openGraph: {
-    title: "Bàn DJ Chính Hãng Giá Tốt Nhất 2026 | Mua Bán & Cho Thuê Uy Tín - VanBass",
+    title: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta - VanMusic",
     description:
-      "Tổng kho phân phối bàn DJ chính hãng Pioneer DJ, AlphaTheta. Máy mới 100% đập hộp & like new 99%, bảo hành 12-24T, hỗ trợ trả góp 0%, quà tặng USB nhạc, test máy trực tiếp tại Showroom Đà Nẵng & Huế.",
+      "Tổng kho phân phối bàn DJ Pioneer DJ, AlphaTheta chính hãng tại Đà Nẵng: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ. Bảo hành 12-24T, hỗ trợ trả góp 0%, trải nghiệm trực tiếp tại Showroom Đà Nẵng & Huế.",
     url: `${siteUrl}/ban-dj`,
     type: "website",
     images: [
@@ -78,7 +65,7 @@ export const metadata: Metadata = {
         url: "/images/rental/rental_fleet_hero.jpg",
         width: 1200,
         height: 630,
-        alt: "Bàn DJ Chính Hãng Giá Tốt Nhất - VanBass Music Center",
+        alt: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng - VanMusic",
       },
     ],
   },
@@ -86,24 +73,24 @@ export const metadata: Metadata = {
 
 const banDjFaqs = [
   {
-    q: "Mua bàn DJ ở đâu uy tín, chính hãng và đảm bảo quyền lợi bảo hành?",
-    a: "VanBass Music Center là trung tâm phân phối thiết bị DJ chính hãng Pioneer DJ, AlphaTheta uy tín số 1 tại Đà Nẵng (Nguyễn Tất Thành, Thanh Khê) và TP Huế (442 Chi Lăng). 100% sản phẩm có hóa đơn chứng từ, bảo hành 12 - 24 tháng chính hãng, hỗ trợ kỹ thuật và bảo dưỡng linh kiện trọn đời.",
+    q: "Mua bàn DJ ở đâu uy tín, chính hãng tại Đà Nẵng và Miền Trung?",
+    a: "VanMusic (VanBass Music Center) là trung tâm phân phối thiết bị DJ chính hãng Pioneer DJ và AlphaTheta uy tín tại Đà Nẵng (Showroom: Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê) và TP Huế (442 Chi Lăng). 100% thiết bị có tem bảo hành chính hãng từ 12 - 24 tháng, hỗ trợ kỹ thuật trọn đời và linh kiện thay thế chuẩn.",
   },
   {
-    q: "Người mới bắt đầu học DJ nên mua bàn DJ nào tốt và dễ sử dụng nhất?",
-    a: "Với người mới bắt đầu, mẫu Pioneer DDJ-FLX4 (hoặc AlphaTheta DDJ-FLX2) là sự lựa chọn số 1 thế giới. Thiết bị có mức giá phải chăng (từ 6 - 11 triệu), kết nối mượt mà với laptop, điện thoại qua Rekordbox/Serato DJ, tích hợp tính năng Smart Fader và Smart CFX hỗ trợ chuyển bài chuyên nghiệp.",
+    q: "Người mới bắt đầu tập chơi DJ nên chọn mua dòng máy nào phù hợp?",
+    a: "Với người mới bắt đầu hoặc tập luyện tại nhà, phân khúc DJ Controller 2 kênh như Pioneer DDJ-FLX4 hoặc AlphaTheta DDJ-FLX2 là lựa chọn tối ưu nhất. Máy kết nối trực tiếp với Laptop, Smartphone hoặc iPad qua phần mềm Rekordbox / Serato DJ, có tính năng Smart Fader và Smart CFX hỗ trợ chuyển bài mượt mà.",
   },
   {
-    q: "Bàn DJ All-In-One có ưu điểm gì so với bàn DJ Controller kết nối máy tính?",
-    a: "Bàn DJ All-In-One (như Pioneer XDJ-RX3, AlphaTheta Omnis-Duo, XDJ-AZ) tích hợp sẵn màn hình cảm ứng độ nét cao và bộ xử lý độc lập. DJ chỉ cần cắm USB là biểu diễn trực tiếp mà không cần dùng đến laptop, tránh hoàn toàn rủi ro giật lag hay treo máy khi đang chơi nhạc tại sự kiện.",
+    q: "Bàn DJ All-In-One độc lập có điểm gì khác biệt so với DJ Controller?",
+    a: "Bàn DJ All-In-One (như Pioneer XDJ-RX3, AlphaTheta Omnis-Duo, XDJ-AZ, XDJ-XZ) tích hợp sẵn màn hình cảm ứng hiển thị sóng nhạc và bộ vi xử lý độc lập. Người chơi chỉ cần cắm USB đã phân tích nhạc qua Rekordbox là biểu diễn trực tiếp mà không cần dùng đến máy tính laptop.",
   },
   {
-    q: "VanBass có hỗ trợ mua bàn DJ trả góp 0% và quà tặng kèm khi mua máy không?",
-    a: "Có. VanBass hỗ trợ chương trình trả góp 0% qua thẻ tín dụng hơn 25 ngân hàng trên toàn quốc. Khi mua máy, quý khách được tặng kèm: USB Sandisk nạp sẵn kho nhạc Lossless phân tích qua Rekordbox, dây cáp âm thanh chuyên nghiệp, tai nghe kiểm âm và khóa đào tạo kỹ thuật 1-kèm-1.",
+    q: "VanMusic có chính sách trả góp 0% và hỗ trợ kỹ thuật khi mua máy không?",
+    a: "Có. VanMusic hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng liên kết hơn 25 ngân hàng trên toàn quốc. Khi mua bàn DJ, quý khách được hỗ trợ cài đặt phần mềm, tặng kèm kho nhạc tuyển chọn và khóa hướng dẫn vận hành kỹ thuật cơ bản 1-kèm-1.",
   },
   {
-    q: "Khách hàng có được cắm USB test thử máy trực tiếp tại Showroom trước khi mua không?",
-    a: "Có! VanBass kính mời quý khách ghé trực tiếp Showroom tại Đà Nẵng (đường Nguyễn Tất Thành) hoặc TP Huế (442 Chi Lăng) để trải nghiệm thực tế cảm giác mâm xoay, fader và chất lượng âm thanh trên dàn loa biểu diễn chuyên nghiệp trước khi mua.",
+    q: "Tôi có thể ghé showroom tại Đà Nẵng để trải nghiệm và test máy trước khi mua không?",
+    a: "Hoàn toàn được. Quý khách có thể ghé trực tiếp Showroom VanMusic tại Nguyễn Tất Thành, Thanh Khê, Đà Nẵng để cắm USB trải nghiệm cảm giác mâm jogwheel, fader và âm thanh thực tế trước khi quyết định mua hàng.",
   },
 ];
 
@@ -116,9 +103,20 @@ export default function BanDjLayout({
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "CollectionPage",
+        "@id": `${siteUrl}/ban-dj#webpage`,
+        "url": `${siteUrl}/ban-dj`,
+        "name": "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta",
+        "description":
+          "Danh mục bàn DJ chính hãng Pioneer DJ & AlphaTheta tại Đà Nẵng. Đầy đủ DJ Controller, All-In-One XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ.",
+        "breadcrumb": {
+          "@id": `${siteUrl}/ban-dj#breadcrumb`,
+        },
+      },
+      {
         "@type": ["Store", "LocalBusiness"],
         "@id": `${siteUrl}/ban-dj#store`,
-        "name": "VanBass Music Center - Tổng Kho Bàn DJ Chính Hãng Uy Tín",
+        "name": "VanMusic - Tổng Kho Bàn DJ Chính Hãng Đà Nẵng",
         "url": `${siteUrl}/ban-dj`,
         "telephone": "+84706067799",
         "priceRange": "5.000.000đ - 105.000.000đ",
@@ -135,7 +133,7 @@ export default function BanDjLayout({
           "longitude": "108.1882",
         },
         "description":
-          "Tổng kho phân phối và bán lẻ bàn DJ chính hãng Pioneer DJ, AlphaTheta tại Việt Nam: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, XDJ-RX2, CDJ-3000.",
+          "Showroom phân phối và bán lẻ bàn DJ chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng & Miền Trung: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, XDJ-RX2.",
       },
       {
         "@type": "FAQPage",
