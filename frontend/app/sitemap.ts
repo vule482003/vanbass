@@ -1,11 +1,12 @@
 import { MetadataRoute } from "next";
-import { MOCK_PRODUCTS } from "./lib/mock-data";
+import { fetchProducts } from "./lib/api";
+import { PRODUCT_SLUG_ALIASES } from "./products/[slug]/page";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn").replace(/\/+$/, "");
   const now = new Date();
 
-  // Static routes
+  // 1. Static Core & Hub Routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
@@ -50,15 +51,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/cart`,
+      url: `${baseUrl}/faq`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/policies`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
   ];
 
   // Hot Search Priority Models (Top DJ Gear for Sales & Rental)
-  const hotSearchSlugs = [
+  const hotSearchSlugs = new Set([
     "xdj-rx3",
     "xdj-rx2",
     "xdj-rr",
@@ -68,34 +75,57 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "xdj-az",
     "xdj-an",
     "xdj-xz",
-  ];
-
-  const hotModelRoutes: MetadataRoute.Sitemap = hotSearchSlugs.map((slug) => ({
-    url: `${baseUrl}/products/${slug}`,
-    lastModified: now,
-    changeFrequency: "daily",
-    priority: 1.0,
-  }));
-
-  // Dynamic product routes (excluding duplicates and alias slugs from hotSearchSlugs)
-  const excludedFromDynamic = new Set([
-    ...hotSearchSlugs,
-    "alphatheta-ddj-flx2",
-    "ban-dj-alpha-theta-omnis-duo",
-    "ban-dj-alphatheta-xdj-az",
-    "alphatheta-xdj-an",
-    "ddj-flx4-w",
-    "xdj-xz-n",
   ]);
 
-  const productRoutes: MetadataRoute.Sitemap = MOCK_PRODUCTS.filter(
-    (product) => !excludedFromDynamic.has(product.slug)
-  ).map((product) => ({
-    url: `${baseUrl}/products/${product.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  // Track URLs to strictly prevent any duplication and redirect URLs
+  const seenUrls = new Set<string>();
+  const sitemapEntries: MetadataRoute.Sitemap = [];
 
-  return [...staticRoutes, ...hotModelRoutes, ...productRoutes];
+  for (const route of staticRoutes) {
+    if (!seenUrls.has(route.url)) {
+      seenUrls.add(route.url);
+      sitemapEntries.push(route);
+    }
+  }
+
+  // 2. Fetch Real Product Data from Backend / PostgreSQL (with graceful fallback)
+  try {
+    const products = await fetchProducts();
+
+    if (Array.isArray(products)) {
+      for (const product of products) {
+        // Exclude inactive products
+        if (product.is_active === false) continue;
+
+        const rawSlug = product.slug?.trim();
+        if (!rawSlug) continue;
+
+        // Resolve to final Canonical Slug (strips legacy aliases & redirects like ban-dj-alphatheta-xdj-az -> xdj-az)
+        const normalizedSlug = rawSlug.toLowerCase();
+        const canonicalSlug = PRODUCT_SLUG_ALIASES[normalizedSlug] || normalizedSlug;
+
+        // Ensure slug is clean and URL-safe
+        const cleanSlug = encodeURI(canonicalSlug);
+        const productUrl = `${baseUrl}/products/${cleanSlug}`;
+
+        if (!seenUrls.has(productUrl)) {
+          seenUrls.add(productUrl);
+
+          const isHot = hotSearchSlugs.has(canonicalSlug);
+          sitemapEntries.push({
+            url: productUrl,
+            lastModified: now,
+            changeFrequency: isHot ? "daily" : "weekly",
+            priority: isHot ? 1.0 : 0.8,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error("[Sitemap Generation] Error fetching products for sitemap:", error);
+  }
+
+  return sitemapEntries;
 }
+
+

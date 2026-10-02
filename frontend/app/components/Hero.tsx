@@ -257,8 +257,10 @@ export default function Hero({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={centerBg}
-              alt="Hệ thống âm thanh & Cho thuê DJ"
+              alt="Hệ thống âm thanh & Cho thuê bàn DJ chuyên nghiệp"
               className="triptych-bg"
+              loading="eager"
+              fetchPriority="high"
               style={{
                 position: "absolute",
                 top: 0,
@@ -313,7 +315,7 @@ export default function Hero({
               <div className="triptych-tag" data-cms-key="hero_center.badge" data-cms-label="Huy Hiệu Banner Chính" data-cms-type="text">
                 {centerBadge}
               </div>
-              <h2 className="triptych-title" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h2>
+              <h1 className="triptych-title" data-cms-key="hero_center.headline" data-cms-label="Tiêu Đề Banner Chính" data-cms-type="text">{centerHeadline}</h1>
               <p className="triptych-desc" data-cms-key="hero_center.desc" data-cms-label="Mô Tả Banner Chính" data-cms-type="textarea">{centerDesc}</p>
 
               <Link

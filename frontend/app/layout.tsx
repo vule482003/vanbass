@@ -26,11 +26,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "VanBass Music Center | Mua Bán, Cho Thuê & Sửa Chữa Bàn DJ, Loa B&C Speakers tại Đà Nẵng, Huế & Miền Trung",
+    default: "VanBass Music Center | Mua Bán & Cho Thuê Bàn DJ Chính Hãng",
     template: "%s | VanBass Music Center",
   },
   description:
-    "Trung tâm phân phối, cho thuê & sửa chữa bàn DJ chuyên nghiệp, loa biểu diễn B&C Speakers chính hãng tại Đà Nẵng, Thừa Thiên Huế, Hội An & Toàn Miền Trung (Pioneer DJ XDJ-RX3, DDJ-FLX4, AlphaTheta Omnis-Duo, XDJ-AZ). Sửa chữa, thay linh kiện fader/jogwheel, bảo dưỡng lấy liền, giao máy và kỹ thuật setup 24/7.",
+    "Tổng đại lý phân phối, cho thuê & sửa chữa bàn DJ Pioneer DJ, AlphaTheta, loa B&C Speakers chính hãng tại Đà Nẵng & Miền Trung. Bảo hành 12-24T, giao 24/7.",
   keywords: [
     // Hot Search Models
     "XDJ RX3",

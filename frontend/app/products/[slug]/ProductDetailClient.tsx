@@ -12,7 +12,7 @@ import { MOCK_PRODUCTS } from "../../lib/mock-data";
 import { useCart } from "../../lib/cart-context";
 import { useAuth } from "../../lib/auth-context";
 import { Product } from "../../lib/types";
-import { fetchStoreSettings, getMessengerRentalUrl } from "../../lib/api";
+import { fetchStoreSettings, getMessengerRentalUrl, getApiBaseUrl } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
 import {
   getTranslatedProductName,
@@ -40,6 +40,7 @@ export default function ProductDetailClient({
   initialProduct,
   slug,
   faqs = [],
+  modelKey,
 }: ProductDetailClientProps) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
@@ -70,7 +71,7 @@ export default function ProductDetailClient({
   useEffect(() => {
     const fetchLiveProduct = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const apiUrl = getApiBaseUrl();
         const cacheBust = `_t=${Date.now()}`;
         const targetSlug =
           slug.toLowerCase() === "xdj-az"
@@ -135,9 +136,77 @@ export default function ProductDetailClient({
     );
   }
 
-  const relatedProducts = allProducts
-    .filter((p) => p.category_id === product.category_id && p.id !== product.id)
-    .slice(0, 4);
+  // Deterministic, contextual related products algorithm for balanced link graph distribution
+  const relatedProducts = (() => {
+    if (!allProducts || allProducts.length <= 1) return [];
+
+    const rawKey = product.slug || product.id || "";
+    let seed = 0;
+    for (let i = 0; i < rawKey.length; i++) {
+      seed = (seed * 31 + rawKey.charCodeAt(i)) & 0xffffffff;
+    }
+    seed = Math.abs(seed);
+
+    // Bucket 1: Same Category & Same Brand (Highest Relevance)
+    const b1 = allProducts.filter(
+      (p) =>
+        p.category_id === product.category_id &&
+        p.brand === product.brand &&
+        p.id !== product.id &&
+        p.slug !== product.slug
+    );
+
+    // Bucket 2: Same Category & Different Brand
+    const b2 = allProducts.filter(
+      (p) =>
+        p.category_id === product.category_id &&
+        p.brand !== product.brand &&
+        p.id !== product.id &&
+        p.slug !== product.slug
+    );
+
+    // Bucket 3: Different Category & Same Brand
+    const b3 = allProducts.filter(
+      (p) =>
+        p.brand === product.brand &&
+        p.category_id !== product.category_id &&
+        p.id !== product.id &&
+        p.slug !== product.slug
+    );
+
+    // Bucket 4: Global Pool Fallback
+    const b4 = allProducts.filter((p) => p.id !== product.id && p.slug !== product.slug);
+
+    const rotate = (arr: Product[], s: number) => {
+      if (!arr.length) return [];
+      const offset = s % arr.length;
+      return [...arr.slice(offset), ...arr.slice(0, offset)];
+    };
+
+    const candidatePool = [
+      ...rotate(b1, seed),
+      ...rotate(b2, seed),
+      ...rotate(b3, seed),
+      ...rotate(b4, seed),
+    ];
+
+    const seenIds = new Set<string>();
+    const seenSlugs = new Set<string>();
+    const results: Product[] = [];
+
+    for (const p of candidatePool) {
+      if (!p.id || !p.slug) continue;
+      if (seenIds.has(p.id) || seenSlugs.has(p.slug)) continue;
+
+      seenIds.add(p.id);
+      seenSlugs.add(p.slug);
+      results.push(p);
+
+      if (results.length >= 4) break;
+    }
+
+    return results;
+  })();
 
   const displayName = getTranslatedProductName(product, lang);
   const displayDesc = getTranslatedProductDesc(product, lang);
@@ -181,7 +250,18 @@ export default function ProductDetailClient({
             <span className="pdetail-bc-sep">/</span>
             <Link href="/products" className="pdetail-bc-link">{t.productDetail.breadcrumbProducts}</Link>
             <span className="pdetail-bc-sep">/</span>
-            <span className="pdetail-bc-category">{product.brand ? `Bàn DJ ${product.brand}` : "Bàn DJ"}</span>
+            <Link
+              href={
+                product.category_slug
+                  ? `/products?category=${product.category_slug}`
+                  : product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
+                  ? "/ban-dj"
+                  : "/products"
+              }
+              className="pdetail-bc-link"
+            >
+              {product.category_name || (product.brand ? `Bàn DJ ${product.brand}` : "Bàn DJ")}
+            </Link>
             <span className="pdetail-bc-sep">/</span>
             <span className="pdetail-bc-current">{displayName}</span>
           </nav>
@@ -230,32 +310,47 @@ export default function ProductDetailClient({
                         <tbody>
                           <tr>
                             <td className="spec-name-col">Model</td>
-                            <td className="spec-value-col">{product.sku || "XDJ-RX3"}</td>
+                            <td className="spec-value-col">{product.sku || product.name}</td>
                           </tr>
                           <tr>
                             <td className="spec-name-col">Thương hiệu</td>
-                            <td className="spec-value-col">{product.brand || "Pioneer DJ"}</td>
+                            <td className="spec-value-col">{product.brand || "Chính Hãng"}</td>
                           </tr>
                           <tr>
-                            <td className="spec-name-col">Xuất xứ</td>
-                            <td className="spec-value-col">{product.specifications?.["Xuất xứ"] || "Nhật Bản"}</td>
+                            <td className="spec-name-col">Loại sản phẩm</td>
+                            <td className="spec-value-col">
+                              <Link
+                                href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
+                                style={{ color: "#38bdf8", textDecoration: "none" }}
+                              >
+                                {product.category_name || "Thiết bị âm thanh & DJ"}
+                              </Link>
+                            </td>
                           </tr>
-                          <tr>
-                            <td className="spec-name-col">Bảo hành</td>
-                            <td className="spec-value-col">{product.specifications?.["Bảo hành"] || "Chính hãng 12 tháng"}</td>
-                          </tr>
+                          {product.specifications?.["Bảo hành"] && (
+                            <tr>
+                              <td className="spec-name-col">Bảo hành</td>
+                              <td className="spec-value-col">{product.specifications["Bảo hành"]}</td>
+                            </tr>
+                          )}
+                          {product.specifications?.["Xuất xứ"] && (
+                            <tr>
+                              <td className="spec-name-col">Xuất xứ</td>
+                              <td className="spec-value-col">{product.specifications["Xuất xứ"]}</td>
+                            </tr>
+                          )}
                           <tr>
                             <td className="spec-name-col">Tình trạng</td>
                             <td className="spec-value-col">{product.specifications?.["Tình trạng"] || "Mới 100%"}</td>
                           </tr>
-                          <tr>
-                            <td className="spec-name-col">Loại sản phẩm</td>
-                            <td className="spec-value-col">Bàn DJ all-in-one</td>
-                          </tr>
-                          <tr>
-                            <td className="spec-name-col">Hỗ trợ phần mềm</td>
-                            <td className="spec-value-col">{product.specifications?.["Hỗ trợ phần mềm"] || "Rekordbox, Serato DJ"}</td>
-                          </tr>
+                          {(product.specifications?.["Hỗ trợ phần mềm"] ||
+                            product.category_slug?.includes("dj") ||
+                            product.category_name?.toLowerCase().includes("dj")) && (
+                            <tr>
+                              <td className="spec-name-col">Hỗ trợ phần mềm</td>
+                              <td className="spec-value-col">{product.specifications?.["Hỗ trợ phần mềm"] || "Rekordbox, Serato DJ"}</td>
+                            </tr>
+                          )}
                           {product.specifications &&
                             Object.entries(product.specifications)
                               .filter(([key]) => !["Thương hiệu", "Model", "Xuất xứ", "Bảo hành", "Tình trạng", "Hỗ trợ phần mềm"].includes(key))
@@ -274,7 +369,7 @@ export default function ProductDetailClient({
                 {/* Tab: Description */}
                 {activeTab === "desc" && (
                   <div className="pdetail-tab-panel">
-                    {displayDesc ? (
+                    {displayDesc && displayDesc.length > 120 ? (
                       hasHtmlDesc ? (
                         <div
                           className="product-rich-desc"
@@ -286,9 +381,68 @@ export default function ProductDetailClient({
                         </div>
                       )
                     ) : (
-                      <p style={{ color: "#71717a", fontStyle: "italic", margin: 0 }}>
-                        {lang === "en" ? "No detailed description available." : "Chưa có mô tả chi tiết cho sản phẩm này."}
-                      </p>
+                      <div className="product-rich-desc">
+                        {displayDesc && <p style={{ marginBottom: "16px", color: "#e4e4e7", lineHeight: 1.6 }}>{displayDesc}</p>}
+                        <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "14px" }}>
+                          <div>
+                            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+                              {lang === "en" ? "Product Overview" : "Tổng Quan Sản Phẩm"}
+                            </h3>
+                            <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                              {lang === "en"
+                                ? `${displayName} is an authentic audio & stage equipment in the ${product.category_name || "Professional Audio"} category, manufactured by ${product.brand || "genuine brands"}. Product identifier (SKU/Model): ${product.sku || product.name}.`
+                                : `${displayName} là thiết bị thuộc danh mục ${product.category_name || "Thiết bị âm thanh chuyên nghiệp"}, được cung cấp bởi thương hiệu ${product.brand || "chính hãng"}. Mã sản phẩm/SKU định danh: ${product.sku || product.name}.`}
+                            </p>
+                          </div>
+
+                          <div>
+                            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+                              {lang === "en" ? "Product Information & Verified Attributes" : "Thông Tin & Thuộc Tính Thực Tế"}
+                            </h3>
+                            <ul style={{ color: "#d4d4d8", fontSize: "14px", lineHeight: 1.8, paddingLeft: "20px", margin: 0 }}>
+                              <li><strong>{lang === "en" ? "Model / SKU:" : "Mã sản phẩm / SKU:"}</strong> {product.sku || product.name}</li>
+                              <li><strong>{lang === "en" ? "Brand:" : "Thương hiệu:"}</strong> {product.brand || "Chính Hãng"}</li>
+                              <li>
+                              <strong>{lang === "en" ? "Category:" : "Danh mục:"}</strong>{" "}
+                              <Link
+                                href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
+                                style={{ color: "#38bdf8", textDecoration: "none" }}
+                              >
+                                {product.category_name || (lang === "en" ? "Audio Equipment" : "Thiết bị âm thanh")}
+                              </Link>
+                            </li>
+                              {product.specifications?.["Bảo hành"] && (
+                                <li><strong>{lang === "en" ? "Warranty:" : "Bảo hành:"}</strong> {product.specifications["Bảo hành"]}</li>
+                              )}
+                              {product.specifications?.["Xuất xứ"] && (
+                                <li><strong>{lang === "en" ? "Origin:" : "Xuất xứ:"}</strong> {product.specifications["Xuất xứ"]}</li>
+                              )}
+                              {product.specifications?.["Tình trạng"] && (
+                                <li><strong>{lang === "en" ? "Condition:" : "Tình trạng:"}</strong> {product.specifications["Tình trạng"]}</li>
+                              )}
+                              {product.specifications &&
+                                Object.entries(product.specifications)
+                                  .filter(([k]) => !["Thương hiệu", "Model", "Xuất xứ", "Bảo hành", "Tình trạng", "Hỗ trợ phần mềm"].includes(k))
+                                  .map(([k, v]) => (
+                                    <li key={k}>
+                                      <strong>{getTranslatedSpecKey(k, lang)}:</strong> {String(v)}
+                                    </li>
+                                  ))}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+                              {lang === "en" ? "Distribution & Support at VanBass" : "Chính Sách Phân Phối Tại VanBass"}
+                            </h3>
+                            <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
+                              {lang === "en"
+                                ? `Distributed by VanBass Music Center with genuine quality commitment, full warranty support, nationwide delivery, and technical guidance.`
+                                : `Sản phẩm được phân phối bởi VanBass Music Center với cam kết hàng chính hãng, hỗ trợ bảo hành theo tiêu chuẩn nhà sản xuất, giao hàng toàn quốc và tư vấn kỹ thuật chuyên môn.`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
@@ -405,7 +559,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Model</span>
-                    <span className="quick-spec-val">{product.sku || "XDJ-RX3"}</span>
+                    <span className="quick-spec-val">{product.sku || product.name}</span>
                   </div>
                 </div>
 
@@ -418,7 +572,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Bảo hành</span>
-                    <span className="quick-spec-val">{product.specifications?.["Bảo hành"] || "12 tháng"}</span>
+                    <span className="quick-spec-val">{product.specifications?.["Bảo hành"] || "Chính hãng"}</span>
                   </div>
                 </div>
 
@@ -432,7 +586,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Xuất xứ</span>
-                    <span className="quick-spec-val">{product.specifications?.["Xuất xứ"] || "Nhật Bản"}</span>
+                    <span className="quick-spec-val">{product.specifications?.["Xuất xứ"] || "Đang cập nhật"}</span>
                   </div>
                 </div>
 
@@ -521,90 +675,92 @@ export default function ProductDetailClient({
 
               {/* Rental Section Box (GIÁ THUÊ) */}
               <div className="pdetail-rental-card">
-                <div className="pdetail-rental-top-row">
-                  <div className="rental-price-wrap">
-                    <div className="rental-box-icon">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="3" />
-                        <circle cx="12" cy="12" r="4" />
-                        <circle cx="17" cy="17" r="1" fill="#22c55e" />
-                        <circle cx="12" cy="12" r="1.2" fill="#22c55e" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="rental-header-label">GIÁ THUÊ</span>
-                      <div className="rental-price-number">
-                        {product.rental_price ? formatCurrency(product.rental_price, lang) : "2.500.000₫"}
-                        <small className="rental-unit"> / 24 giờ</small>
+                {(product.rental_enabled || (product.rental_price && product.rental_price > 0) || modelKey) && (
+                  <div className="pdetail-rental-top-row">
+                    <div className="rental-price-wrap">
+                      <div className="rental-box-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="3" />
+                          <circle cx="12" cy="12" r="4" />
+                          <circle cx="17" cy="17" r="1" fill="#22c55e" />
+                          <circle cx="12" cy="12" r="1.2" fill="#22c55e" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span className="rental-header-label">GIÁ THUÊ</span>
+                        <div className="rental-price-number">
+                          {product.rental_price ? formatCurrency(product.rental_price, lang) : "2.500.000₫"}
+                          <small className="rental-unit"> / 24 giờ</small>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="rental-buttons-wrap">
-                    <a
-                      href={getMessengerRentalUrl(displayName, facebookPageId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rental-btn-chat"
-                      style={{
-                        display: "inline-flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px",
-                        padding: "8px 14px",
-                        borderRadius: "8px",
-                        background: "rgba(34, 197, 94, 0.04)",
-                        border: "1px solid #22c55e",
-                        color: "#22c55e",
-                        fontSize: "11px",
-                        fontWeight: 800,
-                        textDecoration: "none",
-                        letterSpacing: "0.02em",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                      </svg>
-                      <span>LIÊN HỆ THUÊ MÁY NGAY</span>
-                    </a>
+                    <div className="rental-buttons-wrap">
+                      <a
+                        href={getMessengerRentalUrl(displayName, facebookPageId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rental-btn-chat"
+                        style={{
+                          display: "inline-flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          background: "rgba(34, 197, 94, 0.04)",
+                          border: "1px solid #22c55e",
+                          color: "#22c55e",
+                          fontSize: "11px",
+                          fontWeight: 800,
+                          textDecoration: "none",
+                          letterSpacing: "0.02em",
+                          whiteSpace: "nowrap",
+                          flexShrink: 0,
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                        </svg>
+                        <span>LIÊN HỆ THUÊ MÁY NGAY</span>
+                      </a>
 
-                    <Link
-                      href="/thue-ban-dj"
-                      className="rental-btn-rates"
-                      style={{
-                        display: "inline-flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px",
-                        padding: "8px 14px",
-                        borderRadius: "8px",
-                        background: "rgba(255, 255, 255, 0.04)",
-                        border: "1px solid rgba(255, 255, 255, 0.22)",
-                        color: "#ffffff",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        letterSpacing: "0.02em",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                        <line x1="8" y1="6" x2="16" y2="6" />
-                        <line x1="8" y1="10" x2="16" y2="10" />
-                        <line x1="8" y1="14" x2="13" y2="14" />
-                      </svg>
-                      <span>BẢNG GIÁ THUÊ</span>
-                    </Link>
+                      <Link
+                        href="/thue-ban-dj"
+                        className="rental-btn-rates"
+                        style={{
+                          display: "inline-flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          background: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid rgba(255, 255, 255, 0.22)",
+                          color: "#ffffff",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textDecoration: "none",
+                          letterSpacing: "0.02em",
+                          whiteSpace: "nowrap",
+                          flexShrink: 0,
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+                          <line x1="8" y1="6" x2="16" y2="6" />
+                          <line x1="8" y1="10" x2="16" y2="10" />
+                          <line x1="8" y1="14" x2="13" y2="14" />
+                        </svg>
+                        <span>BẢNG GIÁ THUÊ</span>
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="pdetail-showrooms-grid">
                   <a href="tel:0936899468" className="showroom-contact-item">

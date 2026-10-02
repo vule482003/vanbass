@@ -80,43 +80,6 @@ export default function JsonLd() {
           "https://facebook.com/vanbassmusiccenter",
           "https://instagram.com/vanbass",
         ],
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "168",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person",
-              "name": "Hoàng Minh (DJ M-Tronic)"
-            },
-            "datePublished": "2026-03-15",
-            "reviewBody": "Dịch vụ thuê bàn DJ XDJ-RX3 tại Đà Nẵng rất uy tín, máy mới 99%, fader mượt và kỹ thuật setup tận nơi cực kỳ nhiệt tình.",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5"
-            }
-          },
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person",
-              "name": "Alex Johnson (Expat DJ)"
-            },
-            "datePublished": "2026-02-28",
-            "reviewBody": "Best DJ equipment rental in Da Nang! Rented a DDJ-FLX4 for our beach party, quick delivery and friendly English support.",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5"
-            }
-          }
-        ],
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "Dịch Vụ Cho Thuê & Phân Phối Thiết Bị DJ Chính Hãng (DJ Equipment Sales & Rental)",

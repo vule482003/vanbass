@@ -112,7 +112,7 @@ export default function IntroSection({
         </div>
 
         {/* Secondary Dotted Link */}
-        <Link href="/rental" className="webhound-secondary-link">
+        <Link href="/thue-ban-dj" className="webhound-secondary-link">
           {lang === "en"
             ? "Explore rental rates & event equipment"
             : "Xem bảng giá dịch vụ cho thuê & thiết bị biểu diễn"}

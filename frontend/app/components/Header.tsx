@@ -12,6 +12,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { getTranslatedProductName } from "../lib/product-i18n";
 import { CATEGORY_GROUPS } from "../lib/category-hierarchy";
 import { HeaderConfig } from "../types/home_config";
+import { getApiBaseUrl } from "../lib/api";
 
 interface HeaderProps {
   config?: HeaderConfig;
@@ -148,7 +149,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
   useEffect(() => {
     const loadSearchCatalog = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const apiUrl = getApiBaseUrl();
         const res = await fetch(`${apiUrl}/products`);
         if (res.ok) {
           const liveData = await res.json();

@@ -92,6 +92,16 @@ const nextConfig: NextConfig = {
         destination: "/sua-chua-ban-dj",
         permanent: true,
       },
+      {
+        source: "/san-pham",
+        destination: "/products",
+        permanent: true,
+      },
+      {
+        source: "/san-pham/:slug*",
+        destination: "/products/:slug*",
+        permanent: true,
+      },
       // 301 Permanent Redirects for alias slugs to canonical hot model URLs (Bing & Google Best Practice)
       {
         source: "/products/ban-dj-alphatheta-xdj-az",
@@ -163,13 +173,24 @@ const nextConfig: NextConfig = {
         destination: "/products/xdj-rr",
         permanent: true,
       },
+      // 301 Redirect for duplicate 18SW115 slug to primary canonical slug
+      {
+        source: "/products/loa-sub-roi-b-c-speakers-5-tac-18sw115",
+        destination: "/products/loa-sub-roi-bc-speakers-5-tac-18sw115",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {
+    const backendInternalUrl = process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000";
     return [
       {
+        source: "/api/:path*",
+        destination: `${backendInternalUrl}/api/:path*`,
+      },
+      {
         source: "/static/:path*",
-        destination: "http://127.0.0.1:8000/static/:path*",
+        destination: `${backendInternalUrl}/static/:path*`,
       },
     ];
   },
