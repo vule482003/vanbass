@@ -40,6 +40,7 @@ export default function ProductDetailClient({
   initialProduct,
   slug,
   faqs = [],
+  modelKey,
 }: ProductDetailClientProps) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
@@ -674,90 +675,92 @@ export default function ProductDetailClient({
 
               {/* Rental Section Box (GIÁ THUÊ) */}
               <div className="pdetail-rental-card">
-                <div className="pdetail-rental-top-row">
-                  <div className="rental-price-wrap">
-                    <div className="rental-box-icon">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="3" />
-                        <circle cx="12" cy="12" r="4" />
-                        <circle cx="17" cy="17" r="1" fill="#22c55e" />
-                        <circle cx="12" cy="12" r="1.2" fill="#22c55e" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="rental-header-label">GIÁ THUÊ</span>
-                      <div className="rental-price-number">
-                        {product.rental_price ? formatCurrency(product.rental_price, lang) : "2.500.000₫"}
-                        <small className="rental-unit"> / 24 giờ</small>
+                {(product.rental_enabled || (product.rental_price && product.rental_price > 0) || modelKey) && (
+                  <div className="pdetail-rental-top-row">
+                    <div className="rental-price-wrap">
+                      <div className="rental-box-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="3" />
+                          <circle cx="12" cy="12" r="4" />
+                          <circle cx="17" cy="17" r="1" fill="#22c55e" />
+                          <circle cx="12" cy="12" r="1.2" fill="#22c55e" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span className="rental-header-label">GIÁ THUÊ</span>
+                        <div className="rental-price-number">
+                          {product.rental_price ? formatCurrency(product.rental_price, lang) : "2.500.000₫"}
+                          <small className="rental-unit"> / 24 giờ</small>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="rental-buttons-wrap">
-                    <a
-                      href={getMessengerRentalUrl(displayName, facebookPageId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rental-btn-chat"
-                      style={{
-                        display: "inline-flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px",
-                        padding: "8px 14px",
-                        borderRadius: "8px",
-                        background: "rgba(34, 197, 94, 0.04)",
-                        border: "1px solid #22c55e",
-                        color: "#22c55e",
-                        fontSize: "11px",
-                        fontWeight: 800,
-                        textDecoration: "none",
-                        letterSpacing: "0.02em",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                      </svg>
-                      <span>LIÊN HỆ THUÊ MÁY NGAY</span>
-                    </a>
+                    <div className="rental-buttons-wrap">
+                      <a
+                        href={getMessengerRentalUrl(displayName, facebookPageId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rental-btn-chat"
+                        style={{
+                          display: "inline-flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          background: "rgba(34, 197, 94, 0.04)",
+                          border: "1px solid #22c55e",
+                          color: "#22c55e",
+                          fontSize: "11px",
+                          fontWeight: 800,
+                          textDecoration: "none",
+                          letterSpacing: "0.02em",
+                          whiteSpace: "nowrap",
+                          flexShrink: 0,
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                        </svg>
+                        <span>LIÊN HỆ THUÊ MÁY NGAY</span>
+                      </a>
 
-                    <Link
-                      href="/thue-ban-dj"
-                      className="rental-btn-rates"
-                      style={{
-                        display: "inline-flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px",
-                        padding: "8px 14px",
-                        borderRadius: "8px",
-                        background: "rgba(255, 255, 255, 0.04)",
-                        border: "1px solid rgba(255, 255, 255, 0.22)",
-                        color: "#ffffff",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        letterSpacing: "0.02em",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                        <line x1="8" y1="6" x2="16" y2="6" />
-                        <line x1="8" y1="10" x2="16" y2="10" />
-                        <line x1="8" y1="14" x2="13" y2="14" />
-                      </svg>
-                      <span>BẢNG GIÁ THUÊ</span>
-                    </Link>
+                      <Link
+                        href="/thue-ban-dj"
+                        className="rental-btn-rates"
+                        style={{
+                          display: "inline-flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          background: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid rgba(255, 255, 255, 0.22)",
+                          color: "#ffffff",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textDecoration: "none",
+                          letterSpacing: "0.02em",
+                          whiteSpace: "nowrap",
+                          flexShrink: 0,
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+                          <line x1="8" y1="6" x2="16" y2="6" />
+                          <line x1="8" y1="10" x2="16" y2="10" />
+                          <line x1="8" y1="14" x2="13" y2="14" />
+                        </svg>
+                        <span>BẢNG GIÁ THUÊ</span>
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="pdetail-showrooms-grid">
                   <a href="tel:0936899468" className="showroom-contact-item">

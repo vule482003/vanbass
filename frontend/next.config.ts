@@ -173,6 +173,12 @@ const nextConfig: NextConfig = {
         destination: "/products/xdj-rr",
         permanent: true,
       },
+      // 301 Redirect for duplicate 18SW115 slug to primary canonical slug
+      {
+        source: "/products/loa-sub-roi-b-c-speakers-5-tac-18sw115",
+        destination: "/products/loa-sub-roi-bc-speakers-5-tac-18sw115",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

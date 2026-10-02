@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { fetchProducts } from "./lib/api";
+import { PRODUCT_SLUG_ALIASES } from "./products/[slug]/page";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn").replace(/\/+$/, "");
@@ -76,7 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "xdj-xz",
   ]);
 
-  // Track URLs to strictly prevent any duplication
+  // Track URLs to strictly prevent any duplication and redirect URLs
   const seenUrls = new Set<string>();
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
@@ -99,14 +100,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const rawSlug = product.slug?.trim();
         if (!rawSlug) continue;
 
+        // Resolve to final Canonical Slug (strips legacy aliases & redirects like ban-dj-alphatheta-xdj-az -> xdj-az)
+        const normalizedSlug = rawSlug.toLowerCase();
+        const canonicalSlug = PRODUCT_SLUG_ALIASES[normalizedSlug] || normalizedSlug;
+
         // Ensure slug is clean and URL-safe
-        const cleanSlug = encodeURI(rawSlug.toLowerCase());
+        const cleanSlug = encodeURI(canonicalSlug);
         const productUrl = `${baseUrl}/products/${cleanSlug}`;
 
         if (!seenUrls.has(productUrl)) {
           seenUrls.add(productUrl);
 
-          const isHot = hotSearchSlugs.has(rawSlug.toLowerCase());
+          const isHot = hotSearchSlugs.has(canonicalSlug);
           sitemapEntries.push({
             url: productUrl,
             lastModified: now,
@@ -122,4 +127,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return sitemapEntries;
 }
+
 
