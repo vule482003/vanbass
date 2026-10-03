@@ -29,6 +29,181 @@ function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
   }).format(amount);
 }
 
+interface CompareLearnInfo {
+  title: string;
+  description: string;
+  comparisons: {
+    heading: string;
+    summary: string;
+    points: string[];
+    recommendation: string;
+  }[];
+  buyerGuide: {
+    whoShouldBuy: string;
+    budgetAdvice: string;
+    keyAdvantage: string;
+  };
+}
+
+const COMPARE_LEARN_DATA: Record<string, CompareLearnInfo> = {
+  "xdj-rx3": {
+    title: "Cẩm Nang So Sánh & Hướng Dẫn Chọn Mua Pioneer DJ XDJ-RX3",
+    description: "Phân tích chuyên sâu từ kỹ thuật viên VanMusic giúp bạn so sánh XDJ-RX3 với các model tiền nhiệm và thế hệ mới:",
+    comparisons: [
+      {
+        heading: "1. So sánh Pioneer XDJ-RX3 vs Pioneer XDJ-RX2",
+        summary: "RX3 là bước nhảy vọt công nghệ toàn diện so với thế hệ RX2 ra mắt trước đó.",
+        points: [
+          "Màn hình cảm ứng: RX3 nâng cấp lên 10.1 inch siêu nét (so với RX2 7 inch), tần số quét cao hiển thị 3 dạng sóng Waveform mượt mà.",
+          "Giao diện duyệt nhạc GUI: Thừa hưởng trực tiếp từ flagship CDJ-3000, tìm bài và Touch Preview nhanh gấp 2 lần.",
+          "Hiệu ứng âm thanh: Bổ sung Release FX trên pad (Vinyl Brake, Spin, Build-up) cùng 14 Beat FX và 6 Sound Color FX chuẩn DJM-900NXS2.",
+          "Mâm Jogwheel: Tích hợp màn hình LCD màu On-Jog hiển thị artwork bài hát và cue marker rõ nét.",
+        ],
+        recommendation: "Nếu bạn đi show chuyên nghiệp, XDJ-RX3 hoàn toàn vượt trội và xứng đáng đầu tư hơn RX2.",
+      },
+      {
+        heading: "2. So sánh Pioneer XDJ-RX3 vs AlphaTheta XDJ-AZ",
+        summary: "Cân nhắc giữa hệ thống 2 kênh All-in-One gọn gàng và quái vật 4 kênh Flagship thế hệ mới.",
+        points: [
+          "Số kênh: RX3 là 2 kênh All-in-one; XDJ-AZ là hệ thống 4 kênh độc lập toàn diện.",
+          "Kết nối đám mây: XDJ-AZ tích hợp Wi-Fi và CloudDirectPlay lấy nhạc trực tiếp từ Rekordbox Cloud; RX3 dùng USB truyền thống.",
+          "Chất âm: XDJ-AZ sử dụng chip giải mã âm thanh 32-bit ESS tân tiến nhất; RX3 giữ chất âm Club 24-bit ấm áp.",
+          "Mức giá: XDJ-AZ có giá thành cao hơn đáng kể so với RX3.",
+        ],
+        recommendation: "Bar, Pub vừa và DJ di động nên chọn RX3 tối ưu chi phí; Club lớn và Festival chuẩn quốc tế nên chọn XDJ-AZ.",
+      },
+    ],
+    buyerGuide: {
+      whoShouldBuy: "DJ biểu diễn sự kiện, Bar, Pub, Lounge, Wedding Agency cần sự ổn định tuyệt đối không phụ thuộc laptop.",
+      budgetAdvice: "Ngân sách 46 - 62 triệu đồng. Hỗ trợ trả góp 0% linh hoạt qua thẻ tín dụng.",
+      keyAdvantage: "Giao diện thừa hưởng chuẩn CDJ-3000, cắm USB là chơi, tính thanh khoản thu cũ đổi mới giữ giá tốt.",
+    },
+  },
+  "ddj-flx4": {
+    title: "Cẩm Nang So Sánh & Hướng Dẫn Chọn Mua Pioneer DDJ-FLX4",
+    description: "Bộ điều khiển DJ quốc dân bán chạy nhất thế giới dành cho người mới bắt đầu:",
+    comparisons: [
+      {
+        heading: "1. So sánh Pioneer DDJ-FLX4 vs AlphaTheta DDJ-FLX2",
+        summary: "FLX4 giữ vững vị thế tiêu chuẩn luyện tập chuyên nghiệp, FLX2 tối ưu hóa tính cơ động không dây.",
+        points: [
+          "Kích thước mâm: FLX4 mâm lớn hơn, cảm giác xoay và scratch đầm tay theo chuẩn layout Club.",
+          "Số lượng phím: FLX4 trang bị 16 phím Pad cao su đầy đủ chức năng Hot Cue, Beat Jump, Sampler; FLX2 tinh gọn nhẹ hơn.",
+          "Kết nối phần mềm: FLX4 hỗ trợ Rekordbox & Serato DJ đầy đủ trên PC/Mac; FLX2 hỗ trợ thêm djay qua Bluetooth.",
+        ],
+        recommendation: "Học DJ bài bản và luyện tập nghiêm túc nên chọn FLX4; Cần nhỏ gọn mang đi du lịch nên chọn FLX2.",
+      },
+      {
+        heading: "2. So sánh Pioneer DDJ-FLX4 vs Pioneer XDJ-RX3",
+        summary: "Khác biệt cốt lõi giữa DJ Controller và hệ thống All-In-One độc lập.",
+        points: [
+          "Cách thức hoạt động: FLX4 bắt buộc phải cắm Laptop hoặc Smartphone; RX3 cắm thẳng USB biểu diễn không cần máy tính.",
+          "Màn hình hiển thị: FLX4 nhìn qua màn hình laptop; RX3 có sẵn màn cảm ứng 10.1 inch.",
+          "Chi phí: FLX4 từ 8.5 triệu; RX3 từ 46 - 62 triệu đồng.",
+        ],
+        recommendation: "Người mới bắt đầu tập luyện nên mua FLX4 để tiết kiệm chi phí, sau 1-2 năm lên show chuyên nghiệp thì đổi lên RX3.",
+      },
+    ],
+    buyerGuide: {
+      whoShouldBuy: "Người mới bắt đầu học DJ, học viên DJ Academy, streamer, biểu diễn tiệc gia đình.",
+      budgetAdvice: "Ngân sách từ 8.5 triệu đồng. Trả góp 0% chỉ khoảng 700.000đ/tháng.",
+      keyAdvantage: "Smart Fader tự động chỉnh tempo/bass giúp chuyển bài mượt mà ngay từ ngày đầu tiên tập luyện.",
+    },
+  },
+  "omnis-duo": {
+    title: "Cẩm Nang So Sánh & Hướng Dẫn Chọn Mua AlphaTheta OMNIS-DUO",
+    description: "Bàn DJ All-in-One không dây tích hợp pin đầu tiên mở ra kỷ nguyên tiệc di động:",
+    comparisons: [
+      {
+        heading: "1. So sánh AlphaTheta OMNIS-DUO vs Pioneer DJ XDJ-RX3",
+        summary: "OMNIS-DUO là giải pháp di động ngoài trời số 1, RX3 là tiêu chuẩn biểu diễn cố định tại Club.",
+        points: [
+          "Nguồn điện: OMNIS-DUO tích hợp pin sạc 5 giờ chơi liên tục không cần cắm điện; RX3 bắt buộc cắm nguồn điện 220V.",
+          "Bluetooth: OMNIS-DUO cho phép phát nhạc từ điện thoại khách mời qua Bluetooth và xuất âm thanh ra loa Bluetooth.",
+          "Thiết kế: OMNIS-DUO nhỏ gọn bỏ vừa balo du lịch, màu xanh chàm tối giản thời thượng.",
+        ],
+        recommendation: "Làm tiệc bãi biển, villa, pool party, du thuyền chọn OMNIS-DUO; Sân khấu Club và Bar cố định chọn RX3.",
+      },
+    ],
+    buyerGuide: {
+      whoShouldBuy: "DJ du lịch, DJ tiệc ngoài trời, Resort, Villa Party, Wedding bãi biển.",
+      budgetAdvice: "Ngân sách 42 - 45 triệu đồng. Mới 100% fullbox bảo hành chính hãng.",
+      keyAdvantage: "Pin 5 giờ, kết nối không dây hoàn toàn, không phụ thuộc ổ cắm điện.",
+    },
+  },
+  "xdj-az": {
+    title: "Cẩm Nang So Sánh & Hướng Dẫn Chọn Mua AlphaTheta XDJ-AZ",
+    description: "Siêu phẩm All-in-One 4 kênh flagship thế hệ mới nhất cho Club & Festival:",
+    comparisons: [
+      {
+        heading: "1. So sánh AlphaTheta XDJ-AZ vs Pioneer DJ XDJ-XZ",
+        summary: "Bước chuyển giao công nghệ vĩ đại giữa hai thế hệ bàn DJ 4 kênh All-in-One.",
+        points: [
+          "Màn hình: XDJ-AZ trang bị màn hình cảm ứng 10.1 inch thế hệ mới (so với 7 inch của XDJ-XZ).",
+          "Bộ giải mã âm thanh: XDJ-AZ trang bị DAC 32-bit ESS đỉnh cao chuẩn Club hiện đại; XDJ-XZ dùng chip 64-bit tiền nhiệm.",
+          "Công nghệ đám mây: XDJ-AZ tích hợp Wi-Fi CloudDirectPlay lấy nhạc trực tiếp không cần cắm USB.",
+        ],
+        recommendation: "Đầu tư dài hạn cho Bar, Club, Festival tiêu chuẩn quốc tế nên chọn XDJ-AZ.",
+      },
+    ],
+    buyerGuide: {
+      whoShouldBuy: "Bar, Club lớn, Festival, DJ chuyên nghiệp cần 4 kênh độc lập chuẩn mực.",
+      budgetAdvice: "Hỗ trợ trả góp 0% và chương trình Trade-in thu cũ đổi mới trợ giá cao nhất.",
+      keyAdvantage: "Chuẩn âm thanh Club đỉnh cao 32-bit, màn hình 10.1 inch, kết nối đám mây không dây.",
+    },
+  },
+  "ddj-flx2": {
+    title: "Cẩm Nang So Sánh & Hướng Dẫn Chọn Mua AlphaTheta DDJ-FLX2",
+    description: "Bàn DJ Controller siêu gọn nhẹ thế hệ mới kết nối Bluetooth không dây:",
+    comparisons: [
+      {
+        heading: "1. So sánh AlphaTheta DDJ-FLX2 vs Pioneer DDJ-FLX4",
+        summary: "FLX2 hướng đến sự tiện lợi tối đa khi di chuyển, FLX4 hướng đến trải nghiệm Club chuyên nghiệp.",
+        points: [
+          "Tính cơ động: FLX2 chỉ nặng khoảng 1.2kg, kết nối Bluetooth với iPad/iPhone không cần dây cáp rườm rà.",
+          "Phần mềm tương thích: FLX2 tối ưu hóa cho Algoriddim djay và Rekordbox Mobile; FLX4 chuyên dụng cho Rekordbox & Serato trên laptop.",
+        ],
+        recommendation: "Cần bàn DJ nhỏ gọn nghe nhạc và mix mọi lúc mọi nơi chọn FLX2; Cần luyện tập thi đấu chọn FLX4.",
+      },
+    ],
+    buyerGuide: {
+      whoShouldBuy: "Người mới làm quen DJ, bạn trẻ yêu âm nhạc, người hay đi du lịch dã ngoại.",
+      budgetAdvice: "Mức giá siêu tiết kiệm từ 5.8 triệu đồng.",
+      keyAdvantage: "Bluetooth không dây, siêu nhẹ, chơi nhạc trực tiếp trên điện thoại/iPad.",
+    },
+  },
+  "xdj-xz": {
+    title: "Cẩm Nang So Sánh & Hướng Dẫn Chọn Mua Pioneer DJ XDJ-XZ",
+    description: "Hệ thống 4 kênh All-In-One huyền thoại với mâm xoay Full-size CDJ-2000NXS2:",
+    comparisons: [
+      {
+        heading: "1. So sánh Pioneer XDJ-XZ vs AlphaTheta XDJ-AZ",
+        summary: "XDJ-XZ giữ giá trị kinh điển với mâm lớn cơ khí, XDJ-AZ nâng tầm với màn hình cảm ứng 10.1 inch và Wi-Fi.",
+        points: [
+          "Cảm giác mâm xoay: Cả hai đều trang bị mâm xoay Full-size 206mm đầm chắc cho cảm giác scratch và cue chuẩn nhất.",
+          "Công nghệ: XDJ-AZ có màn hình 10.1 inch mượt mà và Wi-Fi; XDJ-XZ giữ giao diện màn 7 inch cổ điển ổn định.",
+        ],
+        recommendation: "Thích sự hoài niệm và layout tiêu chuẩn Bar Club truyền thống chọn XDJ-XZ với chi phí hợp lý.",
+      },
+    ],
+    buyerGuide: {
+      whoShouldBuy: "Club, Pub, Hội trường tiệc cưới, DJ chuyên nghiệp thích mâm xoay lớn.",
+      budgetAdvice: "Ngân sách 58 - 68 triệu đồng.",
+      keyAdvantage: "Mâm xoay Full-size kích thước chuẩn CDJ, độ bền cơ học cao, 4 kênh mixer mạnh mẽ.",
+    },
+  },
+};
+
+function resolveCompareLearnData(rawKey?: string | null, slug?: string): CompareLearnInfo | null {
+  const normalizedKey = (rawKey || slug || "").toLowerCase().trim();
+  for (const [key, data] of Object.entries(COMPARE_LEARN_DATA)) {
+    if (normalizedKey.includes(key) || key.includes(normalizedKey)) {
+      return data;
+    }
+  }
+  return null;
+}
+
 interface ProductDetailClientProps {
   initialProduct?: Product | null;
   slug: string;
@@ -58,6 +233,7 @@ export default function ProductDetailClient({
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const heroActionRef = useRef<HTMLDivElement>(null);
+  const activeCompareData = resolveCompareLearnData(modelKey, slug);
 
   useEffect(() => {
     fetchStoreSettings().then((st) => {
@@ -813,6 +989,102 @@ export default function ProductDetailClient({
           </div>
 
           {/* ============================================================
+              FACT BLOCK: BẢNG DỮ LIỆU THỰC TẾ XÁC THỰC (SEO & GEO FACT BLOCK)
+             ============================================================ */}
+          <div className="pdetail-factblock-wrapper">
+            <div className="pdetail-factblock-header">
+              <span className="pdetail-factblock-kicker">FACT BLOCK • DỮ LIỆU THỰC TẾ XÁC MINH</span>
+              <h2 className="pdetail-factblock-title">Bảng Thông Tin Thực Tế & Khả Năng Cung Ứng {displayName}</h2>
+              <p className="pdetail-factblock-subtitle">
+                Dữ liệu chính xác được xác thực trực tiếp tại hệ thống VanMusic phục vụ tra cứu nhanh và trích xuất thông tin:
+              </p>
+            </div>
+
+            <div className="pdetail-factblock-card">
+              <table className="pdetail-factblock-table">
+                <tbody>
+                  <tr>
+                    <td className="fb-label">Tên sản phẩm</td>
+                    <td className="fb-data"><strong>{displayName}</strong></td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Mã SKU / Model</td>
+                    <td className="fb-data"><code>{product.sku || product.name}</code></td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Thương hiệu</td>
+                    <td className="fb-data">{product.brand || "Pioneer DJ"} (Chính Hãng Phân Phối)</td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Phân khúc thiết bị</td>
+                    <td className="fb-data">{product.category_name || "Thiết Bị DJ Chuyên Nghiệp"}</td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Tình trạng máy</td>
+                    <td className="fb-data">{product.specifications?.["Tình trạng"] || "Mới 100% Fullbox / Like New 99% Tuyển Chọn"}</td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Giá mua niêm yết</td>
+                    <td className="fb-data">
+                      <span className="fb-price-tag">
+                        {product.sale_price ? formatCurrency(product.sale_price, lang) : "Liên hệ nhận báo giá ưu đãi"}
+                      </span>
+                      <span className="fb-subnote"> (Hỗ trợ trả góp 0% qua thẻ tín dụng và CCCD)</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Chính sách bảo hành</td>
+                    <td className="fb-data">{product.specifications?.["Bảo hành"] || "12 - 24 tháng chính hãng (Linh kiện chuẩn)"}</td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Mua bán & Sở hữu</td>
+                    <td className="fb-data">
+                      <span className="fb-status-yes">✓ Có hàng tại kho</span>
+                      {" • "}
+                      <Link href="/ban-dj" className="fb-action-link">
+                        Xem trung tâm Mua Bán Bàn DJ &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Cho thuê sự kiện</td>
+                    <td className="fb-data">
+                      {product.rental_enabled || product.rental_price ? (
+                        <>
+                          <span className="fb-status-yes">✓ Có hỗ trợ cho thuê</span>
+                          {product.rental_price ? ` (từ ${formatCurrency(product.rental_price, lang)} / 24h)` : ""}
+                          {" • "}
+                          <Link href="/thue-ban-dj" className="fb-action-link">
+                            Xem bảng giá thuê máy &rarr;
+                          </Link>
+                        </>
+                      ) : (
+                        <span>Hỗ trợ tư vấn thuê theo cấu hình sự kiện</span>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Sửa chữa & Kỹ thuật</td>
+                    <td className="fb-data">
+                      <span className="fb-status-yes">✓ Có trạm kỹ thuật</span>
+                      {" (Sẵn fader Alps, cân chỉnh jogwheel, vệ sinh bo mạch) • "}
+                      <Link href="/sua-chua-ban-dj" className="fb-action-link">
+                        Dịch vụ sửa chữa &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="fb-label">Khu vực phục vụ</td>
+                    <td className="fb-data">
+                      Showroom Đà Nẵng (Nguyễn Tất Thành) & Showroom Huế (442 Chi Lăng) • Giao hàng toàn quốc
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ============================================================
               3-PILLAR SERVICE MODULE: MUA - THUÊ - SỬA CHO SẢN PHẨM NÀY
              ============================================================ */}
           <div className="pdetail-3pillars-wrapper">
@@ -889,6 +1161,67 @@ export default function ProductDetailClient({
               </div>
             </div>
           </div>
+
+          {/* ============================================================
+              COMPARE & LEARN: TẦNG SO SÁNH & HƯỚNG DẪN CHỌN MÁY CHUYÊN SÂU
+             ============================================================ */}
+          {activeCompareData && (
+            <div className="pdetail-compare-learn-wrapper">
+              <div className="pdetail-compare-header">
+                <span className="pdetail-compare-kicker">COMPARE & LEARN • HƯỚNG DẪN SO SÁNH CHUYÊN SÂU</span>
+                <h2 className="pdetail-compare-title">{activeCompareData.title}</h2>
+                <p className="pdetail-compare-subtitle">{activeCompareData.description}</p>
+              </div>
+
+              <div className="pdetail-compare-grid">
+                {activeCompareData.comparisons.map((cmp, idx) => (
+                  <div key={idx} className="pdetail-compare-card">
+                    <h3 className="cmp-heading">{cmp.heading}</h3>
+                    <p className="cmp-summary">{cmp.summary}</p>
+                    <ul className="cmp-points">
+                      {cmp.points.map((pt, pIdx) => (
+                        <li key={pIdx}>
+                          <span className="cmp-check">⚡</span>
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="cmp-recommendation">
+                      <strong>💡 Lời khuyên kỹ thuật:</strong> {cmp.recommendation}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Buyer Persona Recommendation Box */}
+              <div className="pdetail-buyer-guide-card">
+                <h4 className="buyer-guide-title">
+                  <span>🎯</span>
+                  <span>Tóm Tắt Lựa Chọn Cho Thiết Bị Này</span>
+                </h4>
+                <div className="buyer-guide-items">
+                  <div className="buyer-guide-item">
+                    <span className="bgi-label">Phù hợp nhất với:</span>
+                    <span className="bgi-value">{activeCompareData.buyerGuide.whoShouldBuy}</span>
+                  </div>
+                  <div className="buyer-guide-item">
+                    <span className="bgi-label">Lời khuyên ngân sách:</span>
+                    <span className="bgi-value">{activeCompareData.buyerGuide.budgetAdvice}</span>
+                  </div>
+                  <div className="buyer-guide-item">
+                    <span className="bgi-label">Ưu thế cốt lõi:</span>
+                    <span className="bgi-value">{activeCompareData.buyerGuide.keyAdvantage}</span>
+                  </div>
+                </div>
+                <div className="buyer-guide-action">
+                  <Link href="/ban-dj" className="buyer-guide-link">
+                    <span>Xem thêm hướng dẫn chọn bàn DJ tại Hub Mua Bán Bàn DJ</span>
+                    <span>&rarr;</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Official Sales & Distribution Trust Section */}
           <div
@@ -1993,6 +2326,242 @@ export default function ProductDetailClient({
           border-top: 1px solid rgba(255, 255, 255, 0.06);
           font-size: 12px;
           color: #d4d4d8;
+        }
+
+        /* FACT BLOCK STYLING */
+        .pdetail-factblock-wrapper {
+          margin-bottom: 36px;
+          padding: 30px 26px;
+          background: rgba(18, 18, 24, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 14px;
+          backdrop-filter: blur(12px);
+        }
+        .pdetail-factblock-header {
+          text-align: center;
+          margin-bottom: 22px;
+        }
+        .pdetail-factblock-kicker {
+          font-size: 11px;
+          color: #38bdf8;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          display: block;
+          margin-bottom: 6px;
+        }
+        .pdetail-factblock-title {
+          font-size: clamp(20px, 2.4vw, 26px);
+          font-weight: 800;
+          color: #ffffff;
+          margin: 0 0 8px 0;
+          letter-spacing: -0.02em;
+        }
+        .pdetail-factblock-subtitle {
+          font-size: 13.5px;
+          color: #a1a1aa;
+          max-width: 760px;
+          margin: 0 auto;
+          line-height: 1.6;
+        }
+        .pdetail-factblock-card {
+          background: rgba(24, 24, 30, 0.65);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 10px;
+          overflow-x: auto;
+        }
+        .pdetail-factblock-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 13.5px;
+        }
+        .pdetail-factblock-table tr {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .pdetail-factblock-table tr:last-child {
+          border-bottom: none;
+        }
+        .pdetail-factblock-table tr:hover {
+          background: rgba(255, 255, 255, 0.02);
+        }
+        .fb-label {
+          width: 25%;
+          min-width: 160px;
+          padding: 12px 18px;
+          color: #a1a1aa;
+          font-weight: 600;
+          background: rgba(255, 255, 255, 0.02);
+          border-right: 1px solid rgba(255, 255, 255, 0.06);
+          vertical-align: top;
+        }
+        .fb-data {
+          padding: 12px 18px;
+          color: #f4f4f5;
+          line-height: 1.6;
+        }
+        .fb-price-tag {
+          font-size: 16px;
+          font-weight: 800;
+          color: #22c55e;
+        }
+        .fb-subnote {
+          font-size: 12px;
+          color: #71717a;
+        }
+        .fb-status-yes {
+          color: #4ade80;
+          font-weight: 700;
+        }
+        .fb-action-link {
+          color: #38bdf8;
+          text-decoration: underline;
+          font-weight: 600;
+          font-size: 12.5px;
+        }
+
+        /* COMPARE & LEARN STYLING */
+        .pdetail-compare-learn-wrapper {
+          margin-bottom: 36px;
+          padding: 30px 26px;
+          background: rgba(18, 18, 24, 0.85);
+          border: 1px solid rgba(56, 189, 248, 0.25);
+          border-radius: 14px;
+          backdrop-filter: blur(12px);
+        }
+        .pdetail-compare-header {
+          text-align: center;
+          margin-bottom: 24px;
+        }
+        .pdetail-compare-kicker {
+          font-size: 11px;
+          color: #38bdf8;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          display: block;
+          margin-bottom: 6px;
+        }
+        .pdetail-compare-title {
+          font-size: clamp(20px, 2.4vw, 26px);
+          font-weight: 800;
+          color: #ffffff;
+          margin: 0 0 8px 0;
+          letter-spacing: -0.02em;
+        }
+        .pdetail-compare-subtitle {
+          font-size: 13.5px;
+          color: #a1a1aa;
+          max-width: 760px;
+          margin: 0 auto;
+          line-height: 1.6;
+        }
+        .pdetail-compare-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 20px;
+          margin-bottom: 22px;
+        }
+        .pdetail-compare-card {
+          background: rgba(24, 24, 30, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 12px;
+          padding: 22px;
+          display: flex;
+          flex-direction: column;
+        }
+        .cmp-heading {
+          font-size: 16.5px;
+          font-weight: 800;
+          color: #38bdf8;
+          margin: 0 0 8px 0;
+        }
+        .cmp-summary {
+          font-size: 13px;
+          color: #a1a1aa;
+          margin: 0 0 14px 0;
+          line-height: 1.5;
+        }
+        .cmp-points {
+          list-style: none;
+          padding: 0;
+          margin: 0 0 16px 0;
+          font-size: 13px;
+          color: #d4d4d8;
+          line-height: 1.6;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          flex: 1;
+        }
+        .cmp-points li {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .cmp-check {
+          color: #eab308;
+          font-size: 14px;
+          flex-shrink: 0;
+        }
+        .cmp-recommendation {
+          padding: 12px 14px;
+          background: rgba(56, 189, 248, 0.08);
+          border-left: 3px solid #38bdf8;
+          border-radius: 0 8px 8px 0;
+          font-size: 12.5px;
+          color: #e0f2fe;
+          line-height: 1.55;
+        }
+        .pdetail-buyer-guide-card {
+          background: rgba(34, 197, 94, 0.06);
+          border: 1px solid rgba(34, 197, 94, 0.25);
+          border-radius: 12px;
+          padding: 22px;
+        }
+        .buyer-guide-title {
+          font-size: 15.5px;
+          font-weight: 800;
+          color: #22c55e;
+          margin: 0 0 14px 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .buyer-guide-items {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+        .buyer-guide-item {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .bgi-label {
+          font-size: 11.5px;
+          color: #71717a;
+          text-transform: uppercase;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+        }
+        .bgi-value {
+          font-size: 13px;
+          color: #f4f4f5;
+          line-height: 1.5;
+        }
+        .buyer-guide-action {
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          padding-top: 14px;
+        }
+        .buyer-guide-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          color: #22c55e;
+          font-size: 13px;
+          font-weight: 700;
+          text-decoration: none;
         }
 
         /* 3-PILLAR SERVICE MODULE */

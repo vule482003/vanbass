@@ -911,29 +911,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
     });
   }
 
-  // Rental Service Offer (ONLY when product is rental-enabled, has rental price, or is priority DJ model)
-  const hasRental = Boolean(
-    product.rental_enabled === true ||
-    (product.rental_price && product.rental_price > 0) ||
-    (isDirectHotModel && hotSeo?.rentalPrice)
-  );
-
-  if (hasRental) {
-    offers.push({
-      "@type": "Offer",
-      "name": `Thuê ${product.name} biểu diễn 24h`,
-      "url": `${baseUrl}/thue-ban-dj`,
-      "priceCurrency": "VND",
-      "price": hotSeo?.rentalPrice || product.rental_price || 1000000,
-      "availability": "https://schema.org/InStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "VanBass Music Center",
-        "url": baseUrl,
-      },
-    });
-  }
-
+  // Purchase Offer strictly for Product schema
   const productSchema: Record<string, unknown> = {
     "@type": "Product",
     "@id": `${baseUrl}/products/${canonicalSlug}#product`,
@@ -949,62 +927,127 @@ export default async function ProductDetailPage({ params }: PageProps) {
     "offers": offers,
   };
 
-  const graph: Record<string, unknown>[] = [
-    productSchema,
-    {
-      "@type": "BreadcrumbList",
-      "@id": `${baseUrl}/products/${canonicalSlug}#breadcrumb`,
-      "itemListElement": isDirectHotModel || product.category_slug?.includes("dj") || product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
-        ? [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Trang chủ",
-              "item": baseUrl,
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Bàn DJ Chính Hãng",
-              "item": `${baseUrl}/ban-dj`,
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
-              "item": `${baseUrl}/products/${canonicalSlug}`,
-            },
-          ]
-        : [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Trang chủ",
-              "item": baseUrl,
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Sản phẩm",
-              "item": `${baseUrl}/products`,
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": product.category_name || "Thiết bị âm thanh",
-              "item": product.category_slug
-                ? `${baseUrl}/products?category=${product.category_slug}`
-                : `${baseUrl}/products`,
-            },
-            {
-              "@type": "ListItem",
-              "position": 4,
-              "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
-              "item": `${baseUrl}/products/${canonicalSlug}`,
-            },
-          ],
-    },
-  ];
+  const isDjProduct = Boolean(
+    isDirectHotModel ||
+    product.category_slug?.includes("dj") ||
+    product.brand?.toLowerCase().includes("pioneer") ||
+    product.brand?.toLowerCase().includes("alphatheta") ||
+    product.name.toLowerCase().includes("dj") ||
+    product.name.toLowerCase().includes("xdj") ||
+    product.name.toLowerCase().includes("ddj")
+  );
+
+  // Check if rental service is supported for this model
+  const hasRental = Boolean(
+    product.rental_enabled === true ||
+    (product.rental_price && product.rental_price > 0) ||
+    (isDirectHotModel && hotSeo?.rentalPrice)
+  );
+
+  const graph: Record<string, unknown>[] = [productSchema];
+
+  // Distinct Rental Service Schema (NOT conflated with Product sale offer)
+  if (hasRental) {
+    graph.push({
+      "@type": "Service",
+      "@id": `${baseUrl}/products/${canonicalSlug}#rental-service`,
+      "name": `Dịch vụ cho thuê bàn DJ ${product.name}`,
+      "serviceType": "DJ Equipment Rental",
+      "description": `Dịch vụ cho thuê bàn DJ ${product.name} biểu diễn sự kiện 24h tại Đà Nẵng, Huế và Miền Trung. Máy mới 99%, đầy đủ phụ kiện, bàn giao và setup tận nơi 24/7.`,
+      "provider": {
+        "@type": ["MusicStore", "LocalBusiness"],
+        "name": "VanBass Music Center",
+        "url": baseUrl,
+        "telephone": "+84706067799",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
+          "addressLocality": "Đà Nẵng",
+          "addressCountry": "VN",
+        },
+      },
+      "areaServed": "VN",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "VND",
+        "price": hotSeo?.rentalPrice || product.rental_price || 1000000,
+        "url": `${baseUrl}/thue-ban-dj`,
+        "availability": "https://schema.org/InStock",
+      },
+    });
+  }
+
+  // Distinct Technical Repair & Maintenance Service Schema
+  if (isDjProduct) {
+    graph.push({
+      "@type": "Service",
+      "@id": `${baseUrl}/products/${canonicalSlug}#repair-service`,
+      "name": `Dịch vụ sửa chữa và bảo dưỡng bàn DJ ${product.name}`,
+      "serviceType": "DJ Equipment Repair and Maintenance",
+      "description": `Trung tâm kỹ thuật sửa chữa bàn DJ ${product.name} tại Đà Nẵng & Huế: thay fader Alps chính hãng, cân chỉnh jogwheel, bảo dưỡng định kỳ và khắc phục sự cố bo mạch.`,
+      "provider": {
+        "@type": ["MusicStore", "LocalBusiness"],
+        "name": "VanBass Music Center",
+        "url": baseUrl,
+        "telephone": "+84706067799",
+      },
+      "url": `${baseUrl}/sua-chua-ban-dj`,
+    });
+  }
+
+  graph.push({
+    "@type": "BreadcrumbList",
+    "@id": `${baseUrl}/products/${canonicalSlug}#breadcrumb`,
+    "itemListElement": isDirectHotModel || product.category_slug?.includes("dj") || product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
+      ? [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Trang chủ",
+            "item": baseUrl,
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Bàn DJ Chính Hãng",
+            "item": `${baseUrl}/ban-dj`,
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
+            "item": `${baseUrl}/products/${canonicalSlug}`,
+          },
+        ]
+      : [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Trang chủ",
+            "item": baseUrl,
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Sản phẩm",
+            "item": `${baseUrl}/products`,
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": product.category_name || "Thiết bị âm thanh",
+            "item": product.category_slug
+              ? `${baseUrl}/products?category=${product.category_slug}`
+              : `${baseUrl}/products`,
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
+            "item": `${baseUrl}/products/${canonicalSlug}`,
+          },
+        ],
+  });
 
   if (hotSeo && hotSeo.faqs && hotSeo.faqs.length > 0) {
     graph.push({
