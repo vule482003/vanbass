@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import ProductsClient from "./ProductsClient";
 import { fetchProducts, fetchCategories } from "../lib/api";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng | VanBass",
   description:

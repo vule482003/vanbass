@@ -4,6 +4,8 @@ import Link from "next/link";
 import ProductsClient from "../products/ProductsClient";
 import { fetchProducts, fetchCategories } from "../lib/api";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta - VanMusic",
   description:

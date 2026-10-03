@@ -1,12 +1,25 @@
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "./mock-data";
 import { Category, Product } from "./types";
 
+// Check if running on Vercel without an external backend configured
+function isVercelStandalone(): boolean {
+  const isVercel = Boolean(process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_ENV);
+  if (!isVercel) return false;
+  const externalApi = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_INTERNAL_URL;
+  // If no external URL or pointing to localhost on Vercel cloud, it has no reachable backend
+  return !externalApi || externalApi.includes("127.0.0.1") || externalApi.includes("localhost");
+}
+
 export function getApiBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
   }
   if (typeof window !== "undefined") {
     return "/api";
+  }
+  // When running standalone on Vercel, don't attempt 127.0.0.1 which hangs for seconds
+  if (isVercelStandalone()) {
+    return "";
   }
   return process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000/api";
 }
@@ -27,10 +40,14 @@ interface OrderResponse {
 }
 
 export async function fetchCategories(): Promise<Category[]> {
+  if (isVercelStandalone()) {
+    return MOCK_CATEGORIES;
+  }
   const baseUrl = getApiBaseUrl();
   try {
     const res = await fetch(`${baseUrl}/categories`, {
       next: { revalidate: 60 },
+      signal: AbortSignal.timeout(1500),
     });
     if (!res.ok) {
       if (process.env.NODE_ENV !== "production") {
@@ -55,6 +72,9 @@ export async function fetchProducts(params?: {
   rental_only?: boolean;
   search?: string;
 }): Promise<Product[]> {
+  if (isVercelStandalone()) {
+    return filterMockProducts(params);
+  }
   const baseUrl = getApiBaseUrl();
   try {
     const searchParams = new URLSearchParams();
@@ -64,7 +84,8 @@ export async function fetchProducts(params?: {
 
     const url = `${baseUrl}/products${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     const res = await fetch(url, {
-      next: { revalidate: 30 },
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(1500),
     });
     if (!res.ok) {
       if (process.env.NODE_ENV !== "production") {
@@ -84,10 +105,14 @@ export async function fetchProducts(params?: {
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
+  if (isVercelStandalone()) {
+    return MOCK_PRODUCTS.find((p) => p.slug === slug) || null;
+  }
   const baseUrl = getApiBaseUrl();
   try {
     const res = await fetch(`${baseUrl}/products/by-slug/${slug}`, {
-      next: { revalidate: 30 },
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(1500),
     });
     if (res.ok) {
       const data = await res.json();
