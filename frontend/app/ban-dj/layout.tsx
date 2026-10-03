@@ -3,30 +3,33 @@ import type { Metadata } from "next";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta - VanMusic",
+  title: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng | VanMusic",
   description:
-    "Đại lý phân phối bàn DJ Pioneer DJ, AlphaTheta chính hãng tại Đà Nẵng & Miền Trung: Pioneer XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2, XDJ-RX2. Máy mới 100% fullbox & like new 99%, bảo hành 12-24T, trả góp 0%, test máy tại showroom.",
+    "Tổng đại lý mua bán bàn DJ Pioneer DJ, AlphaTheta chính hãng tại Đà Nẵng, Huế & Miền Trung: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2, XDJ-XZ. Máy mới 100% fullbox & like new 99%, bảo hành 12-24T, trả góp 0%, test máy trực tiếp tại Showroom.",
   keywords: [
     // Core Commercial Keywords
-    "bàn dj",
-    "ban dj",
-    "bàn dj chính hãng",
-    "ban dj chinh hang",
-    "bàn dj đà nẵng",
-    "ban dj da nang",
-    "mua bàn dj",
     "mua ban dj",
+    "mua bàn dj",
+    "mua bán bàn dj",
+    "bán bàn dj",
+    "bàn dj chính hãng",
+    "mua bàn dj chính hãng",
+    // Local Keywords Đà Nẵng & Miền Trung
     "mua bàn dj đà nẵng",
-    "mua ban dj da nang",
+    "mua bán bàn dj đà nẵng",
     "bán bàn dj đà nẵng",
-    "ban ban dj da nang",
+    "mua ban dj da nang",
+    "bàn dj đà nẵng",
+    "cửa hàng bán bàn dj đà nẵng",
+    "địa chỉ mua bàn dj đà nẵng",
+    "bàn dj huế",
+    "bán bàn dj huế",
+    // Brand & Product Keywords
     "bàn dj pioneer",
     "bàn dj alphatheta",
     "bàn dj pioneer đà nẵng",
     "bàn dj alphatheta đà nẵng",
     "mua bàn dj pioneer",
-    "cửa hàng bán bàn dj đà nẵng",
-    "địa chỉ mua bàn dj đà nẵng",
     "giá bàn dj",
     "bàn dj cho người mới",
     "dj controller",
@@ -34,20 +37,19 @@ export const metadata: Metadata = {
     // Hot Search Models
     "XDJ RX3",
     "xdj rx3",
+    "mua xdj rx3",
     "DDJ FLX4",
     "ddj flx4",
+    "mua ddj flx4",
     "OMNIS DUO",
     "omnis duo",
     "XDJ AZ",
     "xdj az",
-    "XDJ RX2",
-    "xdj rx2",
     "DDJ FLX2",
     "ddj flx2",
-    "XDJ RR",
-    "xdj rr",
     "XDJ XZ",
     "xdj xz",
+    "XDJ RX2",
     "vanbass music center",
     "vanmusic",
   ],
@@ -55,9 +57,9 @@ export const metadata: Metadata = {
     canonical: "/ban-dj",
   },
   openGraph: {
-    title: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta - VanMusic",
+    title: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng | VanMusic",
     description:
-      "Tổng kho phân phối bàn DJ Pioneer DJ, AlphaTheta chính hãng tại Đà Nẵng: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ. Bảo hành 12-24T, hỗ trợ trả góp 0%, trải nghiệm trực tiếp tại Showroom Đà Nẵng & Huế.",
+      "Tổng kho mua bán bàn DJ Pioneer DJ & AlphaTheta chính hãng tại Đà Nẵng: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2. Bảo hành 12-24T, hỗ trợ trả góp 0%, test máy tại Showroom.",
     url: `${siteUrl}/ban-dj`,
     type: "website",
     images: [
@@ -65,7 +67,7 @@ export const metadata: Metadata = {
         url: "/images/rental/rental_fleet_hero.jpg",
         width: 1200,
         height: 630,
-        alt: "Mua Bàn DJ Chính Hãng Tại Đà Nẵng - VanMusic",
+        alt: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng - VanMusic",
       },
     ],
   },
@@ -103,12 +105,12 @@ export default function BanDjLayout({
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         "@id": `${siteUrl}/ban-dj#webpage`,
         "url": `${siteUrl}/ban-dj`,
-        "name": "Mua Bàn DJ Chính Hãng Tại Đà Nẵng | Pioneer DJ & AlphaTheta",
+        "name": "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng",
         "description":
-          "Danh mục bàn DJ chính hãng Pioneer DJ & AlphaTheta tại Đà Nẵng. Đầy đủ DJ Controller, All-In-One XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ.",
+          "Trung tâm mua bán bàn DJ chính hãng Pioneer DJ & AlphaTheta tại Đà Nẵng: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2. Máy mới 100% fullbox & like new 99%, bảo hành 12-24T, trả góp 0%.",
         "breadcrumb": {
           "@id": `${siteUrl}/ban-dj#breadcrumb`,
         },
@@ -116,7 +118,7 @@ export default function BanDjLayout({
       {
         "@type": ["Store", "LocalBusiness"],
         "@id": `${siteUrl}/ban-dj#store`,
-        "name": "VanMusic - Tổng Kho Bàn DJ Chính Hãng Đà Nẵng",
+        "name": "VanMusic - Trung Tâm Mua Bán Bàn DJ Pioneer DJ & AlphaTheta Đà Nẵng",
         "url": `${siteUrl}/ban-dj`,
         "telephone": "+84706067799",
         "priceRange": "5.000.000đ - 105.000.000đ",
@@ -133,7 +135,7 @@ export default function BanDjLayout({
           "longitude": "108.1882",
         },
         "description":
-          "Showroom phân phối và bán lẻ bàn DJ chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng & Miền Trung: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, XDJ-RX2.",
+          "Showroom phân phối và bán lẻ bàn DJ chính hãng Pioneer DJ, AlphaTheta tại Đà Nẵng & Miền Trung: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2, XDJ-XZ.",
       },
       {
         "@type": "FAQPage",
