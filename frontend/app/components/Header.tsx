@@ -35,6 +35,12 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
         cmsLabel: "Menu Trang Chủ",
       },
       {
+        href: "/ban-dj",
+        label: config?.nav_buy_dj || (lang === "vi" ? "Mua Bàn DJ" : "Buy DJ Gear"),
+        cmsKey: "header.nav_buy_dj",
+        cmsLabel: "Menu Mua Bàn DJ",
+      },
+      {
         href: "/thue-ban-dj",
         label: config?.nav_rental || (lang === "vi" ? "Thuê Bàn DJ" : "DJ Rental"),
         cmsKey: "header.nav_rental",

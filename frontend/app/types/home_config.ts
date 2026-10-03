@@ -44,6 +44,7 @@ export interface HeaderConfig {
   brand_title: string;
   brand_subtitle: string;
   nav_home: string;
+  nav_buy_dj?: string;
   nav_rental: string;
   nav_products: string;
   nav_about: string;
@@ -132,6 +133,7 @@ export const DEFAULT_HOME_DATA: HomeData = {
     brand_title: "VANBASS",
     brand_subtitle: "MUSIC CENTER",
     nav_home: "TRANG CHỦ",
+    nav_buy_dj: "MUA BÀN DJ",
     nav_rental: "THUÊ BÀN DJ",
     nav_products: "SẢN PHẨM",
     nav_about: "VỀ VANBASS",

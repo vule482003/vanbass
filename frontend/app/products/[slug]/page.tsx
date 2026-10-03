@@ -132,6 +132,11 @@ export const HOT_MODELS_SEO: Record<
         answer:
           "XDJ-RX3 nâng cấp vượt bậc với màn hình cảm ứng 10.1 inch siêu nét (so với 7 inch của RX2), giao diện duyệt nhạc GUI từ CDJ-3000, 14 Beat FX + 6 Sound Color FX từ DJM-900NXS2, tính năng Release FX trên pad và màn hình On-Jog LCD màu hiển thị artwork.",
       },
+      {
+        question: "Bàn DJ Pioneer XDJ-RX3 khi bị mòn fader, kẹt jogwheel hoặc lỗi nguồn thì sửa ở đâu uy tín tại Đà Nẵng?",
+        answer:
+          "VanMusic (VanBass Music Center) tại 77 Nguyễn Tất Thành, Đà Nẵng và chi nhánh Huế là trung tâm kỹ thuật chuyên sửa chữa bàn DJ Pioneer XDJ-RX3. Thay fader Alps/Magvel chính hãng, cân chỉnh cảm ứng jogwheel, vệ sinh bo mạch lấy liền trong ngày, bảo hành 6 - 12 tháng.",
+      },
     ],
   },
   "xdj-rx2": {
@@ -175,6 +180,11 @@ export const HOT_MODELS_SEO: Record<
         answer:
           "Rất nên! XDJ-RX2 có giao diện phím bấm và độ nặng jogwheel y hệt dàn CDJ-2000NXS2 + DJM-900NXS2 ở quán bar, pub, club. Mua RX2 giúp DJ thành thạo workflow biểu diễn chuyên nghiệp với mức chi phí chỉ bằng 1/3 so với dàn rời.",
       },
+      {
+        question: "Sửa chữa thay fader và cân chỉnh mâm Pioneer XDJ-RX2 ở đâu uy tín tại Đà Nẵng?",
+        answer:
+          "VanMusic tiếp nhận sửa chữa thay fader volume, thay nút CUE/PLAY và bảo dưỡng mâm xoay Pioneer XDJ-RX2 lấy liền trong 30-60 phút tại Showroom Đà Nẵng & Huế. Linh kiện Alps chính hãng, bảo hành 6 - 12 tháng.",
+      },
     ],
   },
   "xdj-rr": {
@@ -212,6 +222,11 @@ export const HOT_MODELS_SEO: Record<
         question: "Giá thuê bàn DJ Pioneer XDJ-RR tại VanBass là bao nhiêu?",
         answer:
           "Giá thuê Pioneer XDJ-RR tại VanBass dao động từ 600.000đ - 800.000đ/ngày, hỗ trợ giao máy nhanh trong 2 giờ tại Đà Nẵng, Hội An, Thừa Thiên Huế.",
+      },
+      {
+        question: "Bàn DJ Pioneer XDJ-RR bị kẹt fader hoặc đơ mâm xoay thì sửa ở đâu tại Đà Nẵng?",
+        answer:
+          "VanMusic cung cấp dịch vụ sửa chữa Pioneer XDJ-RR chuyên nghiệp tại Đà Nẵng: thay fader chính hãng, sửa cụm cảm biến mâm jogwheel, thay phím bấm CUE/PLAY lấy liền trong 30-60 phút, bảo hành 6 - 12 tháng.",
       },
     ],
   },
@@ -256,6 +271,11 @@ export const HOT_MODELS_SEO: Record<
         answer:
           "Giá thuê Pioneer DDJ-FLX4 tại VanBass chỉ từ 400.000đ/ngày. Đầy đủ dây cáp kết nối USB-C, tai nghe, dây ra loa 3.5mm-RCA và hỗ trợ kỹ thuật cài đặt phần mềm từ xa hoặc tận nơi 24/7.",
       },
+      {
+        question: "Sửa bàn DJ Pioneer DDJ-FLX4 bị gãy cổng Type-C hoặc lỏng fader ở đâu tại Đà Nẵng?",
+        answer:
+          "VanMusic chuyên xử lý các lỗi thường gặp trên Pioneer DDJ-FLX4: hàn thay chân cắm USB-C, thay cần fader volume/crossfader, vệ sinh bảo dưỡng jogwheel chống delay lấy liền trong ngày tại Showroom Đà Nẵng & Huế.",
+      },
     ],
   },
   "ddj-flx2": {
@@ -292,6 +312,11 @@ export const HOT_MODELS_SEO: Record<
         question: "Thuê bàn DJ AlphaTheta DDJ-FLX2 giá bao nhiêu?",
         answer:
           "Giá thuê AlphaTheta DDJ-FLX2 chỉ 350.000đ/ngày, thích hợp mang đi du lịch, picnic, cắm trại ngoài trời hoặc tiệc bạn bè.",
+      },
+      {
+        question: "Bàn DJ AlphaTheta DDJ-FLX2 có được bảo hành và sửa chữa chính hãng tại VanMusic không?",
+        answer:
+          "Có. Tất cả máy AlphaTheta DDJ-FLX2 đều được VanMusic tiếp nhận kiểm tra kỹ thuật miễn phí, thay thế linh kiện chính hãng và bảo hành phần cứng uy tín từ 6 đến 12 tháng.",
       },
     ],
   },
@@ -336,6 +361,11 @@ export const HOT_MODELS_SEO: Record<
         answer:
           "Giá thuê OMNIS-DUO tại VanBass từ 1.200.000đ/ngày. Máy mới 99%, có thể thuê kèm loa di động tích hợp pin Wave-Eight để tạo thành trọn bộ âm thanh biểu diễn không dây 100%.",
       },
+      {
+        question: "Bàn DJ dùng pin AlphaTheta OMNIS-DUO có thay pin và sửa fader được không?",
+        answer:
+          "Có. VanMusic nhận thay pin dung lượng cao chính hãng cho AlphaTheta OMNIS-DUO, xử lý lỗi kết nối Bluetooth, SonicLink và thay thế fader mượt mà với quy trình kỹ thuật chuyên sâu tại Đà Nẵng.",
+      },
     ],
   },
   "xdj-az": {
@@ -374,6 +404,11 @@ export const HOT_MODELS_SEO: Record<
         answer:
           "Giá thuê AlphaTheta XDJ-AZ dao động từ 2.000.000đ - 2.500.000đ/ngày, chuyên phục vụ các show diễn Festival, Bar Club lớn và DJ quốc tế.",
       },
+      {
+        question: "Dịch vụ bảo dưỡng và sửa chữa bàn DJ 4 kênh AlphaTheta XDJ-AZ tại Đà Nẵng?",
+        answer:
+          "VanMusic cung cấp dịch vụ bảo dưỡng định kỳ và sửa chữa bàn DJ Flagship AlphaTheta XDJ-AZ: cân chỉnh mâm xoay CDJ-3000, thay fader Magvel, kiểm tra bo mạch xử lý âm thanh 32-bit bởi kỹ thuật viên tay nghề cao.",
+      },
     ],
   },
   "xdj-an": {
@@ -411,6 +446,11 @@ export const HOT_MODELS_SEO: Record<
         answer:
           "Giá thuê XDJ-AN tại VanBass là 1.200.000đ - 1.500.000đ/ngày, giao và hướng dẫn kỹ thuật tận nơi tại Đà Nẵng & Huế.",
       },
+      {
+        question: "Bàn DJ AlphaTheta XDJ-AN sửa chữa và bảo hành ở đâu tại Đà Nẵng & Miền Trung?",
+        answer:
+          "VanMusic tại 77 Nguyễn Tất Thành, Đà Nẵng tiếp nhận bảo hành chính hãng và sửa chữa thiết bị AlphaTheta XDJ-AN. Linh kiện thay thế chuẩn nhà máy, báo giá minh bạch và hỗ trợ kỹ thuật trọn đời.",
+      },
     ],
   },
   "xdj-xz": {
@@ -447,6 +487,11 @@ export const HOT_MODELS_SEO: Record<
         question: "Giá thuê bàn DJ Pioneer XDJ-XZ tại Đà Nẵng và Huế là bao nhiêu?",
         answer:
           "Giá thuê Pioneer XDJ-XZ tại VanBass dao động từ 1.800.000đ - 2.000.000đ/ngày. Máy luôn được bảo dưỡng mới 99%, fader mượt mà, đầy đủ phụ kiện nguồn và dây tín hiệu âm thanh chuyên nghiệp.",
+      },
+      {
+        question: "Sửa chữa thay fader và cân chỉnh mâm Pioneer XDJ-XZ chuẩn Bar Club tại Đà Nẵng?",
+        answer:
+          "VanMusic chuyên sửa chữa dòng máy Club Standard Pioneer DJ XDJ-XZ: thay crossfader Magvel Pro, thay fader 4 kênh, cân chỉnh cảm ứng jogwheel mâm lớn, xử lý nguồn và vệ sinh sạch sẽ lấy liền trong ngày.",
       },
     ],
   },
@@ -909,34 +954,55 @@ export default async function ProductDetailPage({ params }: PageProps) {
     {
       "@type": "BreadcrumbList",
       "@id": `${baseUrl}/products/${canonicalSlug}#breadcrumb`,
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Trang chủ",
-          "item": baseUrl,
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Sản phẩm",
-          "item": `${baseUrl}/products`,
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": product.category_name || "Thiết bị âm thanh",
-          "item": product.category_slug
-            ? `${baseUrl}/products?category=${product.category_slug}`
-            : `${baseUrl}/products`,
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
-          "item": `${baseUrl}/products/${canonicalSlug}`,
-        },
-      ],
+      "itemListElement": isDirectHotModel || product.category_slug?.includes("dj") || product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
+        ? [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Trang chủ",
+              "item": baseUrl,
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Bàn DJ Chính Hãng",
+              "item": `${baseUrl}/ban-dj`,
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
+              "item": `${baseUrl}/products/${canonicalSlug}`,
+            },
+          ]
+        : [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Trang chủ",
+              "item": baseUrl,
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Sản phẩm",
+              "item": `${baseUrl}/products`,
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": product.category_name || "Thiết bị âm thanh",
+              "item": product.category_slug
+                ? `${baseUrl}/products?category=${product.category_slug}`
+                : `${baseUrl}/products`,
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
+              "item": `${baseUrl}/products/${canonicalSlug}`,
+            },
+          ],
     },
   ];
 

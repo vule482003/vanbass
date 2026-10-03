@@ -431,7 +431,7 @@ export default async function BanDjPage({ searchParams }: PageProps) {
         initialCategories={categories}
         initialSearchParams={resolvedParams}
         baseCatalogPath="/ban-dj"
-        pageTitle="Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng"
+        pageTitle="Mua Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng"
         pageSubtitle="Tổng đại lý phân phối bàn DJ Controller cho người mới và hệ thống All-In-One cao cấp cho DJ, Bar, Club tại Đà Nẵng & Miền Trung. Bảo hành chính hãng 12-24 tháng, hỗ trợ trả góp 0%."
         seoIntroContent={banDjSeoIntro}
       />
