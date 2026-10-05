@@ -102,27 +102,8 @@ const nextConfig: NextConfig = {
         destination: "/products/:slug*",
         permanent: true,
       },
-      // 301 Permanent Redirects for alias slugs to canonical hot model URLs (Bing & Google Best Practice)
-      {
-        source: "/products/ban-dj-alphatheta-xdj-az",
-        destination: "/products/xdj-az",
-        permanent: true,
-      },
-      {
-        source: "/products/ban-dj-alpha-theta-omnis-duo",
-        destination: "/products/omnis-duo",
-        permanent: true,
-      },
-      {
-        source: "/products/alphatheta-ddj-flx2",
-        destination: "/products/ddj-flx2",
-        permanent: true,
-      },
-      {
-        source: "/products/alphatheta-xdj-an",
-        destination: "/products/xdj-an",
-        permanent: true,
-      },
+      // 301/308 Permanent Redirects for alias slugs to canonical hot model URLs (Bing & Google Best Practice)
+      // 1. Pioneer DJ XDJ-RX3
       {
         source: "/products/pioneer-xdj-rx3",
         destination: "/products/xdj-rx3",
@@ -134,25 +115,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/products/pioneer-ddj-flx4",
-        destination: "/products/ddj-flx4",
+        source: "/products/ban-dj-xdj-rx3",
+        destination: "/products/xdj-rx3",
         permanent: true,
       },
-      {
-        source: "/products/pioneer-dj-ddj-flx4",
-        destination: "/products/ddj-flx4",
-        permanent: true,
-      },
-      {
-        source: "/products/pioneer-xdj-xz",
-        destination: "/products/xdj-xz",
-        permanent: true,
-      },
-      {
-        source: "/products/pioneer-dj-xdj-xz",
-        destination: "/products/xdj-xz",
-        permanent: true,
-      },
+      // 2. Pioneer DJ XDJ-RX2
       {
         source: "/products/pioneer-xdj-rx2",
         destination: "/products/xdj-rx2",
@@ -164,6 +131,12 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/products/ban-dj-xdj-rx2",
+        destination: "/products/xdj-rx2",
+        permanent: true,
+      },
+      // 3. Pioneer DJ XDJ-RR
+      {
         source: "/products/pioneer-xdj-rr",
         destination: "/products/xdj-rr",
         permanent: true,
@@ -173,7 +146,113 @@ const nextConfig: NextConfig = {
         destination: "/products/xdj-rr",
         permanent: true,
       },
-      // 301 Redirect for duplicate 18SW115 slug to primary canonical slug
+      {
+        source: "/products/ban-dj-xdj-rr",
+        destination: "/products/xdj-rr",
+        permanent: true,
+      },
+      // 4. Pioneer DJ DDJ-FLX4
+      {
+        source: "/products/pioneer-ddj-flx4",
+        destination: "/products/ddj-flx4",
+        permanent: true,
+      },
+      {
+        source: "/products/pioneer-dj-ddj-flx4",
+        destination: "/products/ddj-flx4",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-flx4",
+        destination: "/products/ddj-flx4",
+        permanent: true,
+      },
+      // 5. AlphaTheta DDJ-FLX2
+      {
+        source: "/products/alphatheta-ddj-flx2",
+        destination: "/products/ddj-flx2",
+        permanent: true,
+      },
+      {
+        source: "/products/pioneer-ddj-flx2",
+        destination: "/products/ddj-flx2",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-flx2",
+        destination: "/products/ddj-flx2",
+        permanent: true,
+      },
+      // 6. AlphaTheta OMNIS-DUO
+      {
+        source: "/products/alpha-theta-omnis-duo",
+        destination: "/products/omnis-duo",
+        permanent: true,
+      },
+      {
+        source: "/products/alphatheta-omnis-duo",
+        destination: "/products/omnis-duo",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-omnis-duo",
+        destination: "/products/omnis-duo",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-alpha-theta-omnis-duo",
+        destination: "/products/omnis-duo",
+        permanent: true,
+      },
+      // 7. AlphaTheta XDJ-AZ
+      {
+        source: "/products/pioneer-xdj-az",
+        destination: "/products/xdj-az",
+        permanent: true,
+      },
+      {
+        source: "/products/alphatheta-xdj-az",
+        destination: "/products/xdj-az",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-xdj-az",
+        destination: "/products/xdj-az",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-alphatheta-xdj-az",
+        destination: "/products/xdj-az",
+        permanent: true,
+      },
+      // 8. AlphaTheta XDJ-AN
+      {
+        source: "/products/alphatheta-xdj-an",
+        destination: "/products/xdj-an",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-xdj-an",
+        destination: "/products/xdj-an",
+        permanent: true,
+      },
+      // 9. Pioneer DJ XDJ-XZ
+      {
+        source: "/products/pioneer-xdj-xz",
+        destination: "/products/xdj-xz",
+        permanent: true,
+      },
+      {
+        source: "/products/pioneer-dj-xdj-xz",
+        destination: "/products/xdj-xz",
+        permanent: true,
+      },
+      {
+        source: "/products/ban-dj-xdj-xz",
+        destination: "/products/xdj-xz",
+        permanent: true,
+      },
+      // 10. 18SW115 Speaker
       {
         source: "/products/loa-sub-roi-b-c-speakers-5-tac-18sw115",
         destination: "/products/loa-sub-roi-bc-speakers-5-tac-18sw115",

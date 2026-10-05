@@ -25,6 +25,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: "VanBass Music Center",
+  authors: [{ name: "VanBass Music Center", url: siteUrl }],
+  creator: "VanBass Music Center",
+  publisher: "VanBass Music Center",
   title: {
     default: "VanBass Music Center | Mua Bán & Cho Thuê Bàn DJ Chính Hãng",
     template: "%s | VanBass Music Center",

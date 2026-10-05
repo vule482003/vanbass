@@ -554,9 +554,10 @@ export async function resolveProduct(slug: string): Promise<ProductResolution> {
     // Resolve the actual target product to ensure it exists
     const targetResolution = await resolveProduct(aliasTarget);
     if (targetResolution.product) {
+      const canonicalTarget = PRODUCT_SLUG_ALIASES[targetResolution.product.slug.toLowerCase()] || aliasTarget;
       return {
         product: targetResolution.product,
-        redirectSlug: targetResolution.product.slug || aliasTarget,
+        redirectSlug: canonicalTarget,
       };
     }
   }
@@ -872,8 +873,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
-  const rawImg = hotSeo?.image || product.images?.[0]?.image_url || product.image_url || "/images/placeholder.png";
-  const fullImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
   const plainDesc = hotSeo?.description || getProductPlainExcerpt(product.description, 250) || product.name;
   const productPrice =
     product.sale_price && product.sale_price > 0
@@ -882,49 +881,69 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const brandName = product.brand || (modelKey?.includes("alphatheta") ? "AlphaTheta" : "Pioneer DJ");
 
-  // Dynamic Offers Schema: Accurate and category-appropriate
-  const offers: Record<string, unknown>[] = [];
-
-  // Direct Purchase Offer
-  if (product.sale_enabled !== false) {
-    offers.push({
-      "@type": "Offer",
-      "name": `Mua ${product.name} chính hãng`,
-      "url": `${baseUrl}/products/${canonicalSlug}`,
-      "priceCurrency": "VND",
-      "price": productPrice,
-      "itemCondition": "https://schema.org/NewCondition",
-      "availability": "https://schema.org/InStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "VanBass Music Center",
-        "url": baseUrl,
-      },
-      "hasMerchantReturnPolicy": {
-        "@type": "MerchantReturnPolicy",
-        "applicableCountry": "VN",
-        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-        "merchantReturnDays": 7,
-        "returnMethod": "https://schema.org/ReturnInStore",
-        "returnFees": "https://schema.org/FreeReturn",
-      },
-    });
+  // Collect all real product images
+  const productImages: string[] = [];
+  if (hotSeo?.image) {
+    const full = hotSeo.image.startsWith("http") ? hotSeo.image : `${baseUrl}${hotSeo.image.startsWith("/") ? "" : "/"}${hotSeo.image}`;
+    productImages.push(full);
+  }
+  if (product.images && product.images.length > 0) {
+    for (const img of product.images) {
+      if (img.image_url) {
+        const full = img.image_url.startsWith("http") ? img.image_url : `${baseUrl}${img.image_url.startsWith("/") ? "" : "/"}${img.image_url}`;
+        if (!productImages.includes(full)) {
+          productImages.push(full);
+        }
+      }
+    }
+  }
+  if (productImages.length === 0 && product.image_url) {
+    const full = product.image_url.startsWith("http") ? product.image_url : `${baseUrl}${product.image_url.startsWith("/") ? "" : "/"}${product.image_url}`;
+    productImages.push(full);
+  }
+  if (productImages.length === 0) {
+    productImages.push(`${baseUrl}/images/rental/rental_fleet_hero.jpg`);
   }
 
-  // Purchase Offer strictly for Product schema
+  // Real Offer Schema
+  const offerSchema: Record<string, unknown> = {
+    "@type": "Offer",
+    "url": `${baseUrl}/products/${canonicalSlug}`,
+    "priceCurrency": "VND",
+    "price": productPrice,
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": product.stock_quantity === 0 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "VanBass Music Center",
+      "url": baseUrl,
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "VN",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 7,
+      "returnMethod": "https://schema.org/ReturnInStore",
+      "returnFees": "https://schema.org/FreeReturn",
+    },
+  };
+
+  // Product Schema strictly with real data
   const productSchema: Record<string, unknown> = {
     "@type": "Product",
     "@id": `${baseUrl}/products/${canonicalSlug}#product`,
     "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
-    "image": [fullImg],
     "description": plainDesc,
+    "image": productImages,
+    "url": `${baseUrl}/products/${canonicalSlug}`,
     "sku": product.sku || canonicalSlug.toUpperCase(),
     "mpn": product.sku || canonicalSlug.toUpperCase(),
+    ...(product.category_name ? { "category": product.category_name } : {}),
     "brand": {
       "@type": "Brand",
       "name": brandName,
     },
-    "offers": offers,
+    "offers": offerSchema,
   };
 
   const isDjProduct = Boolean(
