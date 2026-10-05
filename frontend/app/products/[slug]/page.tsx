@@ -986,13 +986,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
         },
       },
       "areaServed": "VN",
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "VND",
-        "price": hotSeo?.rentalPrice || product.rental_price || 1000000,
-        "url": `${baseUrl}/thue-ban-dj`,
-        "availability": "https://schema.org/InStock",
-      },
     });
   }
 

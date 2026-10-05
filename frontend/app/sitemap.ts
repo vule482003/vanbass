@@ -121,6 +121,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
       }
     }
+
+    // 3. Ensure Core Canonical DJ Models are guaranteed in sitemap if not already added by API
+    for (const hotSlug of hotSearchSlugs) {
+      const canonicalSlug = PRODUCT_SLUG_ALIASES[hotSlug] || hotSlug;
+      const cleanSlug = encodeURI(canonicalSlug);
+      const productUrl = `${baseUrl}/products/${cleanSlug}`;
+
+      if (!seenUrls.has(productUrl)) {
+        seenUrls.add(productUrl);
+        sitemapEntries.push({
+          url: productUrl,
+          lastModified: now,
+          changeFrequency: "daily",
+          priority: 1.0,
+        });
+      }
+    }
   } catch (error) {
     console.error("[Sitemap Generation] Error fetching products for sitemap:", error);
   }
