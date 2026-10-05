@@ -18,7 +18,7 @@ from app.api.dependencies import get_db, get_optional_current_user
 from app.core.config import settings
 from app.models.order import Order, OrderStatus, PaymentStatus
 from app.models.payment import Payment, PaymentMethod, PaymentTransactionStatus
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.schemas.vnpay import VnpayCreatePaymentResponse, VnpayIpnResponse
 from app.services.email_service import EmailService
 from app.services.vnpay_service import VnpayService
@@ -358,8 +358,14 @@ def _confirm_payment(
                 order=order,
                 customer_email=cust_email,
             )
+
+        # Lấy danh sách email staff/admin từ DB
+        staff_users = db.execute(select(User.email).where(User.role.in_([UserRole.ADMIN, UserRole.STAFF]))).scalars().all()
+        staff_emails = [email for email in staff_users if email and "@" in email and not email.endswith("@vanbass.local")]
+
         EmailService.send_order_notification_to_staff(
             order=order,
+            extra_notify_emails=staff_emails,
         )
     except Exception as email_err:  # noqa: BLE001
         logger.warning("VNPAY confirmation email dispatch error: %s", email_err)

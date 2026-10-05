@@ -135,8 +135,14 @@ def create_order(
                 order=order,
                 customer_email=customer_email,
             )
+            
+        # Lấy danh sách email staff/admin từ DB
+        staff_users = db.execute(select(User.email).where(User.role.in_([UserRole.ADMIN, UserRole.STAFF]))).scalars().all()
+        staff_emails = [email for email in staff_users if email and "@" in email and not email.endswith("@vanbass.local")]
+
         EmailService.send_order_notification_to_staff(
             order=order,
+            extra_notify_emails=staff_emails,
         )
 
     return order
@@ -347,6 +353,36 @@ def bank_transfer_webhook(
 
     db.commit()
     db.refresh(target_order)
+
+    # Gửi email thông báo cho Khách và Staff
+    try:
+        user_record = db.get(User, target_order.user_id) if target_order.user_id else None
+        cust_email = (
+            user_record.email
+            if user_record
+            and user_record.email
+            and "@" in user_record.email
+            and not user_record.email.endswith("@vanbass.local")
+            else None
+        )
+        if cust_email:
+            EmailService.send_order_confirmation_to_customer(
+                order=target_order,
+                customer_email=cust_email,
+            )
+            
+        # Lấy danh sách email staff/admin từ DB
+        staff_users = db.execute(select(User.email).where(User.role.in_([UserRole.ADMIN, UserRole.STAFF]))).scalars().all()
+        staff_emails = [email for email in staff_users if email and "@" in email and not email.endswith("@vanbass.local")]
+
+        EmailService.send_order_notification_to_staff(
+            order=target_order,
+            extra_notify_emails=staff_emails,
+        )
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"SePAY webhook email dispatch error: {e}")
+
     return {
         "success": True,
         "order_number": target_order.order_number,

@@ -154,7 +154,7 @@ function formatCurrency(amount?: number) {
   }).format(amount);
 }
 
-type AdminTab = "overview" | "home_cms" | "products" | "categories" | "orders" | "staff" | "settings";
+type AdminTab = "overview" | "home_cms" | "products" | "categories" | "orders" | "staff" | "users" | "settings";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -167,6 +167,10 @@ export default function AdminDashboardPage() {
   const [staffUsers, setStaffUsers] = useState<StaffUserItem[]>([]);
   const [isStaffLoading, setIsStaffLoading] = useState(false);
   const [staffSearchQuery, setStaffSearchQuery] = useState("");
+
+  const [customerUsers, setCustomerUsers] = useState<StaffUserItem[]>([]);
+  const [isCustomerLoading, setIsCustomerLoading] = useState(false);
+  const [customerSearchQuery, setCustomerSearchQuery] = useState("");
   const [staffRoleFilter, setStaffRoleFilter] = useState("all");
   const [showAddStaffModal, setShowAddStaffModal] = useState(false);
   const [staffEmail, setStaffEmail] = useState("");
@@ -187,7 +191,7 @@ export default function AdminDashboardPage() {
       try {
         const params = new URLSearchParams(window.location.search);
         const urlTab = params.get("tab") as AdminTab;
-        const validTabs: AdminTab[] = ["overview", "home_cms", "products", "categories", "orders", "staff", "settings"];
+        const validTabs: AdminTab[] = ["overview", "home_cms", "products", "categories", "orders", "staff", "users", "settings"];
         if (urlTab && validTabs.includes(urlTab)) {
           if (user?.role === "staff" && (urlTab === "staff" || urlTab === "settings")) {
             setActiveTab("overview");
@@ -692,6 +696,26 @@ export default function AdminDashboardPage() {
     }
   }, [apiUrl, token, user?.role]);
 
+  const fetchCustomerData = useCallback(async () => {
+    if (!token || user?.role === "staff") return;
+    setIsCustomerLoading(true);
+    try {
+      const cacheBust = `_t=${Date.now()}`;
+      const res = await fetch(`${apiUrl}/admin/users?role=customer&${cacheBust}`, {
+        cache: "no-store",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCustomerUsers(data.items || []);
+      }
+    } catch (err) {
+      console.error("Customer fetch error:", err);
+    } finally {
+      setIsCustomerLoading(false);
+    }
+  }, [apiUrl, token, user?.role]);
+
   const fetchStoreSettingsData = useCallback(async () => {
     if (!token || user?.role === "staff") return;
     setIsStoreSettingsLoading(true);
@@ -783,13 +807,15 @@ export default function AdminDashboardPage() {
         void fetchOrdersData();
       } else if (activeTab === "staff" && user?.role !== "staff") {
         void fetchStaffData();
+      } else if (activeTab === "users" && user?.role !== "staff") {
+        void fetchCustomerData();
       } else if (activeTab === "settings" && user?.role !== "staff") {
         void fetchStoreSettingsData();
       } else if (activeTab === "home_cms") {
         void fetchHomeConfigData();
       }
     });
-  }, [activeTab, token, user?.role, fetchDashboardData, fetchProductsData, fetchOrdersData, fetchStaffData, fetchStoreSettingsData, fetchHomeConfigData]);
+  }, [activeTab, token, user?.role, fetchDashboardData, fetchProductsData, fetchOrdersData, fetchStaffData, fetchCustomerData, fetchStoreSettingsData, fetchHomeConfigData]);
 
   // Category CRUD Handlers
   const handleCreateCategory = async (e: React.FormEvent) => {
@@ -1002,6 +1028,56 @@ export default function AdminDashboardPage() {
       setActionErrorMsg("Lỗi kết nối máy chủ khi tạo tài khoản nhân viên.");
     } finally {
       setIsSubmittingStaff(false);
+    }
+  };
+
+  
+  const handleToggleCustomerStatus = async (targetUser: StaffUserItem) => {
+    if (targetUser.id === user?.id || targetUser.email === user?.email) {
+      setActionErrorMsg("Không thể tự khóa hoặc xóa chính mình");
+      return;
+    }
+    try {
+      const res = await fetch(`${apiUrl}/admin/users/${targetUser.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ is_active: !targetUser.is_active }),
+      });
+      if (res.ok) {
+        fetchCustomerData();
+        setActionSuccessMsg(`${targetUser.is_active ? "Khóa" : "Mở khóa"} tài khoản thành công!`);
+      } else {
+        const err = await res.json();
+        setActionErrorMsg(err.detail || "Không thể thay đổi trạng thái.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối khi thay đổi trạng thái.");
+    }
+  };
+
+  const handleDeleteCustomer = async (targetUser: StaffUserItem) => {
+    if (targetUser.id === user?.id || targetUser.email === user?.email) {
+      setActionErrorMsg("Không thể tự xóa chính mình");
+      return;
+    }
+    if (!window.confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN tài khoản user ${targetUser.email}?`)) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`${apiUrl}/admin/users/${targetUser.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        fetchCustomerData();
+        setActionSuccessMsg("Đã xóa tài khoản user thành công!");
+      } else {
+        const err = await res.json();
+        setActionErrorMsg(err.detail || "Không thể xóa tài khoản này.");
+      }
+    } catch {
+      setActionErrorMsg("Lỗi kết nối khi xóa tài khoản.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -1726,6 +1802,17 @@ export default function AdminDashboardPage() {
                         <circle cx="9" cy="7" r="4" />
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    id: "users",
+                    label: "Tài khoản User",
+                    count: customerUsers.length || null,
+                    icon: (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
                       </svg>
                     ),
                   },
@@ -4239,6 +4326,640 @@ export default function AdminDashboardPage() {
                           );
                         })}
                       {staffUsers.length === 0 && !isStaffLoading && (
+                        <tr>
+                          <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
+                            Chưa có tài khoản nhân sự nào. Bấm nút &quot;+ Thêm nhân sự mới&quot; ở góc trên để tạo mới.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: CATEGORIES MANAGEMENT */}
+          {activeTab === "categories" && (
+            <div>
+              {/* Header */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  marginBottom: "20px",
+                  flexWrap: "wrap",
+                  gap: "14px",
+                }}
+              >
+                <div>
+                  <h2 style={{ fontSize: "24px", fontWeight: 800, margin: "0 0 6px 0", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    Quản Lý Danh Mục Thiết Bị
+                  </h2>
+                  <p style={{ margin: 0, fontSize: "14px", color: "#a1a1aa" }}>
+                    Phân loại thiết bị âm thanh, DJ, sân khấu và phụ kiện chuyên nghiệp cho cửa hàng
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCatNameInput("");
+                    setCatSlugInput("");
+                    setCatDescInput("");
+                    setShowAddCategoryModal(true);
+                  }}
+                  className="admin-pill-btn-green"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>Thêm danh mục mới</span>
+                </button>
+              </div>
+
+              {/* 3 Metric Cards for Categories */}
+              <div className="shadcn-metric-grid" style={{ marginBottom: "20px" }}>
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tổng Số Danh Mục</span>
+                    
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val">{categories.length}</div>
+                    <div className="shadcn-metric-subtext">Danh mục trong hệ thống</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Sản Phẩm Đã Phân Loại</span>
+                    
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
+                      {products.length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Thiết bị đang gán danh mục</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Danh Mục Đang Có Hàng</span>
+                    
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#60a5fa" }}>
+                      {categories.filter((c) => products.some((p) => p.category_id === c.id)).length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Có ít nhất 1 sản phẩm</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Search */}
+              <div
+                style={{
+                  backgroundColor: "#161618",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "16px 20px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  gap: "12px",
+                  alignItems: "center",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                }}
+              >
+                <div style={{ position: "relative", flex: 1 }}>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#a1a1aa"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input
+                    type="text"
+                    value={categorySearchQuery}
+                    onChange={(e) => setCategorySearchQuery(e.target.value)}
+                    placeholder="Tìm nhanh danh mục theo tên, đường dẫn (slug), mô tả..."
+                    style={{
+                      width: "100%",
+                      height: "44px",
+                      paddingLeft: "42px",
+                      paddingRight: categorySearchQuery ? "40px" : "16px",
+                      backgroundColor: "#0d0d0f",
+                      border: "1px solid rgba(255, 255, 255, 0.14)",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      fontSize: "13.5px",
+                      outline: "none",
+                      boxSizing: "border-box",
+                      transition: "border-color 0.2s, box-shadow 0.2s",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = "#22c55e";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(34, 197, 94, 0.15)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.14)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  />
+                  {categorySearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setCategorySearchQuery("")}
+                      style={{
+                        position: "absolute",
+                        right: "12px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        background: "none",
+                        border: "none",
+                        color: "#71717a",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        padding: "4px 6px",
+                      }}
+                      title="Xóa tìm kiếm"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Table of categories */}
+              <div className="admin-card-container">
+                <div style={{ overflowX: "auto" }}>
+                  <table className="shadcn-data-table">
+                    <thead>
+                      <tr>
+                        <th>Tên Danh Mục</th>
+                        <th>Đường Dẫn (Slug)</th>
+                        <th>Mô Tả</th>
+                        <th>Số Sản Phẩm</th>
+                        <th style={{ textAlign: "right" }}>Thao Tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredCategories.map((cat) => {
+                        const prodCount = products.filter((p) => p.category_id === cat.id).length;
+                        return (
+                          <tr key={cat.id}>
+                            <td style={{ fontWeight: 700, color: "#fff" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                
+                                <span style={{ fontSize: "14px" }}>{cat.name}</span>
+                              </div>
+                            </td>
+                            <td style={{ color: "#4ade80", fontFamily: "monospace", fontSize: "12.5px" }}>
+                              /{cat.slug}
+                            </td>
+                            <td style={{ color: "#a1a1aa", maxWidth: "280px" }}>
+                              <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "13px" }}>
+                                {cat.description || "—"}
+                              </div>
+                            </td>
+                            <td>
+                              <span
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  padding: "3px 12px",
+                                  borderRadius: "9999px",
+                                  fontSize: "11.5px",
+                                  fontWeight: 600,
+                                  backgroundColor: prodCount > 0 ? "#16a34a" : "rgba(255, 255, 255, 0.05)",
+                                  color: prodCount > 0 ? "#ffffff" : "#a1a1aa",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {prodCount} sản phẩm
+                              </span>
+                            </td>
+                            <td style={{ textAlign: "right" }}>
+                              <div className="admin-action-row">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingCategory(cat);
+                                    setCatNameInput(cat.name);
+                                    setCatSlugInput(cat.slug);
+                                    setCatDescInput(cat.description || "");
+                                    setShowEditCategoryModal(true);
+                                  }}
+                                  className="admin-action-btn-col edit"
+                                  title="Chỉnh sửa danh mục"
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                  </svg>
+                                  <span>Sửa</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteCategory(cat)}
+                                  className="admin-action-btn-col delete"
+                                  title="Xóa danh mục"
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                  </svg>
+                                  <span>Xóa</span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {filteredCategories.length === 0 && (
+                        <tr>
+                          <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
+                            Không tìm thấy danh mục nào phù hợp.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 7: STORE SETTINGS */}
+          {activeTab === "users" && user?.role === "admin" && (
+            <div>
+              {/* Header with Emerald Pill Button */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+                <div>
+                  <h2 style={{ fontSize: "22px", fontWeight: 800, margin: 0, color: "#ffffff", letterSpacing: "-0.01em" }}>
+                    Quản lý Tài khoản Khách hàng (User)
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStaffFullName("");
+                    setStaffEmail("");
+                    setStaffPhone("");
+                    setStaffPassword("");
+                    setStaffRole("staff");
+                    setShowAddStaffModal(true);
+                  }}
+                  className="admin-pill-btn-green"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Thêm nhân sự mới
+                </button>
+              </div>
+
+              {/* 4 Metric Cards for Staff */}
+              <div className="shadcn-metric-grid" style={{ marginBottom: "20px" }}>
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tổng Khách Hàng</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val">{customerUsers.length}</div>
+                    <div className="shadcn-metric-subtext">Khách hàng trong hệ thống</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tài khoản User</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#eab308" }}>
+                      {customerUsers.filter((u) => u.role === "admin").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Toàn quyền kiểm soát</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Tài khoản thường</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#4ade80" }}>
+                      {customerUsers.filter((u) => u.role === "staff").length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Vận hành đơn & sản phẩm</div>
+                  </div>
+                </div>
+
+                <div className="shadcn-metric-card">
+                  <div className="shadcn-metric-header">
+                    <span className="shadcn-metric-title">Đang Hoạt Động</span>
+                  </div>
+                  <div className="shadcn-metric-main">
+                    <div className="shadcn-metric-val" style={{ color: "#22c55e" }}>
+                      {customerUsers.filter((u) => u.is_active).length}
+                    </div>
+                    <div className="shadcn-metric-subtext">Được phép đăng nhập</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3-COLUMN LABELED SEARCH & FILTER BAR */}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
+                {/* Col 1: Tìm kiếm */}
+                <div style={{ flex: "1 1 280px", minWidth: "220px" }}>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Tìm kiếm nhân sự
+                  </label>
+                  <div style={{ position: "relative" }}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#71717a"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={customerSearchQuery}
+                      onChange={(e) => setCustomerSearchQuery(e.target.value)}
+                      placeholder="Gmail, SĐT, Tên nhân viên..."
+                      style={{
+                        width: "100%",
+                        height: "42px",
+                        paddingLeft: "40px",
+                        paddingRight: customerSearchQuery ? "36px" : "14px",
+                        backgroundColor: "#121215",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                        fontSize: "13px",
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                    {customerSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setCustomerSearchQuery("")}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "#71717a",
+                          cursor: "pointer",
+                          fontSize: "13px",
+                          padding: "4px",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Col 2: Segmented Role Pills */}
+                <div>
+                  <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#d4d4d8", marginBottom: "8px" }}>
+                    Vai trò
+                  </label>
+                  <div className="admin-filter-segmented-container">
+                    {[
+                      { id: "all", label: `Tất cả (${customerUsers.length})` },
+                      { id: "admin", label: `Admin (${customerUsers.filter((u) => u.role === "admin").length})` },
+                      { id: "staff", label: `Staff (${customerUsers.filter((u) => u.role === "staff").length})` },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setStaffRoleFilter(s.id)}
+                        className={`admin-filter-segmented-btn ${staffRoleFilter === s.id ? "active" : ""}`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Staff Table */}
+              <div className="admin-card-container">
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.08)", color: "#9ca3af", fontSize: "12.5px", fontWeight: 600, backgroundColor: "#0f0f12" }}>
+                        <th style={{ padding: "14px 16px", width: "40px", textAlign: "center" }}>
+                          <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                        </th>
+                        <th style={{ padding: "14px 16px" }}>Khách Hàng</th>
+                        <th style={{ padding: "14px 16px" }}>Email / Gmail</th>
+                        <th style={{ padding: "14px 16px" }}>Số Điện Thoại</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Vai Trò</th>
+                        <th style={{ padding: "14px 16px", textAlign: "center" }}>Trạng Thái</th>
+                        <th style={{ padding: "14px 16px", textAlign: "right" }}>Thao Tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customerUsers
+                        .filter((u) => {
+                          const matchRole = staffRoleFilter === "all" || u.role === staffRoleFilter;
+                          const matchSearch =
+                            !customerSearchQuery.trim() ||
+                            u.email.toLowerCase().includes(customerSearchQuery.toLowerCase().trim()) ||
+                            (u.phone && u.phone.includes(customerSearchQuery.trim())) ||
+                            (u.full_name && u.full_name.toLowerCase().includes(customerSearchQuery.toLowerCase().trim()));
+                          return matchRole && matchSearch;
+                        })
+                        .map((u) => {
+                          const isSelf = u.id === user?.id || u.email === user?.email;
+                          return (
+                            <tr
+                              key={u.id}
+                              style={{
+                                borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                                transition: "background-color 0.15s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.02)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
+                              }}
+                            >
+                              {/* Checkbox */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <input type="checkbox" style={{ accentColor: "#22c55e", width: "15px", height: "15px", cursor: "pointer", verticalAlign: "middle" }} />
+                              </td>
+
+                              {/* Name & Avatar */}
+                              <td style={{ padding: "12px 16px" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                  <div
+                                    style={{
+                                      width: "34px",
+                                      height: "34px",
+                                      borderRadius: "50%",
+                                      backgroundColor:
+                                        u.role === "admin"
+                                          ? "rgba(234, 179, 8, 0.18)"
+                                          : "rgba(34, 197, 94, 0.2)",
+                                      color:
+                                        u.role === "admin"
+                                          ? "#facc15"
+                                          : "#4ade80",
+                                      border: `1px solid ${u.role === "admin"
+                                        ? "rgba(234, 179, 8, 0.4)"
+                                        : "rgba(34, 197, 94, 0.4)"
+                                        }`,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontWeight: 800,
+                                      fontSize: "13px",
+                                      flexShrink: 0,
+                                    }}
+                                  >
+                                    {(u.full_name || u.email).charAt(0).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div style={{ fontWeight: 700, color: "#ffffff", fontSize: "13.5px" }}>
+                                      {u.full_name || "Chưa đặt tên"}
+                                    </div>
+                                    {isSelf && (
+                                      <span style={{ fontSize: "10.5px", color: "#22c55e", fontWeight: 700, display: "block" }}>
+                                        (Tài khoản của bạn)
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Email */}
+                              <td style={{ padding: "12px 16px", color: "#e4e4e7", fontFamily: "monospace", fontSize: "12.5px" }}>
+                                {u.email}
+                              </td>
+
+                              {/* Phone */}
+                              <td style={{ padding: "12px 16px" }}>
+                                {u.phone ? (
+                                  <span style={{ color: "#4ade80", fontWeight: 700, fontSize: "12.5px" }}>
+                                    SĐT: {u.phone}
+                                  </span>
+                                ) : (
+                                  <span style={{ color: "#71717a", fontStyle: "italic", fontSize: "12px" }}>
+                                    Chưa cập nhật
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Role */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <span
+                                  className={`shadcn-badge-pill ${u.role === "admin" ? "warning" : u.role === "staff" ? "info" : "neutral"}`}
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "3px 12px",
+                                    borderRadius: "9999px",
+                                    fontSize: "11.5px",
+                                    fontWeight: 700,
+                                    backgroundColor: u.role === "admin" ? "#eab308" : u.role === "staff" ? "#2563eb" : "#475569",
+                                    color: u.role === "admin" ? "#000000" : "#ffffff",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {u.role === "admin" ? "Admin" : u.role === "staff" ? "Staff" : "User"}
+                                </span>
+                              </td>
+
+                              {/* Status */}
+                              <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                                <span
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "6px",
+                                    padding: "3px 12px",
+                                    borderRadius: "9999px",
+                                    fontSize: "11.5px",
+                                    fontWeight: 600,
+                                    backgroundColor: u.is_active ? "#16a34a" : "#dc2626",
+                                    color: "#ffffff",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      width: "6px",
+                                      height: "6px",
+                                      borderRadius: "50%",
+                                      backgroundColor: "#ffffff",
+                                    }}
+                                  />
+                                  {u.is_active ? "Hoạt động" : "Đã khóa"}
+                                </span>
+                              </td>
+
+                              {/* Actions */}
+                              <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                                {isSelf ? (
+                                  <span style={{ fontSize: "12px", color: "#71717a", fontStyle: "italic" }}>
+                                    Đang đăng nhập
+                                  </span>
+                                ) : (
+                                  <div style={{ display: "inline-flex", gap: "8px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleToggleCustomerStatus(u)}
+                                      className="admin-action-btn-text"
+                                      title={u.is_active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                                    >
+                                      {u.is_active ? "Khóa" : "Mở"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteCustomer(u)}
+                                      className="admin-action-btn-text delete"
+                                      title="Xóa tài khoản vĩnh viễn"
+                                    >
+                                      ✕ Xóa
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      {customerUsers.length === 0 && !isCustomerLoading && (
                         <tr>
                           <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#71717a" }}>
                             Chưa có tài khoản nhân sự nào. Bấm nút &quot;+ Thêm nhân sự mới&quot; ở góc trên để tạo mới.
