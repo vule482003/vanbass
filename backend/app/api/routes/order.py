@@ -379,7 +379,7 @@ def bank_transfer_webhook(
             order=target_order,
             extra_notify_emails=staff_emails,
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         import logging
         logging.getLogger(__name__).error(f"SePAY webhook email dispatch error: {e}")
 
