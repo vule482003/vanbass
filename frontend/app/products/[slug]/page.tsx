@@ -72,6 +72,20 @@ export const PRODUCT_SLUG_ALIASES: Record<string, string> = {
   "loa-sub-roi-b-c-speakers-5-tac-18sw115": "loa-sub-roi-bc-speakers-5-tac-18sw115",
 };
 
+// Direct mapping from Canonical SEO Route Slug -> Primary Database Slug in PostgreSQL
+export const CANONICAL_TO_PRIMARY_DB_SLUG: Record<string, string> = {
+  "ddj-flx2": "alphatheta-ddj-flx2",
+  "xdj-az": "ban-dj-alphatheta-xdj-az",
+  "omnis-duo": "ban-dj-alpha-theta-omnis-duo",
+  "xdj-an": "alphatheta-xdj-an",
+  "xdj-rx3": "xdj-rx3",
+  "xdj-rx2": "xdj-rx2",
+  "xdj-rr": "xdj-rr",
+  "ddj-flx4": "ddj-flx4",
+  "xdj-xz": "xdj-xz",
+  "loa-sub-roi-bc-speakers-5-tac-18sw115": "loa-sub-roi-bc-speakers-5-tac-18sw115",
+};
+
 export const HOT_MODELS_SEO: Record<
   string,
   {
@@ -295,7 +309,7 @@ export const HOT_MODELS_SEO: Record<
     canonicalSlug: "ddj-flx2",
     image: "/images/products/alphatheta-ddj-flx2.png",
     brand: "AlphaTheta",
-    salePrice: 6393600,
+    salePrice: 5700600,
     rentalPrice: 350000,
     faqs: [
       {
@@ -562,23 +576,35 @@ export async function resolveProduct(slug: string): Promise<ProductResolution> {
     }
   }
 
-  // 2. PRIMARY SOURCE: Real PostgreSQL / FastAPI API by exact slug
-  try {
-    const res = await fetch(`${apiUrl}/products/by-slug/${encodeURIComponent(normalizedSlug)}`, {
-      next: { revalidate: 60 },
-    });
-    if (res.ok) {
-      const realProduct = await res.json();
-      if (realProduct && realProduct.id && realProduct.slug) {
-        // If the database product slug has different casing/formatting
-        if (realProduct.slug !== normalizedSlug && realProduct.slug.toLowerCase() === normalizedSlug) {
+  // 2. PRIMARY SOURCE: Real PostgreSQL / FastAPI API
+  // Build candidate slugs to query FastAPI (prioritizing known primary DB slugs for canonical routes)
+  const candidateDbSlugs: string[] = [];
+  if (CANONICAL_TO_PRIMARY_DB_SLUG[normalizedSlug]) {
+    candidateDbSlugs.push(CANONICAL_TO_PRIMARY_DB_SLUG[normalizedSlug]);
+  }
+  if (!candidateDbSlugs.includes(normalizedSlug)) {
+    candidateDbSlugs.push(normalizedSlug);
+  }
+  for (const [alias, target] of Object.entries(PRODUCT_SLUG_ALIASES)) {
+    if (target === normalizedSlug && !candidateDbSlugs.includes(alias)) {
+      candidateDbSlugs.push(alias);
+    }
+  }
+
+  for (const dbSlug of candidateDbSlugs) {
+    try {
+      const res = await fetch(`${apiUrl}/products/by-slug/${encodeURIComponent(dbSlug)}`, {
+        next: { revalidate: 60 },
+      });
+      if (res.ok) {
+        const realProduct = await res.json();
+        if (realProduct && realProduct.id && realProduct.slug) {
           return { product: realProduct, redirectSlug: null };
         }
-        return { product: realProduct, redirectSlug: null };
       }
+    } catch {
+      // API/Database offline or network error -> try next candidate
     }
-  } catch {
-    // API/Database offline or network error -> proceed to fallbacks
   }
 
   // 3. Exact slug match in local MOCK_PRODUCTS

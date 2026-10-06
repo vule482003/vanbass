@@ -2,6 +2,7 @@ export const dictionaries = {
   vi: {
     nav: {
       home: "Trang chủ",
+      services: "Dịch vụ",
       products: "Sản phẩm",
       about: "Về VanBass",
       contact: "Liên hệ",
@@ -501,6 +502,7 @@ export const dictionaries = {
   en: {
     nav: {
       home: "Home",
+      services: "Services",
       products: "Products",
       about: "About Us",
       contact: "Contact",

@@ -29,6 +29,19 @@ function formatCurrency(amount?: number, lang: "vi" | "en" = "vi") {
   }).format(amount);
 }
 
+const CANONICAL_TO_PRIMARY_DB_SLUG: Record<string, string> = {
+  "ddj-flx2": "alphatheta-ddj-flx2",
+  "xdj-az": "ban-dj-alphatheta-xdj-az",
+  "omnis-duo": "ban-dj-alpha-theta-omnis-duo",
+  "xdj-an": "alphatheta-xdj-an",
+  "xdj-rx3": "xdj-rx3",
+  "xdj-rx2": "xdj-rx2",
+  "xdj-rr": "xdj-rr",
+  "ddj-flx4": "ddj-flx4",
+  "xdj-xz": "xdj-xz",
+  "loa-sub-roi-bc-speakers-5-tac-18sw115": "loa-sub-roi-bc-speakers-5-tac-18sw115",
+};
+
 interface CompareLearnInfo {
   title: string;
   description: string;
@@ -249,16 +262,7 @@ export default function ProductDetailClient({
       try {
         const apiUrl = getApiBaseUrl();
         const cacheBust = `_t=${Date.now()}`;
-        const targetSlug =
-          slug.toLowerCase() === "xdj-az"
-            ? "ban-dj-alphatheta-xdj-az"
-            : slug.toLowerCase() === "omnis-duo"
-            ? "ban-dj-alpha-theta-omnis-duo"
-            : slug.toLowerCase() === "ddj-flx2"
-            ? "alphatheta-ddj-flx2"
-            : slug.toLowerCase() === "xdj-an"
-            ? "alphatheta-xdj-an"
-            : slug;
+        const targetSlug = CANONICAL_TO_PRIMARY_DB_SLUG[slug.toLowerCase()] || slug;
 
         const [singleRes, allRes] = await Promise.all([
           fetch(`${apiUrl}/products/by-slug/${targetSlug}?${cacheBust}`, { cache: "no-store" }),
@@ -1085,77 +1089,53 @@ export default function ProductDetailClient({
           </div>
 
           {/* ============================================================
-              3-PILLAR SERVICE MODULE: MUA - THUÊ - SỬA CHO SẢN PHẨM NÀY
+              SERVICE NAVIGATION: MUA - THUÊ - SỬA CHO SẢN PHẨM NÀY
              ============================================================ */}
           <div className="pdetail-3pillars-wrapper">
             <div className="pdetail-3pillars-header">
-              <span className="pdetail-3pillars-kicker">HỆ SINH THÁI DỊCH VỤ TOÀN DIỆN TẠI VANMUSIC</span>
-              <h2 className="pdetail-3pillars-title">3 Lựa Chọn Cho Thiết Bị {displayName}</h2>
+              <span className="pdetail-3pillars-kicker">HỆ SINH THÁI DỊCH VỤ TẠI VANMUSIC</span>
+              <h2 className="pdetail-3pillars-title">Dịch Vụ Cho Thiết Bị {displayName}</h2>
               <p className="pdetail-3pillars-subtitle">
-                Tùy theo mục đích sử dụng, ngân sách và nhu cầu thực tế, bạn có thể lựa chọn mua mới, thuê biểu diễn ngắn ngày hoặc bảo dưỡng kỹ thuật lấy liền tại Đà Nẵng & Huế:
+                Tùy theo nhu cầu thực tế, bạn có thể chọn mua sở hữu, thuê sự kiện ngắn ngày hoặc bảo dưỡng kỹ thuật tại Showroom Đà Nẵng & Huế:
               </p>
             </div>
 
             <div className="pdetail-3pillars-grid">
-              {/* CỘT 1: MUA */}
+              {/* ITEM 1: MUA */}
               <div className="pdetail-pillar-card pillar-buy">
-                <div className="pillar-badge">1. MUA MỚI HOẶC LƯỚT 99%</div>
                 <div className="pillar-icon">🛒</div>
                 <h3 className="pillar-card-title">Mua Bàn DJ {displayName}</h3>
-                <div className="pillar-price">
-                  {product.sale_price ? formatCurrency(product.sale_price, lang) : "Liên hệ báo giá"}
-                </div>
-                <ul className="pillar-features">
-                  <li>✓ 100% chính hãng, máy mới fullbox hoặc Like New 99%</li>
-                  <li>✓ Bảo hành 12 - 24 tháng chính hãng Pioneer DJ / AlphaTheta</li>
-                  <li>✓ Hỗ trợ trả góp 0% lãi suất linh hoạt qua thẻ tín dụng</li>
-                  <li>✓ Tặng USB nhạc Rekordbox + Cáp xịn + Khóa học DJ 1-kèm-1</li>
-                  <li>✓ Trực tiếp test mâm & fader trên dàn âm thanh Showroom</li>
-                </ul>
+                <p className="pillar-card-desc">
+                  Phân phối chính hãng mới 100% fullbox hoặc like new 99% tuyển chọn, bảo hành 12 - 24T, hỗ trợ trả góp 0%.
+                </p>
                 <Link href="/ban-dj" className="pillar-cta-btn pillar-cta-buy">
-                  <span>Khám phá Hub Mua Bàn DJ</span>
+                  <span>Khám phá các mẫu bàn DJ đang bán</span>
                   <span>&rarr;</span>
                 </Link>
               </div>
 
-              {/* CỘT 2: THUÊ */}
+              {/* ITEM 2: THUÊ */}
               <div className="pdetail-pillar-card pillar-rent">
-                <div className="pillar-badge">2. THUÊ SHOW BIỂU DIỄN 24H</div>
                 <div className="pillar-icon">🎧</div>
-                <h3 className="pillar-card-title">Thuê Bàn DJ {displayName}</h3>
-                <div className="pillar-price">
-                  {product.rental_price ? `${formatCurrency(product.rental_price, lang)} / 24h` : "Từ 400.000đ / ngày"}
-                </div>
-                <ul className="pillar-features">
-                  <li>✓ Máy tuyển chọn mới 99%, fader & pad cực kỳ mượt mà</li>
-                  <li>✓ Giao nhận & setup tận nơi trong 2 giờ tại Đà Nẵng & Huế</li>
-                  <li>✓ Kèm thùng flight case chống sốc, dây nguồn, dây canon/RCA</li>
-                  <li>✓ Hỗ trợ kỹ thuật 24/7 trực tiếp cho DJ và ban tổ chức</li>
-                  <li>✓ Thủ tục đặt cọc nhanh gọn, hóa đơn VAT đầy đủ</li>
-                </ul>
+                <h3 className="pillar-card-title">Thuê Thiết Bị Biểu Diễn</h3>
+                <p className="pillar-card-desc">
+                  Hỗ trợ cho thuê thiết bị DJ ngắn ngày cho show, tiệc và sự kiện, giao nhận và setup tận nơi 24/7 tại Đà Nẵng & Huế.
+                </p>
                 <Link href="/thue-ban-dj" className="pillar-cta-btn pillar-cta-rent">
-                  <span>Xem Bảng Giá Cho Thuê 24/7</span>
+                  <span>Xem dịch vụ cho thuê bàn DJ</span>
                   <span>&rarr;</span>
                 </Link>
               </div>
 
-              {/* CỘT 3: SỬA */}
+              {/* ITEM 3: SỬA */}
               <div className="pdetail-pillar-card pillar-repair">
-                <div className="pillar-badge">3. SỬA CHỮA & BẢO DƯỠNG</div>
                 <div className="pillar-icon">🛠️</div>
-                <h3 className="pillar-card-title">Sửa Chữa {displayName}</h3>
-                <div className="pillar-price">
-                  Kiểm tra & chuẩn đoán lỗi 0đ
-                </div>
-                <ul className="pillar-features">
-                  <li>✓ Thay fader volume, crossfader Alps & Magvel chính hãng</li>
-                  <li>✓ Cân chỉnh cảm ứng mâm jogwheel, sửa kẹt mâm xoay lấy liền</li>
-                  <li>✓ Thay thế nút bấm CUE / PLAY / Pad cao su trong 30 - 60 phút</li>
-                  <li>✓ Vệ sinh bảo dưỡng máy chống ẩm mốc bo mạch chuyên sâu</li>
-                  <li>✓ Bảo hành kỹ thuật dài hạn từ 6 đến 12 tháng</li>
-                </ul>
+                <h3 className="pillar-card-title">Sửa Chữa & Bảo Dưỡng</h3>
+                <p className="pillar-card-desc">
+                  Trạm kỹ thuật tiếp nhận kiểm tra miễn phí, thay thế fader, cân chỉnh jogwheel và bảo dưỡng thiết bị DJ chuyên nghiệp.
+                </p>
                 <Link href="/sua-chua-ban-dj" className="pillar-cta-btn pillar-cta-repair">
-                  <span>Dịch Vụ Sửa Chữa Bàn DJ</span>
+                  <span>Xem dịch vụ sửa chữa & bảo dưỡng</span>
                   <span>&rarr;</span>
                 </Link>
               </div>
@@ -1314,18 +1294,18 @@ export default function ProductDetailClient({
             </div>
           </div>
 
-          {/* Local Rental & Fast Delivery Cross-linking Banner */}
+          {/* Local Rental Cross-linking CTA */}
           <div className="pdetail-cross-rental-banner">
             <div className="pdetail-banner-content">
               <div>
                 <span className="pdetail-banner-kicker">
-                  ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng, Huế & Miền Trung
+                  ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng & Huế
                 </span>
                 <h2 className="pdetail-banner-title">
-                  Thuê Bàn DJ {displayName} Giao Lắp Tận Nơi 24/7
+                  Bạn Cần Thuê Bàn DJ {displayName} Cho Show Diễn Ngắn Ngày?
                 </h2>
                 <p className="pdetail-banner-desc">
-                  VanBass Music Center cung cấp dịch vụ cho thuê {displayName} máy mới 99%, setup trọn gói trong 2 giờ tại Đà Nẵng, Hội An, Thừa Thiên Huế. Đầy đủ dây giắc, hướng dẫn sử dụng và hỗ trợ kỹ thuật trực tiếp.
+                  VanBass Music Center hỗ trợ cho thuê {displayName} máy mới 99%, giao và setup trọn gói trong 2 giờ tại Đà Nẵng, Hội An và Thừa Thiên Huế.
                 </p>
               </div>
 
@@ -1342,31 +1322,24 @@ export default function ProductDetailClient({
                   href="/thue-ban-dj"
                   className="banner-secondary-btn"
                 >
-                  <span>Xem bảng giá thuê &rarr;</span>
+                  <span>Xem dịch vụ cho thuê bàn DJ &rarr;</span>
                 </Link>
               </div>
             </div>
-
-            <div className="pdetail-banner-perks-grid">
-              <div>🚚 <strong>Giao nhanh trong 2h:</strong> Đà Nẵng, Huế, Hội An</div>
-              <div>⚡ <strong>Thiết bị chuẩn:</strong> Mới 99%, fader & pad mượt mà</div>
-              <div>🌍 <strong>English Support:</strong> Cho DJ du lịch & sự kiện quốc tế</div>
-              <div>📑 <strong>Thủ tục linh hoạt:</strong> Đặt cọc nhanh, hỗ trợ 24/7</div>
-            </div>
           </div>
 
-          {/* Technical Repair & Maintenance Dedicated Banner for this model */}
+          {/* Technical Repair & Maintenance Cross-linking CTA */}
           <div className="pdetail-cross-repair-banner">
             <div className="pdetail-banner-content">
               <div>
                 <span className="pdetail-banner-kicker" style={{ color: "#38bdf8" }}>
-                  🛠️ Dịch vụ kỹ thuật sửa chữa & bảo dưỡng chuyên nghiệp tại Đà Nẵng & Huế
+                  🛠️ Trung tâm kỹ thuật sửa chữa & bảo dưỡng tại Đà Nẵng & Huế
                 </span>
                 <h2 className="pdetail-banner-title">
-                  Sửa Chữa Bàn DJ {displayName} Lấy Liền Trong Ngày
+                  Thiết Bị {displayName} Cần Kiểm Tra, Sửa Chữa Hoặc Bảo Dưỡng?
                 </h2>
                 <p className="pdetail-banner-desc">
-                  Bạn đang sở hữu thiết bị {displayName} gặp sự cố rè fader, kẹt mâm jogwheel, lệch tempo, mất nguồn hay nút bấm CUE/PLAY kém nhạy? Trung tâm kỹ thuật VanMusic tại Đà Nẵng (77 Nguyễn Tất Thành) & Huế tiếp nhận kiểm tra miễn phí 100%, thay thế linh kiện chính hãng Alps/Magvel và bảo hành kỹ thuật 6 - 12 tháng.
+                  Trạm kỹ thuật VanMusic tại Đà Nẵng (Nguyễn Tất Thành) & Huế tiếp nhận kiểm tra chuẩn đoán miễn phí, hỗ trợ thay thế linh kiện chính hãng và bảo dưỡng thiết bị DJ chuyên nghiệp.
                 </p>
               </div>
 
@@ -1376,31 +1349,16 @@ export default function ProductDetailClient({
                   className="banner-primary-btn"
                   style={{ backgroundColor: "#38bdf8", color: "#000" }}
                 >
-                  <span>Hotline sửa: 0706.067.799</span>
-                </a>
-                <a
-                  href={`https://m.me/${facebookPageId}?text=${encodeURIComponent(`Xin chào, tôi cần tư vấn sửa chữa bảo dưỡng bàn DJ ${displayName}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="banner-secondary-btn"
-                >
-                  <span>Đặt lịch sửa qua Chat &rarr;</span>
+                  <span>Hotline kỹ thuật: 0706.067.799</span>
                 </a>
                 <Link
                   href="/sua-chua-ban-dj"
                   className="banner-secondary-btn"
                   style={{ borderColor: "rgba(56, 189, 248, 0.4)", color: "#38bdf8" }}
                 >
-                  <span>Bảng giá sửa chữa &rarr;</span>
+                  <span>Xem dịch vụ sửa chữa & bảo dưỡng &rarr;</span>
                 </Link>
               </div>
-            </div>
-
-            <div className="pdetail-banner-perks-grid">
-              <div>⏱️ <strong>Lấy liền 30 - 60 phút:</strong> Thay fader, phím CUE/PLAY, vệ sinh máy</div>
-              <div>🛡️ <strong>Linh kiện chính hãng:</strong> Fader Alps, Magvel, cảm biến jogwheel Pioneer</div>
-              <div>🔍 <strong>Chuẩn đoán miễn phí:</strong> Báo giá rõ ràng, không phát sinh chi phí</div>
-              <div>📑 <strong>Bảo hành 6 - 12 tháng:</strong> Tem niêm phong và bảo hành điện tử uy tín</div>
             </div>
           </div>
 
@@ -2640,53 +2598,24 @@ export default function ProductDetailClient({
           box-shadow: 0 8px 24px rgba(168, 85, 247, 0.05);
         }
 
-        .pillar-badge {
-          font-size: 10.5px;
-          font-weight: 800;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          margin-bottom: 12px;
-        }
-
-        .pillar-buy .pillar-badge { color: #38bdf8; }
-        .pillar-rent .pillar-badge { color: #4ade80; }
-        .pillar-repair .pillar-badge { color: #c084fc; }
-
         .pillar-icon {
           font-size: 26px;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
         }
 
         .pillar-card-title {
-          font-size: 18px;
+          font-size: 17px;
           font-weight: 800;
           color: #ffffff;
           margin: 0 0 8px 0;
           line-height: 1.35;
         }
 
-        .pillar-price {
-          font-size: 20px;
-          font-weight: 800;
-          margin-bottom: 16px;
-          padding-bottom: 14px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .pillar-buy .pillar-price { color: #38bdf8; }
-        .pillar-rent .pillar-price { color: #22c55e; }
-        .pillar-repair .pillar-price { color: #c084fc; }
-
-        .pillar-features {
-          list-style: none;
-          padding: 0;
-          margin: 0 0 22px 0;
-          font-size: 13px;
-          color: #d4d4d8;
-          line-height: 1.7;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
+        .pillar-card-desc {
+          font-size: 13.5px;
+          color: #a1a1aa;
+          line-height: 1.6;
+          margin: 0 0 20px 0;
           flex: 1;
         }
 

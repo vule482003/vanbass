@@ -1913,7 +1913,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "brand": "AlphaTheta",
     "description": "DDJ-FLX2 là controller DJ nhẹ nhất và nhỏ gọn nhất của chúng tôi. Thiết bị chạy bằng nguồn USB bus, nên không cần nguồn điện ngoài khi kết nối với PC/Mac hoặc thiết bị di động* qua USB Type-C. Bạn có thể dễ dàng bắt đầu DJ bằng cách phát nhạc qua loa tích hợp của PC/Mac/thiết bị di động. Hoặc, nếu kết nối loa vào cổng đầu ra âm thanh của DDJ-FLX2, bạn có thể tổ chức bữa tiệc sôi động với bạn bè. *Trừ một số thiết bị Android. DJ CONTROLLER ALPHATHETA DDJ-FLX2 Bạn có nghĩ DJing trông có vẻ khó khô",
     "sale_enabled": true,
-    "sale_price": 6393600,
+    "sale_price": 5700600,
     "rental_enabled": true,
     "rental_price": 350000,
     "stock_quantity": 4,

@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng | VanMusic",
+  title: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng",
   description:
     "Tổng đại lý mua bán bàn DJ Pioneer DJ & AlphaTheta chính hãng tại Đà Nẵng, Huế & Miền Trung: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2, XDJ-XZ. Máy mới 100% fullbox & like new 99%, bảo hành 12-24T, trả góp 0%, test máy trực tiếp tại Showroom.",
   alternates: {
@@ -1387,6 +1387,64 @@ export default function BanDjLandingPage() {
                   </p>
                 </details>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Service Hub Navigation Links */}
+        <section style={{ maxWidth: "1280px", margin: "0 auto 60px auto", padding: "0 24px" }}>
+          <div
+            style={{
+              padding: "24px 28px",
+              borderRadius: "16px",
+              background: "rgba(18, 19, 24, 0.8)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "16px",
+            }}
+          >
+            <div>
+              <div style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff" }}>
+                Hệ Sinh Thái Dịch Vụ VanBass Music Center
+              </div>
+              <div style={{ fontSize: "12px", color: "#a1a1aa", marginTop: "2px" }}>
+                Tìm hiểu thêm các dịch vụ thuê thiết bị, sửa chữa lấy liền, đào tạo DJ và setup âm thanh sự kiện.
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <Link
+                href="/dich-vu"
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "#22c55e",
+                  padding: "8px 16px",
+                  borderRadius: "9999px",
+                  background: "rgba(34, 197, 94, 0.1)",
+                  border: "1px solid rgba(34, 197, 94, 0.3)",
+                  textDecoration: "none",
+                }}
+              >
+                Trung Tâm Dịch Vụ →
+              </Link>
+              <Link
+                href="/thue-ban-dj"
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "#e4e4e7",
+                  padding: "8px 16px",
+                  borderRadius: "9999px",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  textDecoration: "none",
+                }}
+              >
+                Dịch Vụ Thuê Bàn DJ →
+              </Link>
             </div>
           </div>
         </section>

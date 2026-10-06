@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Sửa Chữa Bàn DJ Chuyên Nghiệp Đà Nẵng, Huế | VanBass Music Center",
+  title: "Sửa Chữa Bàn DJ Chuyên Nghiệp Đà Nẵng, Huế",
   description:
     "Dịch vụ kỹ thuật sửa chữa bàn DJ, Mixer, CDJ Pioneer DJ & AlphaTheta chuyên nghiệp tại Đà Nẵng & Miền Trung. Thay fader, sửa jogwheel, xử lý nguồn, bảo dưỡng vệ sinh lấy liền trong ngày. Linh kiện chính hãng 100%, bảo hành 6-12T.",
   keywords: [
@@ -114,6 +114,24 @@ export default function SuaChuaBanDjPage() {
           },
         })),
       },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${baseUrl}/sua-chua-ban-dj#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Trang chủ",
+            item: baseUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Sửa Chữa Bàn DJ",
+            item: `${baseUrl}/sua-chua-ban-dj`,
+          },
+        ],
+      },
     ],
   };
 
@@ -198,7 +216,7 @@ export default function SuaChuaBanDjPage() {
                   margin: "0 0 20px 0",
                 }}
               >
-                Sửa Chữa Bàn DJ
+                Sửa Chữa Bàn DJ{" "}
                 <br />
                 <span style={{ color: "#22c55e" }}>Chuyên Nghiệp</span>
               </h1>

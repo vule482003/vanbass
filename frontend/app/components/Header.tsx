@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -35,16 +35,11 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
         cmsLabel: "Menu Trang Chủ",
       },
       {
-        href: "/ban-dj",
-        label: config?.nav_buy_dj || (lang === "vi" ? "Mua Bàn DJ" : "Buy DJ Gear"),
-        cmsKey: "header.nav_buy_dj",
-        cmsLabel: "Menu Mua Bàn DJ",
-      },
-      {
-        href: "/thue-ban-dj",
-        label: config?.nav_rental || (lang === "vi" ? "Thuê Bàn DJ" : "DJ Rental"),
-        cmsKey: "header.nav_rental",
-        cmsLabel: "Menu Thuê Bàn DJ",
+        href: "/dich-vu",
+        label: (t.nav as Record<string, string>).services || (lang === "vi" ? "Dịch vụ" : "Services"),
+        isServicesMega: true,
+        cmsKey: "header.nav_services",
+        cmsLabel: "Menu Dịch Vụ",
       },
       {
         href: "/products",
@@ -66,33 +61,57 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
         cmsLabel: "Menu Liên Hệ",
       },
     ],
-    [t.nav.home, t.nav.products, t.nav.about, t.nav.contact, lang, config]
+    [t.nav, lang, config]
   );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileServicesAccordionOpen, setMobileServicesAccordionOpen] = useState(false);
   const [mobileCatAccordionOpen, setMobileCatAccordionOpen] = useState(false);
   const [mobileActiveGroupId, setMobileActiveGroupId] = useState<string | null>(null);
 
-  const [isProductsMenuOpen, setIsProductsMenuOpen] = useState(false);
+  // Mutually exclusive desktop dropdown state: "services" | "products" | null
+  const [activeDesktopMenu, setActiveDesktopMenu] = useState<"services" | "products" | null>(null);
+  const menuCloseTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isServicesMenuOpen = activeDesktopMenu === "services";
+  const isProductsMenuOpen = activeDesktopMenu === "products";
   const [activeMegaGroupId, setActiveMegaGroupId] = useState<string>("dj");
-  const megaMenuTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearMenuCloseTimer = useCallback(() => {
+    if (menuCloseTimerRef.current) {
+      clearTimeout(menuCloseTimerRef.current);
+      menuCloseTimerRef.current = null;
+    }
+  }, []);
+
+  const handleOpenServicesMenu = () => {
+    clearMenuCloseTimer();
+    setActiveDesktopMenu("services");
+  };
 
   const handleOpenMegaMenu = () => {
-    if (megaMenuTimerRef.current) {
-      clearTimeout(megaMenuTimerRef.current);
-      megaMenuTimerRef.current = null;
-    }
-    setIsProductsMenuOpen(true);
+    clearMenuCloseTimer();
+    setActiveDesktopMenu("products");
+  };
+
+  const handleCloseServicesMenu = () => {
+    clearMenuCloseTimer();
+    menuCloseTimerRef.current = setTimeout(() => {
+      setActiveDesktopMenu((current) => (current === "services" ? null : current));
+    }, 250);
   };
 
   const handleCloseMegaMenu = () => {
-    if (megaMenuTimerRef.current) {
-      clearTimeout(megaMenuTimerRef.current);
-    }
-    megaMenuTimerRef.current = setTimeout(() => {
-      setIsProductsMenuOpen(false);
-    }, 280);
+    clearMenuCloseTimer();
+    menuCloseTimerRef.current = setTimeout(() => {
+      setActiveDesktopMenu((current) => (current === "products" ? null : current));
+    }, 250);
   };
+
+  const closeAllMenusImmediately = useCallback(() => {
+    clearMenuCloseTimer();
+    setActiveDesktopMenu(null);
+  }, [clearMenuCloseTimer]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -105,7 +124,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
   if (prevPathname !== pathname) {
     setPrevPathname(pathname);
     if (mobileMenuOpen) setMobileMenuOpen(false);
-    if (isProductsMenuOpen) setIsProductsMenuOpen(false);
+    if (activeDesktopMenu !== null) setActiveDesktopMenu(null);
     if (isSearchDropdownOpen) setIsSearchDropdownOpen(false);
     if (userDropdownOpen) setUserDropdownOpen(false);
     if (cartDropdownOpen) setCartDropdownOpen(false);
@@ -183,15 +202,29 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
         !islandRef.current.contains(event.target as Node)
       ) {
         setMobileMenuOpen(false);
-        setIsProductsMenuOpen(false);
+        closeAllMenusImmediately();
+        setUserDropdownOpen(false);
+        setCartDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+        closeAllMenusImmediately();
+        setIsSearchDropdownOpen(false);
         setUserDropdownOpen(false);
         setCartDropdownOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeAllMenusImmediately]);
 
   // Dynamic Sliding Indicator Logic
   useEffect(() => {
@@ -289,6 +322,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
 
   const isInteracting =
     isHeaderHovered ||
+    isServicesMenuOpen ||
     isProductsMenuOpen ||
     isSearchFocused ||
     isSearchDropdownOpen ||
@@ -351,6 +385,53 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
               const isHovered = hoveredHref === link.href;
               const isHighlighted = hoveredHref ? isHovered : isCurrentPage;
 
+              if (link.isServicesMega) {
+                return (
+                  <div
+                    key={link.href}
+                    className="header-nav-item-wrap"
+                    onMouseEnter={() => {
+                      setHoveredHref(link.href);
+                      handleOpenServicesMenu();
+                    }}
+                    onMouseLeave={handleCloseServicesMenu}
+                  >
+                    <Link
+                      href={link.href}
+                      ref={(el) => {
+                        linkRefs.current[link.href] = el;
+                      }}
+                      className={`nav-link-item ${isHighlighted ? "active" : ""}`}
+                      onClick={() => closeAllMenusImmediately()}
+                      data-cms-key={link.cmsKey}
+                      data-cms-label={link.cmsLabel}
+                      data-cms-type="text"
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        {link.label}
+                        <svg
+                          width="10"
+                          height="10"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={{
+                            transition: "transform 0.2s ease",
+                            transform: isServicesMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                            opacity: 0.75,
+                          }}
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </Link>
+                  </div>
+                );
+              }
+
               if (link.isMega) {
                 return (
                   <div
@@ -368,7 +449,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         linkRefs.current[link.href] = el;
                       }}
                       className={`nav-link-item ${isHighlighted ? "active" : ""}`}
-                      onClick={() => setIsProductsMenuOpen(false)}
+                      onClick={() => closeAllMenusImmediately()}
                       data-cms-key={link.cmsKey}
                       data-cms-label={link.cmsLabel}
                       data-cms-type="text"
@@ -394,116 +475,6 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         </svg>
                       </span>
                     </Link>
-
-                    {/* 2-Tier Obsidian Glass Mega Menu Dropdown */}
-                    {isProductsMenuOpen && (
-                      <div
-                        className="header-megamenu-dropdown"
-                        onMouseEnter={handleOpenMegaMenu}
-                        onMouseLeave={handleCloseMegaMenu}
-                      >
-                        {/* Left Column: 4 Parent Category Groups */}
-                        <div className="megamenu-left-col">
-                          <div className="megamenu-section-title">
-                            {lang === "en" ? "CATALOGUE" : "DANH MỤC THIẾT BỊ"}
-                          </div>
-
-                          <div className="megamenu-parent-list">
-                            {CATEGORY_GROUPS.map((group) => {
-                              const isActive = activeMegaGroupId === group.id;
-                              return (
-                                <div
-                                  key={group.id}
-                                  onMouseEnter={() => {
-                                    handleOpenMegaMenu();
-                                    setActiveMegaGroupId(group.id);
-                                  }}
-                                  className={`megamenu-parent-row ${isActive ? "is-active" : ""}`}
-                                >
-                                  <Link
-                                    href={`/products?group=${group.id}`}
-                                    onClick={() => setIsProductsMenuOpen(false)}
-                                    className="megamenu-parent-link"
-                                  >
-                                    <div className="megamenu-parent-meta">
-                                      <span className="megamenu-parent-name">
-                                        {lang === "en" ? group.nameEn : group.nameVi}
-                                      </span>
-                                      <span className="megamenu-parent-subcount">
-                                        {group.subcategories.length} {lang === "en" ? "categories" : "danh mục"}
-                                      </span>
-                                    </div>
-                                    <span className="megamenu-chevron">›</span>
-                                  </Link>
-                                </div>
-                              );
-                            })}
-                          </div>
-
-                          <div className="megamenu-left-footer">
-                            <Link
-                              href="/products"
-                              onClick={() => setIsProductsMenuOpen(false)}
-                              className="megamenu-all-link"
-                            >
-                              <span>{lang === "en" ? "Explore All Equipment →" : "Xem tất cả thiết bị →"}</span>
-                            </Link>
-                          </div>
-                        </div>
-
-                        {/* Right Column: Subcategories Grid */}
-                        <div className="megamenu-right-col">
-                          <div className="megamenu-right-header">
-                            <div className="megamenu-header-badge">
-                              {lang === "en" ? selectedMegaGroup.nameEn : selectedMegaGroup.nameVi}
-                            </div>
-                            <Link
-                              href={`/products?group=${selectedMegaGroup.id}`}
-                              onClick={() => setIsProductsMenuOpen(false)}
-                              className="megamenu-group-view-all"
-                            >
-                              {lang === "en" ? "View group archive →" : "Xem toàn bộ nhóm →"}
-                            </Link>
-                          </div>
-
-                          <div className="megamenu-sub-grid">
-                            {selectedMegaGroup.subcategories.map((sub) => (
-                              <Link
-                                key={sub.slug}
-                                href={`/products?category=${sub.slug}`}
-                                onClick={() => setIsProductsMenuOpen(false)}
-                                className="megamenu-sub-card"
-                              >
-                                <span className="megamenu-sub-bullet" />
-                                <span className="megamenu-sub-title">
-                                  {lang === "en" ? sub.nameEn : sub.nameVi}
-                                </span>
-                              </Link>
-                            ))}
-                          </div>
-
-                          {/* Mega Menu Featured Showcase Card */}
-                          <div className="megamenu-showcase-card">
-                            <div className="megamenu-showcase-info">
-                              <div className="megamenu-showcase-tag">VanBass Pro Audio</div>
-                              <div className="megamenu-showcase-title">
-                                {lang === "en" ? "Official Audio Equipment & Systems" : "Thiết Bị Âm Thanh Chính Hãng & Cho Thuê"}
-                              </div>
-                              <div className="megamenu-showcase-desc">
-                                {lang === "en" ? "100% Genuine • 12 Months Warranty • Da Nang Delivery" : "Bảo hành 12 tháng • Giao lắp tận nơi tại Đà Nẵng"}
-                              </div>
-                            </div>
-                            <Link
-                              href="/products"
-                              onClick={() => setIsProductsMenuOpen(false)}
-                              className="megamenu-showcase-cta"
-                            >
-                              {lang === "en" ? "Explore Catalog →" : "Khám phá ngay →"}
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 );
               }
@@ -589,21 +560,20 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
               )}
             </form>
 
-            {/* Floating Dropdown Results & Hot Searches */}
+            {/* Floating Dropdown Results & Hot Searches (Clean Minimalist styling - Zero Emojis) */}
             {isSearchDropdownOpen && (
               <div className="search-dropdown-menu">
                 {!searchQuery.trim() ? (
                   <div className="search-hot-panel">
                     <div className="search-hot-title">
-                      <span>🔥</span>
                       <span>{lang === "en" ? "Trending & Popular Searches" : "Tìm kiếm phổ biến & Hot search"}</span>
                     </div>
                     <div className="search-hot-tags-grid">
                       {[
                         // Mua bán thiết bị DJ
-                        { label: "🎧 Mua bán DJ Đà Nẵng", link: "/products?search=DJ" },
-                        { label: "🎧 Mua bán DJ Huế", link: "/products?search=DJ" },
-                        { label: "🎧 Mua bán DJ Miền Trung", link: "/products?search=DJ" },
+                        { label: "Mua bán DJ Đà Nẵng", link: "/products?search=DJ" },
+                        { label: "Mua bán DJ Huế", link: "/products?search=DJ" },
+                        { label: "Mua bán DJ Miền Trung", link: "/products?search=DJ" },
 
                         // Thuê bàn DJ (Đầy đủ Đà Nẵng, Huế, Miền Trung)
                         { label: "Thuê bàn DJ Đà Nẵng", link: "/thue-ban-dj" },
@@ -611,27 +581,32 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         { label: "Thuê bàn DJ Miền Trung", link: "/thue-ban-dj" },
 
                         // Dịch vụ sửa chữa & bảo dưỡng
-                        { label: "🔧 Sửa chữa bàn DJ", link: "/contact" },
-                        { label: "🔧 Sửa bàn DJ & Loa", link: "/contact" },
-                        { label: "🛠️ Sửa loa & Mixer", link: "/contact" },
-                        { label: "⚙️ Bảo dưỡng thiết bị DJ", link: "/contact" },
-                        { label: "Sửa bàn DJ Đà Nẵng & Huế", link: "/contact" },
-                        { label: "🔧 Sửa bàn DJ Đà Nẵng", link: "/contact" },
-                        { label: "📍 Sửa bàn DJ Huế", link: "/contact" },
-                        { label: "🛠️ Sửa bàn DJ Miền Trung", link: "/contact" },
+                        { label: "Sửa chữa bàn DJ", link: "/sua-chua-ban-dj" },
+                        { label: "Sửa bàn DJ & Loa", link: "/sua-chua-ban-dj" },
+                        { label: "Sửa loa & Mixer", link: "/sua-chua-ban-dj" },
+                        { label: "Bảo dưỡng thiết bị DJ", link: "/sua-chua-ban-dj" },
+                        { label: "Sửa bàn DJ Đà Nẵng & Huế", link: "/sua-chua-ban-dj" },
+                        { label: "Sửa bàn DJ Đà Nẵng", link: "/sua-chua-ban-dj" },
+                        { label: "Sửa bàn DJ Huế", link: "/sua-chua-ban-dj" },
+                        { label: "Sửa bàn DJ Miền Trung", link: "/sua-chua-ban-dj" },
+
+                        // Dịch vụ đào tạo & setup
+                        { label: "Đào tạo DJ Đà Nẵng", link: "/dao-tao-dj" },
+                        { label: "Đào tạo MC Hype", link: "/dao-tao-mc-hype" },
+                        { label: "Setup âm thanh sự kiện", link: "/su-kien-setup" },
 
                         // Địa điểm
                         { label: "Showroom Huế & ĐN", link: "/about" },
 
                         // Dòng máy hot & Loa B&C
-                        { label: "🔥 Pioneer XDJ-RX3", link: "/products/xdj-rx3" },
-                        { label: "🔥 Pioneer DDJ-FLX4", link: "/products/ddj-flx4" },
-                        { label: "🔥 AlphaTheta OMNIS-DUO", link: "/products/omnis-duo" },
-                        { label: "🔥 AlphaTheta XDJ-AZ", link: "/products/xdj-az" },
-                        { label: "⚡ Pioneer XDJ-RX2", link: "/products/xdj-rx2" },
-                        { label: "⚡ Pioneer XDJ-RR", link: "/products/xdj-rr" },
-                        { label: "⚡ AlphaTheta DDJ-FLX2", link: "/products/ddj-flx2" },
-                        { label: "⚡ AlphaTheta XDJ-AN", link: "/products/xdj-an" },
+                        { label: "Pioneer XDJ-RX3", link: "/products/xdj-rx3" },
+                        { label: "Pioneer DDJ-FLX4", link: "/products/ddj-flx4" },
+                        { label: "AlphaTheta OMNIS-DUO", link: "/products/omnis-duo" },
+                        { label: "AlphaTheta XDJ-AZ", link: "/products/xdj-az" },
+                        { label: "Pioneer XDJ-RX2", link: "/products/xdj-rx2" },
+                        { label: "Pioneer XDJ-RR", link: "/products/xdj-rr" },
+                        { label: "AlphaTheta DDJ-FLX2", link: "/products/ddj-flx2" },
+                        { label: "AlphaTheta XDJ-AN", link: "/products/xdj-an" },
                         { label: "Loa B&C Speakers", link: "/products?category=loa-roi" },
                       ].map((item, idx) => (
                         <Link
@@ -656,7 +631,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                       <div
                         onMouseDown={() => {
                           setIsSearchDropdownOpen(false);
-                          router.push("/contact");
+                          router.push("/sua-chua-ban-dj");
                         }}
                         style={{
                           display: "flex",
@@ -671,7 +646,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <span style={{ fontSize: "18px" }}>🔧</span>
+                          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e" }} />
                           <div>
                             <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#22c55e" }}>
                               {lang === "en" ? "DJ Equipment Repair & Maintenance" : "Dịch vụ Sửa chữa & Bảo dưỡng Bàn DJ"}
@@ -682,7 +657,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                           </div>
                         </div>
                         <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#22c55e" }}>
-                          {lang === "en" ? "Contact →" : "Liên hệ ngay →"}
+                          {lang === "en" ? "Details →" : "Xem chi tiết →"}
                         </span>
                       </div>
                     )}
@@ -707,7 +682,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <span style={{ fontSize: "18px" }}>🎛️</span>
+                          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#60a5fa" }} />
                           <div>
                             <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#60a5fa" }}>
                               {lang === "en" ? "DJ Gear Rental in Da Nang & Central Vietnam" : "Dịch vụ Cho Thuê Bàn DJ tại Đà Nẵng & Huế"}
@@ -728,7 +703,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                       <div
                         onMouseDown={() => {
                           setIsSearchDropdownOpen(false);
-                          router.push("/products");
+                          router.push("/ban-dj");
                         }}
                         style={{
                           display: "flex",
@@ -743,7 +718,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <span style={{ fontSize: "18px" }}>🛒</span>
+                          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#38bdf8" }} />
                           <div>
                             <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#38bdf8" }}>
                               {lang === "en" ? "Official DJ Gear Sales • Pioneer & AlphaTheta" : "Mua Bán Bàn DJ Chính Hãng • Trả Góp 0%"}
@@ -1002,6 +977,320 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
           </div>
         </div>
 
+        {/* Services 4-Column Obsidian Glass Mega Menu */}
+        {isServicesMenuOpen && (
+          <div
+            className="header-services-dropdown"
+            onMouseEnter={handleOpenServicesMenu}
+            onMouseLeave={handleCloseServicesMenu}
+          >
+            {/* Header Bar */}
+            <div className="services-dropdown-header">
+              <div className="services-dropdown-title-wrap">
+                <div className="services-dropdown-eyebrow-row">
+                  <span className="services-dropdown-indicator-dot" />
+                  <span className="services-dropdown-eyebrow">DỊCH VỤ</span>
+                </div>
+                <span className="services-dropdown-heading">
+                  {lang === "en" ? "VanBass Service Ecosystem" : "Hệ sinh thái dịch vụ VanBass"}
+                </span>
+                <span className="services-dropdown-subtext">
+                  {lang === "en" ? "Equipment, engineering, academy & event production." : "Thiết bị, kỹ thuật, đào tạo và giải pháp sự kiện."}
+                </span>
+              </div>
+              <Link
+                href="/dich-vu"
+                onClick={() => closeAllMenusImmediately()}
+                className="services-dropdown-all-link"
+              >
+                <span>{lang === "en" ? "All Services →" : "Xem tất cả dịch vụ →"}</span>
+              </Link>
+            </div>
+
+            {/* 4-Column Layout */}
+            <div className="services-dropdown-4col-grid">
+              {/* Column 1: THUÊ THIẾT BỊ */}
+              <div className="services-col">
+                <div className="services-col-header">
+                  <span className="services-col-title">
+                    {lang === "en" ? "EQUIPMENT RENTAL" : "THUÊ THIẾT BỊ"}
+                  </span>
+                  <div className="services-col-line" />
+                </div>
+                <div className="services-col-items">
+                  <Link
+                    href="/thue-ban-dj"
+                    onClick={() => closeAllMenusImmediately()}
+                    className="service-card-item"
+                  >
+                    <div className="service-card-thumb">
+                      <Image
+                        src="/images/rental/rental_fleet_hero.jpg"
+                        alt="Thuê Bàn DJ"
+                        width={44}
+                        height={44}
+                        className="service-card-img"
+                      />
+                    </div>
+                    <div className="service-card-body">
+                      <div className="service-card-name">
+                        <span>{lang === "en" ? "DJ Gear & Equipment Rental" : "Thuê Bàn DJ & Thiết BỊ"}</span>
+                        <span className="service-card-arrow">→</span>
+                      </div>
+                      <div className="service-card-desc">
+                        {lang === "en" ? "Quality equipment for live shows & events" : "Thiết bị chất lượng cho show diễn và sự kiện"}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Column 2: TRUNG TÂM KỸ THUẬT */}
+              <div className="services-col">
+                <div className="services-col-header">
+                  <span className="services-col-title">
+                    {lang === "en" ? "TECHNICAL CENTER" : "TRUNG TÂM KỸ THUẬT"}
+                  </span>
+                  <div className="services-col-line" />
+                </div>
+                <div className="services-col-items">
+                  <Link
+                    href="/sua-chua-ban-dj"
+                    onClick={() => closeAllMenusImmediately()}
+                    className="service-card-item"
+                  >
+                    <div className="service-card-thumb">
+                      <Image
+                        src="/images/repair/dj_repair_hero.jpg"
+                        alt="Sửa Chữa DJ"
+                        width={44}
+                        height={44}
+                        className="service-card-img"
+                      />
+                    </div>
+                    <div className="service-card-body">
+                      <div className="service-card-name">
+                        <span>{lang === "en" ? "DJ Repair & Maintenance" : "Sửa Chữa & Bảo Dưỡng DJ"}</span>
+                        <span className="service-card-arrow">→</span>
+                      </div>
+                      <div className="service-card-desc">
+                        {lang === "en" ? "Diagnostics, repair and maintenance for DJ gear" : "Kiểm tra, sửa chữa và bảo dưỡng thiết bị DJ"}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Column 3: ĐÀO TẠO */}
+              <div className="services-col">
+                <div className="services-col-header">
+                  <span className="services-col-title">
+                    {lang === "en" ? "ACADEMY" : "ĐÀO TẠO"}
+                  </span>
+                  <div className="services-col-line" />
+                </div>
+                <div className="services-col-items">
+                  <Link
+                    href="/dao-tao-dj"
+                    onClick={() => closeAllMenusImmediately()}
+                    className="service-card-item"
+                  >
+                    <div className="service-card-thumb">
+                      <Image
+                        src="/images/services/dj_academy_hero.jpg"
+                        alt="Đào Tạo DJ"
+                        width={44}
+                        height={44}
+                        className="service-card-img"
+                      />
+                    </div>
+                    <div className="service-card-body">
+                      <div className="service-card-name">
+                        <span>{lang === "en" ? "Practical DJ Training" : "Đào Tạo DJ Thực Hành"}</span>
+                        <span className="service-card-arrow">→</span>
+                      </div>
+                      <div className="service-card-desc">
+                        {lang === "en" ? "Hands-on DJ coaching from basics to live sets" : "Học DJ thực hành từ cơ bản đến biểu diễn"}
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/dao-tao-mc-hype"
+                    onClick={() => closeAllMenusImmediately()}
+                    className="service-card-item"
+                  >
+                    <div className="service-card-thumb">
+                      <Image
+                        src="/images/services/mc_hype_hero.jpg"
+                        alt="Đào Tạo MC Hype"
+                        width={44}
+                        height={44}
+                        className="service-card-img"
+                      />
+                    </div>
+                    <div className="service-card-body">
+                      <div className="service-card-name">
+                        <span>{lang === "en" ? "MC & Event Hype Training" : "Đào Tạo MC / Hype Sự Kiện"}</span>
+                        <span className="service-card-arrow">→</span>
+                      </div>
+                      <div className="service-card-desc">
+                        {lang === "en" ? "Stage skills, interaction and hosting mastery" : "Kỹ năng sân khấu, tương tác và dẫn sự kiện"}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Column 4: SỰ KIỆN */}
+              <div className="services-col">
+                <div className="services-col-header">
+                  <span className="services-col-title">
+                    {lang === "en" ? "EVENTS" : "SỰ KIỆN"}
+                  </span>
+                  <div className="services-col-line" />
+                </div>
+                <div className="services-col-items">
+                  <Link
+                    href="/su-kien-setup"
+                    onClick={() => closeAllMenusImmediately()}
+                    className="service-card-item"
+                  >
+                    <div className="service-card-thumb">
+                      <Image
+                        src="/images/services/event_setup_hero.jpg"
+                        alt="Setup Sự Kiện"
+                        width={44}
+                        height={44}
+                        className="service-card-img"
+                      />
+                    </div>
+                    <div className="service-card-body">
+                      <div className="service-card-name">
+                        <span>{lang === "en" ? "Audio & DJ Event Setup" : "Setup Âm Thanh & DJ Sự Kiện"}</span>
+                        <span className="service-card-arrow">→</span>
+                      </div>
+                      <div className="service-card-desc">
+                        {lang === "en" ? "Equipment & engineering solutions for events" : "Giải pháp thiết bị và kỹ thuật cho sự kiện"}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 2-Tier Obsidian Glass Mega Menu Dropdown */}
+        {isProductsMenuOpen && (
+          <div
+            className="header-megamenu-dropdown"
+            onMouseEnter={handleOpenMegaMenu}
+            onMouseLeave={handleCloseMegaMenu}
+          >
+            {/* Left Column: 4 Parent Category Groups */}
+            <div className="megamenu-left-col">
+              <div className="megamenu-section-title">
+                {lang === "en" ? "CATALOGUE" : "DANH MỤC THIẾT BỊ"}
+              </div>
+
+              <div className="megamenu-parent-list">
+                {CATEGORY_GROUPS.map((group) => {
+                  const isActive = activeMegaGroupId === group.id;
+                  return (
+                    <div
+                      key={group.id}
+                      onMouseEnter={() => {
+                        handleOpenMegaMenu();
+                        setActiveMegaGroupId(group.id);
+                      }}
+                      className={`megamenu-parent-row ${isActive ? "is-active" : ""}`}
+                    >
+                      <Link
+                        href={`/products?group=${group.id}`}
+                        onClick={() => closeAllMenusImmediately()}
+                        className="megamenu-parent-link"
+                      >
+                        <div className="megamenu-parent-meta">
+                          <span className="megamenu-parent-name">
+                            {lang === "en" ? group.nameEn : group.nameVi}
+                          </span>
+                          <span className="megamenu-parent-subcount">
+                            {group.subcategories.length} {lang === "en" ? "categories" : "danh mục"}
+                          </span>
+                        </div>
+                        <span className="megamenu-chevron">›</span>
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="megamenu-left-footer">
+                <Link
+                  href="/products"
+                  onClick={() => closeAllMenusImmediately()}
+                  className="megamenu-all-link"
+                >
+                  <span>{lang === "en" ? "Explore All Equipment →" : "Xem tất cả thiết bị →"}</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column: Subcategories Grid */}
+            <div className="megamenu-right-col">
+              <div className="megamenu-right-header">
+                <div className="megamenu-header-badge">
+                  {lang === "en" ? selectedMegaGroup.nameEn : selectedMegaGroup.nameVi}
+                </div>
+                <Link
+                  href={`/products?group=${selectedMegaGroup.id}`}
+                  onClick={() => closeAllMenusImmediately()}
+                  className="megamenu-group-view-all"
+                >
+                  {lang === "en" ? "View group archive →" : "Xem toàn bộ nhóm →"}
+                </Link>
+              </div>
+
+              <div className="megamenu-sub-grid">
+                {selectedMegaGroup.subcategories.map((sub) => (
+                  <Link
+                    key={sub.slug}
+                    href={`/products?category=${sub.slug}`}
+                    onClick={() => closeAllMenusImmediately()}
+                    className="megamenu-sub-card"
+                  >
+                    <span className="megamenu-sub-bullet" />
+                    <span className="megamenu-sub-title">
+                      {lang === "en" ? sub.nameEn : sub.nameVi}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Mega Menu Featured Showcase Card */}
+              <div className="megamenu-showcase-card">
+                <div className="megamenu-showcase-info">
+                  <div className="megamenu-showcase-tag">VanBass Pro Audio</div>
+                  <div className="megamenu-showcase-title">
+                    {lang === "en" ? "Official Audio Equipment & Systems" : "Thiết Bị Âm Thanh Chính Hãng & Cho Thuê"}
+                  </div>
+                  <div className="megamenu-showcase-desc">
+                    {lang === "en" ? "100% Genuine • 12 Months Warranty • Da Nang Delivery" : "Bảo hành 12 tháng • Giao lắp tận nơi tại Đà Nẵng"}
+                  </div>
+                </div>
+                <Link
+                  href="/products"
+                  onClick={() => closeAllMenusImmediately()}
+                  className="megamenu-showcase-cta"
+                >
+                  {lang === "en" ? "Explore Catalog →" : "Khám phá ngay →"}
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Dynamic Island Expandable Drawer for Mobile */}
         {mobileMenuOpen && (
           <div className="mobile-dynamic-drawer">
@@ -1055,7 +1344,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                       fontWeight: 600,
                     }}
                   >
-                    🔥 {item.label}
+                    {item.label}
                   </Link>
                 ))}
               </div>
@@ -1064,6 +1353,105 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
             <div className="mobile-drawer-links">
               {navLinks.map((link) => {
                 const isCurrent = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+
+                if (link.isServicesMega) {
+                  return (
+                    <div key={link.href} className="mobile-mega-accordion-wrap">
+                      <div className="mobile-mega-header-row">
+                        <Link
+                          href={link.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`mobile-nav-link ${isCurrent ? "active" : ""}`}
+                          style={{ flex: 1 }}
+                        >
+                          <span>{link.label}</span>
+                          {isCurrent && <span className="mobile-active-dot" />}
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => setMobileServicesAccordionOpen(!mobileServicesAccordionOpen)}
+                          className="mobile-accordion-toggle-btn"
+                          aria-label="Toggle services"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            style={{
+                              transition: "transform 0.2s ease",
+                              transform: mobileServicesAccordionOpen ? "rotate(180deg)" : "rotate(0deg)",
+                            }}
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {mobileServicesAccordionOpen && (
+                        <div className="mobile-groups-container">
+                          <div className="mobile-service-group-title">{lang === "en" ? "Equipment Rental" : "Thuê Thiết Bị"}</div>
+                          <Link
+                            href="/thue-ban-dj"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="mobile-service-item"
+                          >
+                            <span>{lang === "en" ? "DJ Gear & Equipment Rental" : "Thuê Bàn DJ & Thiết Bị"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/thue-ban-dj</span>
+                          </Link>
+
+                          <div className="mobile-service-group-title">{lang === "en" ? "Technical Center" : "Trung Tâm Kỹ Thuật"}</div>
+                          <Link
+                            href="/sua-chua-ban-dj"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="mobile-service-item"
+                          >
+                            <span>{lang === "en" ? "DJ Repair & Maintenance" : "Sửa Chữa & Bảo Dưỡng DJ"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/sua-chua-ban-dj</span>
+                          </Link>
+
+                          <div className="mobile-service-group-title">{lang === "en" ? "Academy" : "Đào Tạo"}</div>
+                          <Link
+                            href="/dao-tao-dj"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="mobile-service-item"
+                          >
+                            <span>{lang === "en" ? "Practical DJ Training" : "Đào Tạo DJ Thực Hành"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/dao-tao-dj</span>
+                          </Link>
+                          <Link
+                            href="/dao-tao-mc-hype"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="mobile-service-item"
+                          >
+                            <span>{lang === "en" ? "MC & Event Hype Training" : "Đào Tạo MC / Hype Sự Kiện"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/dao-tao-mc-hype</span>
+                          </Link>
+
+                          <div className="mobile-service-group-title">{lang === "en" ? "Events" : "SỰ KIỆN"}</div>
+                          <Link
+                            href="/su-kien-setup"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="mobile-service-item"
+                          >
+                            <span>{lang === "en" ? "Audio & DJ Event Setup" : "Setup Âm Thanh & DJ Sự Kiện"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/su-kien-setup</span>
+                          </Link>
+
+                          <Link
+                            href="/dich-vu"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="mobile-service-hub-link"
+                          >
+                            {lang === "en" ? "All Services →" : "Xem tất cả dịch vụ →"}
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
 
                 if (link.isMega) {
                   return (
