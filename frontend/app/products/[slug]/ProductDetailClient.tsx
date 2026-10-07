@@ -15,6 +15,11 @@ import { Product } from "../../lib/types";
 import { fetchStoreSettings, getMessengerRentalUrl, getApiBaseUrl } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
 import {
+  BUSINESS_ADDRESS,
+  BUSINESS_ADDRESS_HUE,
+  CONTACTS,
+} from "../../lib/contact-constants";
+import {
   getTranslatedProductName,
   getTranslatedProductDesc,
   getTranslatedSpecKey,
@@ -963,42 +968,68 @@ export default function ProductDetailClient({
                   </div>
                 )}
 
-                <div className="pdetail-showrooms-grid">
-                  <a href="tel:0905614566" className="showroom-contact-item">
-                    <div className="showroom-icon-circle">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e">
-                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
-                      </svg>
+                <div className="pdetail-showrooms-wrap">
+                  <div className="pdetail-branches-grid">
+                    <div className="pdetail-branch-card">
+                      <div className="pdetail-branch-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span className="pdetail-branch-title">CHI NHÁNH ĐÀ NẴNG</span>
+                      </div>
+                      <p className="pdetail-branch-addr">{BUSINESS_ADDRESS}</p>
                     </div>
-                    <div className="showroom-text-block">
-                      <span className="showroom-city">Mr. Tuyến — Mua Bán</span>
-                      <span className="showroom-number">0905 614 566</span>
-                    </div>
-                  </a>
 
-                  <a href="tel:0944498987" className="showroom-contact-item">
-                    <div className="showroom-icon-circle">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e">
-                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
-                      </svg>
+                    <div className="pdetail-branch-card">
+                      <div className="pdetail-branch-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span className="pdetail-branch-title">CHI NHÁNH HUẾ</span>
+                      </div>
+                      <p className="pdetail-branch-addr">{BUSINESS_ADDRESS_HUE}</p>
                     </div>
-                    <div className="showroom-text-block">
-                      <span className="showroom-city">Mr. Tuấn — Thuê & Setup</span>
-                      <span className="showroom-number">0944 498 987</span>
-                    </div>
-                  </a>
+                  </div>
 
-                  <a href="tel:0706067799" className="showroom-contact-item">
-                    <div className="showroom-icon-circle">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e">
-                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
-                      </svg>
-                    </div>
-                    <div className="showroom-text-block">
-                      <span className="showroom-city">Mr. Vân — Kỹ Thuật</span>
-                      <span className="showroom-number">0706 067 799</span>
-                    </div>
-                  </a>
+                  <div className="pdetail-contacts-grid">
+                    <a href={CONTACTS.tuyen.telHref} className="showroom-contact-item" title={`Gọi ngay ${CONTACTS.tuyen.name}: ${CONTACTS.tuyen.phoneDisplay}`}>
+                      <div className="showroom-icon-circle">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#22c55e">
+                          <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
+                        </svg>
+                      </div>
+                      <div className="showroom-text-block">
+                        <span className="showroom-city">{CONTACTS.tuyen.name}</span>
+                        <span className="showroom-number">{CONTACTS.tuyen.phoneDisplay}</span>
+                      </div>
+                    </a>
+
+                    <a href={CONTACTS.tuan.telHref} className="showroom-contact-item" title={`Gọi ngay ${CONTACTS.tuan.name}: ${CONTACTS.tuan.phoneDisplay}`}>
+                      <div className="showroom-icon-circle">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#22c55e">
+                          <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
+                        </svg>
+                      </div>
+                      <div className="showroom-text-block">
+                        <span className="showroom-city">{CONTACTS.tuan.name}</span>
+                        <span className="showroom-number">{CONTACTS.tuan.phoneDisplay}</span>
+                      </div>
+                    </a>
+
+                    <a href={CONTACTS.van.telHref} className="showroom-contact-item" title={`Gọi ngay ${CONTACTS.van.name}: ${CONTACTS.van.phoneDisplay}`}>
+                      <div className="showroom-icon-circle">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#22c55e">
+                          <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
+                        </svg>
+                      </div>
+                      <div className="showroom-text-block">
+                        <span className="showroom-city">{CONTACTS.van.name}</span>
+                        <span className="showroom-number">{CONTACTS.van.phoneDisplay}</span>
+                      </div>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1992,20 +2023,63 @@ export default function ProductDetailClient({
           color: #ffffff;
         }
 
-        .pdetail-showrooms-grid {
+        .pdetail-showrooms-wrap {
+          margin-top: 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .pdetail-branches-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 10px;
         }
 
+        .pdetail-branch-card {
+          padding: 10px 12px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .pdetail-branch-header {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .pdetail-branch-title {
+          font-size: 11px;
+          font-weight: 700;
+          color: #22c55e;
+          letter-spacing: 0.04em;
+        }
+
+        .pdetail-branch-addr {
+          font-size: 12px;
+          line-height: 1.45;
+          color: #d4d4d8;
+          margin: 0;
+        }
+
+        .pdetail-contacts-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+        }
+
         .showroom-contact-item {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 10px 14px;
+          gap: 8px;
+          padding: 8px 10px;
           background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 8px;
           text-decoration: none;
           transition: all 0.2s ease;
         }
@@ -2026,21 +2100,27 @@ export default function ProductDetailClient({
           display: flex;
           flex-direction: column;
           gap: 1px;
+          min-width: 0;
         }
 
         .showroom-city {
           font-size: 11px;
-          color: #9ca3af;
+          font-weight: 600;
+          color: #e4e4e7;
           display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .showroom-number {
-          font-size: 13.5px;
+          font-size: 12px;
           font-weight: 700;
           font-variant-numeric: tabular-nums;
-          color: #ffffff;
+          color: #22c55e;
           display: block;
-          letter-spacing: 0.02em;
+          letter-spacing: 0.01em;
+          white-space: nowrap;
         }
 
         /* Tabs Section (Placed cleanly in left column under image gallery) */
@@ -2783,8 +2863,14 @@ export default function ProductDetailClient({
             grid-template-columns: 1fr;
           }
 
-          .pdetail-showrooms-grid {
+          .pdetail-branches-grid {
             grid-template-columns: 1fr;
+            gap: 8px;
+          }
+
+          .pdetail-contacts-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
           }
 
           .pdetail-title {

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 import { LanguageProvider } from "./lib/language-context";
@@ -5,6 +6,7 @@ import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import JsonLd from "./components/JsonLd";
 import MobileBottomNav from "./components/MobileBottomNav";
+import NavigationScrollManager from "./components/NavigationScrollManager";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -255,7 +257,6 @@ export default function RootLayout({
     <html
       lang="vi"
       className={`h-full antialiased ${manrope.variable}`}
-      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <head>
@@ -266,6 +267,9 @@ export default function RootLayout({
         <JsonLd />
       </head>
       <body className={`min-h-full flex flex-col ${manrope.className}`} suppressHydrationWarning>
+        <Suspense fallback={null}>
+          <NavigationScrollManager />
+        </Suspense>
         <LanguageProvider>
           <AuthProvider>
             <CartProvider>

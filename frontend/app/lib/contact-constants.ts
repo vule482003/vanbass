@@ -70,5 +70,5 @@ export const BUSINESS_ADDRESS_STREET = "77 Nguyễn Tất Thành";
 export const BUSINESS_ADDRESS_WARD = "phường Hải Châu";
 export const BUSINESS_ADDRESS_CITY = "thành phố Đà Nẵng";
 export const BUSINESS_ADDRESS_EN = "77 Nguyen Tat Thanh, Hai Chau Ward, Da Nang City";
-export const BUSINESS_ADDRESS_HUE = "442 Chi Lăng, Phú Xuân, TP Huế";
+export const BUSINESS_ADDRESS_HUE = "442 Chi Lăng, thành phố Huế";
 
