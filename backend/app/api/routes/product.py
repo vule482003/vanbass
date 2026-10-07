@@ -70,13 +70,21 @@ def list_products(
         query = query.where(Product.rental_enabled.is_(True))
 
     if search and search.strip():
-        term = f"%{search.strip()}%"
+        raw_search = search.strip()
+        term = f"%{raw_search}%"
+        normalized_search = raw_search.replace("-", " ").replace("_", " ").strip()
+        term_norm = f"%{normalized_search}%"
+        slug_term = f"%{raw_search.replace(' ', '-')}%"
+
         query = query.where(
             or_(
                 Product.name.ilike(term),
+                Product.name.ilike(term_norm),
                 Product.brand.ilike(term),
                 Product.description.ilike(term),
                 Product.sku.ilike(term),
+                Product.slug.ilike(term),
+                Product.slug.ilike(slug_term),
             )
         )
 

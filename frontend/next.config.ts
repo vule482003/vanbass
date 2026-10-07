@@ -92,6 +92,46 @@ const nextConfig: NextConfig = {
         destination: "/sua-chua-ban-dj",
         permanent: true,
       },
+      {
+        source: "/dao-tao-dj",
+        destination: "/day-hoc-dj",
+        permanent: true,
+      },
+      {
+        source: "/dao-tao-dj-da-nang",
+        destination: "/day-hoc-dj",
+        permanent: true,
+      },
+      {
+        source: "/hoc-dj",
+        destination: "/day-hoc-dj",
+        permanent: true,
+      },
+      {
+        source: "/hoc-dj-da-nang",
+        destination: "/day-hoc-dj",
+        permanent: true,
+      },
+      {
+        source: "/dao-tao-mc-hype",
+        destination: "/day-hoc-mc-hype",
+        permanent: true,
+      },
+      {
+        source: "/dao-tao-mc-hype-da-nang",
+        destination: "/day-hoc-mc-hype",
+        permanent: true,
+      },
+      {
+        source: "/hoc-mc-hype",
+        destination: "/day-hoc-mc-hype",
+        permanent: true,
+      },
+      {
+        source: "/hoc-mc",
+        destination: "/day-hoc-mc-hype",
+        permanent: true,
+      },
       // 301/308 Permanent 1-Hop Redirects for alias slugs under both /products/ and legacy /san-pham/
       ...[
         // 1. Pioneer DJ XDJ-RX3

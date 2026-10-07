@@ -154,7 +154,7 @@ const rentalFaqs = [
 
 export default function ThueBanDjPage() {
   const messengerUrl = "https://m.me/vanbassmusiccenter";
-  const hotline = "0706067799";
+  const hotline = "0944498987";
 
   const schemaJson = {
     "@context": "https://schema.org",
@@ -168,12 +168,12 @@ export default function ThueBanDjPage() {
           "@type": ["MusicStore", "LocalBusiness"],
           "name": "VanBass Music Center",
           "url": baseUrl,
-          "telephone": "+84706067799",
+          "telephone": ["+84905614566", "+84944498987", "+84706067799"],
           "priceRange": "400.000đ - 1.800.000đ",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-            "addressLocality": "Đà Nẵng",
+            "streetAddress": "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+            "addressLocality": "phường Hải Châu, Đà Nẵng",
             "addressRegion": "Đà Nẵng",
             "addressCountry": "VN",
           },
@@ -184,7 +184,7 @@ export default function ThueBanDjPage() {
           },
         },
         "description":
-          "Dịch vụ cho thuê bàn DJ Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000 phục vụ sự kiện, tiệc cưới, sinh nhật, bar pub, workshop tại Đà Nẵng (Nguyễn Tất Thành) & Huế (442 Chi Lăng).",
+          "Dịch vụ cho thuê bàn DJ Pioneer DJ XDJ-RX3, DDJ-FLX4, XDJ-XZ, CDJ-3000 phục vụ sự kiện, tiệc cưới, sinh nhật, bar pub, workshop tại Đà Nẵng (77 Nguyễn Tất Thành) & Huế (442 Chi Lăng).",
         "areaServed": "VN",
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
@@ -1176,7 +1176,7 @@ export default function ThueBanDjPage() {
                     color: "#ffffff",
                   }}
                 >
-                  Hotline: 0706.067.799
+                  Hotline (Mr. Tuấn): 0944.498.987
                 </a>
               </div>
             </div>

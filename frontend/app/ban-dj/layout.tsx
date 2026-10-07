@@ -76,7 +76,7 @@ export const metadata: Metadata = {
 const banDjFaqs = [
   {
     q: "Mua bàn DJ ở đâu uy tín, chính hãng tại Đà Nẵng và Miền Trung?",
-    a: "VanMusic (VanBass Music Center) là trung tâm phân phối thiết bị DJ chính hãng Pioneer DJ và AlphaTheta uy tín tại Đà Nẵng (Showroom: Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê) và TP Huế (442 Chi Lăng). 100% thiết bị có tem bảo hành chính hãng từ 12 - 24 tháng, hỗ trợ kỹ thuật trọn đời và linh kiện thay thế chuẩn.",
+    a: "VanMusic (VanBass Music Center) là trung tâm phân phối thiết bị DJ chính hãng Pioneer DJ và AlphaTheta uy tín tại Đà Nẵng (Showroom: 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng) và TP Huế (442 Chi Lăng). 100% thiết bị có tem bảo hành chính hãng từ 12 - 24 tháng, hỗ trợ kỹ thuật trọn đời và linh kiện thay thế chuẩn.",
   },
   {
     q: "Người mới bắt đầu tập chơi DJ nên chọn mua dòng máy nào phù hợp?",
@@ -92,7 +92,7 @@ const banDjFaqs = [
   },
   {
     q: "Tôi có thể ghé showroom tại Đà Nẵng để trải nghiệm và test máy trước khi mua không?",
-    a: "Hoàn toàn được. Quý khách có thể ghé trực tiếp Showroom VanMusic tại Nguyễn Tất Thành, Thanh Khê, Đà Nẵng để cắm USB trải nghiệm cảm giác mâm jogwheel, fader và âm thanh thực tế trước khi quyết định mua hàng.",
+    a: "Hoàn toàn được. Quý khách có thể ghé trực tiếp Showroom VanMusic tại 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng để cắm USB trải nghiệm cảm giác mâm jogwheel, fader và âm thanh thực tế trước khi quyết định mua hàng.",
   },
 ];
 
@@ -120,12 +120,12 @@ export default function BanDjLayout({
         "@id": `${siteUrl}/ban-dj#store`,
         "name": "VanMusic - Trung Tâm Mua Bán Bàn DJ Pioneer DJ & AlphaTheta Đà Nẵng",
         "url": `${siteUrl}/ban-dj`,
-        "telephone": "+84706067799",
+        "telephone": ["+84905614566", "+84944498987", "+84706067799"],
         "priceRange": "5.000.000đ - 105.000.000đ",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-          "addressLocality": "Đà Nẵng",
+          "streetAddress": "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+          "addressLocality": "phường Hải Châu, Đà Nẵng",
           "addressRegion": "Đà Nẵng",
           "addressCountry": "VN",
         },

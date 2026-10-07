@@ -291,6 +291,8 @@ export default function AdminDashboardPage() {
   // Data states
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [isProductsLoading, setIsProductsLoading] = useState(true);
+  const [productsError, setProductsError] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [, setIsDataLoading] = useState(true);
@@ -308,17 +310,59 @@ export default function AdminDashboardPage() {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // 1. Text Search (Name, SKU, Slug, Brand, Description)
-    const q = productSearch.trim().toLowerCase();
-    if (q) {
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.sku.toLowerCase().includes(q) ||
-          p.slug.toLowerCase().includes(q) ||
-          (p.brand && p.brand.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      );
+    // 1. Text Search (Name, SKU, Slug, Brand, Description) with diacritic & punctuation normalization
+    if (productSearch.trim()) {
+      const qLower = productSearch.trim().toLowerCase();
+      const normalize = (str: string) =>
+        str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d")
+          .replace(/Đ/g, "D")
+          .toLowerCase();
+
+      const cleanPunct = (s: string) => s.replace(/[-_./]/g, " ");
+
+      const qNorm = normalize(qLower);
+      const qClean = cleanPunct(qNorm);
+      const tokens = qNorm.split(/[\s\-_./]+/).filter(Boolean);
+
+      result = result.filter((p) => {
+        const nameNorm = normalize(p.name || "");
+        const skuNorm = normalize(p.sku || "");
+        const slugNorm = normalize(p.slug || "");
+        const brandNorm = normalize(p.brand || "");
+        const descNorm = normalize(p.description || "");
+
+        const primaryText = `${nameNorm} ${cleanPunct(nameNorm)} ${skuNorm} ${cleanPunct(skuNorm)} ${slugNorm} ${cleanPunct(slugNorm)} ${brandNorm}`;
+
+        if (primaryText.includes(qNorm) || primaryText.includes(qClean)) {
+          return true;
+        }
+
+        if (tokens.length > 0 && tokens.every((t) => primaryText.includes(t))) {
+          return true;
+        }
+
+        if (descNorm.includes(qNorm) || (tokens.length > 0 && tokens.every((t) => descNorm.includes(t)))) {
+          return true;
+        }
+
+        return false;
+      });
+
+      // Sort exact Name / SKU / Slug matches to the top
+      result.sort((a, b) => {
+        const aPrimary = `${normalize(a.name || "")} ${cleanPunct(normalize(a.name || ""))} ${normalize(a.sku || "")} ${normalize(a.slug || "")}`;
+        const bPrimary = `${normalize(b.name || "")} ${cleanPunct(normalize(b.name || ""))} ${normalize(b.sku || "")} ${normalize(b.slug || "")}`;
+
+        const aMatch = aPrimary.includes(qNorm) || aPrimary.includes(qClean) || (tokens.length > 0 && tokens.every((t) => aPrimary.includes(t)));
+        const bMatch = bPrimary.includes(qNorm) || bPrimary.includes(qClean) || (tokens.length > 0 && tokens.every((t) => bPrimary.includes(t)));
+
+        if (aMatch && !bMatch) return -1;
+        if (!aMatch && bMatch) return 1;
+        return 0;
+      });
     }
 
     // 2. Category Filter
@@ -644,18 +688,36 @@ export default function AdminDashboardPage() {
   }, [apiUrl, categoryId]);
 
   const fetchProductsData = useCallback(async () => {
+    setIsProductsLoading(true);
+    setProductsError(null);
     try {
       const cacheBust = `_t=${Date.now()}`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
       const res = await fetch(`${apiUrl}/products?${cacheBust}`, {
         cache: "no-store",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json();
         setProducts(data);
+        setProductsError(null);
+      } else {
+        setProducts([]);
+        setProductsError("Không thể kết nối đến máy chủ cơ sở dữ liệu. Vui lòng kiểm tra đường truyền và thử lại.");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Products fetch error:", err);
+      setProducts([]);
+      if (err instanceof Error && err.name === "AbortError") {
+        setProductsError("Kết nối tới máy chủ đã hết thời gian (Timeout). Vui lòng thử lại.");
+      } else {
+        setProductsError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền và thử lại.");
+      }
+    } finally {
+      setIsProductsLoading(false);
     }
   }, [apiUrl, token]);
 
@@ -2948,7 +3010,12 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={handleOpenAddModal}
+                  disabled={isProductsLoading || !!productsError}
                   className="admin-pill-btn-green"
+                  style={{
+                    opacity: isProductsLoading || !!productsError ? 0.5 : 1,
+                    cursor: isProductsLoading || !!productsError ? "not-allowed" : "pointer",
+                  }}
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19" />
@@ -2957,6 +3024,46 @@ export default function AdminDashboardPage() {
                   Thêm sản phẩm mới
                 </button>
               </div>
+
+              {/* ERROR BANNER IF SERVER IS UNREACHABLE */}
+              {productsError && (
+                <div
+                  style={{
+                    backgroundColor: "rgba(239, 68, 68, 0.12)",
+                    border: "1px solid rgba(239, 68, 68, 0.35)",
+                    borderRadius: "10px",
+                    padding: "16px 20px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                    color: "#fca5a5",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span style={{ fontSize: "14px", fontWeight: 500 }}>{productsError}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => void fetchProductsData()}
+                    className="admin-pill-btn-dark"
+                    style={{
+                      backgroundColor: "rgba(239, 68, 68, 0.2)",
+                      borderColor: "rgba(239, 68, 68, 0.5)",
+                      color: "#ffffff",
+                    }}
+                  >
+                    ↺ Thử lại
+                  </button>
+                </div>
+              )}
 
               {/* 3-COLUMN LABELED SEARCH & FILTER BAR */}
               <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", marginBottom: "20px", flexWrap: "wrap" }}>
@@ -3128,7 +3235,34 @@ export default function AdminDashboardPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {paginatedProducts.length === 0 ? (
+                      {isProductsLoading ? (
+                        <tr>
+                          <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center", color: "#a1a1aa" }}>
+                            <div style={{ display: "inline-block", width: "28px", height: "28px", border: "3px solid rgba(34, 197, 94, 0.2)", borderTopColor: "#22c55e", borderRadius: "50%", animation: "spin 0.8s linear infinite", marginBottom: "12px" }} />
+                            <div style={{ fontSize: "14px", fontWeight: 600, color: "#ffffff" }}>
+                              Đang tải dữ liệu sản phẩm từ máy chủ...
+                            </div>
+                          </td>
+                        </tr>
+                      ) : productsError ? (
+                        <tr>
+                          <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center" }}>
+                            <div style={{ fontSize: "15px", fontWeight: 700, color: "#ef4444", marginBottom: "6px" }}>
+                              Không thể kết nối đến máy chủ
+                            </div>
+                            <div style={{ fontSize: "13px", color: "#a1a1aa", marginBottom: "16px" }}>
+                              {productsError}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => void fetchProductsData()}
+                              className="admin-pill-btn-green"
+                            >
+                              ↺ Thử lại
+                            </button>
+                          </td>
+                        </tr>
+                      ) : paginatedProducts.length === 0 ? (
                         <tr>
                           <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center", color: "#71717a" }}>
                             

@@ -87,17 +87,49 @@ export default function ContactPage() {
               </div>
 
               <div style={{ padding: "28px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-                  Hotline tư vấn & Đặt thuê thiết bị
+                <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "14px" }}>
+                  Hotline & Người liên hệ tư vấn
                 </h3>
-                <p style={{ margin: "0 0 6px 0" }}>
-                  <a
-                    href="tel:0706067799"
-                    style={{ fontSize: "20px", fontWeight: 800, color: "#22c55e", textDecoration: "none" }}
-                  >
-                    0706 067 799
-                  </a>
-                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0 0 10px 0" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "8px" }}>
+                    <div>
+                      <strong style={{ color: "#fff", display: "block", fontSize: "14px" }}>Mr. Tuyến</strong>
+                      <span style={{ color: "#71717a", fontSize: "12px" }}>Tư Vấn Mua Bán & Đào Tạo</span>
+                    </div>
+                    <a
+                      href="tel:0905614566"
+                      style={{ fontSize: "15px", fontWeight: 800, color: "#22c55e", textDecoration: "none" }}
+                    >
+                      0905 614 566
+                    </a>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "8px" }}>
+                    <div>
+                      <strong style={{ color: "#fff", display: "block", fontSize: "14px" }}>Mr. Tuấn</strong>
+                      <span style={{ color: "#71717a", fontSize: "12px" }}>Tư Vấn Cho Thuê & Setup Sự Kiện</span>
+                    </div>
+                    <a
+                      href="tel:0944498987"
+                      style={{ fontSize: "15px", fontWeight: 800, color: "#22c55e", textDecoration: "none" }}
+                    >
+                      0944 498 987
+                    </a>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <strong style={{ color: "#fff", display: "block", fontSize: "14px" }}>Mr. Vân</strong>
+                      <span style={{ color: "#71717a", fontSize: "12px" }}>Hotline Kỹ Thuật & Sửa Chữa</span>
+                    </div>
+                    <a
+                      href="tel:0706067799"
+                      style={{ fontSize: "15px", fontWeight: 800, color: "#22c55e", textDecoration: "none" }}
+                    >
+                      0706 067 799
+                    </a>
+                  </div>
+                </div>
                 <span style={{ color: "#71717a", fontSize: "13px" }}>{t.contact.hotlineDesc}</span>
               </div>
 

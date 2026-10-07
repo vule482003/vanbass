@@ -255,7 +255,7 @@ class EmailService:
               <!-- Hotline Support Box -->
               <div style="background: rgba(34, 197, 94, 0.08); border-left: 4px solid #22c55e; padding: 14px 18px; border-radius: 6px;">
                 <p style="margin: 0; font-size: 13.5px; color: #d4d4d8; line-height: 1.5;">
-                  📞 <strong>Cần hỗ trợ gấp?</strong> Vui lòng liên hệ Hotline/Zalo tư vấn 24/7: <a href="tel:0706067799" style="color: #4ade80; font-weight: 700; text-decoration: none;">0706.067.799</a>
+                  📞 <strong>Cần hỗ trợ gấp?</strong> Hotline hỗ trợ: <a href="tel:0905614566" style="color: #4ade80; font-weight: 700; text-decoration: none;">Mr. Tuyến (0905.614.566)</a> | <a href="tel:0944498987" style="color: #4ade80; font-weight: 700; text-decoration: none;">Mr. Tuấn (0944.498.987)</a> | <a href="tel:0706067799" style="color: #4ade80; font-weight: 700; text-decoration: none;">Mr. Vân (0706.067.799)</a>
                 </p>
               </div>
             </td>
@@ -265,7 +265,7 @@ class EmailService:
           <tr>
             <td style="background-color: #0d0f0d; padding: 20px; text-align: center; border-top: 1px solid #27272a; color: #71717a; font-size: 12px;">
               <p style="margin: 0 0 4px 0;">© 2026 VanBass Music Center Đà Nẵng. Mọi quyền được bảo lưu.</p>
-              <p style="margin: 0;">Showroom: 104/1A Dũng Sĩ Thanh Khê, Q. Thanh Khê, TP. Đà Nẵng</p>
+              <p style="margin: 0;">Showroom: 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng</p>
             </td>
           </tr>
 
@@ -528,7 +528,7 @@ class EmailService:
               </div>
 
               <p style="margin: 0; font-size: 13px; color: #71717a;">
-                Hotline hỗ trợ kỹ thuật 24/7: <a href="tel:0706067799" style="color: #4ade80; text-decoration: none; font-weight: 700;">0706.067.799</a>
+                Hotline hỗ trợ kỹ thuật (Mr. Vân): <a href="tel:0706067799" style="color: #4ade80; text-decoration: none; font-weight: 700;">0706.067.799</a>
               </p>
             </td>
           </tr>
@@ -550,7 +550,7 @@ class EmailService:
 
         cls.send_async(
             to_emails=clean_to,
-            subject=f"[VanBass] Mã xác thực đặt lại mật khẩu của bạn là: {otp}",
+            subject="[VanBass] Mã xác thực đặt lại mật khẩu của bạn",
             html_content=html_body,
         )
 

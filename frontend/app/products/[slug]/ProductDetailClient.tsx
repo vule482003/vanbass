@@ -964,27 +964,39 @@ export default function ProductDetailClient({
                 )}
 
                 <div className="pdetail-showrooms-grid">
-                  <a href="tel:0936899468" className="showroom-contact-item">
+                  <a href="tel:0905614566" className="showroom-contact-item">
                     <div className="showroom-icon-circle">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e">
                         <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
                       </svg>
                     </div>
                     <div className="showroom-text-block">
-                      <span className="showroom-city">Showroom Đà Nẵng</span>
-                      <span className="showroom-number">0936 899 468</span>
+                      <span className="showroom-city">Mr. Tuyến — Mua Bán</span>
+                      <span className="showroom-number">0905 614 566</span>
                     </div>
                   </a>
 
-                  <a href="tel:0961223678" className="showroom-contact-item">
+                  <a href="tel:0944498987" className="showroom-contact-item">
                     <div className="showroom-icon-circle">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e">
                         <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
                       </svg>
                     </div>
                     <div className="showroom-text-block">
-                      <span className="showroom-city">Showroom Huế</span>
-                      <span className="showroom-number">0961 223 678</span>
+                      <span className="showroom-city">Mr. Tuấn — Thuê & Setup</span>
+                      <span className="showroom-number">0944 498 987</span>
+                    </div>
+                  </a>
+
+                  <a href="tel:0706067799" className="showroom-contact-item">
+                    <div className="showroom-icon-circle">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e">
+                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
+                      </svg>
+                    </div>
+                    <div className="showroom-text-block">
+                      <span className="showroom-city">Mr. Vân — Kỹ Thuật</span>
+                      <span className="showroom-number">0706 067 799</span>
                     </div>
                   </a>
                 </div>
@@ -1080,7 +1092,7 @@ export default function ProductDetailClient({
                   <tr>
                     <td className="fb-label">Khu vực phục vụ</td>
                     <td className="fb-data">
-                      Showroom Đà Nẵng (Nguyễn Tất Thành) & Showroom Huế (442 Chi Lăng) • Giao hàng toàn quốc
+                      Showroom Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu) & Showroom Huế (442 Chi Lăng) • Giao hàng toàn quốc
                     </td>
                   </tr>
                 </tbody>
@@ -1339,7 +1351,7 @@ export default function ProductDetailClient({
                   Thiết Bị {displayName} Cần Kiểm Tra, Sửa Chữa Hoặc Bảo Dưỡng?
                 </h2>
                 <p className="pdetail-banner-desc">
-                  Trạm kỹ thuật VanMusic tại Đà Nẵng (Nguyễn Tất Thành) & Huế tiếp nhận kiểm tra chuẩn đoán miễn phí, hỗ trợ thay thế linh kiện chính hãng và bảo dưỡng thiết bị DJ chuyên nghiệp.
+                  Trạm kỹ thuật VanMusic tại Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu) & Huế tiếp nhận kiểm tra chuẩn đoán miễn phí, hỗ trợ thay thế linh kiện chính hãng và bảo dưỡng thiết bị DJ chuyên nghiệp.
                 </p>
               </div>
 

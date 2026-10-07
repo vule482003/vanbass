@@ -43,9 +43,9 @@ export default function FloatingContact({
             href={phoneHref}
             className="floating-btn btn-phone"
             data-cms-key="floating_contacts.hotline"
-            data-cms-label="Số Hotline 24/7"
+            data-cms-label="Số Hotline Kỹ Thuật"
             data-cms-type="text"
-            title={lang === "en" ? `Call 24/7 Hotline: ${phoneDisplay}` : `Gọi Hotline tư vấn miễn phí: ${phoneDisplay}`}
+            title={lang === "en" ? `Call Hotline: ${phoneDisplay}` : `Gọi Hotline tư vấn kỹ thuật: ${phoneDisplay}`}
             aria-label={`Call Hotline ${phoneDisplay}`}
           >
             <div className="floating-btn-icon">
@@ -55,7 +55,7 @@ export default function FloatingContact({
               </svg>
             </div>
             <span className="floating-btn-tooltip">
-              <strong>{lang === "en" ? "24/7 Hotline" : "Hotline 24/7"}</strong>
+              <strong>{lang === "en" ? "Hotline (Mr. Vân)" : "Hotline (Mr. Vân)"}</strong>
               <small>{phoneDisplay}</small>
             </span>
           </a>

@@ -149,7 +149,7 @@ export const HOT_MODELS_SEO: Record<
       {
         question: "Bàn DJ Pioneer XDJ-RX3 khi bị mòn fader, kẹt jogwheel hoặc lỗi nguồn thì sửa ở đâu uy tín tại Đà Nẵng?",
         answer:
-          "VanMusic (VanBass Music Center) tại 77 Nguyễn Tất Thành, Đà Nẵng và chi nhánh Huế là trung tâm kỹ thuật chuyên sửa chữa bàn DJ Pioneer XDJ-RX3. Thay fader Alps/Magvel chính hãng, cân chỉnh cảm ứng jogwheel, vệ sinh bo mạch lấy liền trong ngày, bảo hành 6 - 12 tháng.",
+          "VanMusic (VanBass Music Center) tại 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng và chi nhánh Huế là trung tâm kỹ thuật chuyên sửa chữa bàn DJ Pioneer XDJ-RX3. Thay fader Alps/Magvel chính hãng, cân chỉnh cảm ứng jogwheel, vệ sinh bo mạch lấy liền trong ngày, bảo hành 6 - 12 tháng.",
       },
     ],
   },
@@ -463,7 +463,7 @@ export const HOT_MODELS_SEO: Record<
       {
         question: "Bàn DJ AlphaTheta XDJ-AN sửa chữa và bảo hành ở đâu tại Đà Nẵng & Miền Trung?",
         answer:
-          "VanMusic tại 77 Nguyễn Tất Thành, Đà Nẵng tiếp nhận bảo hành chính hãng và sửa chữa thiết bị AlphaTheta XDJ-AN. Linh kiện thay thế chuẩn nhà máy, báo giá minh bạch và hỗ trợ kỹ thuật trọn đời.",
+          "VanMusic tại 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng tiếp nhận bảo hành chính hãng và sửa chữa thiết bị AlphaTheta XDJ-AN. Linh kiện thay thế chuẩn nhà máy, báo giá minh bạch và hỗ trợ kỹ thuật trọn đời.",
       },
     ],
   },
@@ -1006,8 +1006,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
         "telephone": "+84706067799",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-          "addressLocality": "Đà Nẵng",
+          "streetAddress": "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+          "addressLocality": "phường Hải Châu, Đà Nẵng",
           "addressCountry": "VN",
         },
       },

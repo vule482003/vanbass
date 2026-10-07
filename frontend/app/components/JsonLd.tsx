@@ -33,7 +33,36 @@ export default function JsonLd() {
         "image": `${baseUrl}/images/rental/rental_fleet_hero.jpg`,
         "description":
           "Trung tâm mua bán, cho thuê & sửa chữa bảo dưỡng bàn DJ chuyên nghiệp (Pioneer DJ, AlphaTheta) và loa biểu diễn B&C Speakers chính hãng tại Đà Nẵng, Thừa Thiên Huế & Toàn Miền Trung.",
-        "telephone": "+84706067799",
+        "telephone": ["+84905614566", "+84944498987", "+84706067799"],
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+84905614566",
+            "contactType": "sales",
+            "contactOption": "TollFree",
+            "areaServed": "VN",
+            "availableLanguage": ["Vietnamese", "English"],
+            "name": "Mr. Tuyến"
+          },
+          {
+            "@type": "ContactPoint",
+            "telephone": "+84944498987",
+            "contactType": "customer service",
+            "contactOption": "TollFree",
+            "areaServed": "VN",
+            "availableLanguage": ["Vietnamese", "English"],
+            "name": "Mr. Tuấn"
+          },
+          {
+            "@type": "ContactPoint",
+            "telephone": "+84706067799",
+            "contactType": "technical support",
+            "contactOption": "TollFree",
+            "areaServed": "VN",
+            "availableLanguage": ["Vietnamese", "English"],
+            "name": "Mr. Vân"
+          }
+        ],
         "priceRange": "$$",
         "currenciesAccepted": "VND, USD",
         "paymentAccepted": "Cash, Credit Card, Bank Transfer, MoMo",
@@ -50,9 +79,9 @@ export default function JsonLd() {
         ],
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê (Đà Nẵng) & 442 Chi Lăng (TP Huế)",
-          "addressLocality": "Đà Nẵng",
-          "addressRegion": "Miền Trung",
+          "streetAddress": "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+          "addressLocality": "phường Hải Châu, Đà Nẵng",
+          "addressRegion": "Đà Nẵng",
           "addressCountry": "VN",
         },
         "geo": {

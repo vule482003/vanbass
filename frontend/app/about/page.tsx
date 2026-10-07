@@ -543,7 +543,7 @@ export default function AboutPage() {
                     textDecoration: "none",
                   }}
                 >
-                  <span>Hotline: 0706.067.799</span>
+                  <span>Hotline (Mr. Vân): 0706.067.799</span>
                 </a>
               </div>
             </div>

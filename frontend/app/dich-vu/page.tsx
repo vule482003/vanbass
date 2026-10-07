@@ -56,35 +56,35 @@ const servicesList = [
   },
   {
     id: "04",
-    slug: "/dao-tao-dj",
+    slug: "/day-hoc-dj",
     tag: "Học Viện Nghệ Thuật",
-    title: "Đào Tạo DJ Thực Hành",
-    desc: "Khóa đào tạo DJ thực tế 1 kèm 1 tại Đà Nẵng. Thực hành trực tiếp trên hệ thống bàn DJ chuẩn Club, làm chủ Beatmatching, EQ Mixing, Transition và biểu diễn sân khấu.",
+    title: "Dạy Học DJ Thực Hành",
+    desc: "Khóa đào tạo dạy học DJ thực tế 1 kèm 1 tại Đà Nẵng & Huế. Thực hành 100% trên hệ thống bàn DJ Pioneer DJ & AlphaTheta chuẩn Club, làm chủ Beatmatching, EQ Mixing, Transition và biểu diễn sân khấu.",
     features: [
       "Thực hành 100% trên thiết bị thực tế",
       "Lộ trình từ cơ bản đến biểu diễn",
       "Luyện tai nghe và cảm âm bài bản",
       "Hỗ trợ setup Profile & kho nhạc chuyên dụng",
     ],
-    ctaText: "Khám Phá Khóa Học DJ",
+    ctaText: "Khám Phá Khóa Dạy Học DJ",
     image: "/images/services/dj_academy_hero.jpg",
-    alt: "Đào Tạo DJ Thực Hành Đà Nẵng - VanBass",
+    alt: "Dạy Học DJ Thực Hành Đà Nẵng & Huế - VanBass",
   },
   {
     id: "05",
-    slug: "/dao-tao-mc-hype",
+    slug: "/day-hoc-mc-hype",
     tag: "Kỹ Năng Biểu Diễn",
-    title: "Đào Tạo MC / Hype Sự Kiện",
-    desc: "Khóa học MC Hype sự kiện, Nightlife & Festival tại Đà Nẵng. Rèn luyện giọng nói sân khấu, kỹ năng tương tác đám đông, khuấy động không khí và phối hợp nhịp nhàng cùng DJ.",
+    title: "Dạy Học MC / Hype Sự Kiện",
+    desc: "Khóa học MC Hype sự kiện, Nightlife & Festival tại Đà Nẵng & Huế. Rèn luyện giọng nói sân khấu, kỹ năng tương tác đám đông, khuấy động không khí và phối hợp nhịp nhàng cùng DJ.",
     features: [
       "Kỹ thuật kiểm soát đài từ & hơi thở",
       "Kỹ năng bắt nhịp Drop & xử lý beat",
       "Làm chủ sân khấu & phong thái biểu diễn",
       "Thực hành trực tiếp trong không gian biểu diễn",
     ],
-    ctaText: "Khám Phá Khóa MC Hype",
+    ctaText: "Khám Phá Khóa Học MC Hype",
     image: "/images/services/mc_hype_hero.jpg",
-    alt: "Đào Tạo MC Hype Sự Kiện Đà Nẵng - VanBass",
+    alt: "Dạy Học MC Hype Sự Kiện Đà Nẵng & Huế - VanBass",
   },
   {
     id: "06",
@@ -145,8 +145,8 @@ export default function DichVuPage() {
         telephone: "+84706067799",
         address: {
           "@type": "PostalAddress",
-          streetAddress: "77 Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-          addressLocality: "Đà Nẵng",
+          streetAddress: "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+          addressLocality: "phường Hải Châu, Đà Nẵng",
           addressRegion: "Đà Nẵng",
           addressCountry: "VN",
         },
@@ -265,8 +265,8 @@ export default function DichVuPage() {
                 { label: "Mua Bàn DJ", sub: "Pioneer, AlphaTheta", href: "/ban-dj" },
                 { label: "Thuê Bàn DJ", sub: "Từ 400k/ngày", href: "/thue-ban-dj" },
                 { label: "Sửa Chữa DJ", sub: "Lấy liền trong ngày", href: "/sua-chua-ban-dj" },
-                { label: "Học DJ", sub: "Thực hành 1 kèm 1", href: "/dao-tao-dj" },
-                { label: "Học MC Hype", sub: "Làm chủ sân khấu", href: "/dao-tao-mc-hype" },
+                { label: "Dạy Học DJ", sub: "Thực hành 1 kèm 1", href: "/day-hoc-dj" },
+                { label: "Dạy Học MC / Hype", sub: "Làm chủ sân khấu", href: "/day-hoc-mc-hype" },
                 { label: "Setup Sự Kiện", sub: "Âm thanh trọn gói", href: "/su-kien-setup" },
               ].map((item, idx) => (
                 <Link
@@ -347,7 +347,7 @@ export default function DichVuPage() {
                 href="tel:0706067799"
                 className="px-6 py-3 rounded-full bg-[#22c55e] text-[#000000] text-xs sm:text-sm font-extrabold hover:bg-[#4ade80] transition-colors shadow-lg shadow-[#22c55e]/20"
               >
-                Hotline / Zalo: 0706 067 799
+                Hotline: 0706 067 799 (Mr. Vân) — 0905 614 566 (Mr. Tuyến)
               </a>
               <Link
                 href="/contact"

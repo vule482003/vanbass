@@ -447,7 +447,7 @@ export default function FAQPage() {
               </h3>
               <p style={{ color: "#a1a1aa", margin: 0, fontSize: "14px" }}>
                 {lang === "en" ? "Hotline technical support:" : "Hotline tư vấn kỹ thuật trực tiếp:"}{" "}
-                <strong style={{ color: "#22c55e" }}>0706.067.799</strong>
+                <strong style={{ color: "#22c55e" }}>0706.067.799 (Mr. Vân)</strong>
               </p>
             </div>
 

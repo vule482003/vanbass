@@ -50,7 +50,17 @@ export default function Footer() {
 
         <div className="footer-column">
           <h3>{t.footer.contact}</h3>
-          <a href="tel:0706067799" style={{ color: "#22c55e", fontWeight: 700 }} data-cms-key="floating_contacts.phone" data-cms-label="Số Điện Thoại Hotline" data-cms-type="text">0706 067 799</a>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px", marginBottom: "4px" }}>
+            <a href="tel:0905614566" style={{ color: "#22c55e", fontWeight: 700, fontSize: "12px", textDecoration: "none" }}>
+              0905 614 566 <span style={{ color: "#a1a1aa", fontWeight: 500 }}>(Mr. Tuyến)</span>
+            </a>
+            <a href="tel:0944498987" style={{ color: "#22c55e", fontWeight: 700, fontSize: "12px", textDecoration: "none" }}>
+              0944 498 987 <span style={{ color: "#a1a1aa", fontWeight: 500 }}>(Mr. Tuấn)</span>
+            </a>
+            <a href="tel:0706067799" style={{ color: "#22c55e", fontWeight: 700, fontSize: "12px", textDecoration: "none" }}>
+              0706 067 799 <span style={{ color: "#a1a1aa", fontWeight: 500 }}>(Mr. Vân)</span>
+            </a>
+          </div>
           <a
             href="https://www.google.com/maps?cid=3481175637981139835"
             target="_blank"

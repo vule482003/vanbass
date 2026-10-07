@@ -30,12 +30,12 @@ def get_store_settings(
     if settings is None:
         settings = StoreSettings(
             store_name="VanBass Music Center",
-            phone="0905123456",
-            rental_phone="0905123456",
+            phone="0905614566",
+            rental_phone="0944498987",
             email="contact@vanbass.vn",
             rental_email="rental@vanbass.vn",
-            address="123 Nguyen Van Linh, Da Nang",
-            city="Da Nang",
+            address="77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+            city="Đà Nẵng",
             country="Vietnam",
             business_hours="08:00 - 21:00 hàng ngày",
             facebook_page_id="vanbassmusiccenter",
@@ -64,12 +64,12 @@ def update_store_settings(
     if settings is None:
         settings = StoreSettings(
             store_name="VanBass Music Center",
-            phone="0905123456",
-            rental_phone="0905123456",
+            phone="0905614566",
+            rental_phone="0944498987",
             email="contact@vanbass.vn",
             rental_email="rental@vanbass.vn",
-            address="123 Nguyen Van Linh, Da Nang",
-            city="Da Nang",
+            address="77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+            city="Đà Nẵng",
             country="Vietnam",
             business_hours="08:00 - 21:00 hàng ngày",
             facebook_page_id="vanbassmusiccenter",

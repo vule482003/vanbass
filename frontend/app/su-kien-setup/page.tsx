@@ -38,11 +38,11 @@ export default function SuKienSetupPage() {
           "@type": "LocalBusiness",
           name: "VanBass Music Center",
           url: baseUrl,
-          telephone: "+84706067799",
+          telephone: ["+84905614566", "+84944498987", "+84706067799"],
           address: {
             "@type": "PostalAddress",
-            streetAddress: "77 Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-            addressLocality: "Đà Nẵng",
+            streetAddress: "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+            addressLocality: "phường Hải Châu, Đà Nẵng",
             addressRegion: "Đà Nẵng",
             addressCountry: "VN",
           },
@@ -115,10 +115,10 @@ export default function SuKienSetupPage() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="tel:0706067799"
+                  href="tel:0944498987"
                   className="px-6 py-3 rounded-full bg-[#22c55e] text-[#000000] text-xs sm:text-sm font-extrabold hover:bg-[#4ade80] transition-colors shadow-lg shadow-[#22c55e]/20"
                 >
-                  Yêu Cầu Báo Giá: 0706 067 799
+                  Yêu Cầu Báo Giá (Mr. Tuấn): 0944 498 987
                 </a>
                 <Link
                   href="/thue-ban-dj"
@@ -309,7 +309,7 @@ export default function SuKienSetupPage() {
                 href="tel:0706067799"
                 className="px-6 py-3 rounded-full bg-[#22c55e] text-[#000000] text-xs sm:text-sm font-extrabold hover:bg-[#4ade80] transition-colors shadow-lg shadow-[#22c55e]/20"
               >
-                Hotline Khảo Sát: 0706 067 799
+                Hotline Khảo Sát (Mr. Vân): 0706 067 799
               </a>
               <Link
                 href="/contact"

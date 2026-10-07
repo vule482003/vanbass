@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Liên Hệ VanBass Music Center | Tư Vấn Mua & Thuê Bàn DJ 24/7",
+  title: "Liên Hệ VanBass Music Center | Tư Vấn Mua & Thuê Bàn DJ",
   description:
-    "Liên hệ VanBass Music Center - Hotline/Zalo: 0706.067.799. Showroom trải nghiệm & tư vấn kỹ thuật âm thanh, mua bán và cho thuê bàn DJ Pioneer tại Đà Nẵng & Toàn quốc.",
+    "Liên hệ VanBass Music Center - Hotline: 0905.614.566 (Mr. Tuyến) - 0944.498.987 (Mr. Tuấn) - 0706.067.799 (Mr. Vân). Showroom trải nghiệm & tư vấn kỹ thuật âm thanh, mua bán và cho thuê bàn DJ Pioneer tại Đà Nẵng, Huế & Toàn quốc.",
   keywords: [
     "liên hệ vanbass",
     "hotline thuê bàn dj đà nẵng",
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
     canonical: "/contact",
   },
   openGraph: {
-    title: "Liên Hệ VanBass Music Center | Tư Vấn Thiết Bị DJ 24/7",
+    title: "Liên Hệ VanBass Music Center | Tư Vấn Thiết Bị DJ",
     description:
-      "Hotline tư vấn và giao nhận setup thiết bị DJ tận nơi 24/7 tại Đà Nẵng & Hội An: 0706.067.799.",
+      "Hotline tư vấn và giao nhận setup thiết bị DJ tận nơi tại Đà Nẵng & Hội An: 0905.614.566 (Mr. Tuyến) - 0944.498.987 (Mr. Tuấn) - 0706.067.799 (Mr. Vân).",
     url: `${siteUrl}/contact`,
     type: "website",
   },

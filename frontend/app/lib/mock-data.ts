@@ -13589,7 +13589,7 @@ export const MOCK_PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": "pioneer-xdj-rx2-all-in-one",
+    "id": "67b66b50-1685-5884-9abf-8332e5775eb1",
     "category_id": "31042f34-c3c9-59e6-820d-8e5518ba453b",
     "category_name": "Hệ Thống DJ All-in-One",
     "category_slug": "all-in-one-dj-systems",

@@ -591,8 +591,8 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         { label: "Sửa bàn DJ Miền Trung", link: "/sua-chua-ban-dj" },
 
                         // Dịch vụ đào tạo & setup
-                        { label: "Đào tạo DJ Đà Nẵng", link: "/dao-tao-dj" },
-                        { label: "Đào tạo MC Hype", link: "/dao-tao-mc-hype" },
+                        { label: "Dạy học DJ Đà Nẵng & Huế", link: "/day-hoc-dj" },
+                        { label: "Dạy học MC Hype sự kiện", link: "/day-hoc-mc-hype" },
                         { label: "Setup âm thanh sự kiện", link: "/su-kien-setup" },
 
                         // Địa điểm
@@ -1091,14 +1091,14 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                 </div>
                 <div className="services-col-items">
                   <Link
-                    href="/dao-tao-dj"
+                    href="/day-hoc-dj"
                     onClick={() => closeAllMenusImmediately()}
                     className="service-card-item"
                   >
                     <div className="service-card-thumb">
                       <Image
                         src="/images/services/dj_academy_hero.jpg"
-                        alt="Đào Tạo DJ"
+                        alt="Dạy Học DJ"
                         width={44}
                         height={44}
                         className="service-card-img"
@@ -1106,24 +1106,24 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                     </div>
                     <div className="service-card-body">
                       <div className="service-card-name">
-                        <span>{lang === "en" ? "Practical DJ Training" : "Đào Tạo DJ Thực Hành"}</span>
+                        <span>{lang === "en" ? "DJ Training Course" : "Dạy Học DJ"}</span>
                         <span className="service-card-arrow">→</span>
                       </div>
                       <div className="service-card-desc">
-                        {lang === "en" ? "Hands-on DJ coaching from basics to live sets" : "Học DJ thực hành từ cơ bản đến biểu diễn"}
+                        {lang === "en" ? "Hands-on DJ coaching from basics to live sets" : "Học DJ thực hành 1 kèm 1 tại Đà Nẵng & Huế"}
                       </div>
                     </div>
                   </Link>
 
                   <Link
-                    href="/dao-tao-mc-hype"
+                    href="/day-hoc-mc-hype"
                     onClick={() => closeAllMenusImmediately()}
                     className="service-card-item"
                   >
                     <div className="service-card-thumb">
                       <Image
                         src="/images/services/mc_hype_hero.jpg"
-                        alt="Đào Tạo MC Hype"
+                        alt="Dạy Học MC Hype"
                         width={44}
                         height={44}
                         className="service-card-img"
@@ -1131,7 +1131,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                     </div>
                     <div className="service-card-body">
                       <div className="service-card-name">
-                        <span>{lang === "en" ? "MC & Event Hype Training" : "Đào Tạo MC / Hype Sự Kiện"}</span>
+                        <span>{lang === "en" ? "MC & Event Hype Training" : "Dạy Học MC / Hype"}</span>
                         <span className="service-card-arrow">→</span>
                       </div>
                       <div className="service-card-desc">
@@ -1414,20 +1414,20 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
 
                           <div className="mobile-service-group-title">{lang === "en" ? "Academy" : "Đào Tạo"}</div>
                           <Link
-                            href="/dao-tao-dj"
+                            href="/day-hoc-dj"
                             onClick={() => setMobileMenuOpen(false)}
                             className="mobile-service-item"
                           >
-                            <span>{lang === "en" ? "Practical DJ Training" : "Đào Tạo DJ Thực Hành"}</span>
-                            <span style={{ fontSize: "11px", color: "#71717a" }}>/dao-tao-dj</span>
+                            <span>{lang === "en" ? "DJ Training Course" : "Dạy Học DJ"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/day-hoc-dj</span>
                           </Link>
                           <Link
-                            href="/dao-tao-mc-hype"
+                            href="/day-hoc-mc-hype"
                             onClick={() => setMobileMenuOpen(false)}
                             className="mobile-service-item"
                           >
-                            <span>{lang === "en" ? "MC & Event Hype Training" : "Đào Tạo MC / Hype Sự Kiện"}</span>
-                            <span style={{ fontSize: "11px", color: "#71717a" }}>/dao-tao-mc-hype</span>
+                            <span>{lang === "en" ? "MC & Event Hype Training" : "Dạy Học MC / Hype"}</span>
+                            <span style={{ fontSize: "11px", color: "#71717a" }}>/day-hoc-mc-hype</span>
                           </Link>
 
                           <div className="mobile-service-group-title">{lang === "en" ? "Events" : "SỰ KIỆN"}</div>

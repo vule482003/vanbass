@@ -140,7 +140,7 @@ const FEATURED_PRODUCTS = [
 const FAQS = [
   {
     q: "Mua bàn DJ ở đâu uy tín, chính hãng tại Đà Nẵng và Miền Trung?",
-    a: "VanMusic (VanBass Music Center) là trung tâm phân phối thiết bị DJ chính hãng Pioneer DJ và AlphaTheta uy tín số 1 tại Đà Nẵng (Showroom: Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê) và TP Huế (442 Chi Lăng). 100% thiết bị bán ra có tem bảo hành chính hãng từ 12 - 24 tháng, bảo dưỡng kỹ thuật trọn đời và hỗ trợ linh kiện thay thế chính hãng lấy ngay.",
+    a: "VanMusic (VanBass Music Center) là trung tâm phân phối thiết bị DJ chính hãng Pioneer DJ và AlphaTheta uy tín số 1 tại Đà Nẵng (Showroom: 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng) và TP Huế (442 Chi Lăng). 100% thiết bị bán ra có tem bảo hành chính hãng từ 12 - 24 tháng, bảo dưỡng kỹ thuật trọn đời và hỗ trợ linh kiện thay thế chính hãng lấy ngay.",
   },
   {
     q: "Người mới bắt đầu tập chơi DJ nên chọn mua dòng máy nào tối ưu nhất?",
@@ -160,14 +160,14 @@ const FAQS = [
   },
   {
     q: "Tôi có thể ghé Showroom tại Đà Nẵng để cắm USB trải nghiệm máy thật trước khi mua không?",
-    a: "Hoàn toàn được! VanMusic khuyến khích quý khách hàng ghé trực tiếp Showroom tại Nguyễn Tất Thành, Quận Thanh Khê, TP Đà Nẵng để cắm USB cá nhân, trực tiếp test cảm giác mâm xoay jogwheel, fader và trải nghiệm âm thanh thực tế trên hệ thống loa Pro trước khi đưa ra quyết định mua sắm.",
+    a: "Hoàn toàn được! VanMusic khuyến khích quý khách hàng ghé trực tiếp Showroom tại 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng để cắm USB cá nhân, trực tiếp test cảm giác mâm xoay jogwheel, fader và trải nghiệm âm thanh thực tế trên hệ thống loa Pro trước khi đưa ra quyết định mua sắm.",
   },
 ];
 
 export default function BanDjLandingPage() {
-  const hotline = "0706067799";
+  const hotline = "0905614566";
   const messengerUrl = "https://m.me/vanbassmusiccenter";
-  const zaloUrl = "https://zalo.me/0706067799";
+  const zaloUrl = "https://zalo.me/0905614566";
 
   return (
     <div
@@ -343,7 +343,7 @@ export default function BanDjLandingPage() {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                   </svg>
-                  <span>Tư Vấn & Báo Giá: 0706 067 799</span>
+                  <span>Tư Vấn & Báo Giá (Mr. Tuyến): 0905 614 566</span>
                 </a>
 
                 <a
@@ -498,7 +498,7 @@ export default function BanDjLandingPage() {
                   Showroom Trải Nghiệm Máy Thật
                 </h3>
                 <p style={{ fontSize: "13.5px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
-                  Kính mời quý khách ghé Showroom Đà Nẵng (Nguyễn Tất Thành, Q. Thanh Khê) để cắm USB test trực tiếp cảm giác mâm xoay jogwheel, fader trên dàn âm thanh thực tế trước khi mua.
+                  Kính mời quý khách ghé Showroom Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng) để cắm USB test trực tiếp cảm giác mâm xoay jogwheel, fader trên dàn âm thanh thực tế trước khi mua.
                 </p>
               </div>
             </div>
@@ -1211,7 +1211,7 @@ export default function BanDjLandingPage() {
                     <span style={{ fontSize: "18px" }}>📍</span>
                     <div>
                       <strong style={{ color: "#ffffff" }}>Showroom Đà Nẵng:</strong>
-                      <div style={{ color: "#d4d4d8" }}>Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê, TP. Đà Nẵng</div>
+                      <div style={{ color: "#d4d4d8" }}>77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng</div>
                     </div>
                   </div>
 
@@ -1227,11 +1227,25 @@ export default function BanDjLandingPage() {
                     <span style={{ fontSize: "18px" }}>📞</span>
                     <div>
                       <strong style={{ color: "#ffffff" }}>Hotline / Zalo Tư Vấn:</strong>
-                      <div>
-                        <a href={`tel:${hotline}`} style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
-                          0706 067 799
-                        </a>{" "}
-                        <span style={{ color: "#71717a" }}>(Hỗ trợ tư vấn 24/7)</span>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginTop: "4px" }}>
+                        <div>
+                          <a href="tel:0905614566" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                            0905 614 566
+                          </a>{" "}
+                          <span style={{ color: "#a1a1aa" }}>(Mr. Tuyến — Mua Bán)</span>
+                        </div>
+                        <div>
+                          <a href="tel:0944498987" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                            0944 498 987
+                          </a>{" "}
+                          <span style={{ color: "#a1a1aa" }}>(Mr. Tuấn — Thuê & Setup)</span>
+                        </div>
+                        <div>
+                          <a href="tel:0706067799" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                            0706 067 799
+                          </a>{" "}
+                          <span style={{ color: "#a1a1aa" }}>(Mr. Vân — Kỹ Thuật)</span>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -88,12 +88,12 @@ export default function SuaChuaBanDjPage() {
           "@type": ["MusicStore", "LocalBusiness"],
           name: "VanBass Music Center",
           url: baseUrl,
-          telephone: "+84706067799",
+          telephone: ["+84905614566", "+84944498987", "+84706067799"],
           priceRange: "200.000đ - 2.500.000đ",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "77 Nguyễn Tất Thành, Phường Thanh Khê Tây, Quận Thanh Khê",
-            addressLocality: "Đà Nẵng",
+            streetAddress: "77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng",
+            addressLocality: "phường Hải Châu, Đà Nẵng",
             addressRegion: "Đà Nẵng",
             addressCountry: "VN",
           },
@@ -253,7 +253,7 @@ export default function SuaChuaBanDjPage() {
                     transition: "all 0.2s ease",
                   }}
                 >
-                  <span>Gọi Hotline: 0706.067.799</span>
+                  <span>Hotline Kỹ Thuật (Mr. Vân): 0706.067.799</span>
                 </a>
 
                 <a
@@ -910,7 +910,7 @@ export default function SuaChuaBanDjPage() {
                     margin: "0 auto 30px auto",
                   }}
                 >
-                  Ghé ngay trung tâm kỹ thuật VanBass tại <strong>77 Nguyễn Tất Thành, Đà Nẵng</strong> hoặc liên hệ hotline để kỹ thuật viên chuẩn đoán lỗi miễn phí.
+                  Ghé ngay trung tâm kỹ thuật VanBass tại <strong>77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng</strong> hoặc liên hệ hotline để kỹ thuật viên chuẩn đoán lỗi miễn phí.
                 </p>
 
                 <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
@@ -930,7 +930,7 @@ export default function SuaChuaBanDjPage() {
                       boxShadow: "0 4px 20px rgba(34, 197, 94, 0.35)",
                     }}
                   >
-                    <span>Liên hệ ngay: 0706.067.799</span>
+                    <span>Hotline Kỹ Thuật (Mr. Vân): 0706.067.799</span>
                     <span>→</span>
                   </a>
 

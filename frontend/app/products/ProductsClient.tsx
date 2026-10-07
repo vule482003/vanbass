@@ -340,22 +340,38 @@ export default function ProductsClient({
             .replace(/Đ/g, "D")
             .toLowerCase();
 
+        const cleanPunct = (s: string) => s.replace(/[-_./]/g, " ");
+
         const qNorm = normalize(queryLower);
+        const qClean = cleanPunct(qNorm);
+
         const nameNorm = normalize(product.name || "");
-        const descNorm = normalize(product.description || "");
-        const brandNorm = normalize(product.brand || "");
         const skuNorm = normalize(product.sku || "");
-        const combined = `${nameNorm} ${descNorm} ${brandNorm} ${skuNorm}`;
+        const slugNorm = normalize(product.slug || "");
+        const brandNorm = normalize(product.brand || "");
 
-        if (!combined.includes(qNorm)) {
-          const tokens = qNorm.split(/\s+/).filter(Boolean);
-          const stopWords = new Set(["thue", "mua", "ban", "cho", "sua", "chua", "bao", "duong", "thay", "repair", "fix", "dn", "hue", "da", "nang", "hoi", "an", "mien", "trung", "tai", "o", "gia", "re", "chinh", "hang"]);
-          const coreTokens = tokens.filter((t) => !stopWords.has(t));
-          const effectiveTokens = coreTokens.length > 0 ? coreTokens : tokens;
+        const primaryText = `${nameNorm} ${cleanPunct(nameNorm)} ${skuNorm} ${cleanPunct(skuNorm)} ${slugNorm} ${cleanPunct(slugNorm)} ${brandNorm}`;
 
-          const matchTokens = effectiveTokens.every((token) => combined.includes(token));
-          if (!matchTokens) return false;
+        if (primaryText.includes(qNorm) || primaryText.includes(qClean)) {
+          return true;
         }
+
+        const tokens = qNorm.split(/[\s\-_./]+/).filter(Boolean);
+        const stopWords = new Set(["thue", "mua", "ban", "cho", "sua", "chua", "bao", "duong", "thay", "repair", "fix", "dn", "hue", "da", "nang", "hoi", "an", "mien", "trung", "tai", "o", "gia", "re", "chinh", "hang"]);
+        const coreTokens = tokens.filter((t) => !stopWords.has(t));
+        const effectiveTokens = coreTokens.length > 0 ? coreTokens : tokens;
+
+        const matchTokensPrimary = effectiveTokens.every((token) => primaryText.includes(token));
+        if (matchTokensPrimary) return true;
+
+        // Fallback for full-text descriptions when query is longer than 4 chars (avoiding false hits for model shortcodes like rx3)
+        if (qNorm.length > 4) {
+          const plainDesc = normalize((product.description || "").replace(/<[^>]*>/g, " "));
+          const matchDesc = effectiveTokens.every((token) => plainDesc.includes(token));
+          if (matchDesc) return true;
+        }
+
+        return false;
       }
 
       return true;
@@ -932,7 +948,7 @@ export default function ProductsClient({
                     <strong>2. Phân khúc All-In-One Độc Lập (Dành cho DJ chuyên nghiệp, Bar, Pub, Villa):</strong> Các mẫu như <em>Pioneer DJ XDJ-RX3</em>, <em>AlphaTheta OMNIS-DUO</em>, <em>AlphaTheta XDJ-AZ 4 kênh</em> cho phép cắm trực tiếp USB chơi nhạc độc lập với màn hình cảm ứng sắc nét từ 7 đến 10.1 inch, không lo giật lag hay treo laptop khi đang biểu diễn.
                   </p>
                   <p>
-                    <strong>3. Địa chỉ mua hàng và hỗ trợ kỹ thuật trực tiếp:</strong> Quý khách hàng tại Đà Nẵng, Quảng Nam, Thừa Thiên Huế có thể liên hệ trực tiếp Hotline <strong>0706 067 799</strong> hoặc ghé Showroom tại <strong>Nguyễn Tất Thành (Đà Nẵng)</strong> và <strong>442 Chi Lăng (TP Huế)</strong> để nhận tư vấn cấu hình và báo giá ưu đãi nhất.
+                    <strong>3. Địa chỉ mua hàng và hỗ trợ kỹ thuật trực tiếp:</strong> Quý khách hàng tại Đà Nẵng, Quảng Nam, Thừa Thiên Huế có thể liên hệ trực tiếp đội ngũ tư vấn: <strong>Mr. Tuyến (0905 614 566)</strong>, <strong>Mr. Tuấn (0944 498 987)</strong>, <strong>Mr. Vân (0706 067 799)</strong> hoặc ghé Showroom tại <strong>77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng</strong> và <strong>442 Chi Lăng (TP Huế)</strong> để nhận tư vấn cấu hình và báo giá ưu đãi nhất.
                   </p>
                 </div>
               </div>

@@ -170,7 +170,7 @@ export default function PoliciesPage() {
                     textDecoration: "none",
                   }}
                 >
-                  Hotline: 0706.067.799
+                  Hotline: 0706.067.799 (Mr. Vân)
                 </a>
               </div>
             </aside>
