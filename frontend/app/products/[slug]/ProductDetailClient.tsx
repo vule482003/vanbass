@@ -398,18 +398,22 @@ export default function ProductDetailClient({
   const shortExcerpt = getProductPlainExcerpt(displayDesc, 190);
   const hasHtmlDesc = Boolean(displayDesc && displayDesc.includes("<") && displayDesc.includes(">"));
 
+  const isDirectHotModel = Boolean(modelKey && slug.toLowerCase().trim() === modelKey);
+
+  const isDjControllerOrSystem = Boolean(
+    isDirectHotModel ||
+    product.category_slug === "all-in-one-dj-systems" ||
+    product.category_slug === "dj-controllers" ||
+    product.category_slug === "dj-player" ||
+    product.category_slug === "dj-mixers" ||
+    product.category_slug === "turntables" ||
+    product.name?.toLowerCase().includes("bàn dj") ||
+    product.name?.toLowerCase().includes("máy dj")
+  );
+
   const isDjProduct = Boolean(
-    modelKey ||
-    product.brand?.toLowerCase().includes("pioneer") ||
-    product.brand?.toLowerCase().includes("alphatheta") ||
-    product.slug?.toLowerCase().includes("xdj") ||
-    product.slug?.toLowerCase().includes("ddj") ||
-    product.slug?.toLowerCase().includes("flx") ||
-    product.slug?.toLowerCase().includes("omnis") ||
-    product.name?.toLowerCase().includes("dj") ||
-    product.category_slug?.includes("dj") ||
-    product.category_slug?.includes("all-in-one") ||
-    product.category_slug?.includes("controller")
+    isDjControllerOrSystem ||
+    product.category_slug?.includes("dj")
   );
 
   const handleAddToCart = () => {
@@ -447,7 +451,7 @@ export default function ProductDetailClient({
           <nav className="pdetail-breadcrumb" aria-label="Breadcrumb">
             <Link href="/" className="pdetail-bc-link">{t.productDetail.breadcrumbHome}</Link>
             <span className="pdetail-bc-sep">/</span>
-            {isDjProduct ? (
+            {isDirectHotModel ? (
               <>
                 <Link href="/ban-dj" className="pdetail-bc-link">Bàn DJ Chính Hãng</Link>
                 <span className="pdetail-bc-sep">/</span>
@@ -689,10 +693,12 @@ export default function ProductDetailClient({
             {/* Right Column: Product Information & Purchase & Rental */}
             <div ref={heroActionRef} className="pdetail-info-col">
               {/* Brand & SKU Header */}
-              <div className="pdetail-meta-header">
-                <span className="pdetail-brand-badge">{product.brand || "Pioneer DJ"}</span>
-                <span className="pdetail-sku-badge">SKU: {product.sku || "XDJ-RX3"}</span>
-              </div>
+              {(product.brand || product.sku) && (
+                <div className="pdetail-meta-header">
+                  {product.brand && <span className="pdetail-brand-badge">{product.brand}</span>}
+                  {product.sku && <span className="pdetail-sku-badge">SKU: {product.sku}</span>}
+                </div>
+              )}
 
               {/* Product Title */}
               <h1 className="pdetail-title">
@@ -723,12 +729,16 @@ export default function ProductDetailClient({
               <div className="pdetail-pricing-box">
                 <div className="pdetail-price-main-row">
                   <span className="pdetail-sale-price">
-                    {formatCurrency(product.sale_price || 89910000, lang)}
+                    {product.sale_price && product.sale_price > 0
+                      ? formatCurrency(product.sale_price, lang)
+                      : "Liên hệ"}
                   </span>
-                  <span className="pdetail-discount-tag">-10%</span>
+                  {product.sale_price && product.sale_price > 0 && calculatedOldPrice && (
+                    <span className="pdetail-discount-tag">-10%</span>
+                  )}
                 </div>
 
-                {calculatedOldPrice && (
+                {product.sale_price && product.sale_price > 0 && calculatedOldPrice && (
                   <span className="pdetail-old-price">
                     {formatCurrency(calculatedOldPrice, lang)}
                   </span>
@@ -737,7 +747,7 @@ export default function ProductDetailClient({
                 <div className="pdetail-stock-indicator">
                   <span className={`stock-pulse-dot ${product.stock_quantity > 0 ? "in-stock" : "out-of-stock"}`} />
                   <span className="stock-status-label">
-                    {product.stock_quantity > 0 ? "Còn hàng" : t.productDetail.outOfStock}
+                    {product.stock_quantity > 0 ? "Còn hàng" : (product.sale_price ? t.productDetail.outOfStock : "Liên hệ đặt hàng")}
                   </span>
                 </div>
               </div>
@@ -752,7 +762,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <span className="quick-spec-lbl">Thương hiệu</span>
-                    <span className="quick-spec-val">{product.brand || "Pioneer DJ"}</span>
+                    <span className="quick-spec-val">{product.brand || "Đang cập nhật"}</span>
                   </div>
                 </div>
 
@@ -881,7 +891,7 @@ export default function ProductDetailClient({
 
               {/* Rental Section Box (GIÁ THUÊ) */}
               <div className="pdetail-rental-card">
-                {(product.rental_enabled || (product.rental_price && product.rental_price > 0) || modelKey) && (
+                {(product.rental_enabled || (product.rental_price && product.rental_price > 0) || isDirectHotModel) && (
                   <div className="pdetail-rental-top-row">
                     <div className="rental-price-wrap">
                       <div className="rental-box-icon">
@@ -895,8 +905,14 @@ export default function ProductDetailClient({
                       <div>
                         <span className="rental-header-label">GIÁ THUÊ</span>
                         <div className="rental-price-number">
-                          {product.rental_price ? formatCurrency(product.rental_price, lang) : "2.500.000₫"}
-                          <small className="rental-unit"> / 24 giờ</small>
+                          {product.rental_price ? (
+                            <>
+                              {formatCurrency(product.rental_price, lang)}
+                              <small className="rental-unit"> / 24 giờ</small>
+                            </>
+                          ) : (
+                            "Liên hệ báo giá"
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1060,11 +1076,11 @@ export default function ProductDetailClient({
                   </tr>
                   <tr>
                     <td className="fb-label">Thương hiệu</td>
-                    <td className="fb-data">{product.brand || "Pioneer DJ"} (Chính Hãng Phân Phối)</td>
+                    <td className="fb-data">{product.brand ? `${product.brand} (Chính Hãng Phân Phối)` : "Chính Hãng Phân Phối"}</td>
                   </tr>
                   <tr>
                     <td className="fb-label">Phân khúc thiết bị</td>
-                    <td className="fb-data">{product.category_name || "Thiết Bị DJ Chuyên Nghiệp"}</td>
+                    <td className="fb-data">{product.category_name || (isDjControllerOrSystem ? "Thiết Bị DJ Chuyên Nghiệp" : "Thiết Bị Âm Thanh")}</td>
                   </tr>
                   <tr>
                     <td className="fb-label">Tình trạng máy</td>
@@ -1086,11 +1102,20 @@ export default function ProductDetailClient({
                   <tr>
                     <td className="fb-label">Mua bán & Sở hữu</td>
                     <td className="fb-data">
-                      <span className="fb-status-yes">✓ Có hàng tại kho</span>
+                      <span className="fb-status-yes">{product.stock_quantity > 0 ? "✓ Có hàng tại kho" : "Liên hệ kiểm tra kho"}</span>
                       {" • "}
-                      <Link href="/ban-dj" className="fb-action-link">
-                        Xem trung tâm Mua Bán Bàn DJ &rarr;
-                      </Link>
+                      {isDirectHotModel || isDjControllerOrSystem ? (
+                        <Link href="/ban-dj" className="fb-action-link">
+                          Xem trung tâm Mua Bán Bàn DJ &rarr;
+                        </Link>
+                      ) : (
+                        <Link
+                          href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
+                          className="fb-action-link"
+                        >
+                          Xem danh mục {product.category_name || "sản phẩm"} &rarr;
+                        </Link>
+                      )}
                     </td>
                   </tr>
                   <tr>
@@ -1101,8 +1126,8 @@ export default function ProductDetailClient({
                           <span className="fb-status-yes">✓ Có hỗ trợ cho thuê</span>
                           {product.rental_price ? ` (từ ${formatCurrency(product.rental_price, lang)} / 24h)` : ""}
                           {" • "}
-                          <Link href="/thue-ban-dj" className="fb-action-link">
-                            Xem bảng giá thuê máy &rarr;
+                          <Link href={isDjControllerOrSystem ? "/thue-ban-dj" : "/products"} className="fb-action-link">
+                            {isDjControllerOrSystem ? "Xem bảng giá thuê máy →" : "Hỗ trợ cấu hình sự kiện →"}
                           </Link>
                         </>
                       ) : (
@@ -1114,10 +1139,21 @@ export default function ProductDetailClient({
                     <td className="fb-label">Sửa chữa & Kỹ thuật</td>
                     <td className="fb-data">
                       <span className="fb-status-yes">✓ Có trạm kỹ thuật</span>
-                      {" (Sẵn fader Alps, cân chỉnh jogwheel, vệ sinh bo mạch) • "}
-                      <Link href="/sua-chua-ban-dj" className="fb-action-link">
-                        Dịch vụ sửa chữa &rarr;
-                      </Link>
+                      {isDjControllerOrSystem ? (
+                        <>
+                          {" (Sẵn fader Alps, cân chỉnh jogwheel, vệ sinh bo mạch) • "}
+                          <Link href="/sua-chua-ban-dj" className="fb-action-link">
+                            Dịch vụ sửa chữa &rarr;
+                          </Link>
+                        </>
+                      ) : (
+                        <>
+                          {" (Kiểm tra kỹ thuật, bảo hành chính hãng, linh kiện chuẩn) • "}
+                          <Link href="/sua-chua-ban-dj" className="fb-action-link">
+                            Trung tâm kỹ thuật &rarr;
+                          </Link>
+                        </>
+                      )}
                     </td>
                   </tr>
                   <tr>
@@ -1147,25 +1183,44 @@ export default function ProductDetailClient({
               {/* ITEM 1: MUA */}
               <div className="pdetail-pillar-card pillar-buy">
                 <div className="pillar-icon">🛒</div>
-                <h3 className="pillar-card-title">Mua Bàn DJ {displayName}</h3>
+                <h3 className="pillar-card-title">
+                  {isDirectHotModel || isDjControllerOrSystem ? `Mua Bàn DJ ${displayName}` : `Mua ${displayName} Chính Hãng`}
+                </h3>
                 <p className="pillar-card-desc">
                   Phân phối chính hãng mới 100% fullbox hoặc like new 99% tuyển chọn, bảo hành 12 - 24T, hỗ trợ trả góp 0%.
                 </p>
-                <Link href="/ban-dj" className="pillar-cta-btn pillar-cta-buy">
-                  <span>Khám phá các mẫu bàn DJ đang bán</span>
-                  <span>&rarr;</span>
-                </Link>
+                {isDirectHotModel || isDjControllerOrSystem ? (
+                  <Link href="/ban-dj" className="pillar-cta-btn pillar-cta-buy">
+                    <span>Khám phá các mẫu bàn DJ đang bán</span>
+                    <span>&rarr;</span>
+                  </Link>
+                ) : (
+                  <Link
+                    href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
+                    className="pillar-cta-btn pillar-cta-buy"
+                  >
+                    <span>Khám phá sản phẩm cùng danh mục</span>
+                    <span>&rarr;</span>
+                  </Link>
+                )}
               </div>
 
               {/* ITEM 2: THUÊ */}
               <div className="pdetail-pillar-card pillar-rent">
                 <div className="pillar-icon">🎧</div>
-                <h3 className="pillar-card-title">Thuê Thiết Bị Biểu Diễn</h3>
+                <h3 className="pillar-card-title">
+                  {isDirectHotModel || isDjProduct ? "Thuê Thiết Bị Biểu Diễn" : "Thuê Thiết Bị Sự Kiện"}
+                </h3>
                 <p className="pillar-card-desc">
-                  Hỗ trợ cho thuê thiết bị DJ ngắn ngày cho show, tiệc và sự kiện, giao nhận và setup tận nơi 24/7 tại Đà Nẵng & Huế.
+                  {isDirectHotModel || isDjProduct
+                    ? "Hỗ trợ cho thuê thiết bị DJ ngắn ngày cho show, tiệc và sự kiện, giao nhận và setup tận nơi 24/7 tại Đà Nẵng & Huế."
+                    : "Hỗ trợ giải pháp thuê âm thanh ngắn ngày cho show, hội thảo và sự kiện, giao nhận setup tận nơi tại Đà Nẵng & Huế."}
                 </p>
-                <Link href="/thue-ban-dj" className="pillar-cta-btn pillar-cta-rent">
-                  <span>Xem dịch vụ cho thuê bàn DJ</span>
+                <Link
+                  href={isDirectHotModel || isDjControllerOrSystem ? "/thue-ban-dj" : (product.category_slug ? `/products?category=${product.category_slug}` : "/products")}
+                  className="pillar-cta-btn pillar-cta-rent"
+                >
+                  <span>{isDirectHotModel || isDjControllerOrSystem ? "Xem dịch vụ cho thuê bàn DJ" : "Xem dịch vụ cho thuê thiết bị"}</span>
                   <span>&rarr;</span>
                 </Link>
               </div>
@@ -1173,9 +1228,13 @@ export default function ProductDetailClient({
               {/* ITEM 3: SỬA */}
               <div className="pdetail-pillar-card pillar-repair">
                 <div className="pillar-icon">🛠️</div>
-                <h3 className="pillar-card-title">Sửa Chữa & Bảo Dưỡng</h3>
+                <h3 className="pillar-card-title">
+                  {isDjControllerOrSystem ? "Sửa Chữa & Bảo Dưỡng Bàn DJ" : "Dịch Vụ Kỹ Thuật & Sửa Chữa"}
+                </h3>
                 <p className="pillar-card-desc">
-                  Trạm kỹ thuật tiếp nhận kiểm tra miễn phí, thay thế fader, cân chỉnh jogwheel và bảo dưỡng thiết bị DJ chuyên nghiệp.
+                  {isDjControllerOrSystem
+                    ? "Trạm kỹ thuật tiếp nhận kiểm tra miễn phí, thay thế fader, cân chỉnh jogwheel và bảo dưỡng thiết bị DJ chuyên nghiệp."
+                    : "Trạm kỹ thuật tiếp nhận kiểm tra miễn phí, xử lý bo mạch, cân chỉnh âm học và bảo hành thiết bị chính hãng."}
                 </p>
                 <Link href="/sua-chua-ban-dj" className="pillar-cta-btn pillar-cta-repair">
                   <span>Xem dịch vụ sửa chữa & bảo dưỡng</span>
@@ -1237,8 +1296,11 @@ export default function ProductDetailClient({
                   </div>
                 </div>
                 <div className="buyer-guide-action">
-                  <Link href="/ban-dj" className="buyer-guide-link">
-                    <span>Xem thêm hướng dẫn chọn bàn DJ tại Hub Mua Bán Bàn DJ</span>
+                  <Link
+                    href={isDjControllerOrSystem ? "/ban-dj" : (product.category_slug ? `/products?category=${product.category_slug}` : "/products")}
+                    className="buyer-guide-link"
+                  >
+                    <span>{isDjControllerOrSystem ? "Xem thêm hướng dẫn chọn bàn DJ tại Hub Mua Bán Bàn DJ" : "Xem thêm sản phẩm cùng danh mục"}</span>
                     <span>&rarr;</span>
                   </Link>
                 </div>
@@ -1263,13 +1325,19 @@ export default function ProductDetailClient({
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "20px" }}>
               <div style={{ maxWidth: "720px" }}>
                 <span style={{ fontSize: "12px", color: "#38bdf8", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "6px" }}>
-                  🛒 MUA BÁN & PHÂN PHỐI CHÍNH HÃNG PIONEER DJ & ALPHATHETA
+                  {product.brand
+                    ? `🛒 MUA BÁN & PHÂN PHỐI CHÍNH HÃNG ${product.brand.toUpperCase()}`
+                    : "🛒 MUA BÁN & PHÂN PHỐI CHÍNH HÃNG TẠI VANBASS"}
                 </span>
                 <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#ffffff", margin: 0, lineHeight: 1.3 }}>
-                  Mua Bàn DJ {displayName} Chính Hãng Giá Tốt Nhất
+                  {isDirectHotModel || isDjControllerOrSystem
+                    ? `Mua Bàn DJ ${displayName} Chính Hãng Giá Tốt Nhất`
+                    : `Mua ${displayName} Chính Hãng Giá Tốt Nhất`}
                 </h2>
                 <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "10px 0 0 0", lineHeight: 1.6 }}>
-                  VanBass Music Center phân phối và cung ứng thiết bị DJ {displayName} mới 100% đập hộp và hàng like new 99% tuyển chọn. Cam kết chính hãng trọn đời, bảo hành 12 - 24 tháng, hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng, ship COD kiểm tra hàng tận nơi toàn quốc và hỗ trợ kỹ thuật cài đặt Rekordbox / Serato 24/7.
+                  {isDirectHotModel || isDjProduct
+                    ? `VanBass Music Center phân phối và cung ứng thiết bị DJ ${displayName} mới 100% đập hộp và hàng like new 99% tuyển chọn. Cam kết chính hãng trọn đời, bảo hành 12 - 24 tháng, hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng, ship COD kiểm tra hàng tận nơi toàn quốc và hỗ trợ kỹ thuật cài đặt Rekordbox / Serato 24/7.`
+                    : `VanBass Music Center phân phối và cung ứng ${displayName} mới 100% fullbox và hàng chính hãng tuyển chọn. Cam kết chính hãng trọn đời, bảo hành 12 - 24 tháng, hỗ trợ trả góp 0% qua thẻ tín dụng, ship COD kiểm tra hàng tận nơi toàn quốc và hỗ trợ kỹ thuật 24/7.`}
                 </p>
               </div>
 
@@ -1294,7 +1362,7 @@ export default function ProductDetailClient({
                 </a>
 
                 <a
-                  href={`https://m.me/${facebookPageId}?text=${encodeURIComponent(`Xin chào, tôi muốn nhận báo giá mua bàn DJ ${displayName}`)}`}
+                  href={`https://m.me/${facebookPageId}?text=${encodeURIComponent(`Xin chào, tôi muốn nhận báo giá sản phẩm ${displayName}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="button button-secondary"
@@ -1310,14 +1378,14 @@ export default function ProductDetailClient({
                 <span style={{ fontSize: "18px" }}>🏆</span>
                 <div>
                   <strong style={{ color: "#fff", display: "block" }}>100% Chính Hãng</strong>
-                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Nguyên seal, CO/CQ đầy đủ từ Pioneer DJ & AlphaTheta</span>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Nguyên seal, CO/CQ đầy đủ từ {product.brand ? product.brand : "nhà phân phối chính hãng"}</span>
                 </div>
               </div>
               <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
                 <span style={{ fontSize: "18px" }}>🛡️</span>
                 <div>
                   <strong style={{ color: "#fff", display: "block" }}>Bảo Hành 12 - 24 Tháng</strong>
-                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Bảo dưỡng fader/jogwheel định kỳ, hỗ trợ kỹ thuật trọn đời</span>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>{isDjControllerOrSystem ? "Bảo dưỡng fader/jogwheel định kỳ, hỗ trợ kỹ thuật trọn đời" : "Bảo hành chính hãng uy tín, hỗ trợ kỹ thuật trọn đời"}</span>
                 </div>
               </div>
               <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -1331,7 +1399,7 @@ export default function ProductDetailClient({
                 <span style={{ fontSize: "18px" }}>🎁</span>
                 <div>
                   <strong style={{ color: "#fff", display: "block" }}>Quà Tặng Độc Quyền</strong>
-                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>Tặng USB Sandisk nạp nhạc Rekordbox + Cáp xịn + Khóa học DJ</span>
+                  <span style={{ color: "#a1a1aa", fontSize: "12px" }}>{isDjControllerOrSystem ? "Tặng USB Sandisk nạp nhạc Rekordbox + Cáp xịn + Khóa học DJ" : "Hỗ trợ kỹ thuật cấu hình, phụ kiện tiêu chuẩn và hậu mãi chu đáo"}</span>
                 </div>
               </div>
             </div>
@@ -1345,7 +1413,9 @@ export default function ProductDetailClient({
                   ⚡ Dịch vụ cho thuê biểu diễn tại Đà Nẵng & Huế
                 </span>
                 <h2 className="pdetail-banner-title">
-                  Bạn Cần Thuê Bàn DJ {displayName} Cho Show Diễn Ngắn Ngày?
+                  {isDirectHotModel || isDjControllerOrSystem
+                    ? `Bạn Cần Thuê Bàn DJ ${displayName} Cho Show Diễn Ngắn Ngày?`
+                    : `Bạn Cần Thuê Thiết Bị ${displayName} Cho Sự Kiện Ngắn Ngày?`}
                 </h2>
                 <p className="pdetail-banner-desc">
                   VanBass Music Center hỗ trợ cho thuê {displayName} máy mới 99%, giao và setup trọn gói trong 2 giờ tại Đà Nẵng, Hội An và Thừa Thiên Huế.
@@ -1362,10 +1432,10 @@ export default function ProductDetailClient({
                   <span>Thuê máy này ngay</span>
                 </a>
                 <Link
-                  href="/thue-ban-dj"
+                  href={isDjControllerOrSystem ? "/thue-ban-dj" : (product.category_slug ? `/products?category=${product.category_slug}` : "/products")}
                   className="banner-secondary-btn"
                 >
-                  <span>Xem dịch vụ cho thuê bàn DJ &rarr;</span>
+                  <span>{isDjControllerOrSystem ? "Xem dịch vụ cho thuê bàn DJ →" : "Xem thêm sản phẩm cùng loại →"}</span>
                 </Link>
               </div>
             </div>
@@ -1382,7 +1452,7 @@ export default function ProductDetailClient({
                   Thiết Bị {displayName} Cần Kiểm Tra, Sửa Chữa Hoặc Bảo Dưỡng?
                 </h2>
                 <p className="pdetail-banner-desc">
-                  Trạm kỹ thuật VanMusic tại Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu) & Huế tiếp nhận kiểm tra chuẩn đoán miễn phí, hỗ trợ thay thế linh kiện chính hãng và bảo dưỡng thiết bị DJ chuyên nghiệp.
+                  Trạm kỹ thuật VanMusic tại Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu) & Huế tiếp nhận kiểm tra chuẩn đoán miễn phí, hỗ trợ thay thế linh kiện chính hãng và bảo dưỡng {isDjProduct ? "thiết bị DJ chuyên nghiệp" : "thiết bị âm thanh chuyên nghiệp"}.
                 </p>
               </div>
 

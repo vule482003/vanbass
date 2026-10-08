@@ -70,6 +70,9 @@ export const PRODUCT_SLUG_ALIASES: Record<string, string> = {
   // 10. 18SW115 Duplicate & SKU Aliases -> loa-sub-roi-bc-speakers-5-tac-18sw115
   "18sw115": "loa-sub-roi-bc-speakers-5-tac-18sw115",
   "loa-sub-roi-b-c-speakers-5-tac-18sw115": "loa-sub-roi-bc-speakers-5-tac-18sw115",
+
+  // 11. AlphaTheta CDJ-1500X -> cdj-1500x-chinh-hang-alphatheta
+  "alphatheta-cdj-1500x": "cdj-1500x-chinh-hang-alphatheta",
 };
 
 // Direct mapping from Canonical SEO Route Slug -> Primary Database Slug in PostgreSQL
@@ -742,8 +745,8 @@ function formatProductMetadataTitle(product: Product): string {
 
 function formatProductMetadataDesc(product: Product): string {
   const rawName = product.name.replace(/\s+/g, " ").trim();
-  const brand = product.brand?.trim() || "Pioneer DJ";
-  const cat = product.category_name || "Thiết bị âm thanh & DJ";
+  const brand = product.brand?.trim() || "";
+  const cat = product.category_name || "Thiết bị âm thanh";
 
   let excerpt = "";
   if (product.description) {
@@ -751,9 +754,10 @@ function formatProductMetadataDesc(product: Product): string {
     if (excerpt.length > 105) excerpt = `${excerpt.slice(0, 102)}...`;
   }
 
+  const brandPart = brand ? ` chính hãng ${brand}` : "";
   const desc = excerpt
-    ? `Mua ${rawName} chính hãng ${brand} (${cat}). ${excerpt} Phân phối uy tín tại VanBass.`
-    : `Mua ${rawName} chính hãng ${brand} (${cat}). Bảo hành 12-24T, trả góp 0%, giao hàng toàn quốc tại VanBass Music Center.`;
+    ? `Mua ${rawName}${brandPart} (${cat}). ${excerpt} Phân phối uy tín tại VanBass.`
+    : `Mua ${rawName}${brandPart} (${cat}). Cam kết phân phối chính hãng, giao hàng toàn quốc tại VanBass Music Center.`;
 
   return desc.length > 160 ? `${desc.slice(0, 157)}...` : desc;
 }
@@ -837,24 +841,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImg = rawImg.startsWith("http") ? rawImg : `${baseUrl}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
   const canonicalPath = `/products/${product.slug || slug}`;
 
+  const isDjCategory = Boolean(
+    product.category_slug?.includes("dj") ||
+    product.category_slug?.includes("all-in-one") ||
+    product.category_slug?.includes("controller")
+  );
+
+  const keywords: string[] = [
+    product.name,
+    `mua ${product.name}`,
+    `bán ${product.name}`,
+    `giá ${product.name}`,
+  ];
+  if (product.brand) {
+    keywords.push(product.brand);
+  }
+  if (product.category_name) {
+    keywords.push(product.category_name);
+  }
+  if (isDjCategory) {
+    keywords.push("thiết bị dj", "bàn dj chính hãng");
+  }
+  keywords.push("vanbass", "vanmusic");
+
   return {
     title: {
       absolute: title,
     },
     description,
-    keywords: [
-      product.name,
-      `mua ${product.name}`,
-      `bán ${product.name}`,
-      `giá ${product.name}`,
-      `thuê ${product.name}`,
-      product.brand || "Pioneer DJ",
-      "bàn dj chính hãng",
-      "thuê bàn dj",
-      "thue ban dj",
-      "thiết bị dj",
-      "vanbass",
-    ],
+    keywords,
     alternates: {
       canonical: canonicalPath,
     },
@@ -900,14 +915,23 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
   const plainDesc = hotSeo?.description || getProductPlainExcerpt(product.description, 250) || product.name;
-  const productPrice =
+
+  // Genuine price handling - DO NOT fake price
+  const hasValidPrice = Boolean(
+    (product.sale_price && product.sale_price > 0) ||
+    (isDirectHotModel && hotSeo?.salePrice && hotSeo.salePrice > 0)
+  );
+  const realPrice =
     product.sale_price && product.sale_price > 0
       ? product.sale_price
-      : hotSeo?.salePrice || 10000000;
+      : isDirectHotModel && hotSeo?.salePrice
+        ? hotSeo.salePrice
+        : null;
 
-  const brandName = product.brand || (modelKey?.includes("alphatheta") ? "AlphaTheta" : "Pioneer DJ");
+  // Genuine brand handling - DO NOT fake brand
+  const brandName = product.brand?.trim() || (isDirectHotModel ? (modelKey?.includes("alphatheta") ? "AlphaTheta" : "Pioneer DJ") : null);
 
-  // Collect all real product images
+  // Collect only real product images - DO NOT inject fake rental hero images
   const productImages: string[] = [];
   if (hotSeo?.image) {
     const full = hotSeo.image.startsWith("http") ? hotSeo.image : `${baseUrl}${hotSeo.image.startsWith("/") ? "" : "/"}${hotSeo.image}`;
@@ -927,59 +951,66 @@ export default async function ProductDetailPage({ params }: PageProps) {
     const full = product.image_url.startsWith("http") ? product.image_url : `${baseUrl}${product.image_url.startsWith("/") ? "" : "/"}${product.image_url}`;
     productImages.push(full);
   }
-  if (productImages.length === 0) {
-    productImages.push(`${baseUrl}/images/rental/rental_fleet_hero.jpg`);
+
+  // Real Offer Schema - ONLY if genuine price exists!
+  let offerSchema: Record<string, unknown> | null = null;
+  if (hasValidPrice && realPrice) {
+    offerSchema = {
+      "@type": "Offer",
+      "url": `${baseUrl}/products/${canonicalSlug}`,
+      "priceCurrency": "VND",
+      "price": realPrice,
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": product.stock_quantity === 0 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "VanBass Music Center",
+        "url": baseUrl,
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "VN",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 7,
+        "returnMethod": "https://schema.org/ReturnInStore",
+        "returnFees": "https://schema.org/FreeReturn",
+      },
+    };
   }
 
-  // Real Offer Schema
-  const offerSchema: Record<string, unknown> = {
-    "@type": "Offer",
-    "url": `${baseUrl}/products/${canonicalSlug}`,
-    "priceCurrency": "VND",
-    "price": productPrice,
-    "itemCondition": "https://schema.org/NewCondition",
-    "availability": product.stock_quantity === 0 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-    "seller": {
-      "@type": "Organization",
-      "name": "VanBass Music Center",
-      "url": baseUrl,
-    },
-    "hasMerchantReturnPolicy": {
-      "@type": "MerchantReturnPolicy",
-      "applicableCountry": "VN",
-      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-      "merchantReturnDays": 7,
-      "returnMethod": "https://schema.org/ReturnInStore",
-      "returnFees": "https://schema.org/FreeReturn",
-    },
-  };
-
-  // Product Schema strictly with real data
+  // Product Schema strictly with real data (no fake SKU, brand, image, or offer)
   const productSchema: Record<string, unknown> = {
     "@type": "Product",
     "@id": `${baseUrl}/products/${canonicalSlug}#product`,
     "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
     "description": plainDesc,
-    "image": productImages,
+    ...(productImages.length > 0 ? { "image": productImages } : {}),
     "url": `${baseUrl}/products/${canonicalSlug}`,
-    "sku": product.sku || canonicalSlug.toUpperCase(),
-    "mpn": product.sku || canonicalSlug.toUpperCase(),
+    ...(product.sku ? { "sku": product.sku, "mpn": product.sku } : {}),
     ...(product.category_name ? { "category": product.category_name } : {}),
-    "brand": {
-      "@type": "Brand",
-      "name": brandName,
-    },
-    "offers": offerSchema,
+    ...(brandName ? {
+      "brand": {
+        "@type": "Brand",
+        "name": brandName,
+      },
+    } : {}),
+    ...(offerSchema ? { "offers": offerSchema } : {}),
   };
 
-  const isDjProduct = Boolean(
+  const isDjControllerOrSystem = Boolean(
     isDirectHotModel ||
-    product.category_slug?.includes("dj") ||
-    product.brand?.toLowerCase().includes("pioneer") ||
-    product.brand?.toLowerCase().includes("alphatheta") ||
-    product.name.toLowerCase().includes("dj") ||
-    product.name.toLowerCase().includes("xdj") ||
-    product.name.toLowerCase().includes("ddj")
+    product.category_slug === "all-in-one-dj-systems" ||
+    product.category_slug === "dj-controllers" ||
+    product.category_slug === "dj-player" ||
+    product.category_slug === "dj-mixers" ||
+    product.category_slug === "turntables" ||
+    product.name.toLowerCase().includes("bàn dj") ||
+    product.name.toLowerCase().includes("máy dj")
+  );
+
+  const isDjProduct = Boolean(
+    isDjControllerOrSystem ||
+    product.category_slug?.includes("dj")
   );
 
   // Check if rental service is supported for this model
@@ -993,12 +1024,19 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   // Distinct Rental Service Schema (NOT conflated with Product sale offer)
   if (hasRental) {
+    const rentalServiceName = isDjControllerOrSystem
+      ? `Dịch vụ cho thuê bàn DJ ${product.name}`
+      : `Dịch vụ cho thuê thiết bị âm thanh ${product.name}`;
+    const rentalServiceType = isDjControllerOrSystem
+      ? "DJ Equipment Rental"
+      : "Audio Equipment Rental";
+
     graph.push({
       "@type": "Service",
       "@id": `${baseUrl}/products/${canonicalSlug}#rental-service`,
-      "name": `Dịch vụ cho thuê bàn DJ ${product.name}`,
-      "serviceType": "DJ Equipment Rental",
-      "description": `Dịch vụ cho thuê bàn DJ ${product.name} biểu diễn sự kiện 24h tại Đà Nẵng, Huế và Miền Trung. Máy mới 99%, đầy đủ phụ kiện, bàn giao và setup tận nơi 24/7.`,
+      "name": rentalServiceName,
+      "serviceType": rentalServiceType,
+      "description": `Dịch vụ cho thuê ${product.name} biểu diễn sự kiện 24h tại Đà Nẵng, Huế và Miền Trung. Máy mới 99%, đầy đủ phụ kiện, bàn giao và setup tận nơi 24/7.`,
       "provider": {
         "@type": ["MusicStore", "LocalBusiness"],
         "name": "VanBass Music Center",
@@ -1015,8 +1053,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
     });
   }
 
-  // Distinct Technical Repair & Maintenance Service Schema
-  if (isDjProduct) {
+  // Distinct Technical Repair & Maintenance Service Schema - ONLY for DJ controllers/systems or DJ equipment
+  if (isDjProduct && isDjControllerOrSystem) {
     graph.push({
       "@type": "Service",
       "@id": `${baseUrl}/products/${canonicalSlug}#repair-service`,
@@ -1033,10 +1071,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
     });
   }
 
+  // Accurate Breadcrumb List: Hot models link to /ban-dj; all other products use standard catalog hierarchy
   graph.push({
     "@type": "BreadcrumbList",
     "@id": `${baseUrl}/products/${canonicalSlug}#breadcrumb`,
-    "itemListElement": isDirectHotModel || product.category_slug?.includes("dj") || product.brand?.toLowerCase().includes("pioneer") || product.brand?.toLowerCase().includes("alphatheta")
+    "itemListElement": isDirectHotModel
       ? [
           {
             "@type": "ListItem",
@@ -1081,7 +1120,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {
             "@type": "ListItem",
             "position": 4,
-            "name": hotSeo ? hotSeo.title.split("|")[0].trim() : product.name,
+            "name": product.name,
             "item": `${baseUrl}/products/${canonicalSlug}`,
           },
         ],

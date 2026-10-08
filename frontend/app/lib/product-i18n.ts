@@ -17,6 +17,10 @@ export const PRODUCT_TRANSLATIONS: Record<string, { enName: string; enDesc?: str
     enName: "AlphaTheta CDJ-1500X Professional DJ Multi Player",
     enDesc: "Professional DJ multi player supporting Pro DJ Link, ultra-smooth 206mm full-size jog wheel, and high-fidelity 96kHz/32-bit audio DAC.",
   },
+  "cdj-1500x-chinh-hang-alphatheta": {
+    enName: "AlphaTheta CDJ-1500X Professional DJ Multi Player",
+    enDesc: "Professional DJ multi player supporting Pro DJ Link, ultra-smooth 206mm full-size jog wheel, and high-fidelity 96kHz/32-bit audio DAC.",
+  },
   "alphatheta-cdj-3000x": {
     enName: "AlphaTheta CDJ-3000X Flagship DJ Multi Player",
     enDesc: "World's flagship high-end DJ player equipped with multi-core MPU processing speed and a 9-inch high-resolution touchscreen.",

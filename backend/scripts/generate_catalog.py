@@ -82,6 +82,8 @@ def generate_all():
                     "sort_order": 0,
                 }
             ],
+            **({"created_at": p["created_at"]} if p.get("created_at") else {}),
+            **({"updated_at": p["updated_at"]} if p.get("updated_at") else {}),
         })
 
     mock_data_content.append(

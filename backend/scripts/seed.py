@@ -114,10 +114,8 @@ def seed_database():
             if not category_id:
                 category_id = list(cat_map.values())[0]
 
-            sale_price = Decimal(str(p_data["sale_price"])) if p_data.get("sale_price") else None
-            sale_enabled = bool(p_data.get("sale_enabled") and sale_price and sale_price > 0)
-            rental_price = Decimal(str(p_data["rental_price"])) if p_data.get("rental_price") else None
-            rental_enabled = bool(p_data.get("rental_enabled") and rental_price and rental_price > 0)
+            sale_price = Decimal(str(p_data["sale_price"])) if p_data["sale_price"] else None
+            sale_enabled = bool(p_data["sale_enabled"] and sale_price and sale_price > 0)
 
             prod_id = uuid.UUID(p_data["id"]) if p_data.get("id") else uuid.uuid4()
             existing_p = db.query(Product).filter(
@@ -134,8 +132,8 @@ def seed_database():
                     brand=p_data.get("brand"),
                     sale_enabled=sale_enabled,
                     sale_price=sale_price,
-                    rental_enabled=rental_enabled,
-                    rental_price=rental_price,
+                    rental_enabled=False,
+                    rental_price=None,
                     stock_quantity=int(p_data.get("stock_quantity") or 5),
                     description=p_data.get("description"),
                     meta_title=p_data.get("meta_title", "")[:255],
@@ -161,8 +159,8 @@ def seed_database():
                 existing_p.brand = p_data.get("brand")
                 existing_p.sale_enabled = sale_enabled
                 existing_p.sale_price = sale_price
-                existing_p.rental_enabled = rental_enabled
-                existing_p.rental_price = rental_price
+                existing_p.rental_enabled = False
+                existing_p.rental_price = None
                 existing_p.stock_quantity = int(p_data.get("stock_quantity") or 5)
                 existing_p.description = p_data.get("description")
                 existing_p.meta_title = p_data.get("meta_title", "")[:255]

@@ -178,6 +178,8 @@ export default function ProductsClient({
       if (!isNaN(p) && p >= 1) {
         startTransition(() => setCurrentPage(p));
       }
+    } else {
+      startTransition(() => setCurrentPage(1));
     }
   }, [searchParams]);
 
@@ -185,6 +187,8 @@ export default function ProductsClient({
     const modeParam = searchParams.get("mode") || searchParams.get("type") || searchParams.get("filter");
     if (modeParam === "rental" || modeParam === "sale" || modeParam === "all") {
       startTransition(() => setFilterMode(modeParam));
+    } else {
+      startTransition(() => setFilterMode("all"));
     }
   }, [searchParams]);
 
@@ -195,13 +199,14 @@ export default function ProductsClient({
       startTransition(() => setSelectedCategory(catParam));
     } else if (groupParam) {
       startTransition(() => setSelectedCategory(`group:${groupParam}`));
+    } else {
+      startTransition(() => setSelectedCategory("all"));
     }
   }, [searchParams]);
 
   const handleSelectCategory = (cat: string) => {
     setSelectedCategory(cat);
     setCurrentPage(1);
-    updateUrlPage(1);
   };
 
   const handleFilterModeChange = (mode: "all" | "sale" | "rental") => {
@@ -952,6 +957,88 @@ export default function ProductsClient({
                   </p>
                 </div>
               </div>
+
+              {/* Crawlable Category Directory Index */}
+              <nav
+                aria-label="Danh mục thiết bị âm thanh & DJ"
+                style={{
+                  backgroundColor: "rgba(14, 14, 18, 0.4)",
+                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                  borderRadius: "12px",
+                  padding: "28px",
+                  marginTop: "24px",
+                }}
+              >
+                <div style={{ marginBottom: "20px" }}>
+                  <span style={{ color: "#22c55e", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "4px" }}>
+                    {lang === "en" ? "EXPLORE BY CATEGORY" : "KHÁM PHÁ THEO DANH MỤC"}
+                  </span>
+                  <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", margin: 0 }}>
+                    {lang === "en" ? "Full Audio & DJ Equipment Directory" : "Tra Cứu Danh Mục Thiết Bị Âm Thanh & DJ Toàn Diện"}
+                  </h3>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "24px",
+                  }}
+                >
+                  {CATEGORY_GROUPS.map((group) => (
+                    <div key={group.id} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <Link
+                        href={`/products?group=${group.id}`}
+                        scroll={false}
+                        onClick={() => {
+                          handleSelectCategory(`group:${group.id}`);
+                        }}
+                        style={{
+                          color: "#38bdf8",
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          textDecoration: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        <span>{lang === "en" ? group.nameEn : group.nameVi}</span>
+                        <span style={{ fontSize: "12px" }}>&rarr;</span>
+                      </Link>
+
+                      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
+                        {group.subcategories.map((sub) => (
+                          <li key={sub.slug}>
+                            <Link
+                              href={`/products?category=${sub.slug}`}
+                              scroll={false}
+                              onClick={() => {
+                                handleSelectCategory(sub.slug);
+                              }}
+                              style={{
+                                color: selectedCategory === sub.slug ? "#22c55e" : "#a1a1aa",
+                                fontSize: "13px",
+                                textDecoration: "none",
+                                transition: "color 150ms ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = "#ffffff";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.color = selectedCategory === sub.slug ? "#22c55e" : "#a1a1aa";
+                              }}
+                            >
+                              {lang === "en" ? sub.nameEn : sub.nameVi}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </nav>
             </section>
           )}
         </div>

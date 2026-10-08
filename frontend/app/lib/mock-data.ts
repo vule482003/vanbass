@@ -193,7 +193,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T10:08:31+00:00",
+    "updated_at": "2026-10-07T08:38:38+00:00"
   },
   {
     "id": "e1073507-f5c6-5bdc-842e-f906d47b427f",
@@ -218,7 +220,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-bc-speakers-5-tac-18sw115.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:51:14+00:00",
+    "updated_at": "2026-09-30T10:15:22+00:00"
   },
   {
     "id": "934a61d1-04a6-5c20-be33-8c102fe5c8ed",
@@ -243,7 +247,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-bc-speakers-5-tac-18ps100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:51:11+00:00",
+    "updated_at": "2026-09-23T02:43:12+00:00"
   },
   {
     "id": "49166289-0cf7-5c96-b6ff-c84aacf8ef99",
@@ -268,7 +274,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-bc-speakers-5-tac-18nw100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:51:08+00:00",
+    "updated_at": "2026-10-01T02:22:35+00:00"
   },
   {
     "id": "96f9a3ed-ae27-501d-9e2d-ca7089e2eff6",
@@ -293,7 +301,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-bc-speakers-5-tac-18nbx100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:51:05+00:00",
+    "updated_at": "2026-09-23T02:43:11+00:00"
   },
   {
     "id": "7a3797b9-6cfc-50ba-9c19-80cabc976619",
@@ -318,7 +328,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-bc-speakers-18tbw100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:51:03+00:00",
+    "updated_at": "2026-09-23T02:43:10+00:00"
   },
   {
     "id": "66cfce78-5b7d-5c5a-adc8-a932c4796fff",
@@ -418,7 +430,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de90tn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:47:09+00:00",
+    "updated_at": "2026-09-23T02:41:34+00:00"
   },
   {
     "id": "3eeebffa-0947-501d-81b6-771978f7c8ec",
@@ -443,7 +457,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de82tn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:46:58+00:00",
+    "updated_at": "2026-09-23T02:41:34+00:00"
   },
   {
     "id": "4b36c637-ebe1-540a-94b8-ee90d9396f0d",
@@ -468,7 +484,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de60tn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:46:27+00:00",
+    "updated_at": "2026-09-23T02:41:32+00:00"
   },
   {
     "id": "352ec66a-26a4-545f-b3f8-2eaaf01caea8",
@@ -493,7 +511,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de400tn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:46:02+00:00",
+    "updated_at": "2026-10-07T08:51:03+00:00"
   },
   {
     "id": "88c24337-c9e8-52be-8c86-9f66b9c95e1b",
@@ -518,7 +538,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de250tn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:45:46+00:00",
+    "updated_at": "2026-10-07T10:25:12+00:00"
   },
   {
     "id": "96bcd5be-47c3-5f6f-b7eb-67d37781cd63",
@@ -543,7 +565,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de180.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:45:29+00:00",
+    "updated_at": "2026-10-07T08:40:05+00:00"
   },
   {
     "id": "f8550ee5-dce6-5bc9-89b3-90fdb01b77a4",
@@ -568,7 +592,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de14tn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:45:17+00:00",
+    "updated_at": "2026-10-01T02:40:23+00:00"
   },
   {
     "id": "ea248178-906a-5e92-8778-105e9a4c7585",
@@ -593,7 +619,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-bc-speakers-de10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-09-03T04:45:00+00:00",
+    "updated_at": "2026-09-23T02:41:20+00:00"
   },
   {
     "id": "742acca4-3d0b-5da4-85bb-05cf82c70ff4",
@@ -604,7 +632,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "ban-mixer-mackie-profx16v3-16-kenh",
     "sku": "ProFX16v3",
     "brand": "Mackie",
-    "description": "1. Ưu điểm nổi bật của Mixer Mackie ProFX16v3 Cắm cùng lúc 11 Micro – Tiếng hát to rõ, sạch sẽ, không rè Mackie ProFX16v3 trang bị sẵn 11 cổng cắm micro độc lập sử dụng công nghệ mạch khuếch đại Onyx Mic Preamp độc quyền của hãng. Giúp kích âm lượng micro lên mức chuẩn một cách mạnh mẽ (tăng cường âm lượng lên đến 60dB). Âm thanh thu vào cực kỳ chi tiết, trong trẻo, loại bỏ tối đa tạp âm và tiếng xì rè nền, kể cả khi bạn sử dụng các loại micro đòi hỏi công suất lớn. Rất lý tưởng cho các ban n",
+    "description": "1. Ưu điểm nổi bật của Mixer Mackie ProFX16v3 🎙️ Cắm cùng lúc 11 Micro – Tiếng hát to rõ, sạch sẽ, không rè Mackie ProFX16v3 trang bị sẵn 11 cổng cắm micro độc lập sử dụng công nghệ mạch khuếch đại Onyx Mic Preamp độc quyền của hãng. Giúp kích âm lượng micro lên mức chuẩn một cách mạnh mẽ (tăng cường âm lượng lên đến 60dB). Âm thanh thu vào cực kỳ chi tiết, trong trẻo, loại bỏ tối đa tạp âm và tiếng xì rè nền, kể cả khi bạn sử dụng các loại micro đòi hỏi công suất lớn. Rất lý tưởng cho các ban n",
     "sale_enabled": true,
     "sale_price": 18900000,
     "rental_enabled": false,
@@ -618,7 +646,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ban-mixer-mackie-profx16v3-16-kenh.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-08-27T08:39:39+00:00",
+    "updated_at": "2026-08-27T10:27:41+00:00"
   },
   {
     "id": "87475574-5f5a-5281-95b5-74ec11b9dc6d",
@@ -643,7 +673,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tai-nghe-sennheiser-hd-25-plus.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-08-13T07:06:02+00:00",
+    "updated_at": "2026-09-19T08:38:13+00:00"
   },
   {
     "id": "e99acfc9-9b93-5cf9-8b9c-9fa7c183502c",
@@ -668,7 +700,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tinh-dau-may-khuech-tan-antari-ess-01-w-jade-pine.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:41:27+00:00",
+    "updated_at": "2026-07-18T09:54:56+00:00"
   },
   {
     "id": "cb1abe70-dc14-5751-aec6-9336cce0daea",
@@ -693,7 +727,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tinh-dau-may-khuech-tan-antari-ess-01-cw-citrus-veil.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:41:25+00:00",
+    "updated_at": "2026-07-18T09:55:42+00:00"
   },
   {
     "id": "27f97fb6-a51d-529e-93a2-b2dce0788203",
@@ -718,7 +754,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tinh-dau-may-khuech-tan-antari-ess-01-cfw-tropical-breeze.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:41:20+00:00",
+    "updated_at": "2026-07-18T09:55:15+00:00"
   },
   {
     "id": "dfdef466-01e0-5d41-b2c0-bd5153b54082",
@@ -743,7 +781,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tinh-dau-may-khuech-tan-antari-ess-01-cfe-whisper-forest.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:41:16+00:00",
+    "updated_at": "2026-07-18T09:54:14+00:00"
   },
   {
     "id": "5f93b88a-4f7c-5bd6-b1c7-77feac3d2ab6",
@@ -768,7 +808,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/module-dieu-khien-khong-day-antari-wtr-20.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:40:25+00:00",
+    "updated_at": "2026-07-20T09:29:27+00:00"
   },
   {
     "id": "f1fd2f92-36a7-5536-9922-4bb7fa81949e",
@@ -793,7 +835,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-tao-bong-bong-antari-w-101.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:39:27+00:00",
+    "updated_at": "2026-07-20T04:37:55+00:00"
   },
   {
     "id": "3d1670a0-a18a-5ce3-98a8-71301d03624b",
@@ -818,7 +862,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-khuech-tan-huong-antari-scn-600.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:39:23+00:00",
+    "updated_at": "2026-07-18T10:25:15+00:00"
   },
   {
     "id": "c39b5726-d710-5fdc-82cf-f16c80dc0c04",
@@ -843,7 +889,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/gia-treo-antari-b-200-hb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:39:08+00:00",
+    "updated_at": "2026-07-20T04:47:05+00:00"
   },
   {
     "id": "2fe1f6e7-e8b8-5eaf-872b-c470ba38dae6",
@@ -868,7 +916,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/gia-treo-antari-b-100-hb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:39:07+00:00",
+    "updated_at": "2026-07-20T04:24:28+00:00"
   },
   {
     "id": "bf8d9502-d0a9-533f-92a3-6ef39b1081ee",
@@ -893,7 +943,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-phat-khong-day-antari-w-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-18T06:38:30+00:00",
+    "updated_at": "2026-07-20T04:42:12+00:00"
   },
   {
     "id": "2d5c1314-72c5-5c62-84e0-07a829dbfa64",
@@ -907,9 +959,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "AlphaTheta XDJ-AN – Thiết bị DJ All-in-One nhỏ gọn cho thế hệ DJ mới XDJ-AN là máy DJ All-in-One 2 kênh mới nhất của AlphaTheta , hướng đến những DJ cần một thiết bị độc lập, gọn nhẹ nhưng vẫn đảm bảo trải nghiệm biểu diễn chuyên nghiệp. Thay vì tập trung vào số lượng nút điều khiển, AlphaTheta lựa chọn một hướng tiếp cận mới: đơn giản hóa thao tác vật lý, tăng cường khả năng điều khiển qua màn hình cảm ứng và giữ lại workflow quen thuộc của hệ sinh thái CDJ/XDJ . Thiết kế gọn gàng, tối ưu cho k",
     "sale_enabled": true,
     "sale_price": 37227600,
-    "rental_enabled": true,
-    "rental_price": 1500000,
-    "stock_quantity": 2,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 1,
     "is_active": true,
     "image_url": "/images/products/alphatheta-xdj-an.png",
     "images": [
@@ -919,13 +971,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh All-in-One độc lập",
-      "Màn hình": "Màn hình cảm ứng trực quan tối ưu workflow CDJ/XDJ",
-      "Cổng kết nối": "USB Type-A, USB Type-C, Master Out (XLR & RCA)",
-      "Tính năng nổi bật": "Thiết kế All-In-One thế hệ mới, điều khiển cảm ứng thông minh",
-      "Phần mềm": "rekordbox"
-    }
+    "created_at": "2026-07-09T07:29:50+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "58903264-1fd4-5378-94ab-a1069f6541c1",
@@ -950,7 +997,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cdj-1500x-chinh-hang-alphatheta.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-07-02T10:15:46+00:00",
+    "updated_at": "2026-07-17T04:44:55+00:00"
   },
   {
     "id": "c1931e26-3b35-55de-9b99-87b730f90c2b",
@@ -975,7 +1024,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/klotz-twin-patch-tp414.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-06-16T07:37:57+00:00",
+    "updated_at": "2026-09-26T08:50:44+00:00"
   },
   {
     "id": "f88b572e-7d32-5633-a623-bc1d09f94b68",
@@ -1000,7 +1051,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bc-speakers-10bg76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-03-04T03:12:48+00:00",
+    "updated_at": "2026-09-30T09:59:20+00:00"
   },
   {
     "id": "b79f5514-bbbf-5d26-b944-9a6163364c20",
@@ -1025,7 +1078,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mixer-djm-v5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-01-20T09:41:43+00:00",
+    "updated_at": "2026-07-17T04:47:44+00:00"
   },
   {
     "id": "35ad4b28-d2de-5a61-9b7f-c5e6fe2fd711",
@@ -1050,7 +1105,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/antari-af-14c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-01-20T04:26:36+00:00",
+    "updated_at": "2026-07-18T06:52:48+00:00"
   },
   {
     "id": "c25be7fb-defe-5105-8644-d444cd08a4a3",
@@ -1075,7 +1132,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rmx-ignite-effector.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2026-01-17T04:02:50+00:00",
+    "updated_at": "2026-07-17T04:48:37+00:00"
   },
   {
     "id": "4af75487-c4a3-59ad-a766-10ac27e0fad8",
@@ -1100,7 +1159,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nexo-nanonxamp4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-10-24T04:37:37+00:00",
+    "updated_at": "2026-09-29T03:51:39+00:00"
   },
   {
     "id": "11a0be12-f8d6-5669-a56a-0dd07bed8d91",
@@ -1125,7 +1186,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cdj-3000x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-09-08T10:21:15+00:00",
+    "updated_at": "2026-07-17T04:44:55+00:00"
   },
   {
     "id": "8248f031-279a-5493-be4e-3edd26308f5a",
@@ -1150,7 +1213,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-paudio-4-tac-c15-400b.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-08-09T09:13:57+00:00",
+    "updated_at": "2026-07-17T04:47:17+00:00"
   },
   {
     "id": "26def6ac-1a30-5de6-99e3-8c31e6788cdf",
@@ -1175,7 +1240,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-paudio-4-tac-c15-300mb.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-08-09T09:10:06+00:00",
+    "updated_at": "2026-09-26T09:10:19+00:00"
   },
   {
     "id": "f80e1b76-a9d9-5d68-bd7a-2336771d1791",
@@ -1200,7 +1267,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-p-audio-bm-d750-2016.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-08-09T08:51:59+00:00",
+    "updated_at": "2026-07-17T04:45:01+00:00"
   },
   {
     "id": "cc2791c2-f96a-5fc3-a25b-f4779f5df055",
@@ -1225,7 +1294,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-p-audio-bm-d750.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-08-09T08:48:26+00:00",
+    "updated_at": "2026-07-17T04:45:01+00:00"
   },
   {
     "id": "18fc3997-ad98-5e08-bf44-fa4dc7cb828a",
@@ -1250,7 +1321,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sandisk-dj-flash-drive.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-08-09T07:41:26+00:00",
+    "updated_at": "2026-09-03T08:18:26+00:00"
   },
   {
     "id": "f1960c2d-a970-5eec-8e74-07fd2e7bb818",
@@ -1261,7 +1334,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "micro-co-day-sennheiser-e-865",
     "sku": "E865",
     "brand": "SENNHEISER",
-    "description": "Sennheiser e 865 – Micro condenser cầm tay dành cho sân khấu Micro có dây Sennheiser e 865 là mẫu micro condenser cầm tay cao cấp đến từ thương hiệu Đức Sennheiser , được thiết kế tối ưu cho biểu diễn live và sân khấu chuyên nghiệp. Với khả năng tái tạo âm thanh chi tiết, độ nhạy cao và thiết kế chống hú hiệu quả, e 865 là lựa chọn lý tưởng cho ca sĩ, MC, nghệ sĩ biểu diễn trong nhà hát, sân khấu lớn hoặc không gian âm thanh khó kiểm soát. Vì sao nên chọn e 865 thay vì mic thông thường? Âm t",
+    "description": "Sennheiser e 865 – Micro condenser cầm tay dành cho sân khấu Micro có dây Sennheiser e 865 là mẫu micro condenser cầm tay cao cấp đến từ thương hiệu Đức Sennheiser , được thiết kế tối ưu cho biểu diễn live và sân khấu chuyên nghiệp. Với khả năng tái tạo âm thanh chi tiết, độ nhạy cao và thiết kế chống hú hiệu quả, e 865 là lựa chọn lý tưởng cho ca sĩ, MC, nghệ sĩ biểu diễn trong nhà hát, sân khấu lớn hoặc không gian âm thanh khó kiểm soát. ✨ Vì sao nên chọn e 865 thay vì mic thông thường? ✅ Âm t",
     "sale_enabled": true,
     "sale_price": 6750000,
     "rental_enabled": false,
@@ -1275,7 +1348,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-co-day-sennheiser-e-865.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-07-31T09:13:53+00:00",
+    "updated_at": "2026-09-19T06:44:05+00:00"
   },
   {
     "id": "1003c936-bcc0-5385-a010-9303ba89375b",
@@ -1300,7 +1375,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-flx4-w.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-05-28T08:56:56+00:00",
+    "updated_at": "2026-08-04T08:28:37+00:00"
   },
   {
     "id": "12dc58b9-bc7c-5232-a439-ea32d34b25dc",
@@ -1325,7 +1402,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nuoc-khoi-antari-flc-5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-04-29T04:47:41+00:00",
+    "updated_at": "2026-07-18T06:54:42+00:00"
   },
   {
     "id": "7fc7f727-beb4-5f54-beb4-bb65eb07be84",
@@ -1350,7 +1429,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-full-2-tac-gm814fg.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-25T08:24:39+00:00",
+    "updated_at": "2026-07-17T04:47:02+00:00"
   },
   {
     "id": "2ec87aa9-e2ed-5c25-88ad-8cecc4ade477",
@@ -1375,7 +1456,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tinh-dau-thom-antari.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-14T08:16:43+00:00",
+    "updated_at": "2026-07-18T06:55:19+00:00"
   },
   {
     "id": "100c216d-2aed-5c09-ac9b-841b6a067d91",
@@ -1400,7 +1483,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d-em.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-14T02:31:48+00:00",
+    "updated_at": "2026-09-03T07:13:52+00:00"
   },
   {
     "id": "e4912a14-feb3-507c-abfc-cb7828b84977",
@@ -1425,7 +1510,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d-skm-s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-14T02:16:04+00:00",
+    "updated_at": "2026-09-03T07:13:06+00:00"
   },
   {
     "id": "1dd17110-6e93-5d8e-b149-48e72516d083",
@@ -1450,7 +1537,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/thiet-bi-xu-ly-am-thanh-nexo-dme10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-07T03:24:47+00:00",
+    "updated_at": "2026-09-15T09:40:19+00:00"
   },
   {
     "id": "50c00613-f2d7-5bdf-8ea9-d090dd0373b3",
@@ -1475,7 +1564,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-nexo-b218.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-07T03:21:54+00:00",
+    "updated_at": "2026-09-22T07:52:35+00:00"
   },
   {
     "id": "2cc1fefa-5e67-558a-9026-99575b9a27db",
@@ -1486,7 +1577,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "loa-nexo-m210",
     "sku": "NEXO_M210",
     "brand": "NEXO",
-    "description": "Loa NEXO M210 là mô-đun Main hai đường tiếng trong hệ thống Alpha+ , mang đến hiệu suất âm thanh đỉnh cao với độ nhạy cao , khả năng định hướng linh hoạt , cùng thiết kế nhẹ và bền . Với công suất cực đại lên đến 148 dB SPL , loa M210 là lựa chọn lý tưởng cho các hệ thống âm thanh biểu diễn chuyên nghiệp , sân khấu , sự kiện trực tiếp và các ứng dụng âm thanh yêu cầu độ phủ rộng . Loa NEXO M210 – Hệ thống Main module mạnh mẽ cho âm thanh chuyên nghiệp Đặc điểm nổi bật của loa NEXO M210 Công su",
+    "description": "Loa NEXO M210 là mô-đun Main hai đường tiếng trong hệ thống Alpha+ , mang đến hiệu suất âm thanh đỉnh cao với độ nhạy cao , khả năng định hướng linh hoạt , cùng thiết kế nhẹ và bền . Với công suất cực đại lên đến 148 dB SPL , loa M210 là lựa chọn lý tưởng cho các hệ thống âm thanh biểu diễn chuyên nghiệp , sân khấu , sự kiện trực tiếp và các ứng dụng âm thanh yêu cầu độ phủ rộng . Loa NEXO M210 – Hệ thống Main module mạnh mẽ cho âm thanh chuyên nghiệp Đặc điểm nổi bật của loa NEXO M210 🔹 Công su",
     "sale_enabled": false,
     "sale_price": null,
     "rental_enabled": false,
@@ -1500,7 +1591,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-nexo-m210.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2025-02-07T03:14:05+00:00",
+    "updated_at": "2026-09-22T07:51:57+00:00"
   },
   {
     "id": "52f7e590-1bab-5ccc-b367-c8a3abb6c6ce",
@@ -1575,7 +1668,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-khoi-antari-f-7x-s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-12-19T08:54:03+00:00",
+    "updated_at": "2026-07-18T06:53:54+00:00"
   },
   {
     "id": "ea6b2b3c-cabc-5f02-8f11-181008f5333c",
@@ -1600,7 +1695,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-khoi-antari-m-10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-12-19T08:36:52+00:00",
+    "updated_at": "2026-07-18T06:53:54+00:00"
   },
   {
     "id": "4f6c6e1b-93de-56d8-b568-9b24ed6524ac",
@@ -1625,7 +1722,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/headphone-hdj-cue1bt-r.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-12-06T04:01:15+00:00",
+    "updated_at": "2026-07-17T04:46:38+00:00"
   },
   {
     "id": "7d659d6e-7206-545d-826c-34035bf460c0",
@@ -1650,7 +1749,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tai-nghe-khong-day-alphatheta-hdj-f10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-12-05T03:46:31+00:00",
+    "updated_at": "2026-07-17T04:48:57+00:00"
   },
   {
     "id": "d317c9a2-a590-5be0-be95-713e28546a92",
@@ -1675,7 +1776,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-kiem-am-pioneer-dj-dm-40bt-w.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T09:50:23+00:00",
+    "updated_at": "2026-07-17T04:47:02+00:00"
   },
   {
     "id": "2dff0db8-d415-5e0b-9c8f-11f9dbcc29cd",
@@ -1700,7 +1803,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ayu4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T08:22:02+00:00",
+    "updated_at": "2026-07-17T04:44:45+00:00"
   },
   {
     "id": "11034f47-9aa3-5361-bc47-27f8ec425bcf",
@@ -1725,7 +1830,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ays4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T08:20:40+00:00",
+    "updated_at": "2026-07-17T04:44:45+00:00"
   },
   {
     "id": "190c78b0-b3e6-5d7b-b36b-2a5ea1c1bcb9",
@@ -1750,7 +1857,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/aumf0150.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T08:19:07+00:00",
+    "updated_at": "2026-07-17T04:44:45+00:00"
   },
   {
     "id": "92e75719-032d-57b5-88e9-4f87ca14c4b7",
@@ -1775,7 +1884,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/asmj0060.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T08:17:15+00:00",
+    "updated_at": "2026-07-17T04:44:45+00:00"
   },
   {
     "id": "8c0295ab-5c0e-530e-8fec-40f98941652a",
@@ -1800,7 +1911,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/abjj-0060.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T08:15:06+00:00",
+    "updated_at": "2026-07-17T04:44:38+00:00"
   },
   {
     "id": "d05243bc-680b-5011-ae93-907a12ac51a9",
@@ -1825,7 +1938,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-112-g2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-28T04:09:54+00:00",
+    "updated_at": "2026-07-17T04:46:14+00:00"
   },
   {
     "id": "c6980e71-0581-5e70-886e-103636a129f1",
@@ -1850,7 +1965,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-phat-khong-day-sonic-link-alphatheta-hp-tx01.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-09T03:24:08+00:00",
+    "updated_at": "2026-07-17T04:44:52+00:00"
   },
   {
     "id": "3fe9e758-1a7b-5643-b8e2-e294feed04f9",
@@ -1875,7 +1992,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ang-ten-dinh-huong-sennheiser-adp-uhf.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-11-01T07:38:18+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "c3cecbf1-c26b-56a5-8165-3fc929f22d5d",
@@ -1900,7 +2019,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nexo-p18.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-10-30T15:23:14+00:00",
+    "updated_at": "2026-09-15T09:40:04+00:00"
   },
   {
     "id": "1f817e72-a074-52a0-bbf9-a5dfcc291cc0",
@@ -1913,9 +2034,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "brand": "AlphaTheta",
     "description": "DDJ-FLX2 là controller DJ nhẹ nhất và nhỏ gọn nhất của chúng tôi. Thiết bị chạy bằng nguồn USB bus, nên không cần nguồn điện ngoài khi kết nối với PC/Mac hoặc thiết bị di động* qua USB Type-C. Bạn có thể dễ dàng bắt đầu DJ bằng cách phát nhạc qua loa tích hợp của PC/Mac/thiết bị di động. Hoặc, nếu kết nối loa vào cổng đầu ra âm thanh của DDJ-FLX2, bạn có thể tổ chức bữa tiệc sôi động với bạn bè. *Trừ một số thiết bị Android. DJ CONTROLLER ALPHATHETA DDJ-FLX2 Bạn có nghĩ DJing trông có vẻ khó khô",
     "sale_enabled": true,
-    "sale_price": 5700600,
-    "rental_enabled": true,
-    "rental_price": 350000,
+    "sale_price": 6393600,
+    "rental_enabled": false,
+    "rental_price": null,
     "stock_quantity": 4,
     "is_active": true,
     "image_url": "/images/products/alphatheta-ddj-flx2.png",
@@ -1926,14 +2047,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh DJ Controller",
-      "Kết nối thiết bị": "Smartphone, Tablet, iPhone, iPad, PC/Mac qua Bluetooth & USB-C",
-      "Tính năng thông minh": "Smart CFX và Smart Fader hỗ trợ chuyển bài chuyên nghiệp",
-      "Phần mềm tương thích": "rekordbox, djay, Serato DJ Lite",
-      "Nguồn điện": "Cấp nguồn qua cổng USB Type-C (Bus powered)",
-      "Trọng lượng": "Chỉ 1.2 kg siêu nhẹ"
-    }
+    "created_at": "2024-10-30T02:14:24+00:00",
+    "updated_at": "2026-07-17T04:44:39+00:00"
   },
   {
     "id": "d9d16d59-f521-528b-84db-fdf2b3b10aea",
@@ -1958,7 +2073,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/controller-ddj-rev7.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-10-28T03:03:31+00:00",
+    "updated_at": "2026-07-17T04:44:58+00:00"
   },
   {
     "id": "702a03a5-1c91-592d-9464-44ea180c7bcd",
@@ -1983,7 +2100,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/can-micro-co-ngong-sennheiser-mzh-3062.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-10-22T04:38:37+00:00",
+    "updated_at": "2026-07-17T04:44:54+00:00"
   },
   {
     "id": "637a7c81-5039-5f00-93c8-4ff1dba5933e",
@@ -2008,7 +2127,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-khoi-antari-mb-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-10-10T08:58:09+00:00",
+    "updated_at": "2026-07-17T07:32:58+00:00"
   },
   {
     "id": "99c8b7d2-7e4f-53cc-a851-ca70080250ee",
@@ -2022,9 +2143,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "Cân nặng : 13.5 kg Kích thước ( Dài x Rộng x Cao) : 895 × 504.1 × 133.4 mm Đầu ra: Cổng Master × 2 (XLR × 1, RCA × 1) , Cổng BOOTH × 1 (1/4” TRS jack) , Cổng PHONES × 2 (1/4” stereo jack × 1, 3.5 mm stereo mini jack × 1) Đầu vào: Line/ PHONO (2 cổng RCA), MIC (2 cổng XLR & 1/4” TRS jack) Cổng USB: 2 cổng USB type A, Type C Số kênh : 4 kênh độc lập Nút hiệu ứng: 6 hiệu ứng Color FX 13 hiệu ứng Beat FX Trong hộp có gì : Dây nguồn Hướng dẫn sử dụng Cảnh báo khio sử dụng Bảo hành Đặc điểm nổi bật XD",
     "sale_enabled": true,
     "sale_price": 105150000,
-    "rental_enabled": true,
-    "rental_price": 2200000,
-    "stock_quantity": 2,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 1,
     "is_active": true,
     "image_url": "/images/products/ban-dj-alphatheta-xdj-az.png",
     "images": [
@@ -2034,16 +2155,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "4 kênh độc lập Flagship All-In-One",
-      "Màn hình": "10.1 inch cảm ứng điện dung độ phân giải cao",
-      "Mâm xoay Jog Wheel": "Full-size 206mm tương đương CDJ-3000 với On-Jog LCD màu",
-      "Kết nối không dây": "Tích hợp Wi-Fi chuẩn SonicLink và CloudDirectPlay",
-      "Cổng kết nối": "Master Out (XLR & RCA), Booth (TRS), 2 USB-A, 1 USB-C",
-      "Hiệu ứng FX": "14 Beat FX & 6 Sound Color FX chuẩn phòng thu",
-      "Kích thước": "895 mm x 133.4 mm x 504.1 mm",
-      "Trọng lượng": "13.5 kg"
-    }
+    "created_at": "2024-10-10T03:52:13+00:00",
+    "updated_at": "2026-07-17T04:44:47+00:00"
   },
   {
     "id": "5c0bbf0f-77c5-5fa4-a877-c6d4c4452408",
@@ -2068,7 +2181,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-dj-controller-alphatheta-ddj-grv6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-10-09T01:41:55+00:00",
+    "updated_at": "2026-07-17T04:47:36+00:00"
   },
   {
     "id": "1978a8bd-8566-5c6e-a614-0c1611fd2eda",
@@ -2093,7 +2208,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-f10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-10-02T10:22:45+00:00",
+    "updated_at": "2026-07-17T04:46:37+00:00"
   },
   {
     "id": "5d37226b-0c2b-5a82-aee7-923fcdbce83a",
@@ -2118,7 +2235,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/anten-sennheiser-spectera-ada.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-27T02:43:32+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "84b9abb3-a100-533d-aa3c-8a81b016ba48",
@@ -2143,7 +2262,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-thu-phat-tin-hieu-khong-day-di-dong-spectera-sek.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-27T02:23:38+00:00",
+    "updated_at": "2026-07-17T04:44:52+00:00"
   },
   {
     "id": "788e4fd9-3baa-5d7d-bdbb-d2544a84d747",
@@ -2168,7 +2289,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-thu-phat-tin-hieu-khong-day-co-dinh-spectera-base-station.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-27T02:06:10+00:00",
+    "updated_at": "2026-07-17T04:44:52+00:00"
   },
   {
     "id": "75b81314-91b2-57d8-88c4-085af8b1957f",
@@ -2193,7 +2316,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-thu-tin-hieu-khong-day-ew-dp-ek.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-25T04:35:33+00:00",
+    "updated_at": "2026-07-17T04:44:53+00:00"
   },
   {
     "id": "d9a92421-c8d9-59e1-8457-c2d20dfa30f1",
@@ -2218,7 +2343,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-ew-dp-eng-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-25T04:11:05+00:00",
+    "updated_at": "2026-07-17T04:47:40+00:00"
   },
   {
     "id": "974150d7-a2e3-5606-a8e4-3dfc6ef6a89f",
@@ -2243,7 +2370,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-ew-dp-me-4-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-25T03:51:49+00:00",
+    "updated_at": "2026-07-17T04:47:40+00:00"
   },
   {
     "id": "f6250612-fbb7-55ef-8e5d-a7f109b13069",
@@ -2268,7 +2397,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-ew-dp-me-2-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-24T09:48:34+00:00",
+    "updated_at": "2026-09-22T04:33:48+00:00"
   },
   {
     "id": "6ae3c01a-aa78-504f-a529-6df16ddd7abc",
@@ -2293,7 +2424,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-ew-dp-835-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-09-24T09:01:31+00:00",
+    "updated_at": "2026-07-17T04:47:40+00:00"
   },
   {
     "id": "2f16ec58-9b2b-5d0d-83d5-53d7fd1a9f83",
@@ -2318,7 +2451,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-snii-15lf.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-08-07T04:38:48+00:00",
+    "updated_at": "2026-07-17T04:47:17+00:00"
   },
   {
     "id": "a26a0195-bd0a-5e37-b9ab-39f94cb3ae3d",
@@ -2343,7 +2478,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ab-4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-07-30T08:54:04+00:00",
+    "updated_at": "2026-07-17T04:44:38+00:00"
   },
   {
     "id": "7378a64e-cde5-5897-bb4f-4ad262872019",
@@ -2368,7 +2505,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/euphonia.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-06-26T13:11:15+00:00",
+    "updated_at": "2026-07-17T04:46:08+00:00"
   },
   {
     "id": "80a5ff6a-b6c5-59e4-aab2-64c0f118b137",
@@ -2393,7 +2532,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wave-eight.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-04-25T04:16:40+00:00",
+    "updated_at": "2026-07-17T04:49:08+00:00"
   },
   {
     "id": "099e1ebf-fff0-5fe5-acff-0882a6351c8e",
@@ -2407,9 +2548,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "Cân nặng: 4.6 kg Kích thước ( Dài x Cao x Rộng) : 498 × 57 × 306 mm Pin : Pin sạc Lithium tích hợp sẵn - thời gian sử dụng lên đến 5 giờ Đầu vào : 2 cổng cho micro, 1 cổng dành cho Bluetooth Đầu ra: đa dạng với 1 XLR, 1 RCA, 1 Bluetooth, 1 đầu ra cho tai nghe Cổng USB: Có cổng USB và cổng USB dành cho điện thoại và máy tính Màu : Indigo Màn hình: 7.1' inch cảm ứng Số kênh : Bàn DJ 2 kênh độc lập không cần máy tính Nút hiệu ứng : 6 nút sound colour FX 8 nút hot cues / kênh Nút Beat Jump Xem nhanh",
     "sale_enabled": true,
     "sale_price": 45252000,
-    "rental_enabled": true,
-    "rental_price": 1200000,
-    "stock_quantity": 2,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 1,
     "is_active": true,
     "image_url": "/images/products/ban-dj-alpha-theta-omnis-duo.png",
     "images": [
@@ -2419,15 +2560,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh All-in-One độc lập",
-      "Pin tích hợp": "Pin sạc Lithium-ion lên đến 5 giờ biểu diễn liên tục",
-      "Màn hình": "7.1 inch cảm ứng màu với chế độ Light/Dark Mode ngoài trời",
-      "Kết nối không dây": "Bluetooth Input (khách phát nhạc từ phone) + SonicLink Wireless Out",
-      "Cổng âm thanh": "Master Out XLR và RCA, Booth Out Bluetooth / RCA, 2 Micro XLR/TRS",
-      "Lưu trữ": "Cổng USB-A, Khe cắm thẻ nhớ SD card, USB-C PC/Mac",
-      "Trọng lượng": "4.6 kg siêu di động"
-    }
+    "created_at": "2024-01-26T04:00:39+00:00",
+    "updated_at": "2026-07-17T04:44:47+00:00"
   },
   {
     "id": "d51c211c-4354-53b0-9c1f-1bfc4cdbad1a",
@@ -2452,7 +2586,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hd-490-pro.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2024-01-24T07:05:03+00:00",
+    "updated_at": "2026-07-17T04:46:35+00:00"
   },
   {
     "id": "f38e71b4-7219-5726-98ec-52b535b032a6",
@@ -2477,7 +2613,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/effect-guitar-2100.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-11-20T10:20:19+00:00",
+    "updated_at": "2026-07-17T04:46:03+00:00"
   },
   {
     "id": "0074c7d0-d8df-5df3-a0df-3621f2673273",
@@ -2502,7 +2640,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hyper-lead-hl-01.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-11-20T09:27:51+00:00",
+    "updated_at": "2026-07-17T04:46:40+00:00"
   },
   {
     "id": "3a27fcac-ad8a-5181-afb5-abd7add29952",
@@ -2552,7 +2692,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddm4000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-11-17T08:26:15+00:00",
+    "updated_at": "2026-07-17T04:45:15+00:00"
   },
   {
     "id": "4acd516b-56fe-5796-8d67-9b9b51a2f764",
@@ -2577,7 +2719,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-microphone-sennheiser-mme-865-1-bk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-10-17T03:11:38+00:00",
+    "updated_at": "2026-09-03T07:19:24+00:00"
   },
   {
     "id": "b7d1d924-d56e-51ec-93e8-a8f04e9f9858",
@@ -2602,7 +2746,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-microphone-sennheiser-mmd-935-1bk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-10-17T03:09:49+00:00",
+    "updated_at": "2026-09-03T07:18:27+00:00"
   },
   {
     "id": "56f1ede1-5f2c-5f41-ac8f-ade64dee4977",
@@ -2627,7 +2773,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-microphone-sennheiser-mmk-965-1bk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-10-17T02:58:51+00:00",
+    "updated_at": "2026-09-03T07:18:59+00:00"
   },
   {
     "id": "9a00bade-2371-54d2-b2c8-a28037a5c572",
@@ -2652,7 +2800,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-microphone-sennheiser-mmd-945-1bk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-10-17T02:55:43+00:00",
+    "updated_at": "2026-09-03T07:18:38+00:00"
   },
   {
     "id": "9437f2dd-7abc-589d-9d34-7612e25a8328",
@@ -2677,7 +2827,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pr-901.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-10-04T09:39:55+00:00",
+    "updated_at": "2026-07-17T04:48:21+00:00"
   },
   {
     "id": "151b8bc9-44e4-5bf8-b0e2-78416d112437",
@@ -2702,7 +2854,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-treble-bc-speakers-de780tn.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-22T03:15:12+00:00",
+    "updated_at": "2026-09-23T02:43:13+00:00"
   },
   {
     "id": "8d954e3e-038d-5083-a93a-cbb2d378cea3",
@@ -2727,7 +2881,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-18ds100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-22T03:09:09+00:00",
+    "updated_at": "2026-09-23T02:42:48+00:00"
   },
   {
     "id": "0ed77f05-1da0-5ad9-8bd3-6fbbf611c403",
@@ -2752,7 +2908,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-12ndl88.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-22T02:58:07+00:00",
+    "updated_at": "2026-09-23T02:45:33+00:00"
   },
   {
     "id": "2ce2be4b-6937-5518-8810-35a299f1409f",
@@ -2777,7 +2935,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b8-rock-set-w-case-45009c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-16T04:18:23+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "e340ec88-0031-5bd2-b1d9-92005164c4fc",
@@ -2802,7 +2962,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b8-perf-set-plus-45003xg.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-16T04:07:31+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "3e73f97b-5172-5aba-8358-1dbc6c08c9e2",
@@ -2827,7 +2989,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b8-pro-perf-set-35003b.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-16T03:52:49+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "e32180f0-d949-5c1a-9116-1cc51eaeb6e2",
@@ -2852,7 +3016,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/m16.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-15T03:50:13+00:00",
+    "updated_at": "2026-07-17T04:47:35+00:00"
   },
   {
     "id": "242b0d43-78e1-5f08-b9fb-9bcdec5187fc",
@@ -2877,7 +3043,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-xu-ly-tin-hieu-marani-mir260.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-15T03:44:54+00:00",
+    "updated_at": "2026-09-24T04:42:06+00:00"
   },
   {
     "id": "283a3ae5-f0d9-54a6-90ea-35586c78bb7b",
@@ -2902,7 +3070,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mir-260-e.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-15T03:27:01+00:00",
+    "updated_at": "2026-09-25T02:40:02+00:00"
   },
   {
     "id": "219bc578-19b0-5b35-ab6a-c2e1e94e9334",
@@ -2927,7 +3097,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-1001.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-09-05T03:32:17+00:00",
+    "updated_at": "2026-10-01T16:57:07+00:00"
   },
   {
     "id": "8491c274-c049-5480-a524-082921ef49a4",
@@ -2952,7 +3124,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-800iii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-30T03:12:44+00:00",
+    "updated_at": "2026-09-24T03:04:08+00:00"
   },
   {
     "id": "17bfee61-8d5d-522a-9900-77441bb9c138",
@@ -2977,7 +3151,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-8ndl51.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-11T03:25:12+00:00",
+    "updated_at": "2026-09-23T02:43:06+00:00"
   },
   {
     "id": "9f226d11-dba6-5cca-96fa-e65d8a840a50",
@@ -3002,7 +3178,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-10ndl64.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-11T01:38:40+00:00",
+    "updated_at": "2026-10-01T02:21:44+00:00"
   },
   {
     "id": "83ed2c50-7aaa-5052-90e3-c1ca9664a542",
@@ -3027,7 +3205,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-cue1bt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-09T09:55:25+00:00",
+    "updated_at": "2026-07-17T04:46:37+00:00"
   },
   {
     "id": "a93803e7-488d-508a-bf07-733d686c0aee",
@@ -3052,7 +3232,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rm-07.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-09T07:11:04+00:00",
+    "updated_at": "2026-09-30T08:31:23+00:00"
   },
   {
     "id": "eb73c6d6-c18c-505f-a6fd-7704c6c0146f",
@@ -3077,7 +3259,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-rev5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-08T06:53:49+00:00",
+    "updated_at": "2026-07-17T04:45:12+00:00"
   },
   {
     "id": "a7b02252-9b39-511f-b9f2-64e8c6b4e814",
@@ -3102,7 +3286,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/plx-crss12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-08-04T09:47:23+00:00",
+    "updated_at": "2026-07-17T04:48:16+00:00"
   },
   {
     "id": "930eb334-386b-56ea-b877-e2b6fa5019d7",
@@ -3127,7 +3313,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-1000iii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-07-27T07:45:48+00:00",
+    "updated_at": "2026-07-20T06:38:46+00:00"
   },
   {
     "id": "203222e1-4b6c-5e17-8737-46cb5706a9d4",
@@ -3152,7 +3340,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-1200iii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-07-21T08:50:21+00:00",
+    "updated_at": "2026-07-20T06:53:31+00:00"
   },
   {
     "id": "1b2b45fe-6f02-51e1-a82c-a5208c9114f6",
@@ -3177,7 +3367,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-1500iii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-07-20T07:51:43+00:00",
+    "updated_at": "2026-07-20T09:30:09+00:00"
   },
   {
     "id": "b95fbb20-c5d4-5a70-a8bb-65867880b9f8",
@@ -3202,7 +3394,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-3000iii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-07-19T09:14:47+00:00",
+    "updated_at": "2026-09-28T04:08:47+00:00"
   },
   {
     "id": "ad338840-0db5-5a99-85a4-0712ff01134d",
@@ -3227,7 +3421,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-flx10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-03-30T09:01:46+00:00",
+    "updated_at": "2026-07-17T04:45:11+00:00"
   },
   {
     "id": "24d17343-fe01-5410-a0d7-43cd35b5affd",
@@ -3252,7 +3448,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-flx6-gt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-03-30T06:55:47+00:00",
+    "updated_at": "2026-07-17T04:45:12+00:00"
   },
   {
     "id": "cd903058-d323-5f66-92b7-34bb649ad139",
@@ -3277,7 +3475,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-profile-streaming-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-03-27T01:37:13+00:00",
+    "updated_at": "2026-09-25T02:18:12+00:00"
   },
   {
     "id": "2025aba5-621c-5f64-bfcc-3d8289a2316e",
@@ -3302,7 +3502,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-profile-usb-microphone.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-03-25T09:16:47+00:00",
+    "updated_at": "2026-07-24T04:18:09+00:00"
   },
   {
     "id": "8f64885a-8471-532c-b041-f19c4f478c7a",
@@ -3327,7 +3529,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ban-dj-pioneerdj-opus-quad.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-03-08T07:35:36+00:00",
+    "updated_at": "2026-07-17T04:44:47+00:00"
   },
   {
     "id": "2bb3f62c-77e3-513b-9777-7793f5c66e31",
@@ -3352,7 +3556,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-a9.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-28T10:09:04+00:00",
+    "updated_at": "2026-07-17T04:45:20+00:00"
   },
   {
     "id": "c9d381bb-4cb2-5347-869c-6e94f744b052",
@@ -3377,7 +3583,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/af-6.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-21T08:37:12+00:00",
+    "updated_at": "2026-07-18T06:52:48+00:00"
   },
   {
     "id": "e9f38642-4e49-5b48-aad5-0c15b6fb8489",
@@ -3402,7 +3610,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xsw-d-lavalier-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-18T02:54:27+00:00",
+    "updated_at": "2026-07-17T04:49:21+00:00"
   },
   {
     "id": "cf2b03d6-72d9-5822-bbe5-d429ed6fd37c",
@@ -3427,7 +3637,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/stm-s118.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:08:24+00:00",
+    "updated_at": "2026-09-15T09:40:18+00:00"
   },
   {
     "id": "820e5b10-7480-519d-9918-671fd6d4487b",
@@ -3452,7 +3664,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/stm-m46.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:08:14+00:00",
+    "updated_at": "2026-09-15T09:40:18+00:00"
   },
   {
     "id": "22cbf7b0-c78a-5406-ac4f-c5609902a8ac",
@@ -3477,7 +3691,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/stm-m28.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:08:05+00:00",
+    "updated_at": "2026-09-15T09:40:17+00:00"
   },
   {
     "id": "08491aa4-68df-573a-98e2-270bc0367b4c",
@@ -3502,7 +3718,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/stm-b112.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:07:57+00:00",
+    "updated_at": "2026-09-15T09:40:17+00:00"
   },
   {
     "id": "1dbb507a-6104-59fc-9f74-a8bc646475bc",
@@ -3527,7 +3745,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rs18.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:07:50+00:00",
+    "updated_at": "2026-09-15T09:40:17+00:00"
   },
   {
     "id": "103c4b62-3bf6-565b-a174-532b8e899b20",
@@ -3552,7 +3772,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ps8.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:07:29+00:00",
+    "updated_at": "2026-09-15T09:40:16+00:00"
   },
   {
     "id": "2326adf0-3de9-54a7-9a0e-dd65bc4cd1ad",
@@ -3577,7 +3799,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ps15-r2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:07:15+00:00",
+    "updated_at": "2026-09-15T09:40:15+00:00"
   },
   {
     "id": "918ee405-4bb7-5015-8bec-c108002e3692",
@@ -3602,7 +3826,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ps10-r2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:55+00:00",
+    "updated_at": "2026-09-15T09:40:14+00:00"
   },
   {
     "id": "6a7e3aa4-e578-59d7-b5a8-528bbe30032d",
@@ -3627,7 +3853,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p8.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:44+00:00",
+    "updated_at": "2026-09-22T07:49:44+00:00"
   },
   {
     "id": "0a89bc12-c114-5620-aeaf-6db6442db4d8",
@@ -3652,7 +3880,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p15.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:35+00:00",
+    "updated_at": "2026-09-15T09:40:13+00:00"
   },
   {
     "id": "0a07f6b1-24ea-5dec-9e22-9008cd31d940",
@@ -3677,7 +3907,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:25+00:00",
+    "updated_at": "2026-09-22T07:47:14+00:00"
   },
   {
     "id": "54487998-4fa4-5413-9315-2cc55fbc407d",
@@ -3702,7 +3934,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:14+00:00",
+    "updated_at": "2026-09-15T09:40:03+00:00"
   },
   {
     "id": "4e0f135a-9bdd-5b2e-a414-915f3b5a943c",
@@ -3727,7 +3961,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxes104.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:04+00:00",
+    "updated_at": "2026-09-15T09:40:12+00:00"
   },
   {
     "id": "6d1bac39-171d-5b76-ad08-e5d9497e3805",
@@ -3752,7 +3988,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxdt104-mk2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:06:00+00:00",
+    "updated_at": "2026-09-15T09:40:11+00:00"
   },
   {
     "id": "6512cb1b-cd30-5234-bcec-c2d83cc1ede2",
@@ -3777,7 +4015,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxamp4x4mk2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:58+00:00",
+    "updated_at": "2026-10-03T04:28:48+00:00"
   },
   {
     "id": "29395f0b-08e3-58cc-8d7b-0474e80087cf",
@@ -3802,7 +4042,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxamp4x4c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:52+00:00",
+    "updated_at": "2026-09-15T09:40:10+00:00"
   },
   {
     "id": "e852da3c-3283-56b9-b44a-86dbd3451f7f",
@@ -3827,7 +4069,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxamp4x2mk2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:41+00:00",
+    "updated_at": "2026-10-03T03:01:52+00:00"
   },
   {
     "id": "79a58342-fba2-54e9-8fbc-0727a3aa86ef",
@@ -3852,7 +4096,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxamp4x1mk2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:35+00:00",
+    "updated_at": "2026-10-03T02:53:04+00:00"
   },
   {
     "id": "9484cc3f-12fa-59cc-a67b-a7cea5ab1002",
@@ -3877,7 +4123,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nxae104.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:28+00:00",
+    "updated_at": "2026-09-15T09:40:07+00:00"
   },
   {
     "id": "9f53ecb9-6994-5f37-80a7-3e1c3605ee0f",
@@ -3902,7 +4150,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/nuar.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:24+00:00",
+    "updated_at": "2026-09-15T09:40:05+00:00"
   },
   {
     "id": "af38fb5d-fd01-535b-aef3-7a238bf54b68",
@@ -3927,7 +4177,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/msub18-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:02+00:00",
+    "updated_at": "2026-09-15T09:40:00+00:00"
   },
   {
     "id": "a232a168-fbb8-513b-8dc1-4367d771f85c",
@@ -3952,7 +4204,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/msub18.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:05:00+00:00",
+    "updated_at": "2026-09-15T09:39:59+00:00"
   },
   {
     "id": "ff11fe05-7860-554c-a9fd-459089a88007",
@@ -3977,7 +4231,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/msub15-i.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:57+00:00",
+    "updated_at": "2026-09-15T09:39:59+00:00"
   },
   {
     "id": "29d8e063-583f-592f-9325-6e1f844a8135",
@@ -4002,7 +4258,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/msub15.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:54+00:00",
+    "updated_at": "2026-09-15T09:39:58+00:00"
   },
   {
     "id": "4ca6208b-0519-5849-97a4-d11596385797",
@@ -4027,7 +4285,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/msub12.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:52+00:00",
+    "updated_at": "2026-09-29T02:18:55+00:00"
   },
   {
     "id": "9bd1c086-0cc2-5b80-8dbb-5e681bdd7d89",
@@ -4052,7 +4312,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ls18e.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:49+00:00",
+    "updated_at": "2026-09-29T03:14:02+00:00"
   },
   {
     "id": "a3429291-2c9c-5de0-9637-9e34d83defc1",
@@ -4077,7 +4339,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ls18.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:47+00:00",
+    "updated_at": "2026-09-29T03:11:17+00:00"
   },
   {
     "id": "cdf4a742-944b-5a20-895c-d1d1813ce12c",
@@ -4102,7 +4366,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/l18.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:44+00:00",
+    "updated_at": "2026-09-15T09:39:51+00:00"
   },
   {
     "id": "589a64d9-bae4-5656-95d7-81c6bc911c7e",
@@ -4127,7 +4393,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/l15.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:27+00:00",
+    "updated_at": "2026-09-15T09:39:49+00:00"
   },
   {
     "id": "22831dd2-4414-5688-b510-2a2b9524de57",
@@ -4152,7 +4420,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids312-tis.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:25+00:00",
+    "updated_at": "2026-09-15T09:39:49+00:00"
   },
   {
     "id": "8556d03d-c441-5af1-a205-cabe5e247779",
@@ -4177,7 +4447,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids312-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:23+00:00",
+    "updated_at": "2026-09-15T09:39:48+00:00"
   },
   {
     "id": "51ee7b8c-d981-5235-99e8-1a57da95cc4a",
@@ -4202,7 +4474,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids312-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:20+00:00",
+    "updated_at": "2026-09-15T09:39:48+00:00"
   },
   {
     "id": "b2d41f41-e006-5368-b56e-34e6baedd07a",
@@ -4227,7 +4501,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids210-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:19+00:00",
+    "updated_at": "2026-09-15T09:39:47+00:00"
   },
   {
     "id": "a73b0ba4-76a0-54fb-82f8-e4f3436b588b",
@@ -4252,7 +4528,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids210-e.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:16+00:00",
+    "updated_at": "2026-09-15T09:39:47+00:00"
   },
   {
     "id": "6264d094-7a42-54aa-b72a-e4cdaf8ee7bc",
@@ -4277,7 +4555,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids110-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:14+00:00",
+    "updated_at": "2026-09-22T08:01:00+00:00"
   },
   {
     "id": "2d690e66-fa6d-52d0-be17-f152a695ef45",
@@ -4302,7 +4582,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids110-e.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:13+00:00",
+    "updated_at": "2026-09-22T08:10:43+00:00"
   },
   {
     "id": "18f70b35-bbd6-5eaa-a398-19ca3f54dfaa",
@@ -4327,7 +4609,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids108-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:11+00:00",
+    "updated_at": "2026-09-22T07:55:25+00:00"
   },
   {
     "id": "14d95d27-532c-5ef8-b16b-1e00797991d2",
@@ -4352,7 +4636,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ids108-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:09+00:00",
+    "updated_at": "2026-09-21T07:08:19+00:00"
   },
   {
     "id": "d3326cac-05a6-5e37-ab1e-dcb918dfa730",
@@ -4377,7 +4663,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id84l-tis.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:06+00:00",
+    "updated_at": "2026-09-15T09:39:42+00:00"
   },
   {
     "id": "931debf5-ff18-58be-ac1f-03ddfe4cc532",
@@ -4402,7 +4690,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id84l-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:04+00:00",
+    "updated_at": "2026-09-15T09:39:41+00:00"
   },
   {
     "id": "d4e897b0-5a1c-5e69-885b-2ed27693d5db",
@@ -4427,7 +4717,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id84l-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:04:01+00:00",
+    "updated_at": "2026-09-15T09:39:39+00:00"
   },
   {
     "id": "a5991dfb-25bd-5df2-b5e1-4299b1e1ff45",
@@ -4452,7 +4744,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id84-tis.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:59+00:00",
+    "updated_at": "2026-09-15T09:39:38+00:00"
   },
   {
     "id": "c670b4a9-0067-56ca-a09d-f4699283a26c",
@@ -4477,7 +4771,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id84-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:58+00:00",
+    "updated_at": "2026-09-15T09:39:37+00:00"
   },
   {
     "id": "9f1c78ff-8c45-5a49-9549-39e7f6ab7e76",
@@ -4502,7 +4798,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id84-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:56+00:00",
+    "updated_at": "2026-09-15T09:39:36+00:00"
   },
   {
     "id": "6296f56d-e6a1-5eae-bba2-4c021f80fd19",
@@ -4527,7 +4825,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id24-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:54+00:00",
+    "updated_at": "2026-09-22T03:42:23+00:00"
   },
   {
     "id": "daeaf4b6-0715-5b35-b664-9a5234144863",
@@ -4552,7 +4852,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id24-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:52+00:00",
+    "updated_at": "2026-09-22T03:51:59+00:00"
   },
   {
     "id": "69e9b5fd-2ade-595e-ae10-e0fc378f3807",
@@ -4577,7 +4879,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id24-c.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:50+00:00",
+    "updated_at": "2026-09-22T04:11:53+00:00"
   },
   {
     "id": "e4e5ed23-516b-5f93-b31b-7fcffa6f6d96",
@@ -4602,7 +4906,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id14-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:49+00:00",
+    "updated_at": "2026-09-22T07:54:09+00:00"
   },
   {
     "id": "ef152c43-da6b-5073-afd1-7bd39d8ea850",
@@ -4627,7 +4933,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/id14-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:44+00:00",
+    "updated_at": "2026-09-22T07:55:56+00:00"
   },
   {
     "id": "a5311d5f-5456-5bc5-8e2d-3bef58c1375c",
@@ -4652,7 +4960,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geos1230st-en54.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:42+00:00",
+    "updated_at": "2026-09-15T09:39:32+00:00"
   },
   {
     "id": "4b9e7d24-a109-535d-abb5-09dfb2201b0a",
@@ -4677,7 +4987,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geos1230-en54.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:39+00:00",
+    "updated_at": "2026-09-15T09:39:32+00:00"
   },
   {
     "id": "700a300d-eda3-5139-b622-fcb1fdf25472",
@@ -4702,7 +5014,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geos1210st-en54.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:37+00:00",
+    "updated_at": "2026-09-15T09:39:31+00:00"
   },
   {
     "id": "b0fdf230-b087-5aa1-a9b9-71c280a726ca",
@@ -4727,7 +5041,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geos1210-en54.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:35+00:00",
+    "updated_at": "2026-09-15T09:39:31+00:00"
   },
   {
     "id": "f6934610-5acd-5cad-a541-f4e9c65029ee",
@@ -4777,7 +5093,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-s1230.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:32+00:00",
+    "updated_at": "2026-09-15T09:39:29+00:00"
   },
   {
     "id": "c948378a-266e-5116-af69-897caaae55f7",
@@ -4827,7 +5145,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-s1210.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:29+00:00",
+    "updated_at": "2026-09-15T09:39:28+00:00"
   },
   {
     "id": "2563bce0-2150-5ddc-90eb-cd443b53735d",
@@ -4852,7 +5172,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m6b.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:27+00:00",
+    "updated_at": "2026-09-29T02:28:32+00:00"
   },
   {
     "id": "2f33efbd-eaee-5db4-901d-4191065f53e1",
@@ -4877,7 +5199,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m620.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:25+00:00",
+    "updated_at": "2026-09-28T07:13:49+00:00"
   },
   {
     "id": "4d299612-0121-5348-8bfe-33c22ee41d87",
@@ -4902,7 +5226,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1220-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:24+00:00",
+    "updated_at": "2026-09-15T09:39:26+00:00"
   },
   {
     "id": "ed1b0f59-4637-58f6-8f07-c34504e83aae",
@@ -4927,7 +5253,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1220.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:21+00:00",
+    "updated_at": "2026-09-15T09:39:26+00:00"
   },
   {
     "id": "3fdceba8-e723-5a96-9a6c-33ab41765a7f",
@@ -4952,7 +5280,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1210-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:18+00:00",
+    "updated_at": "2026-09-15T09:39:25+00:00"
   },
   {
     "id": "d856b7ab-6927-53e9-8b93-9def9c34e8a6",
@@ -4977,7 +5307,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1210.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:16+00:00",
+    "updated_at": "2026-09-15T09:39:25+00:00"
   },
   {
     "id": "3d4775e8-1987-58ed-a5a3-5a328f59848c",
@@ -5002,7 +5334,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1025-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:14+00:00",
+    "updated_at": "2026-09-15T09:39:24+00:00"
   },
   {
     "id": "f7a6283a-d82a-5c0e-8060-287b30b2fc3d",
@@ -5027,7 +5361,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1025.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:12+00:00",
+    "updated_at": "2026-09-15T09:39:23+00:00"
   },
   {
     "id": "c9566cf9-7a4d-5fae-8f40-315f65659ab2",
@@ -5052,7 +5388,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1012-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:10+00:00",
+    "updated_at": "2026-09-15T09:39:23+00:00"
   },
   {
     "id": "d3a62403-632d-55b7-8834-dcce89f8d53d",
@@ -5077,7 +5415,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geo-m1012.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:08+00:00",
+    "updated_at": "2026-09-15T09:39:22+00:00"
   },
   {
     "id": "02b7187f-5ac7-54f8-8b85-016328c40d6f",
@@ -5102,7 +5442,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/eps8.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:06+00:00",
+    "updated_at": "2026-09-15T09:39:21+00:00"
   },
   {
     "id": "bb054846-c5c8-55df-ab5b-16c178183401",
@@ -5127,7 +5469,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/eps6.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:04+00:00",
+    "updated_at": "2026-09-15T09:39:20+00:00"
   },
   {
     "id": "4c2e609e-fb10-581f-b4aa-c58394f9fe3a",
@@ -5152,7 +5496,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/eps10.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:03:02+00:00",
+    "updated_at": "2026-09-30T09:09:34+00:00"
   },
   {
     "id": "1bf59089-324e-5266-96e5-8b1e9869f453",
@@ -5177,7 +5523,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/els600.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:59+00:00",
+    "updated_at": "2026-09-15T09:39:15+00:00"
   },
   {
     "id": "3647cc92-e816-50b7-8cfe-e6258feb1894",
@@ -5202,7 +5550,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/els400.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:55+00:00",
+    "updated_at": "2026-09-15T09:39:15+00:00"
   },
   {
     "id": "0aedea67-5bdc-52df-8002-1013610de40a",
@@ -5227,7 +5577,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dtdamp4x1-3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:53+00:00",
+    "updated_at": "2026-10-07T07:55:46+00:00"
   },
   {
     "id": "6146d93b-56c0-5a37-ac71-6e76841ac61b",
@@ -5252,7 +5604,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dtdamp4x0-7.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:51+00:00",
+    "updated_at": "2026-10-07T07:55:12+00:00"
   },
   {
     "id": "ac065c13-399a-5fba-8cb4-0998336c94f6",
@@ -5277,7 +5631,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dtd-t.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:49+00:00",
+    "updated_at": "2026-10-07T07:54:43+00:00"
   },
   {
     "id": "1bd01af0-e3d7-5d46-af71-5cd622a22cb3",
@@ -5302,7 +5658,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dtd-i.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:47+00:00",
+    "updated_at": "2026-10-07T07:54:13+00:00"
   },
   {
     "id": "28d866e7-354b-51ab-b340-be67a97bf287",
@@ -5327,7 +5685,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dpu.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:45+00:00",
+    "updated_at": "2026-09-15T09:39:10+00:00"
   },
   {
     "id": "e134856a-9958-57a3-9f0e-2100501fe430",
@@ -5352,7 +5712,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dmu.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:43+00:00",
+    "updated_at": "2026-09-15T09:39:09+00:00"
   },
   {
     "id": "d2d97eaa-679f-5233-a3dd-12ebc54ae2e5",
@@ -5377,7 +5739,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/45n12.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-09T02:02:41+00:00",
+    "updated_at": "2026-09-15T09:39:09+00:00"
   },
   {
     "id": "06532119-bad0-536f-a425-881fb07ed869",
@@ -5402,7 +5766,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs1182s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-08T06:39:20+00:00",
+    "updated_at": "2026-07-17T04:49:17+00:00"
   },
   {
     "id": "b89e22f0-a107-58f5-a5f6-1eb53fb74c3f",
@@ -5427,7 +5793,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs1152s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-07T07:16:55+00:00",
+    "updated_at": "2026-07-17T04:49:17+00:00"
   },
   {
     "id": "bd8bbab7-1ff7-5336-979f-94d142f7efba",
@@ -5452,7 +5820,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs122.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-07T04:07:48+00:00",
+    "updated_at": "2026-07-17T04:49:17+00:00"
   },
   {
     "id": "71ae3cdd-c49e-5a6c-8f7b-c65fcbce43f6",
@@ -5477,7 +5847,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs102.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-02-07T03:06:44+00:00",
+    "updated_at": "2026-07-17T04:49:17+00:00"
   },
   {
     "id": "87e83ac8-1917-5a21-9e9e-5a193769f14c",
@@ -5502,7 +5874,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/me-f45d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-01-30T06:58:42+00:00",
+    "updated_at": "2026-07-17T04:47:39+00:00"
   },
   {
     "id": "1a8bc1e8-3220-545a-a2ba-c52e4f3efd69",
@@ -5527,7 +5901,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b-f-50xs.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2023-01-30T06:54:54+00:00",
+    "updated_at": "2026-07-17T04:44:45+00:00"
   },
   {
     "id": "1485a8cf-8163-5c31-a55f-8b2ccea38a61",
@@ -5552,7 +5928,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/kik3-opprt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-18T15:12:04+00:00",
+    "updated_at": "2026-07-17T04:46:59+00:00"
   },
   {
     "id": "0d4b4eb9-a04b-5ec6-b950-494c1a3d6ef8",
@@ -5577,7 +5955,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/kik3-oppgn.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-18T15:11:17+00:00",
+    "updated_at": "2026-07-17T04:46:59+00:00"
   },
   {
     "id": "a56b4376-1153-59dc-8aa5-69422ac1daad",
@@ -5602,7 +5982,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/kik3-oppge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-18T15:09:37+00:00",
+    "updated_at": "2026-07-17T04:46:59+00:00"
   },
   {
     "id": "f05e1d4d-2013-5e2f-beda-135a42196ca2",
@@ -5627,7 +6009,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/kik3-oppbl.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-18T15:07:38+00:00",
+    "updated_at": "2026-07-17T04:46:59+00:00"
   },
   {
     "id": "e779ac02-3909-51d3-a76e-ec39da375513",
@@ -5652,7 +6036,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/kik3-oppsw.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-18T14:57:54+00:00",
+    "updated_at": "2026-10-01T08:06:58+00:00"
   },
   {
     "id": "54b4b5cc-8a21-5331-b5e0-593f8da65f85",
@@ -5677,7 +6063,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/x7.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-17T11:08:04+00:00",
+    "updated_at": "2026-07-17T04:49:11+00:00"
   },
   {
     "id": "ac2d99ed-1809-532d-9e00-00ab39eb8923",
@@ -5702,7 +6090,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/x6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-17T11:03:07+00:00",
+    "updated_at": "2026-07-17T04:49:11+00:00"
   },
   {
     "id": "b21dc06f-c7d2-5e3f-be29-cd23ffe92495",
@@ -5752,7 +6142,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d-ci1-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-13T09:31:51+00:00",
+    "updated_at": "2026-07-17T04:46:22+00:00"
   },
   {
     "id": "37d846ae-fcc6-5d59-9214-cc48c07852a6",
@@ -5777,7 +6169,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bo-truyen-phat-khong-day-sennheiser-ew-d-skm-s-base-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-13T09:08:38+00:00",
+    "updated_at": "2026-09-08T02:18:09+00:00"
   },
   {
     "id": "cc905547-b13d-574c-94e0-6f7b8b9a60ea",
@@ -5802,7 +6196,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d-sk-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-13T08:50:54+00:00",
+    "updated_at": "2026-09-08T02:19:13+00:00"
   },
   {
     "id": "02969417-2103-5795-806d-282fc7a517c4",
@@ -5827,7 +6223,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-sennheiser-ew-d-me2-835-s-combo-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-13T08:16:26+00:00",
+    "updated_at": "2026-07-17T04:47:41+00:00"
   },
   {
     "id": "806f0a35-9d5a-53c6-9228-f2415525460c",
@@ -5852,7 +6250,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d-me-4-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-13T07:56:49+00:00",
+    "updated_at": "2026-07-17T04:46:23+00:00"
   },
   {
     "id": "aa6940a6-4a54-505e-9630-9f76d9eaaa92",
@@ -5877,7 +6277,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d-me-2-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-12-13T07:35:46+00:00",
+    "updated_at": "2026-07-17T04:46:23+00:00"
   },
   {
     "id": "3bfe05b5-ace6-5208-9b78-dd9030d318be",
@@ -5891,9 +6293,9 @@ export const MOCK_PRODUCTS: Product[] = [
     "description": "DJ CONTROLLER DDJ-FLX4 DDJ FLX4 là bộ điều khiển controller 2 kênh phân khúc giá rẻ với thiết kế đơn giản, thân thiện với người dùng nhưng vẫn tạo cho người sử dụng cảm giác chuyên nghiệp. Bạn có thể sử dụng rekordbox và Serato DJ Lite chỉ cần kết nối DDJ-FLX4 với PC/Mac TÍNH NĂNG DJ CONTROLLER DDJ-FLX4 Tương Thích Với Cả Rekordbox DJ Và Serato DJ Bạn có thể sử dụng rekordbox và Serato DJ Lite chỉ cần kết nối DDJ-FLX4 với PC/Mac. Nếu bạn muốn sử dụng DDJ-FLX4 cùng Serato DJ Pro, bạn có thể mua l",
     "sale_enabled": true,
     "sale_price": 11650000,
-    "rental_enabled": true,
-    "rental_price": 400000,
-    "stock_quantity": 4,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 1,
     "is_active": true,
     "image_url": "/images/products/ddj-flx4.png",
     "images": [
@@ -5903,15 +6305,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh DJ Controller",
-      "Phần mềm tương thích": "rekordbox (PC/Mac/iOS/Android), Serato DJ Lite, Serato DJ Pro",
-      "Tính năng thông minh": "Smart Fader (tự động điều chỉnh BPM & Volume) & Smart CFX",
-      "Kết nối máy tính": "Cổng USB Type-C cấp nguồn trực tiếp",
-      "Âm thanh đầu ra": "Master Out RCA, Cổng cắm tai nghe 3.5mm mini-jack, Ngõ vào micro",
-      "Kích thước": "482 mm x 59.2 mm x 272.8 mm",
-      "Trọng lượng": "2.1 kg siêu di động"
-    }
+    "created_at": "2022-12-02T09:34:18+00:00",
+    "updated_at": "2026-07-17T04:45:11+00:00"
   },
   {
     "id": "4373c38c-dade-5bb0-8e18-9ed15ff5ed17",
@@ -5936,7 +6331,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tai-nghe-sennheiser-hd-25.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-11-24T08:32:47+00:00",
+    "updated_at": "2026-09-25T02:17:41+00:00"
   },
   {
     "id": "84e99c7c-947f-5877-8e64-3b5c2fda6019",
@@ -5961,7 +6358,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-gai-dau-sennheiser-ew-d-me3-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-11-15T08:25:28+00:00",
+    "updated_at": "2026-10-01T07:55:07+00:00"
   },
   {
     "id": "3e1e20ed-8954-5f27-bcc1-b3e054ed9252",
@@ -5986,7 +6385,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b205d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-11-11T03:43:40+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "18f2079e-0531-51e8-85fd-90f47636aadc",
@@ -6011,7 +6412,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vf32.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-11-10T07:03:01+00:00",
+    "updated_at": "2026-07-17T04:49:04+00:00"
   },
   {
     "id": "3b8d0fdc-b977-5e30-962d-dd8fa2d63724",
@@ -6036,7 +6439,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vf24.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-11-10T04:28:17+00:00",
+    "updated_at": "2026-07-17T04:49:04+00:00"
   },
   {
     "id": "cc1a87ba-8aac-5702-90d6-49d1097da1e4",
@@ -6061,7 +6466,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-sennheiser-ew-d-835-s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-10-24T07:22:19+00:00",
+    "updated_at": "2026-10-01T02:35:24+00:00"
   },
   {
     "id": "1ad409a2-a9b2-53e5-a4db-cc7e8f692df6",
@@ -6086,7 +6493,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tui-pioneer-dj.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-08-09T09:45:52+00:00",
+    "updated_at": "2026-07-17T04:49:00+00:00"
   },
   {
     "id": "a83af8d9-9b4f-5e91-a4fc-e7165bfc5103",
@@ -6111,7 +6520,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zedi10fx.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:12+00:00",
+    "updated_at": "2026-07-17T06:53:33+00:00"
   },
   {
     "id": "f0531559-4bca-50be-a2ef-a08f334efda4",
@@ -6136,7 +6547,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zedi10.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:12+00:00",
+    "updated_at": "2026-07-17T06:53:33+00:00"
   },
   {
     "id": "5b892263-60fc-5fff-8713-b9993bb2a219",
@@ -6161,7 +6574,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zedi8.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:12+00:00",
+    "updated_at": "2026-07-17T06:53:34+00:00"
   },
   {
     "id": "ee758d49-9f63-5a18-a375-1d750cba29af",
@@ -6186,7 +6601,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/qu-sb.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:10+00:00",
+    "updated_at": "2026-07-17T06:52:59+00:00"
   },
   {
     "id": "c18d1af6-8b98-583d-96bb-8918c4b261ca",
@@ -6211,7 +6628,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/qu-pac.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:10+00:00",
+    "updated_at": "2026-07-17T06:52:59+00:00"
   },
   {
     "id": "c766e60b-407d-593f-a367-4b890c68550e",
@@ -6236,7 +6655,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/qu-24.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:09+00:00",
+    "updated_at": "2026-07-17T06:52:58+00:00"
   },
   {
     "id": "502bb040-07af-54a2-b0e6-6862f3f72d6b",
@@ -6261,7 +6682,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sq-5.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-23T04:43:07+00:00",
+    "updated_at": "2026-07-17T06:53:00+00:00"
   },
   {
     "id": "bfa32e86-690a-521d-b41e-017593361bb8",
@@ -6286,7 +6709,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-rev1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-21T09:41:10+00:00",
+    "updated_at": "2026-07-17T04:45:12+00:00"
   },
   {
     "id": "8545770c-73b4-5b95-9a6c-67f56d723f9b",
@@ -6311,7 +6736,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zed-22fx.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-14T09:22:00+00:00",
+    "updated_at": "2026-07-17T06:53:25+00:00"
   },
   {
     "id": "f0a45268-14aa-5737-97db-74f40c2e2497",
@@ -6336,7 +6763,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zed-16fx.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-14T09:19:03+00:00",
+    "updated_at": "2026-07-17T06:53:24+00:00"
   },
   {
     "id": "6f3ee7bd-f15a-5f41-bdd8-e9efae786229",
@@ -6361,7 +6790,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zed-12fx.jpeg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-14T09:04:23+00:00",
+    "updated_at": "2026-07-17T06:53:23+00:00"
   },
   {
     "id": "2bed7aac-d89b-53c4-8629-5b75cced8bb6",
@@ -6386,7 +6817,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rb-vd-1w.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-08T04:58:05+00:00",
+    "updated_at": "2026-07-17T04:48:35+00:00"
   },
   {
     "id": "91578fe7-6b31-5b22-af2d-c3e19edda332",
@@ -6411,7 +6844,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rb-vd-1k.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-08T04:56:37+00:00",
+    "updated_at": "2026-07-17T04:48:34+00:00"
   },
   {
     "id": "4694ac2b-b1b6-58f8-80d3-f314529ab8ac",
@@ -6436,7 +6871,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-s5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T05:12:40+00:00",
+    "updated_at": "2026-07-17T04:45:20+00:00"
   },
   {
     "id": "1ef6cb92-22fe-50fa-ad86-db6926a9d92a",
@@ -6461,7 +6898,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-cx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T04:56:16+00:00",
+    "updated_at": "2026-07-17T04:46:37+00:00"
   },
   {
     "id": "67c39209-845b-597c-a1be-8380254216b0",
@@ -6486,7 +6925,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dm-50d-bt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T04:27:04+00:00",
+    "updated_at": "2026-07-17T04:45:47+00:00"
   },
   {
     "id": "7a0bd240-3ac9-58e2-8bf3-b1664eab6046",
@@ -6511,7 +6952,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dm40dbt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T04:12:15+00:00",
+    "updated_at": "2026-07-17T04:45:48+00:00"
   },
   {
     "id": "4cb2d012-3113-5e1e-ad39-1f28cfa27d46",
@@ -6536,7 +6979,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dm-40d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T03:48:39+00:00",
+    "updated_at": "2026-07-28T01:34:55+00:00"
   },
   {
     "id": "07225de2-c754-5440-a2b6-04870fa2d650",
@@ -6561,7 +7006,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djc-sc3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T03:38:51+00:00",
+    "updated_at": "2026-07-17T04:45:17+00:00"
   },
   {
     "id": "39a4c778-4ac7-5e21-8d2f-04ce187b9366",
@@ -6586,7 +7033,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/csx-080.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-06-07T03:30:21+00:00",
+    "updated_at": "2026-07-17T04:44:58+00:00"
   },
   {
     "id": "3ae642c5-be17-5699-828c-0ab15d069f2c",
@@ -6611,7 +7060,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/throne.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:56+00:00",
+    "updated_at": "2026-07-17T04:48:58+00:00"
   },
   {
     "id": "4fc2214e-0131-5304-9efa-0621281e4faa",
@@ -6636,7 +7087,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/podsk522mbk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:53+00:00",
+    "updated_at": "2026-07-17T04:48:18+00:00"
   },
   {
     "id": "2437bdc3-9210-5637-89eb-9034c067c519",
@@ -6661,7 +7114,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/podsk522csv.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:52+00:00",
+    "updated_at": "2026-07-17T04:48:18+00:00"
   },
   {
     "id": "77649e31-c013-579e-aeee-6d5beebf03ba",
@@ -6686,7 +7141,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/podrt522bd.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:50+00:00",
+    "updated_at": "2026-07-17T04:48:17+00:00"
   },
   {
     "id": "ab7f14d7-cd3c-5a03-be90-27caf961c113",
@@ -6711,7 +7168,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pedal.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:49+00:00",
+    "updated_at": "2026-07-17T04:48:12+00:00"
   },
   {
     "id": "360ff94d-9f42-5838-8614-1d9344013070",
@@ -6736,7 +7195,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hihatstand.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:48+00:00",
+    "updated_at": "2026-07-17T04:46:39+00:00"
   },
   {
     "id": "0bd6f729-9011-5fe1-8f61-0873308f984f",
@@ -6761,7 +7222,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/chansnare.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:48+00:00",
+    "updated_at": "2026-07-17T04:44:56+00:00"
   },
   {
     "id": "490aa6bd-7880-56e6-a40f-ae8662cdd5f1",
@@ -6786,7 +7249,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/boomstand.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:23:47+00:00",
+    "updated_at": "2026-07-17T04:44:53+00:00"
   },
   {
     "id": "d37885c1-d33a-5ad8-9298-dd38fbc43eb5",
@@ -6811,7 +7276,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vml-925sp-c-803.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:29+00:00",
+    "updated_at": "2026-07-17T04:49:06+00:00"
   },
   {
     "id": "e63da711-db91-524e-a568-670e92c2936c",
@@ -6836,7 +7303,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vml-925sp-c-368.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:28+00:00",
+    "updated_at": "2026-07-17T04:49:06+00:00"
   },
   {
     "id": "fcfc7a26-ac38-5892-bbf4-ce55ed6fe577",
@@ -6861,7 +7330,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vbl925230.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:27+00:00",
+    "updated_at": "2026-07-17T04:49:03+00:00"
   },
   {
     "id": "2a126cff-321a-5a3a-9440-4532f8cae6f0",
@@ -6886,7 +7357,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tlt-100-c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:27+00:00",
+    "updated_at": "2026-07-17T04:48:58+00:00"
   },
   {
     "id": "9e6ddf21-cc9d-532d-9ac0-2885b9aca291",
@@ -6911,7 +7384,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tls-55-c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:26+00:00",
+    "updated_at": "2026-07-17T04:48:58+00:00"
   },
   {
     "id": "f40b181b-fe58-5252-99f3-f1153315fd39",
@@ -6936,7 +7411,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/tlb-300-c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:26+00:00",
+    "updated_at": "2026-07-17T04:48:58+00:00"
   },
   {
     "id": "42befaa7-827f-54e5-be8c-c10b8764d610",
@@ -6961,7 +7438,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/t-061l-6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:25+00:00",
+    "updated_at": "2026-07-17T04:48:57+00:00"
   },
   {
     "id": "8c2fd3f8-cc87-5da8-ac36-b91a8b9dfe64",
@@ -6986,7 +7465,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sd-50.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:25+00:00",
+    "updated_at": "2026-07-17T04:48:45+00:00"
   },
   {
     "id": "d57e78ec-e3cd-56f7-80aa-b756172ca4ef",
@@ -7011,7 +7492,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/s-790.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:24+00:00",
+    "updated_at": "2026-07-17T04:48:40+00:00"
   },
   {
     "id": "ddb9157d-7978-54db-9889-a04481902218",
@@ -7036,7 +7519,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/s-70w.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:24+00:00",
+    "updated_at": "2026-07-17T04:48:39+00:00"
   },
   {
     "id": "f5844f87-9f96-5b3f-afe7-c7172b7b2bb9",
@@ -7061,7 +7546,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rp-50.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:23+00:00",
+    "updated_at": "2026-07-17T04:48:38+00:00"
   },
   {
     "id": "e60d3a3d-50c8-5591-981e-447a144ad3b7",
@@ -7086,7 +7573,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rp-40c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:23+00:00",
+    "updated_at": "2026-07-17T04:48:38+00:00"
   },
   {
     "id": "343d4966-3774-5da0-bcb6-46634e555d00",
@@ -7111,7 +7600,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rim-1606.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:23+00:00",
+    "updated_at": "2026-07-17T04:48:37+00:00"
   },
   {
     "id": "0a205012-6300-5cde-87b3-686517eecb08",
@@ -7136,7 +7627,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rim-1410s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:22+00:00",
+    "updated_at": "2026-07-17T04:48:37+00:00"
   },
   {
     "id": "551f57c0-20e9-5c09-92ba-980cf738e8fe",
@@ -7161,7 +7654,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rim-1408s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:22+00:00",
+    "updated_at": "2026-07-17T04:48:36+00:00"
   },
   {
     "id": "12b18d06-1b22-501f-9dfc-6277b00021c1",
@@ -7186,7 +7681,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rim-1306.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:22+00:00",
+    "updated_at": "2026-07-17T04:48:36+00:00"
   },
   {
     "id": "7dde5870-892e-57da-8aea-79f8652c7aa5",
@@ -7211,7 +7708,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rim-1206.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:21+00:00",
+    "updated_at": "2026-07-17T04:48:36+00:00"
   },
   {
     "id": "3c94e713-2413-54d8-b23c-16ef7ec8991e",
@@ -7236,7 +7735,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pwch-3220g.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:21+00:00",
+    "updated_at": "2026-07-17T04:48:32+00:00"
   },
   {
     "id": "1df1c149-eb8a-5925-8ad6-84b2779f0975",
@@ -7261,7 +7762,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pwc-202dx-521.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:20+00:00",
+    "updated_at": "2026-07-17T04:48:32+00:00"
   },
   {
     "id": "1b593461-24c4-5f56-9ae0-494e6810f266",
@@ -7286,7 +7789,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pwc-100-511.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:20+00:00",
+    "updated_at": "2026-07-17T04:48:32+00:00"
   },
   {
     "id": "39f79c1c-8e3f-54e7-bf6a-b8b880c8b34a",
@@ -7311,7 +7816,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pth22pl.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:19+00:00",
+    "updated_at": "2026-07-17T04:48:31+00:00"
   },
   {
     "id": "8508af4b-7f23-5694-86a4-09d28f2da64b",
@@ -7336,7 +7843,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pth-22ceq.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:19+00:00",
+    "updated_at": "2026-07-17T04:48:31+00:00"
   },
   {
     "id": "8793e8b0-5658-5267-b4c9-f48222ab296f",
@@ -7361,7 +7870,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pth-16c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:18+00:00",
+    "updated_at": "2026-07-17T04:48:31+00:00"
   },
   {
     "id": "f89de420-d963-500e-b5f3-93d352325746",
@@ -7386,7 +7897,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pth-16.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:18+00:00",
+    "updated_at": "2026-07-17T04:48:31+00:00"
   },
   {
     "id": "aadfde9b-df69-5989-941e-55643a96e28a",
@@ -7411,7 +7924,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pth-13.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:18+00:00",
+    "updated_at": "2026-07-17T04:48:30+00:00"
   },
   {
     "id": "c45029be-3fb2-5719-bb50-0de8948c2b2d",
@@ -7436,7 +7951,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pth-12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:17+00:00",
+    "updated_at": "2026-07-17T04:48:30+00:00"
   },
   {
     "id": "26e1496f-a80c-5302-908b-af16662d9af0",
@@ -7461,7 +7978,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ptc-300.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:17+00:00",
+    "updated_at": "2026-07-17T04:48:29+00:00"
   },
   {
     "id": "eda8544c-2edf-5cd3-9233-aadcf165a23b",
@@ -7486,7 +8005,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ptc-10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:16+00:00",
+    "updated_at": "2026-07-17T04:48:29+00:00"
   },
   {
     "id": "f801dd83-55bf-5c7f-90b0-a1086db1468c",
@@ -7511,7 +8032,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/psk10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:16+00:00",
+    "updated_at": "2026-07-17T04:48:29+00:00"
   },
   {
     "id": "a0aa8840-3d9d-563d-ac8e-603ad969eaf2",
@@ -7536,7 +8059,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ps-85.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:15+00:00",
+    "updated_at": "2026-07-17T04:48:23+00:00"
   },
   {
     "id": "3dfe232d-811d-5311-9b1f-0421c4731a13",
@@ -7561,7 +8086,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pps-20.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:15+00:00",
+    "updated_at": "2026-07-17T04:48:21+00:00"
   },
   {
     "id": "5f38b3ff-867f-5b1d-8661-fef5f96f327b",
@@ -7586,7 +8113,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pga-20.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:14+00:00",
+    "updated_at": "2026-07-17T04:48:13+00:00"
   },
   {
     "id": "372125f4-99d0-5def-aae2-d52ccd07b9a0",
@@ -7611,7 +8140,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pfc-202dx-626.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:09+00:00",
+    "updated_at": "2026-07-17T04:48:13+00:00"
   },
   {
     "id": "1b19a09a-4e5a-5bce-8468-ebff52705f54",
@@ -7636,7 +8167,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pet-80.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:08+00:00",
+    "updated_at": "2026-07-17T04:48:13+00:00"
   },
   {
     "id": "44b7a39a-df72-5ebd-a6aa-6d43b49f2c40",
@@ -7661,7 +8194,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pet-60.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:08+00:00",
+    "updated_at": "2026-07-17T04:48:12+00:00"
   },
   {
     "id": "fe7dcec0-f34b-58bc-a117-c631a813cf1e",
@@ -7686,7 +8221,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pet-100.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:07+00:00",
+    "updated_at": "2026-07-17T04:48:12+00:00"
   },
   {
     "id": "561019f6-efc8-54cb-bd61-6f134a8bc67a",
@@ -7711,7 +8248,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pec-1-3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:07+00:00",
+    "updated_at": "2026-07-17T04:48:11+00:00"
   },
   {
     "id": "d85fcfe2-87e9-5de6-9fc8-ff8ec4ca45d8",
@@ -7736,7 +8275,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pcwb-30.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:06+00:00",
+    "updated_at": "2026-07-17T04:48:11+00:00"
   },
   {
     "id": "e11cdc85-b194-579f-8c68-313df63e841a",
@@ -7761,7 +8302,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pcs-10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:06+00:00",
+    "updated_at": "2026-07-17T04:48:10+00:00"
   },
   {
     "id": "81816724-2e17-5ef6-83c3-2de842942844",
@@ -7786,7 +8329,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pc-50.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:05+00:00",
+    "updated_at": "2026-07-17T04:48:08+00:00"
   },
   {
     "id": "4f4be4b9-900c-5621-a78d-bb0ad61dd848",
@@ -7811,7 +8356,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pc-200w.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:05+00:00",
+    "updated_at": "2026-07-17T04:48:07+00:00"
   },
   {
     "id": "aa63804c-cd43-5d51-82f9-3c51c4c19594",
@@ -7836,7 +8383,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p900.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:04+00:00",
+    "updated_at": "2026-07-17T04:48:06+00:00"
   },
   {
     "id": "cdc7c34b-d447-5b65-af58-25a779175da4",
@@ -7861,7 +8410,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p890.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:04+00:00",
+    "updated_at": "2026-07-17T04:48:06+00:00"
   },
   {
     "id": "e422cc26-56e9-51b1-b0ce-8213dadc94c0",
@@ -7886,7 +8437,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p-902.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:03+00:00",
+    "updated_at": "2026-07-17T04:48:04+00:00"
   },
   {
     "id": "b9706c85-c468-5b78-a296-3f40b8b32481",
@@ -7911,7 +8464,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mcx-924xsp-c-805.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:02+00:00",
+    "updated_at": "2026-07-17T04:47:38+00:00"
   },
   {
     "id": "9d90ae2f-dadf-5799-8dcb-3b654815ac72",
@@ -7936,7 +8491,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mcx-924xsp-c-363.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:02+00:00",
+    "updated_at": "2026-07-17T04:47:38+00:00"
   },
   {
     "id": "1ed1ae76-0deb-5642-a7ec-426c56c17dd5",
@@ -7961,7 +8518,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mcx-1455s-c-363.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-26T03:13:01+00:00",
+    "updated_at": "2026-07-17T04:47:38+00:00"
   },
   {
     "id": "901587c7-a996-5328-bdde-c383f2fc379a",
@@ -7986,7 +8545,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cymbal-sabian-b8x-performance.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:16+00:00",
+    "updated_at": "2026-07-17T04:45:02+00:00"
   },
   {
     "id": "23c04052-f2cf-5433-86de-5d7f34591c96",
@@ -8011,7 +8572,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b8x-first-pack-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:16+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "c77596d0-3a9c-55ca-994b-3a9fd07a93b8",
@@ -8036,7 +8599,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b8x-complete-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:16+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "66f863f6-25f6-5c4b-ba79-e99338bba8c0",
@@ -8061,7 +8626,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cymbal-sabian-basementmix.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:16+00:00",
+    "updated_at": "2026-07-17T04:45:02+00:00"
   },
   {
     "id": "3b5215f6-7273-5a71-a584-fd2dc3fe8d4e",
@@ -8086,7 +8653,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cymbal-sabian-garagemix.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:16+00:00",
+    "updated_at": "2026-07-17T04:45:03+00:00"
   },
   {
     "id": "5c704fbd-587f-578d-9038-c60f6441969b",
@@ -8111,7 +8680,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cymbal-sabian-gigmix.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:15+00:00",
+    "updated_at": "2026-07-17T04:45:03+00:00"
   },
   {
     "id": "b021c98b-3637-58f2-be2c-91076643e8cb",
@@ -8136,7 +8707,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b8-2-pack-14-hats.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:15+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "0a8a52c0-5c77-58d2-a4de-15ff91775b0d",
@@ -8161,7 +8734,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/paragon-performance-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:14+00:00",
+    "updated_at": "2026-07-17T04:48:07+00:00"
   },
   {
     "id": "86e66643-6071-56c7-900d-af29654ce6f1",
@@ -8186,7 +8761,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/aax-stage-performance-set.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:13+00:00",
+    "updated_at": "2026-07-17T04:44:37+00:00"
   },
   {
     "id": "463b86ec-5028-5f73-b6c7-9db9051d22ca",
@@ -8211,7 +8788,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zoom-drum-machine-mrt3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:12+00:00",
+    "updated_at": "2026-07-17T04:49:30+00:00"
   },
   {
     "id": "b8642869-6c56-527a-ba38-40c0666baed3",
@@ -8236,7 +8815,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/may-ghi-am-zoom-h5-eq.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:11+00:00",
+    "updated_at": "2026-07-17T04:47:37+00:00"
   },
   {
     "id": "2b755a5f-79ce-5cf5-96b3-e9dc30f2d8fd",
@@ -8261,7 +8842,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zoom-gm200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:11+00:00",
+    "updated_at": "2026-07-17T04:49:30+00:00"
   },
   {
     "id": "5b361952-2073-50e4-8784-b70b84f09e6e",
@@ -8286,7 +8869,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zoom-effect-guitar-g92tt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:10+00:00",
+    "updated_at": "2026-07-17T04:49:30+00:00"
   },
   {
     "id": "40a06570-6ab6-5319-8ed3-55538991b30b",
@@ -8311,7 +8896,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zoom-effect-guitar-g7-1ut.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:10+00:00",
+    "updated_at": "2026-07-17T04:49:30+00:00"
   },
   {
     "id": "50fc3c44-c657-5a28-a180-63a5629a16fc",
@@ -8336,7 +8923,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/zoom-bass-effect-b1x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:10+00:00",
+    "updated_at": "2026-07-17T04:49:30+00:00"
   },
   {
     "id": "67e65809-5118-5d40-9e92-e7d7a86f306a",
@@ -8361,7 +8950,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pct-1000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:09+00:00",
+    "updated_at": "2026-07-17T04:48:10+00:00"
   },
   {
     "id": "4b99f760-4dd0-5f87-9b27-6754a26b0bcc",
@@ -8386,7 +8977,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geq1502.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:09+00:00",
+    "updated_at": "2026-09-22T04:44:50+00:00"
   },
   {
     "id": "ba4c2017-bfcb-5b42-b5c3-e46ec1a5019f",
@@ -8411,7 +9004,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pcl-2700.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:08+00:00",
+    "updated_at": "2026-07-17T04:48:09+00:00"
   },
   {
     "id": "43eeb5d2-6a64-55e9-a82f-c116e7a69a2e",
@@ -8436,7 +9031,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pcl-4700.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:08+00:00",
+    "updated_at": "2026-07-17T04:48:09+00:00"
   },
   {
     "id": "70d24026-e403-5586-b44a-987eaebed07b",
@@ -8461,7 +9058,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-15a-jnr.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:08+00:00",
+    "updated_at": "2026-07-17T04:46:57+00:00"
   },
   {
     "id": "4db8f27b-2f29-5318-bfcd-99ea6f4f2d62",
@@ -8486,7 +9085,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-15a-lite.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:08+00:00",
+    "updated_at": "2026-07-17T04:46:57+00:00"
   },
   {
     "id": "a2f8f6c5-0028-583b-a801-100864a98521",
@@ -8511,7 +9112,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-15a-dsp.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:08+00:00",
+    "updated_at": "2026-07-17T04:46:57+00:00"
   },
   {
     "id": "7e6e5e27-052a-5d60-aad1-0b8a81bc35ca",
@@ -8536,7 +9139,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi15ar.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:07+00:00",
+    "updated_at": "2026-07-17T04:46:58+00:00"
   },
   {
     "id": "95efcee9-0a72-501a-b67c-7d2cc14b5f3a",
@@ -8561,7 +9166,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-15a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:07+00:00",
+    "updated_at": "2026-07-17T04:46:57+00:00"
   },
   {
     "id": "24d14471-129d-5e65-b67c-5b36d7e5b536",
@@ -8586,7 +9193,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-15.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:07+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "1235f8f7-372b-5e07-aca5-1ad66b502d27",
@@ -8611,7 +9220,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-12a-jnr.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:07+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "2701ebdf-d915-59d8-9cbd-98f5c17a8dd2",
@@ -8636,7 +9247,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-12a-lite.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:07+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "f05a445e-919f-5503-bd19-03ed33770508",
@@ -8661,7 +9274,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-12a-dsp.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:06+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "43801539-8aca-5845-a793-7bd1171bc8bc",
@@ -8686,7 +9301,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-12ar.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:06+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "7ba5f46a-0ac2-5f72-9e30-114a7dadd16a",
@@ -8711,7 +9328,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-12a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:06+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "abbf1eca-4900-5b4c-b4ce-e29addd67402",
@@ -8736,7 +9355,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/jubi-12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:06+00:00",
+    "updated_at": "2026-07-17T04:46:56+00:00"
   },
   {
     "id": "9284165d-2ee7-50a9-ac3b-f038e64c9a2e",
@@ -8761,7 +9382,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-18sba-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:06+00:00",
+    "updated_at": "2026-07-17T04:46:55+00:00"
   },
   {
     "id": "0b5b1f28-d394-5615-814f-9997243642d3",
@@ -8786,7 +9409,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-215a-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:06+00:00",
+    "updated_at": "2026-07-17T04:46:55+00:00"
   },
   {
     "id": "354b93b7-7283-5536-967b-59336ad291a8",
@@ -8811,7 +9436,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-15a-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:05+00:00",
+    "updated_at": "2026-07-17T04:46:54+00:00"
   },
   {
     "id": "32a25138-94a7-5e6d-a7fd-0642f1a34b8f",
@@ -8836,7 +9463,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-12a-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:05+00:00",
+    "updated_at": "2026-07-17T04:46:53+00:00"
   },
   {
     "id": "4304eebb-aa48-597c-91fd-a03692f6d334",
@@ -8861,7 +9490,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-10a-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:05+00:00",
+    "updated_at": "2026-07-17T04:46:52+00:00"
   },
   {
     "id": "8e4cd196-1ee3-505f-8a20-f197629638bd",
@@ -8886,7 +9517,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-8a-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:05+00:00",
+    "updated_at": "2026-07-17T04:46:55+00:00"
   },
   {
     "id": "b81c1c91-16b2-5b02-b3ef-b7f85a510226",
@@ -8911,7 +9544,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-18sb-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:05+00:00",
+    "updated_at": "2026-07-17T04:46:54+00:00"
   },
   {
     "id": "6183d4af-ee56-5f48-b530-f0e0c3937b99",
@@ -8936,7 +9571,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-215-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:05+00:00",
+    "updated_at": "2026-07-17T04:46:55+00:00"
   },
   {
     "id": "462c9fd0-066a-5db5-8247-50a5da3a050d",
@@ -8961,7 +9598,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-15-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:04+00:00",
+    "updated_at": "2026-07-17T04:46:54+00:00"
   },
   {
     "id": "ab148d59-c3a4-5f26-b3ba-b966d4a28dfd",
@@ -8986,7 +9625,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-12-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:04+00:00",
+    "updated_at": "2026-07-17T04:46:53+00:00"
   },
   {
     "id": "f3a6cded-a3f1-535e-93ce-6a2bb97032e5",
@@ -9011,7 +9652,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-10-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:04+00:00",
+    "updated_at": "2026-07-17T04:46:52+00:00"
   },
   {
     "id": "336a9662-e610-5533-92e5-d897e7d515b7",
@@ -9036,7 +9679,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-8-deluxe.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:04+00:00",
+    "updated_at": "2026-07-17T04:46:55+00:00"
   },
   {
     "id": "80d9df36-4b00-5be0-8547-5855e9a4ad23",
@@ -9061,7 +9706,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-18sb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:04+00:00",
+    "updated_at": "2026-07-17T04:46:54+00:00"
   },
   {
     "id": "cbc145cf-1def-5c61-9238-00238bfa4ec0",
@@ -9086,7 +9733,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-215.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:03+00:00",
+    "updated_at": "2026-07-17T04:46:55+00:00"
   },
   {
     "id": "f57c33f7-c800-5003-b5ee-90a73f80c421",
@@ -9111,7 +9760,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-15.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:03+00:00",
+    "updated_at": "2026-07-17T04:46:53+00:00"
   },
   {
     "id": "6972e3b2-a1aa-5434-b5aa-573bd3ac697c",
@@ -9136,7 +9787,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/isk-12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:03+00:00",
+    "updated_at": "2026-07-17T04:46:53+00:00"
   },
   {
     "id": "48de7a80-c400-5dbd-8e40-8e43a646c95f",
@@ -9161,7 +9814,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ask-18sb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:03+00:00",
+    "updated_at": "2026-07-17T04:44:44+00:00"
   },
   {
     "id": "f50527c0-6869-5226-9b0c-54c5dbb9f02a",
@@ -9186,7 +9841,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ask-215.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:03+00:00",
+    "updated_at": "2026-07-17T04:44:44+00:00"
   },
   {
     "id": "470f3403-3327-5faa-bf0b-16b9aea7f959",
@@ -9211,7 +9868,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ask-15.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:03+00:00",
+    "updated_at": "2026-07-17T04:44:44+00:00"
   },
   {
     "id": "c8268c24-5dfb-503f-ad5a-97bdbed2be68",
@@ -9236,7 +9895,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ask-12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:02+00:00",
+    "updated_at": "2026-07-17T04:44:44+00:00"
   },
   {
     "id": "a86bf5a0-69bb-5575-b7d6-a7aae61b1617",
@@ -9261,7 +9922,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ask-10.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:02+00:00",
+    "updated_at": "2026-07-17T04:44:44+00:00"
   },
   {
     "id": "6e830b01-a897-5b71-9a21-06a71b0fa4a9",
@@ -9286,7 +9949,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sem715.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:02+00:00",
+    "updated_at": "2026-07-17T04:48:47+00:00"
   },
   {
     "id": "c1d6fba1-a038-5de5-a1b4-57b97e3d2517",
@@ -9311,7 +9976,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sem712.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:02+00:00",
+    "updated_at": "2026-07-17T04:48:46+00:00"
   },
   {
     "id": "9bfd8ec7-a9e6-5b42-b3f0-a78feb293c7b",
@@ -9336,7 +10003,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sem710.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:02+00:00",
+    "updated_at": "2026-07-17T04:48:46+00:00"
   },
   {
     "id": "124148b7-a1b9-5e97-9fbf-bdef4f742b9d",
@@ -9361,7 +10030,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpack-750.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:02+00:00",
+    "updated_at": "2026-09-22T06:40:22+00:00"
   },
   {
     "id": "937a5b72-bf0e-59b4-bcb9-e1d6f36faaa6",
@@ -9386,7 +10057,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpack-630.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:01+00:00",
+    "updated_at": "2026-09-22T06:40:40+00:00"
   },
   {
     "id": "4e82e3ca-7cf8-5477-9a9a-1a10f9895829",
@@ -9411,7 +10084,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpack-415.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:01+00:00",
+    "updated_at": "2026-07-17T04:48:19+00:00"
   },
   {
     "id": "efefc854-92ed-5c09-98fa-7a0521f50e28",
@@ -9436,7 +10111,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/icon-700.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:00+00:00",
+    "updated_at": "2026-07-17T04:46:43+00:00"
   },
   {
     "id": "59559a7d-ee7a-54b3-8f09-95b049586758",
@@ -9461,7 +10138,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/icon-300.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:32:00+00:00",
+    "updated_at": "2026-07-17T04:46:43+00:00"
   },
   {
     "id": "4ec1d4a8-05c3-5e6a-8f19-b235bc3af088",
@@ -9486,7 +10165,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xp-6000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:59+00:00",
+    "updated_at": "2026-07-17T04:49:15+00:00"
   },
   {
     "id": "ffbf95ca-6835-53bf-8747-33e5e74fb7d2",
@@ -9511,7 +10192,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xp-5000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:59+00:00",
+    "updated_at": "2026-07-17T04:49:15+00:00"
   },
   {
     "id": "a7676fd1-39e6-56db-aaae-609087af447e",
@@ -9536,7 +10219,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xp-3000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:59+00:00",
+    "updated_at": "2026-07-17T04:49:15+00:00"
   },
   {
     "id": "bad41cef-11b6-5327-a817-0eaaced2c0a1",
@@ -9561,7 +10246,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xp-2000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:59+00:00",
+    "updated_at": "2026-07-17T04:49:15+00:00"
   },
   {
     "id": "9e215c2f-9b3f-5b6a-8563-4ad70783c196",
@@ -9586,7 +10273,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/smartman700wpc.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:58+00:00",
+    "updated_at": "2026-07-17T04:48:53+00:00"
   },
   {
     "id": "96f57990-17df-5fad-934b-8697e962dc0e",
@@ -9611,7 +10300,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/smartman-708a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:58+00:00",
+    "updated_at": "2026-07-17T04:48:53+00:00"
   },
   {
     "id": "e4c49b1a-5ab0-5257-9fe2-81f341528f79",
@@ -9636,7 +10327,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/smartman-703a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:58+00:00",
+    "updated_at": "2026-07-17T04:48:53+00:00"
   },
   {
     "id": "e835b4b2-4be5-5dc6-8095-8750b152f293",
@@ -9661,7 +10354,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/smartman-700a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:58+00:00",
+    "updated_at": "2026-07-17T04:48:53+00:00"
   },
   {
     "id": "2b0328e2-105a-5a4f-9b0a-14da8cfa4ba2",
@@ -9686,7 +10381,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/smartman-303a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:58+00:00",
+    "updated_at": "2026-07-17T04:48:53+00:00"
   },
   {
     "id": "e3b64db0-b3f4-5d55-947c-db2f2b273138",
@@ -9711,7 +10408,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/smartman-300a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:57+00:00",
+    "updated_at": "2026-07-17T04:48:52+00:00"
   },
   {
     "id": "0e4e6221-91c2-5faf-9cae-6992bbface7e",
@@ -9736,7 +10435,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/paa6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:57+00:00",
+    "updated_at": "2026-07-17T04:48:07+00:00"
   },
   {
     "id": "0f34ed6e-94fc-5f1a-b442-ef69f11645df",
@@ -9761,7 +10462,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/paa3x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:57+00:00",
+    "updated_at": "2026-07-17T04:48:07+00:00"
   },
   {
     "id": "925e55f0-c0f7-52ce-a724-14e724299263",
@@ -9786,7 +10489,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-2000wpc.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:57+00:00",
+    "updated_at": "2026-07-17T04:48:42+00:00"
   },
   {
     "id": "46f20e3d-62b6-5d02-bb5b-d3009370cd5d",
@@ -9811,7 +10516,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-2000dc.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:57+00:00",
+    "updated_at": "2026-07-17T04:48:42+00:00"
   },
   {
     "id": "38ad42c1-a02a-5032-b51f-02b04f600f24",
@@ -9836,7 +10543,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-3000dc.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:56+00:00",
+    "updated_at": "2026-07-17T04:48:43+00:00"
   },
   {
     "id": "f4cb5a3b-32c4-5011-ad2c-7ee4539761bf",
@@ -9861,7 +10570,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wh-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:56+00:00",
+    "updated_at": "2026-07-17T04:49:09+00:00"
   },
   {
     "id": "bef5711e-e888-5e78-b8e6-2cce6b4761b4",
@@ -9886,7 +10597,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wl-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:56+00:00",
+    "updated_at": "2026-07-17T04:49:09+00:00"
   },
   {
     "id": "6e60a239-2e6b-55f9-820c-9f424cdab114",
@@ -9911,7 +10624,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wm-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:56+00:00",
+    "updated_at": "2026-07-17T04:49:10+00:00"
   },
   {
     "id": "4d56b7b8-528c-5434-aea8-4520d6810648",
@@ -9936,7 +10651,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wml-2s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:55+00:00",
+    "updated_at": "2026-07-17T04:49:10+00:00"
   },
   {
     "id": "3a50b63a-2db5-5c98-9d80-ee2ed314bb14",
@@ -9961,7 +10678,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wh-2s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:55+00:00",
+    "updated_at": "2026-07-17T04:49:09+00:00"
   },
   {
     "id": "275f72db-987e-5d92-8a6d-c20d5d46bd89",
@@ -9986,7 +10705,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wl-2s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:55+00:00",
+    "updated_at": "2026-07-17T04:49:10+00:00"
   },
   {
     "id": "8a940b3b-7c98-551a-96e6-ff7c93ac734c",
@@ -10011,7 +10732,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wm-2s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:55+00:00",
+    "updated_at": "2026-07-17T04:49:10+00:00"
   },
   {
     "id": "b4f91df0-dc0f-5ffa-8adb-1d11c80e5bb0",
@@ -10036,7 +10759,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wh-1s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:54+00:00",
+    "updated_at": "2026-07-17T04:49:09+00:00"
   },
   {
     "id": "bbedd599-9cec-56ae-b902-0f394aa002f3",
@@ -10061,7 +10786,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/wl-1s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:54+00:00",
+    "updated_at": "2026-07-17T04:49:09+00:00"
   },
   {
     "id": "44a39ad1-ef11-5f19-9904-69cdf6bab7bb",
@@ -10086,7 +10813,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/usbr-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:54+00:00",
+    "updated_at": "2026-07-17T04:49:01+00:00"
   },
   {
     "id": "2428419e-1597-56ce-bd74-96218e9167b0",
@@ -10111,7 +10840,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-cd-usb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:54+00:00",
+    "updated_at": "2026-07-17T04:48:43+00:00"
   },
   {
     "id": "ed347a51-9256-5eaa-8510-cf0d34269278",
@@ -10136,7 +10867,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-1000lite.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:53+00:00",
+    "updated_at": "2026-07-17T04:48:41+00:00"
   },
   {
     "id": "3067a5b4-741a-53b9-ac8c-0e2801cdde41",
@@ -10161,7 +10894,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-1000d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:53+00:00",
+    "updated_at": "2026-07-17T04:48:41+00:00"
   },
   {
     "id": "3cf48651-b10d-5b04-9f30-0112183236f8",
@@ -10186,7 +10921,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-1000m.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:53+00:00",
+    "updated_at": "2026-07-17T04:48:41+00:00"
   },
   {
     "id": "de7b135d-c452-5567-85c4-4843ef78c511",
@@ -10211,7 +10948,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-1500d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:53+00:00",
+    "updated_at": "2026-07-17T04:48:41+00:00"
   },
   {
     "id": "9426e951-b948-53ab-a63b-a05723c0740a",
@@ -10236,7 +10975,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-1500m.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:53+00:00",
+    "updated_at": "2026-07-17T04:48:41+00:00"
   },
   {
     "id": "298e53ce-6157-5992-ae30-7bce7beeb439",
@@ -10261,7 +11002,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-2000p.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:52+00:00",
+    "updated_at": "2026-07-17T04:48:42+00:00"
   },
   {
     "id": "3bb6ca77-e5f1-5354-876b-cb23c0da38b0",
@@ -10286,7 +11029,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-2000sys2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:52+00:00",
+    "updated_at": "2026-07-17T04:48:42+00:00"
   },
   {
     "id": "11013c6d-5540-5cb9-98c6-a1b198085495",
@@ -10311,7 +11056,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-2000sys1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:52+00:00",
+    "updated_at": "2026-07-17T04:48:42+00:00"
   },
   {
     "id": "f1922ee1-8e76-516f-af72-469ef22d63bd",
@@ -10336,7 +11083,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-2000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:52+00:00",
+    "updated_at": "2026-07-17T04:48:41+00:00"
   },
   {
     "id": "d08c13d0-2b64-5650-b39d-e9db8939f99b",
@@ -10361,7 +11110,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-3000p.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:52+00:00",
+    "updated_at": "2026-07-17T04:48:43+00:00"
   },
   {
     "id": "c432a791-8dc8-5110-abd4-8d34e41286bd",
@@ -10386,7 +11137,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-3000sys2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:51+00:00",
+    "updated_at": "2026-07-17T04:48:43+00:00"
   },
   {
     "id": "d2b7b9bb-4989-54e5-b612-34560343824a",
@@ -10411,7 +11164,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-3000sys1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:51+00:00",
+    "updated_at": "2026-07-17T04:48:43+00:00"
   },
   {
     "id": "d5578767-6d55-596d-8aca-a94ff5ad56b0",
@@ -10436,7 +11191,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/safari-3000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:51+00:00",
+    "updated_at": "2026-07-17T04:48:43+00:00"
   },
   {
     "id": "61d44460-05f4-55a2-9ab8-fffaee1250ec",
@@ -10461,7 +11218,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mx300.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:50+00:00",
+    "updated_at": "2026-07-17T04:47:49+00:00"
   },
   {
     "id": "2bb5a9ce-a147-54e9-b4b9-ba6b285de015",
@@ -10486,7 +11245,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/geq3102f.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:50+00:00",
+    "updated_at": "2026-09-22T04:44:42+00:00"
   },
   {
     "id": "5a7924ec-acb7-51e5-8590-2c52d96aedb3",
@@ -10511,7 +11272,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/helixboard-32i.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:50+00:00",
+    "updated_at": "2026-07-17T04:46:38+00:00"
   },
   {
     "id": "b5f77ce6-ef10-56c1-abbe-698773424ba9",
@@ -10536,7 +11299,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/v16-2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:49+00:00",
+    "updated_at": "2026-07-17T04:49:02+00:00"
   },
   {
     "id": "3c71f92e-c995-51b7-8af1-828d17e50533",
@@ -10561,7 +11326,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/v8-2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:49+00:00",
+    "updated_at": "2026-07-17T04:49:03+00:00"
   },
   {
     "id": "09982538-26c7-5b9b-bc0b-cee745596b71",
@@ -10586,7 +11353,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/er-12ge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:49+00:00",
+    "updated_at": "2026-07-17T04:46:07+00:00"
   },
   {
     "id": "ba619f7c-8c33-5125-be0f-9c912fd9bc2d",
@@ -10611,7 +11380,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am14ge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:48+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "f82bb84a-664a-5c6f-a729-ffea07ded6f5",
@@ -10636,7 +11407,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am12ge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:48+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "0e7e3370-6108-5f7a-b2d4-614618994f30",
@@ -10661,7 +11434,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am8ge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:48+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "1d0a023d-773a-5234-a2ac-3843e23a2ecc",
@@ -10686,7 +11461,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am6ge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:48+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "90df301a-e083-5644-b1d9-a6b66733bed3",
@@ -10711,7 +11488,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am5ge.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:48+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "0bf3ae55-ba87-5869-84a0-e11ead839a55",
@@ -10736,7 +11515,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/celeus800.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:47+00:00",
+    "updated_at": "2026-07-17T04:44:56+00:00"
   },
   {
     "id": "135e61a8-f9c0-5447-a9ed-9a35672bb6a9",
@@ -10761,7 +11542,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/celeus600.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:47+00:00",
+    "updated_at": "2026-07-17T04:44:56+00:00"
   },
   {
     "id": "51c61bee-42d0-5f0b-8954-f57bd7d363d3",
@@ -10786,7 +11569,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/celeus400.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:47+00:00",
+    "updated_at": "2026-07-17T04:44:56+00:00"
   },
   {
     "id": "337a66cc-633c-5a33-b37d-3eaa8896ec05",
@@ -10811,7 +11596,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am3242fx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:47+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "2eb4de42-33c5-54cc-a9e7-19faff220fd0",
@@ -10836,7 +11623,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am2442fx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:46+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "870464b7-0ec5-5280-87a3-54f086d89f1d",
@@ -10861,7 +11650,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am2421x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:46+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "8b3ac927-d9cb-571a-bfed-1d06a609678f",
@@ -10886,7 +11677,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am1621x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:46+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "8581bf5c-84ea-52a3-8fbe-980b336480ad",
@@ -10911,7 +11704,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am1221x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:46+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "e9ccad45-df99-5730-983d-f3b988fbaa00",
@@ -10936,7 +11731,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am821x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:46+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "b928643c-30eb-52f2-9168-d4d976be777a",
@@ -10961,7 +11758,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am1204fx-rw.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:45+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "844ab977-4e34-5ca6-8dcb-f9eb1150b65a",
@@ -10986,7 +11785,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am1204fx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:45+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "a2bc57ca-c25b-5629-aa2e-7142e395f34f",
@@ -11011,7 +11812,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am105fx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:45+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "6ddc7212-5d27-524d-9226-fa9570223278",
@@ -11036,7 +11839,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am85.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:45+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "b37d0af4-54c4-577a-ac03-8de59e0a083f",
@@ -11061,7 +11866,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am55.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:45+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "9f97b23c-a8c8-5927-af9b-9ba769b8557b",
@@ -11086,7 +11893,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am844d-usb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:44+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "606ff5a4-f632-51bf-9b3e-ea4c718654a5",
@@ -11111,7 +11920,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am844d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:44+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "8978226d-4407-5198-9fdd-272c8f1c1c23",
@@ -11136,7 +11947,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am642d-usb.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:44+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "f9017bc3-8e25-57d5-9a5d-5ed0176f638a",
@@ -11161,7 +11974,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am642dp.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:44+00:00",
+    "updated_at": "2026-07-17T04:44:42+00:00"
   },
   {
     "id": "13f22441-e5b0-53de-9d45-777ba4856b5e",
@@ -11186,7 +12001,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am642d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:44+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "f9c4ab38-ae71-5130-ab78-637c377cd4af",
@@ -11211,7 +12028,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am442d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:43+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "fa90e10a-838e-5c66-8203-04fd17ffc986",
@@ -11236,7 +12055,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am440dp.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:43+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "1d7d2a0a-8f6f-568f-b30d-58fae15db441",
@@ -11261,7 +12082,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am440d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:43+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "17856f66-442e-55c4-a701-0012f92f9013",
@@ -11286,7 +12109,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am440.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:43+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "103d9f5c-cdf9-5dcc-96c0-1111ae3c60d4",
@@ -11311,7 +12136,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am240d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:43+00:00",
+    "updated_at": "2026-07-17T04:44:41+00:00"
   },
   {
     "id": "442e30d4-2939-5845-a694-1c783201f267",
@@ -11336,7 +12163,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am220p.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:42+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "5981e836-1bef-519e-8e8f-c77e3f3ec2d9",
@@ -11361,7 +12190,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/am220.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:42+00:00",
+    "updated_at": "2026-07-17T04:44:40+00:00"
   },
   {
     "id": "032d0c8b-0598-5937-a437-e01d76afc937",
@@ -11386,7 +12217,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/iamp-3020dsp.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:42+00:00",
+    "updated_at": "2026-07-17T04:46:43+00:00"
   },
   {
     "id": "266b76ba-a201-591d-8f14-7e82dd409f67",
@@ -11411,7 +12244,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/iamp-3020.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:42+00:00",
+    "updated_at": "2026-07-17T04:46:42+00:00"
   },
   {
     "id": "f5a20a46-1a8b-5295-8910-05cc887e89e3",
@@ -11436,7 +12271,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/max-500.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:42+00:00",
+    "updated_at": "2026-07-17T04:47:36+00:00"
   },
   {
     "id": "6c1f71bc-f53d-5927-82e5-0033a123233a",
@@ -11461,7 +12298,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-k-12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:41+00:00",
+    "updated_at": "2026-07-17T04:48:21+00:00"
   },
   {
     "id": "5cb00f65-04b4-556b-99e4-f2cc9e9320ee",
@@ -11486,7 +12325,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-1860.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:41+00:00",
+    "updated_at": "2026-07-17T04:48:20+00:00"
   },
   {
     "id": "613347f9-90ff-53f8-a08d-eb8f1950d06c",
@@ -11511,7 +12352,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-1082r.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:41+00:00",
+    "updated_at": "2026-07-17T04:48:20+00:00"
   },
   {
     "id": "301d7ab5-9424-5d2f-a699-89f4d3d0d54e",
@@ -11536,7 +12379,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-1062r.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:41+00:00",
+    "updated_at": "2026-07-17T04:48:19+00:00"
   },
   {
     "id": "cdc71457-8517-5575-a542-b76a4ac76eac",
@@ -11561,7 +12406,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-750rw.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:40+00:00",
+    "updated_at": "2026-07-17T04:48:21+00:00"
   },
   {
     "id": "59b52b0c-b42d-5d76-a6d0-c383bfa1959b",
@@ -11586,7 +12433,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-630rw.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:40+00:00",
+    "updated_at": "2026-07-17T04:48:20+00:00"
   },
   {
     "id": "6c7c607e-751b-5a69-b96a-c836016d6657",
@@ -11611,7 +12460,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-740r.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:40+00:00",
+    "updated_at": "2026-07-17T04:48:21+00:00"
   },
   {
     "id": "ad69195e-77a0-57f3-a31b-9d998a1ae81d",
@@ -11636,7 +12487,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-620r.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:40+00:00",
+    "updated_at": "2026-07-17T04:48:20+00:00"
   },
   {
     "id": "5d550d2d-ffca-5533-99c6-6ca7b6e78b81",
@@ -11661,7 +12514,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/powerpod-410r.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:39+00:00",
+    "updated_at": "2026-07-17T04:48:20+00:00"
   },
   {
     "id": "12c60462-e847-5e94-b0a3-f3f7cffded52",
@@ -11686,7 +12541,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ot2000-100-high-flex-aes-ebu-dmx-cable-pvc-black.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:38+00:00",
+    "updated_at": "2026-07-17T04:47:55+00:00"
   },
   {
     "id": "e6d6c2aa-1b5e-58ca-9e92-da49efd58bc5",
@@ -11711,7 +12568,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/lyp025x-100-2x-2-5mm-parallel-hifi-speaker-cable.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:38+00:00",
+    "updated_at": "2026-07-17T04:47:21+00:00"
   },
   {
     "id": "98babf63-0c6b-5da7-b26b-b21626950df2",
@@ -11736,7 +12595,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/lyp015x-100-2x-1-5mm-parallel-hifi-speaker-cable.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:38+00:00",
+    "updated_at": "2026-07-17T04:47:21+00:00"
   },
   {
     "id": "c674418f-79cf-54d3-b3d2-25ee76429863",
@@ -11761,7 +12622,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/lsc440ys-100-4x-4-0mm-pvc-speaker-cable-black.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:37+00:00",
+    "updated_at": "2026-09-15T06:30:11+00:00"
   },
   {
     "id": "0c2a7317-9866-5a66-be0f-81de52b7b365",
@@ -11786,7 +12649,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/klotz-lsc425ys.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:37+00:00",
+    "updated_at": "2026-09-15T06:29:43+00:00"
   },
   {
     "id": "543749fa-dd23-5a6a-a68a-b9edc4c09354",
@@ -11811,7 +12676,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/day-loa-klotz-ly225s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:37+00:00",
+    "updated_at": "2026-09-15T06:29:16+00:00"
   },
   {
     "id": "0d365eeb-595a-5bad-b7e6-deb9ba0b5999",
@@ -11836,7 +12703,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ly215s-100-2x-1-5mm-pvc-twinax-speaker-cable-black.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:37+00:00",
+    "updated_at": "2026-09-15T06:28:51+00:00"
   },
   {
     "id": "febc1805-7b88-5a02-a191-0d043555c03c",
@@ -11861,7 +12730,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mc2000sw-100-superior-mic-cable-pvc-black.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:37+00:00",
+    "updated_at": "2026-10-01T07:07:09+00:00"
   },
   {
     "id": "c4f7ca60-a8c7-5bea-947a-657330161292",
@@ -11886,7 +12757,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/klotz-my206.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:36+00:00",
+    "updated_at": "2026-09-26T08:57:43+00:00"
   },
   {
     "id": "372883c6-d71e-5269-b94e-3b6a638c41ce",
@@ -11911,7 +12784,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ug-9x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:35+00:00",
+    "updated_at": "2026-07-17T04:49:00+00:00"
   },
   {
     "id": "d26e5d35-8cee-56e1-a157-ec2eed03616a",
@@ -11936,7 +12811,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ur-12d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:35+00:00",
+    "updated_at": "2026-07-17T04:49:01+00:00"
   },
   {
     "id": "62bedbb4-5728-532a-830c-7ac63d83db16",
@@ -11961,7 +12838,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dx-1804.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:35+00:00",
+    "updated_at": "2026-07-17T04:45:54+00:00"
   },
   {
     "id": "80d1d72b-e557-501e-b0c3-f0cd9657d7b0",
@@ -11986,7 +12865,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dx-1304.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:45:54+00:00"
   },
   {
     "id": "27a46141-41bd-5ce1-bd7d-98cff535aab0",
@@ -12011,7 +12892,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/fp-9x.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:46:25+00:00"
   },
   {
     "id": "6ffa3d12-6ba7-566b-91de-ba491ebb477e",
@@ -12036,7 +12919,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rx-1800.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:48:39+00:00"
   },
   {
     "id": "9b68a52f-f5ca-5e9c-bc9c-91a641563431",
@@ -12061,7 +12946,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rx-1500.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:48:39+00:00"
   },
   {
     "id": "20e36fa5-2e5c-559d-b01d-73291b5aece6",
@@ -12086,7 +12973,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rx-1300.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:48:39+00:00"
   },
   {
     "id": "0294f18d-67e3-5c7b-bf6f-3f09cba59874",
@@ -12111,7 +13000,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xls-1502.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:49:13+00:00"
   },
   {
     "id": "3364af34-3a40-5fe6-85fa-bd548c8802e2",
@@ -12136,7 +13027,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xls-9002.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:34+00:00",
+    "updated_at": "2026-07-17T04:49:13+00:00"
   },
   {
     "id": "6a3ee318-10e1-5e94-b070-4ecc451757e3",
@@ -12161,7 +13054,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pro-9200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:33+00:00",
+    "updated_at": "2026-07-17T04:48:22+00:00"
   },
   {
     "id": "a441ec18-842a-5625-838f-f9b2e7950bf2",
@@ -12186,7 +13081,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pro-7200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:33+00:00",
+    "updated_at": "2026-07-17T04:48:22+00:00"
   },
   {
     "id": "2699c75e-0992-57d0-9375-f1f9823ce3b4",
@@ -12211,7 +13108,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p-7200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:33+00:00",
+    "updated_at": "2026-07-17T04:48:03+00:00"
   },
   {
     "id": "75ace01a-ad2f-56d4-91e9-cd8a2143650b",
@@ -12236,7 +13135,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p-3600.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:33+00:00",
+    "updated_at": "2026-07-17T04:48:03+00:00"
   },
   {
     "id": "a3cf2731-7f37-5b1f-a17d-dbfa3361dedd",
@@ -12261,7 +13162,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p-2400.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:33+00:00",
+    "updated_at": "2026-07-17T04:47:56+00:00"
   },
   {
     "id": "857c04c8-bb0b-536a-987b-09b5d36b1089",
@@ -12286,7 +13189,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/p-1200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:32+00:00",
+    "updated_at": "2026-07-17T04:47:56+00:00"
   },
   {
     "id": "94dc8a0a-9884-5c15-b419-17b7b8ca98e5",
@@ -12311,7 +13216,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ma-12.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:32+00:00",
+    "updated_at": "2026-07-17T04:47:35+00:00"
   },
   {
     "id": "10cc792e-cfd9-5e1a-955f-21955488032d",
@@ -12336,7 +13243,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ma-9.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:32+00:00",
+    "updated_at": "2026-07-17T04:47:36+00:00"
   },
   {
     "id": "67d08a34-2f65-5d34-86c2-7998afc1165c",
@@ -12361,7 +13270,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ma-6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:32+00:00",
+    "updated_at": "2026-07-17T04:47:36+00:00"
   },
   {
     "id": "ff748c1f-0d25-513a-91d9-107ea72f2427",
@@ -12386,7 +13297,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ka-350-ub.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:32+00:00",
+    "updated_at": "2026-07-17T04:46:58+00:00"
   },
   {
     "id": "dc8546bd-c983-50b4-bbda-38df142818cb",
@@ -12411,7 +13324,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ka-250-ub.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:32+00:00",
+    "updated_at": "2026-07-17T04:46:58+00:00"
   },
   {
     "id": "a26c9c03-5c50-5243-9331-b421524b4506",
@@ -12436,7 +13351,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-800ii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:31+00:00",
+    "updated_at": "2026-07-17T04:49:23+00:00"
   },
   {
     "id": "a2c4ed77-c155-5c85-8f61-7328fcf6ae7d",
@@ -12461,7 +13378,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-50.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:31+00:00",
+    "updated_at": "2026-07-18T06:55:23+00:00"
   },
   {
     "id": "d20a3de0-00cc-500c-86c7-6f32a38b5d50",
@@ -12486,7 +13405,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/z-1000-ii-xr.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:30+00:00",
+    "updated_at": "2026-07-17T04:49:21+00:00"
   },
   {
     "id": "27f97ae3-b48e-5815-96bc-5388dcefd03a",
@@ -12511,7 +13432,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sl-5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:30+00:00",
+    "updated_at": "2026-07-18T06:55:14+00:00"
   },
   {
     "id": "84622de9-c0bb-55fe-b61b-d18d3ba36ddd",
@@ -12536,7 +13459,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/s-200-silent-snow-machine.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:30+00:00",
+    "updated_at": "2026-07-17T04:48:39+00:00"
   },
   {
     "id": "6324de91-0551-50b8-b9e8-9ed01549d7e9",
@@ -12561,7 +13486,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hzl-5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:30+00:00",
+    "updated_at": "2026-07-20T07:00:54+00:00"
   },
   {
     "id": "8285a199-6790-5fe3-8a60-9e098f3c85ce",
@@ -12586,7 +13513,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hzl-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:29+00:00",
+    "updated_at": "2026-07-20T07:26:43+00:00"
   },
   {
     "id": "b2265c4c-445d-5c83-a9bd-60681b46b820",
@@ -12611,7 +13540,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hz-350-haze-maching.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:29+00:00",
+    "updated_at": "2026-07-21T03:38:25+00:00"
   },
   {
     "id": "afd59a94-0dde-503d-a3fc-21f76f486a1d",
@@ -12636,7 +13567,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hz-500-silent-hazer-on-flight-case.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:29+00:00",
+    "updated_at": "2026-07-17T07:32:47+00:00"
   },
   {
     "id": "34554aa4-b4ce-5223-b2b6-1b5baebde563",
@@ -12661,7 +13594,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hz-400-dmx-haze-machine.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:29+00:00",
+    "updated_at": "2026-10-01T06:27:09+00:00"
   },
   {
     "id": "64416071-c7a0-5ec5-ac23-d41395fc3c4e",
@@ -12686,7 +13621,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/flr-5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:28+00:00",
+    "updated_at": "2026-07-20T01:27:01+00:00"
   },
   {
     "id": "bcf7e6bb-62df-546d-b149-9c51a1fee07b",
@@ -12711,7 +13648,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/flg-5.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:28+00:00",
+    "updated_at": "2026-07-20T01:27:07+00:00"
   },
   {
     "id": "8e386ac6-8290-5e3a-b352-627739ce4e8a",
@@ -12736,7 +13675,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b-200-bcr1-big-bubble.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:28+00:00",
+    "updated_at": "2026-07-20T04:31:20+00:00"
   },
   {
     "id": "ffd0ea2d-cfbe-51ae-8de9-8e79d05ceded",
@@ -12761,7 +13702,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b-100-bubble-machine.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T04:31:28+00:00",
+    "updated_at": "2026-07-20T04:02:51+00:00"
   },
   {
     "id": "41ff870a-bc84-500e-afd8-8587fd3400c1",
@@ -12786,7 +13729,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ms-100bt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T02:02:02+00:00",
+    "updated_at": "2026-07-17T04:47:46+00:00"
   },
   {
     "id": "c1a1e2a9-bcb4-53d8-948f-1753635e99bc",
@@ -12811,7 +13756,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rt-223.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T02:01:59+00:00",
+    "updated_at": "2026-07-17T04:48:38+00:00"
   },
   {
     "id": "f180e15d-f810-53da-8ff5-4121a5dac07c",
@@ -12836,7 +13783,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/q2hd.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T02:01:58+00:00",
+    "updated_at": "2026-07-17T04:48:33+00:00"
   },
   {
     "id": "d652d6e2-27e0-5e79-933c-a200d8ba61db",
@@ -12861,7 +13810,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hs-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T02:01:58+00:00",
+    "updated_at": "2026-07-17T04:46:40+00:00"
   },
   {
     "id": "56e02655-d699-5bd8-8bb0-68d8b7b41907",
@@ -12886,7 +13837,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/iq-6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T02:01:57+00:00",
+    "updated_at": "2026-07-17T04:46:52+00:00"
   },
   {
     "id": "c3411f49-d549-5233-8ec8-a13782d0d0f3",
@@ -12911,7 +13864,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/b2-1-220bx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-25T02:01:54+00:00",
+    "updated_at": "2026-07-17T04:44:46+00:00"
   },
   {
     "id": "440ff755-02e3-5296-b507-b9b371bce2e8",
@@ -12961,7 +13916,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-vt999.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:35+00:00",
+    "updated_at": "2026-07-17T04:44:50+00:00"
   },
   {
     "id": "d1d0b3e4-64ac-5a66-b35f-80c2f14ada44",
@@ -12986,7 +13943,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-vt911.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:34+00:00",
+    "updated_at": "2026-07-17T04:44:50+00:00"
   },
   {
     "id": "44dd04ec-a883-515f-9820-52db22305120",
@@ -13011,7 +13970,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-vamp3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:34+00:00",
+    "updated_at": "2026-07-17T04:44:50+00:00"
   },
   {
     "id": "4225002c-5090-5861-854d-389402c030fc",
@@ -13036,7 +13997,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-vamp2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:34+00:00",
+    "updated_at": "2026-07-17T04:44:50+00:00"
   },
   {
     "id": "df586f50-e265-549e-b73d-1a40631f6bca",
@@ -13061,7 +14024,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-umx490.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:34+00:00",
+    "updated_at": "2026-07-17T04:44:50+00:00"
   },
   {
     "id": "c73f4d09-aea0-5012-a363-250cb74e4f1d",
@@ -13086,7 +14051,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-uma25s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:34+00:00",
+    "updated_at": "2026-07-17T04:44:50+00:00"
   },
   {
     "id": "9dd3e8f2-dde1-5683-a85f-9703af24df49",
@@ -13211,7 +14178,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/behringer-di4000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-04-23T09:33:30+00:00",
+    "updated_at": "2026-07-17T04:44:48+00:00"
   },
   {
     "id": "d5ac50df-376b-5730-baf5-cb7aa53e8a9b",
@@ -13311,7 +14280,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/kd-1550p.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-31T10:28:22+00:00",
+    "updated_at": "2026-07-17T04:46:58+00:00"
   },
   {
     "id": "fe99cbf6-b3cf-5335-bb3c-30a886bb209e",
@@ -13336,7 +14307,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/def220p.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-31T07:48:45+00:00",
+    "updated_at": "2026-07-17T04:45:16+00:00"
   },
   {
     "id": "f0a4fbda-bc6e-5c2f-96b0-77fd05ae3758",
@@ -13361,7 +14334,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dpa360a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-30T08:59:23+00:00",
+    "updated_at": "2026-07-17T04:45:50+00:00"
   },
   {
     "id": "e49c87b5-a00d-50b1-9b34-f64ff3a29c28",
@@ -13386,7 +14361,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/marani-dpa260a.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-30T08:44:09+00:00",
+    "updated_at": "2026-07-17T04:47:36+00:00"
   },
   {
     "id": "692060d1-0cc6-5958-ae8a-78c4d06fa70d",
@@ -13411,7 +14388,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e-602-ii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T08:13:52+00:00",
+    "updated_at": "2026-07-17T04:45:57+00:00"
   },
   {
     "id": "6ff803d7-2016-5ef1-b754-f3a1eefac054",
@@ -13436,7 +14415,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs-215s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:06:05+00:00",
+    "updated_at": "2026-07-17T04:49:16+00:00"
   },
   {
     "id": "b56e7889-f83d-520b-9a91-3315d805f6d4",
@@ -13461,7 +14442,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs-15.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:06:03+00:00",
+    "updated_at": "2026-07-17T04:49:16+00:00"
   },
   {
     "id": "e9f638ff-f24e-5a23-9552-b1f980580b86",
@@ -13486,7 +14469,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs-12.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:06:01+00:00",
+    "updated_at": "2026-07-17T04:49:16+00:00"
   },
   {
     "id": "0f332a38-4ac6-5377-9352-1c85cbba4960",
@@ -13511,7 +14496,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs-115s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:59+00:00",
+    "updated_at": "2026-07-17T04:49:16+00:00"
   },
   {
     "id": "5d3c87a5-88c4-5e8a-ba1f-8b3e5b86cbef",
@@ -13536,7 +14523,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xprs-10.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:57+00:00",
+    "updated_at": "2026-07-17T04:49:16+00:00"
   },
   {
     "id": "f47a8f33-2e11-59db-a583-d44aa65e1c1d",
@@ -13561,7 +14550,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xdj-xz-n.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:55+00:00",
+    "updated_at": "2026-07-17T04:49:13+00:00"
   },
   {
     "id": "a5bbef80-95dd-5d7d-b336-9f37256975a3",
@@ -13586,43 +14577,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xdj-xz.png",
         "sort_order": 0
       }
-    ]
-  },
-  {
-    "id": "67b66b50-1685-5884-9abf-8332e5775eb1",
-    "category_id": "31042f34-c3c9-59e6-820d-8e5518ba453b",
-    "category_name": "Hệ Thống DJ All-in-One",
-    "category_slug": "all-in-one-dj-systems",
-    "name": "MÁY DJ PIONEER DJ XDJ-RX2",
-    "slug": "xdj-rx2",
-    "sku": "XDJ-RX2",
-    "brand": "Pioneer DJ",
-    "description": "Bàn DJ Pioneer DJ XDJ-RX2 All-In-One 2 Kênh chuyên nghiệp kế thừa thiết kế chuẩn club NXS2 với màn hình cảm ứng 7 inch sắc nét, 16 Performance Pads đa màu sắc, Beat FX và Sound Color FX mạnh mẽ. Hỗ trợ chơi nhạc trực tiếp qua 2 cổng USB độc lập không cần máy tính hoặc kết nối Rekordbox DJ, mâm xoay chuẩn xác, độ bền cao. Phù hợp cho biểu diễn sự kiện, tiệc cưới, bar lounge, phòng tập DJ tại Đà Nẵng, Huế và toàn quốc.",
-    "sale_enabled": true,
-    "sale_price": 42500000,
-    "rental_enabled": true,
-    "rental_price": 1000000,
-    "stock_quantity": 2,
-    "is_active": true,
-    "image_url": "/images/products/xdj-rx2.png",
-    "images": [
-      {
-        "id": "img-xdj-rx2-main",
-        "image_url": "/images/products/xdj-rx2.png",
-        "sort_order": 0
-      }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh độc lập",
-      "Màn hình": "7 inch cảm ứng LCD màu sắc nét",
-      "Cổng USB": "2 cổng USB-A phát nhạc & ghi âm, 1 cổng USB-B cắm máy tính",
-      "Performance Pads": "16 pad cao su cảm ứng đa màu sắc",
-      "Hiệu ứng FX": "Sound Color FX (Noise, Filter, Sweep, Dub Echo) & 8 Beat FX",
-      "Phần mềm tương thích": "rekordbox, Serato DJ Pro",
-      "Dải tần số": "20 - 20,000 Hz",
-      "Kích thước": "728.2 mm x 108.4 mm x 443.8 mm",
-      "Trọng lượng": "9.1 kg"
-    }
+    "created_at": "2022-03-24T02:05:53+00:00",
+    "updated_at": "2026-07-17T04:49:13+00:00"
   },
   {
     "id": "ad0f029e-93d7-5a75-a9e3-5aa4be9614ef",
@@ -13633,12 +14590,12 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "xdj-rx3",
     "sku": "XDJ-RX3",
     "brand": "Pioneer DJ",
-    "description": "XDJ-RX3: Thiết bị DJ Đa Năng với Hiệu Năng Vượt Trội Nếu bạn đam mê âm nhạc và muốn trở thành một DJ chuyên nghiệp, thiết bị XDJ-RX3 là sự lựa chọn hoàn hảo cho bạn. Với sự kết hợp tuyệt vời giữa công nghệ và tính năng tiên tiến, XDJ-RX3 mang đến cho bạn một trải nghiệm DJ chất lượng cao mà bạn không thể bỏ qua. Với XDJ-RX3 , bạn không cần phải lo lắng về việc kết nối với máy tính hoặc sử dụng nhiều thiết bị khác nhau. Với màn hình cảm ứng mượt mà và giao diện người dùng thân thiện, bạn có thể dễ dàng kiểm soát set nhạc, tìm kiếm track bài hát và kích hoạt Release FX đầy uy lực.",
+    "description": "XDJ-RX3: Thiết bị DJ Đa Năng với Hiệu Năng Vượt Trội Nếu bạn đam mê âm nhạc và muốn trở thành một DJ chuyên nghiệp, thiết bị XDJ-RX3 là sự lựa chọn hoàn hảo cho bạn. Với sự kết hợp tuyệt vời giữa công nghệ và tính năng tiên tiến, XDJ-RX3 mang đến cho bạn một trải nghiệm DJ chất lượng cao mà bạn không thể bỏ qua. Với XDJ-RX3 , bạn không cần phải lo lắng về việc kết nối với máy tính hoặc sử dụng nhiều thiết bị khác nhau. Với màn hình cảm ứng mượt mà và giao diện người dùng thân thiện, bạn có thể d",
     "sale_enabled": true,
     "sale_price": 61506000,
-    "rental_enabled": true,
-    "rental_price": 1200000,
-    "stock_quantity": 2,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 1,
     "is_active": true,
     "image_url": "/images/products/xdj-rx3.png",
     "images": [
@@ -13648,18 +14605,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh All-in-One độc lập",
-      "Màn hình": "10.1 inch cảm ứng điện dung phân giải cao",
-      "Cổng USB": "2 cổng USB-A, 1 cổng USB-B",
-      "Performance Pads": "16 pad cao su cảm ứng đa màu sắc",
-      "Hiệu ứng FX": "14 Beat FX và 6 Sound Color FX từ DJM-900NXS2 + Release FX",
-      "Jog Wheel": "Color On Jog Display có màn hình LCD trung tâm mâm",
-      "Phần mềm tương thích": "rekordbox, Serato DJ Pro",
-      "Dải tần số": "20 - 20,000 Hz",
-      "Kích thước": "728.1 mm x 118.4 mm x 469.5 mm",
-      "Trọng lượng": "9.3 kg"
-    }
+    "created_at": "2022-03-24T02:05:51+00:00",
+    "updated_at": "2026-07-17T04:49:12+00:00"
   },
   {
     "id": "89db7d2b-925b-5943-948a-0831a5b68a6a",
@@ -13670,12 +14617,12 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "xdj-rr",
     "sku": "XDJ-RR",
     "brand": "Pioneer DJ",
-    "description": "2-channel all-in-one DJ system Bedroom to main room Đưa màn trình diễn của bạn lên một tầm cao mới với XDJ-RR thiết bị ALL-IN-ONE DJ System sử dụng cùng rekordbox. XDJ-RR là thiết bị 2 channel được kế thừa các đặc điểm thiết kế và các tính năng ưu việt từ set up NXS2 chuyên nghiệp và tất cả được tích hợp vào trong 1 thiết bị gọn nhẹ, di động.",
+    "description": "2-channel all-in-one DJ system Bedroom to main room Đưa màn trình diễn của bạn lên một tầm cao mới với XDJ-RR thiết bị ALL-IN-ONE DJ System sử dụng cùng rekordbox. XDJ-RR là thiết bị 2 channel được kế thừa các đặc điểm thiết kế và các tính năng ưu việt từ set up NXS2 chuyên nghiệp và tất cả được tích hợp vào trong 1 thiết bị gọn nhẹ, di động. #### Play your own way XDJ-RR là thiết bị độc lập và bạn có thể chơi nhạc trực tiếp trên XDJ-RR thông qua cổng USB, kết nối Link Export hoặc sử dụng Perfor",
     "sale_enabled": true,
     "sale_price": 32832000,
-    "rental_enabled": true,
-    "rental_price": 800000,
-    "stock_quantity": 2,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 1,
     "is_active": true,
     "image_url": "/images/products/xdj-rr.jpg",
     "images": [
@@ -13685,14 +14632,8 @@ export const MOCK_PRODUCTS: Product[] = [
         "sort_order": 0
       }
     ],
-    "specifications": {
-      "Số kênh": "2 kênh All-in-One",
-      "Màn hình": "7 inch màu hiển thị sóng âm song song",
-      "Cổng USB": "2 cổng USB-A phát nhạc độc lập",
-      "Hiệu ứng FX": "Sound Color FX (Pitch, Filter, Dub Echo, Noise) & Beat FX",
-      "Kích thước": "625 mm x 74.2 mm x 388.5 mm",
-      "Trọng lượng": "5.2 kg"
-    }
+    "created_at": "2022-03-24T02:05:45+00:00",
+    "updated_at": "2026-07-17T04:49:12+00:00"
   },
   {
     "id": "c5608878-db92-5597-aa1a-0708b52e7da2",
@@ -13717,7 +14658,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xdj-700.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:43+00:00",
+    "updated_at": "2026-07-17T04:49:12+00:00"
   },
   {
     "id": "4e5537eb-45eb-5370-abaf-150b6774edf6",
@@ -13742,7 +14685,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xdj-1000mk2.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:41+00:00",
+    "updated_at": "2026-07-17T04:49:12+00:00"
   },
   {
     "id": "be289c16-38f6-5977-8226-a5e62e903f46",
@@ -13767,7 +14712,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vong-tay.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:36+00:00",
+    "updated_at": "2026-08-19T07:16:43+00:00"
   },
   {
     "id": "203748cb-a163-5289-955d-e0123fee889f",
@@ -13792,7 +14739,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vm-80.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:36+00:00",
+    "updated_at": "2026-07-17T04:49:06+00:00"
   },
   {
     "id": "451123ce-47ec-5cba-98cd-9993b829bfa1",
@@ -13817,7 +14766,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vm-70.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:33+00:00",
+    "updated_at": "2026-07-17T04:49:05+00:00"
   },
   {
     "id": "c60fa7cf-15f2-55cf-ba67-a47d2d5e3181",
@@ -13842,7 +14793,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/vm-50.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:28+00:00",
+    "updated_at": "2026-07-17T04:49:05+00:00"
   },
   {
     "id": "2a75d92d-6400-5d07-be8f-a2177f196c53",
@@ -13867,7 +14820,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/toraiz-squid.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:25+00:00",
+    "updated_at": "2026-07-17T04:48:59+00:00"
   },
   {
     "id": "2156ad30-ba7c-5380-aa11-2b3e5a6d2c0a",
@@ -13892,7 +14847,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/toraiz-sp-16.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:23+00:00",
+    "updated_at": "2026-07-17T04:48:59+00:00"
   },
   {
     "id": "4d154dff-e59f-52fc-ace5-73e51a22d0e2",
@@ -13917,7 +14874,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/toraiz-as-1.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:20+00:00",
+    "updated_at": "2026-07-17T04:48:58+00:00"
   },
   {
     "id": "fb0bff6d-b8b0-5a33-86e2-734e07ab7b6f",
@@ -13942,7 +14901,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rmx-500.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:13+00:00",
+    "updated_at": "2026-07-17T04:48:37+00:00"
   },
   {
     "id": "3ecb53d1-c06e-5738-80b7-f9c1115c7cd2",
@@ -13967,7 +14928,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rmx-1000.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:10+00:00",
+    "updated_at": "2026-07-17T04:48:37+00:00"
   },
   {
     "id": "d07c44bb-6ae6-5221-b122-9d8be2a11651",
@@ -13992,7 +14955,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rm-05.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:08+00:00",
+    "updated_at": "2026-07-17T04:48:37+00:00"
   },
   {
     "id": "5381984e-d28c-51ef-a113-c40310f6bd56",
@@ -14017,7 +14982,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rekordbox.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:06+00:00",
+    "updated_at": "2026-07-17T04:48:35+00:00"
   },
   {
     "id": "90bd1b1a-7485-5107-89c8-36848820aaf6",
@@ -14042,7 +15009,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rb-vs1-k-time-code-rekordbox.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:04+00:00",
+    "updated_at": "2026-07-17T04:48:35+00:00"
   },
   {
     "id": "45fe0e19-4fcd-53fd-b10a-49ca9676fdb3",
@@ -14067,7 +15036,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/rb-dmx1.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:02+00:00",
+    "updated_at": "2026-07-17T04:48:34+00:00"
   },
   {
     "id": "4a4f5bee-dd27-5768-91ac-7c29ccafcfcd",
@@ -14092,7 +15063,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pro-dj-link-bridge.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:05:00+00:00",
+    "updated_at": "2026-07-17T04:48:22+00:00"
   },
   {
     "id": "e861a43d-9cab-596e-8a1c-56e4d91933f9",
@@ -14117,7 +15090,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pn-x10.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:59+00:00",
+    "updated_at": "2026-07-17T04:48:17+00:00"
   },
   {
     "id": "f45f5eae-1001-53b1-b832-ceb40e49faef",
@@ -14142,7 +15117,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/plx-500.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:58+00:00",
+    "updated_at": "2026-07-17T04:48:16+00:00"
   },
   {
     "id": "f6828363-5d65-58d5-9ee7-1de5c90538b4",
@@ -14167,7 +15144,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/plx-1000.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:56+00:00",
+    "updated_at": "2026-07-17T04:48:16+00:00"
   },
   {
     "id": "cc0581fa-ee2c-5e0b-8409-1d2b080068d7",
@@ -14192,7 +15171,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/pc-x10.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:55+00:00",
+    "updated_at": "2026-07-17T04:48:08+00:00"
   },
   {
     "id": "ba3852ba-31ec-5cfa-b95b-0468fcd72681",
@@ -14217,7 +15198,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/interface-2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:53+00:00",
+    "updated_at": "2026-07-17T04:46:47+00:00"
   },
   {
     "id": "c146e400-73ea-5e96-b150-aa427cadec1d",
@@ -14242,7 +15225,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-x7.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:51+00:00",
+    "updated_at": "2026-07-17T04:46:38+00:00"
   },
   {
     "id": "39218799-e4fa-5cfc-ad34-0cfeaec9c788",
@@ -14267,7 +15252,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-x5bt.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:49+00:00",
+    "updated_at": "2026-07-17T04:46:38+00:00"
   },
   {
     "id": "d3ae13b7-441c-55b9-a814-72f494af45e0",
@@ -14292,7 +15279,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-x5.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:47+00:00",
+    "updated_at": "2026-07-17T04:46:38+00:00"
   },
   {
     "id": "3964c5e0-90aa-595b-8e00-2d9ab54f2ec9",
@@ -14303,7 +15292,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "hdj-x10",
     "sku": "HDJ-X10",
     "brand": "Pioneer DJ",
-    "description": "#### Nhờ sở hữu các driver HD 50mm hoàn toàn mới, headphone HDJ-X10 là một trong những headphone DJ đầu tiên trên thế giới có khả năng tái tạo một âm thanh chất lượng cao với tần số dao động từ 5Hz cho đến 40kHz. Đặc biệt, khi được kết nối với set-up TOUR1 đỉnh cao hoặc set-up NXS2, bạn có thể được trải nghiệm một chất âm 96kHz/24-bit chất lượng rất cao và vô cùng rõ ràng, tách bạch. Và hơn thế nữa, earpad và headband cua HDJ-X10 có khả năng chống mồ hôi và bụi bặm nhờ vào một lớp nano coating ",
+    "description": "#### Nhờ sở hữu các driver HD 50mm hoàn toàn mới, headphone HDJ-X10 là một trong những headphone DJ đầu tiên trên thế giới có khả năng tái tạo một âm thanh chất lượng cao với tần số dao động từ 5Hz cho đến 40kHz. 🎯Đặc biệt, khi được kết nối với set-up TOUR1 đỉnh cao hoặc set-up NXS2, bạn có thể được trải nghiệm một chất âm 96kHz/24-bit chất lượng rất cao và vô cùng rõ ràng, tách bạch. Và hơn thế nữa, earpad và headband cua HDJ-X10 có khả năng chống mồ hôi và bụi bặm nhờ vào một lớp nano coating ",
     "sale_enabled": true,
     "sale_price": 10110960,
     "rental_enabled": false,
@@ -14317,7 +15306,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-x10.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:41+00:00",
+    "updated_at": "2026-07-17T04:46:37+00:00"
   },
   {
     "id": "e4f43222-bc81-528d-bedc-ccfc781d7f60",
@@ -14342,7 +15333,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-s7.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:40+00:00",
+    "updated_at": "2026-07-17T04:46:37+00:00"
   },
   {
     "id": "0a23e2f2-b666-5a06-a4af-e45b4a3c4f2e",
@@ -14367,7 +15360,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hdj-cue1.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:38+00:00",
+    "updated_at": "2026-07-17T04:46:36+00:00"
   },
   {
     "id": "71f01e48-2fa5-537e-9d14-3ee8544c12bf",
@@ -14392,7 +15387,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hcep0501.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:36+00:00",
+    "updated_at": "2026-07-17T04:46:35+00:00"
   },
   {
     "id": "eeb62e61-b699-5d7c-9f7a-a54d26a88436",
@@ -14417,7 +15414,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hccp08.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:35+00:00",
+    "updated_at": "2026-07-17T04:46:35+00:00"
   },
   {
     "id": "75b9ef90-e525-5573-adbf-721aa5cc8779",
@@ -14442,7 +15441,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dm-50d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:35+00:00",
+    "updated_at": "2026-07-17T04:45:46+00:00"
   },
   {
     "id": "642c4a3f-287f-5d55-be67-057ba8afa04c",
@@ -14467,7 +15468,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dm-40bt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:30+00:00",
+    "updated_at": "2026-07-17T04:45:44+00:00"
   },
   {
     "id": "c35f1924-467f-5935-bb89-e8ed67e291e2",
@@ -14492,7 +15495,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dm-40.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:28+00:00",
+    "updated_at": "2026-07-17T04:45:42+00:00"
   },
   {
     "id": "ab76631f-2f4d-5863-ba74-81103e038ef4",
@@ -14517,7 +15522,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djs-1000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:26+00:00",
+    "updated_at": "2026-07-17T04:45:23+00:00"
   },
   {
     "id": "8e125e2d-8f2a-5d7a-ba47-db2727a9a616",
@@ -14542,7 +15549,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-v10.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:25+00:00",
+    "updated_at": "2026-07-17T04:45:22+00:00"
   },
   {
     "id": "9789557f-b357-5b26-8824-a701b8bb4174",
@@ -14567,7 +15576,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-tour-1.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:22+00:00",
+    "updated_at": "2026-07-17T04:45:22+00:00"
   },
   {
     "id": "982980e5-0ebc-5387-8f93-4ee202c39d78",
@@ -14592,7 +15603,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-s9.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:20+00:00",
+    "updated_at": "2026-07-17T04:45:21+00:00"
   },
   {
     "id": "dfda0b0d-7437-5fd5-ae72-fa32c9adceef",
@@ -14617,7 +15630,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-s7.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:18+00:00",
+    "updated_at": "2026-07-17T04:45:21+00:00"
   },
   {
     "id": "262a87fc-36c2-5028-b5d0-817a8700b1e7",
@@ -14642,7 +15657,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-s3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:15+00:00",
+    "updated_at": "2026-07-17T04:45:20+00:00"
   },
   {
     "id": "010ac4a6-1e4e-5d63-901c-4a402d7be1fe",
@@ -14667,7 +15684,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-s11.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:13+00:00",
+    "updated_at": "2026-07-17T04:45:20+00:00"
   },
   {
     "id": "74a4693b-d2ab-53ae-8c89-8ebfe0a8077d",
@@ -14692,7 +15711,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-rec.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:10+00:00",
+    "updated_at": "2026-07-17T04:45:20+00:00"
   },
   {
     "id": "f787bfac-4647-58ab-a265-8cb8710edb5a",
@@ -14717,7 +15738,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-900nxs2-w.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:09+00:00",
+    "updated_at": "2026-07-17T04:45:19+00:00"
   },
   {
     "id": "7a57a28f-77b1-5f03-8cec-90da2dc2eaee",
@@ -14742,7 +15765,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-900-nxs2.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:05+00:00",
+    "updated_at": "2026-07-17T04:45:19+00:00"
   },
   {
     "id": "1d44a459-7c21-503b-bb31-c5cd3c48b0eb",
@@ -14767,7 +15792,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-750mk2.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:03+00:00",
+    "updated_at": "2026-07-17T04:45:19+00:00"
   },
   {
     "id": "897afd44-9c67-5756-ae0f-639189df08f7",
@@ -14792,7 +15819,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-450.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:04:01+00:00",
+    "updated_at": "2026-07-17T04:45:18+00:00"
   },
   {
     "id": "7cc38ae7-19be-52b5-9376-fd6c5a254d43",
@@ -14817,7 +15846,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djm-350.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:59+00:00",
+    "updated_at": "2026-07-17T04:45:18+00:00"
   },
   {
     "id": "620bd64b-2030-5f32-b431-c17b0bb2755f",
@@ -14842,7 +15873,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djc-wecai.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:53+00:00",
+    "updated_at": "2026-07-17T04:45:17+00:00"
   },
   {
     "id": "d8a2b2d3-f1ea-5ec8-bc55-d47bf35a2c55",
@@ -14867,7 +15900,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/djc-sts1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:52+00:00",
+    "updated_at": "2026-07-17T04:45:17+00:00"
   },
   {
     "id": "194773d8-29c2-5f0d-a183-08c2b21fb78c",
@@ -14892,7 +15927,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-xp2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:51+00:00",
+    "updated_at": "2026-07-17T04:45:15+00:00"
   },
   {
     "id": "af876064-c12a-53ea-9c90-6de5b9d92ae2",
@@ -14917,7 +15954,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-xp1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:49+00:00",
+    "updated_at": "2026-07-17T04:45:15+00:00"
   },
   {
     "id": "51a4abef-5602-5d40-8451-2b1bed6504a0",
@@ -14942,7 +15981,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-wego-3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:47+00:00",
+    "updated_at": "2026-07-17T04:45:14+00:00"
   },
   {
     "id": "0d7f84f4-c5e9-51fd-9a88-b118e5287a9e",
@@ -14967,7 +16008,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-wego.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:47+00:00",
+    "updated_at": "2026-07-17T04:45:14+00:00"
   },
   {
     "id": "59258fcb-0d3d-57f1-b486-cc1468815671",
@@ -14992,7 +16035,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-sp1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:41+00:00",
+    "updated_at": "2026-07-17T04:45:13+00:00"
   },
   {
     "id": "00b05325-fef5-51e4-95dd-bb6985112854",
@@ -15003,7 +16048,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "ddj-sb3",
     "sku": "DDJ-SB3",
     "brand": "Pioneer DJ",
-    "description": "#### DDJ-SB3 là phiên bản nâng cấp của DDJ-SB2, một trong những controller nổi tiếng nhất của hãng Pioneer DJ nhờ vào các tính năng chuyên nghiệp và độ linh động dễ dàng di chuyển của nó. Các điểm nổi bật: Được thiết kế dành cho phần mềm Serato DJ Lite. Các nút CUE/PLAY/SYNC/SHIFT riêng biệt 16 PAD dùng cho hot cue, loop,… Tính năng PAD SCRATCH và FX FADE hoàn toàn mới. Không cần phải cài thêm driver trên máy tính để có thể sử dụng #### Main Features Compatible DJ Software Unlocks Ser",
+    "description": "#### DDJ-SB3 là phiên bản nâng cấp của DDJ-SB2, một trong những controller nổi tiếng nhất của hãng Pioneer DJ nhờ vào các tính năng chuyên nghiệp và độ linh động dễ dàng di chuyển của nó. ‼️ Các điểm nổi bật: 🔥 Được thiết kế dành cho phần mềm Serato DJ Lite. 🔥 Các nút CUE/PLAY/SYNC/SHIFT riêng biệt 🔥 16 PAD dùng cho hot cue, loop,… 🔥Tính năng PAD SCRATCH và FX FADE hoàn toàn mới. 🔥Không cần phải cài thêm driver trên máy tính để có thể sử dụng #### Main Features Compatible DJ Software Unlocks Ser",
     "sale_enabled": true,
     "sale_price": 8559000,
     "rental_enabled": false,
@@ -15017,7 +16062,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-sb3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:35+00:00",
+    "updated_at": "2026-07-17T04:45:13+00:00"
   },
   {
     "id": "1633aa08-7f77-5d7f-8904-bc33d54c4a22",
@@ -15042,7 +16089,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-rz.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:29+00:00",
+    "updated_at": "2026-07-17T04:45:13+00:00"
   },
   {
     "id": "c8c8d83d-aa8f-58a3-917f-a8a16336d8d1",
@@ -15067,7 +16116,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-flx6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:19+00:00",
+    "updated_at": "2026-07-17T04:45:11+00:00"
   },
   {
     "id": "f9e26b8d-1ee7-527a-9347-534ee0fa9c53",
@@ -15078,7 +16129,7 @@ export const MOCK_PRODUCTS: Product[] = [
     "slug": "ddj-ergo",
     "sku": "DDJ-ERGO V",
     "brand": "Pioneer DJ",
-    "description": "#### DDJ-ERGO (archived) DJ controller for Virtual DJ DDJ-ERGO mang đến sự đơn giản trong cả thiết lập và hiệu suất mà không ảnh hưởng đến chất lượng hoặc tính năng âm thanh. Kích thước di động và kiểu dáng sắc nét, được kết nối và cấp nguồn trực tiếp từ laptop của bạn. #### Main Features Software System Requirements Windows Windows XP (SP3)/Vista/7 Intel Pentium 4 or AMD Athlon XP, 512 MB RAM or more Mac OS X 10.5/10.6/10.7 Intel processor platform 1024 MB RAM or more 50 MB or more free disk sp",
+    "description": "#### 𝐃𝐃𝐉-𝐄𝐑𝐆𝐎 (𝐚𝐫𝐜𝐡𝐢𝐯𝐞𝐝) 𝐃𝐉 𝐜𝐨𝐧𝐭𝐫𝐨𝐥𝐥𝐞𝐫 𝐟𝐨𝐫 𝐕𝐢𝐫𝐭𝐮𝐚𝐥 𝐃𝐉 DDJ-ERGO mang đến sự đơn giản trong cả thiết lập và hiệu suất mà không ảnh hưởng đến chất lượng hoặc tính năng âm thanh. Kích thước di động và kiểu dáng sắc nét, được kết nối và cấp nguồn trực tiếp từ laptop của bạn. #### Main Features Software System Requirements Windows Windows XP (SP3)/Vista/7 Intel Pentium 4 or AMD Athlon XP, 512 MB RAM or more Mac OS X 10.5/10.6/10.7 Intel processor platform 1024 MB RAM or more 50 MB or more free disk sp",
     "sale_enabled": true,
     "sale_price": 14883000,
     "rental_enabled": false,
@@ -15092,7 +16143,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-ergo.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:16+00:00",
+    "updated_at": "2026-07-17T04:45:11+00:00"
   },
   {
     "id": "0830216b-ddb5-5533-bfed-d950edeb37d5",
@@ -15117,7 +16170,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:04+00:00",
+    "updated_at": "2026-07-17T04:45:10+00:00"
   },
   {
     "id": "0f04d0b3-35a1-5cf9-b41a-5cdc7489b33e",
@@ -15142,7 +16197,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-1000-srt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:02+00:00",
+    "updated_at": "2026-07-17T04:45:10+00:00"
   },
   {
     "id": "70e359bc-d126-50ab-9710-445a0e7c2e78",
@@ -15167,7 +16224,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ddj-1000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:03:00+00:00",
+    "updated_at": "2026-07-17T04:45:09+00:00"
   },
   {
     "id": "8988dea5-c055-5e48-bb9a-eff452f0b338",
@@ -15192,7 +16251,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/day-deo-co.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:58+00:00",
+    "updated_at": "2026-07-17T04:45:09+00:00"
   },
   {
     "id": "fe1707d2-fb7e-5728-a751-951efd308ad6",
@@ -15217,7 +16278,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/das-xlr030.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:57+00:00",
+    "updated_at": "2026-07-17T04:45:04+00:00"
   },
   {
     "id": "8b4dbcf8-0cf4-55ec-8fa8-d27db569f35f",
@@ -15242,7 +16305,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/das-rca020.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:56+00:00",
+    "updated_at": "2026-07-17T04:45:04+00:00"
   },
   {
     "id": "ef453a7c-d6d6-505d-b08e-86aac6a0988d",
@@ -15267,7 +16332,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/das-dgc020.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:55+00:00",
+    "updated_at": "2026-07-17T04:45:04+00:00"
   },
   {
     "id": "e3801584-39ad-509e-9278-cf9c3e1590e9",
@@ -15292,7 +16359,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cdj-tour-1.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:54+00:00",
+    "updated_at": "2026-07-17T04:44:56+00:00"
   },
   {
     "id": "dd02525e-5e44-5382-bdf3-f3afa04ad1b8",
@@ -15317,7 +16386,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cdj-350.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:48+00:00",
+    "updated_at": "2026-07-17T04:44:55+00:00"
   },
   {
     "id": "0e8be0cc-73a1-5283-996b-9005fd72b08e",
@@ -15342,7 +16413,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cdj-3000.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:43+00:00",
+    "updated_at": "2026-07-17T04:44:55+00:00"
   },
   {
     "id": "9e37b3b5-916f-5a5e-b350-ea034c51c4e1",
@@ -15367,7 +16440,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cdj-2000-nxs2.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-24T02:02:41+00:00",
+    "updated_at": "2026-07-17T04:44:55+00:00"
   },
   {
     "id": "991517c2-722c-57f6-983b-ee65d7dc72de",
@@ -15392,7 +16467,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/allen-heath-zed-10fx.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-22T09:07:38+00:00",
+    "updated_at": "2026-07-17T06:50:55+00:00"
   },
   {
     "id": "ba2713d7-457f-59a3-b207-07eb5e9415ed",
@@ -15417,7 +16494,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-paudio-sn8-250cx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:53+00:00",
+    "updated_at": "2026-07-17T04:47:18+00:00"
   },
   {
     "id": "a84cb11f-fc16-5306-bc89-4255b7d5ef79",
@@ -15442,7 +16521,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-sn15-500cx.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:52+00:00",
+    "updated_at": "2026-07-17T04:47:17+00:00"
   },
   {
     "id": "28802e27-36ce-5612-87e7-ce58c6fe9597",
@@ -15467,7 +16548,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-p180-2241.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:49+00:00",
+    "updated_at": "2026-07-17T04:47:16+00:00"
   },
   {
     "id": "827413d0-935c-5338-8362-2b3445e41e75",
@@ -15492,7 +16575,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-p150-2226.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:47+00:00",
+    "updated_at": "2026-07-17T04:47:16+00:00"
   },
   {
     "id": "91c334d4-0146-529a-98bf-f41696c7a06c",
@@ -15517,7 +16602,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-p12n.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:46+00:00",
+    "updated_at": "2026-07-17T04:47:15+00:00"
   },
   {
     "id": "429d67e8-ff57-5f68-9770-8a69d1098ad6",
@@ -15542,7 +16629,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-gst151200.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:43+00:00",
+    "updated_at": "2026-07-17T04:47:14+00:00"
   },
   {
     "id": "0c987396-ec33-53b1-92c9-428dd49e9063",
@@ -15567,7 +16656,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-gm18-100f.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:40+00:00",
+    "updated_at": "2026-07-17T04:47:14+00:00"
   },
   {
     "id": "21ede0b7-6775-5a7f-b254-c048f9f0030f",
@@ -15592,7 +16683,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-gm15-100n.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:37+00:00",
+    "updated_at": "2026-07-17T04:47:14+00:00"
   },
   {
     "id": "23d5ac56-68cc-5223-8508-3617b30e6cc6",
@@ -15617,7 +16710,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-gm15-100f.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:37+00:00",
+    "updated_at": "2026-07-17T04:47:13+00:00"
   },
   {
     "id": "e7aea44b-adee-5514-8424-e415283bbbd1",
@@ -15642,7 +16737,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-gm12-100n.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:35+00:00",
+    "updated_at": "2026-07-17T04:47:13+00:00"
   },
   {
     "id": "cf998eb0-d0db-5992-a18e-893a4f1201f1",
@@ -15667,7 +16764,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-gm12-100f.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:34+00:00",
+    "updated_at": "2026-07-17T04:47:13+00:00"
   },
   {
     "id": "e39659f8-00af-5e74-ad29-d0a2c2ab15aa",
@@ -15692,7 +16791,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-em18-lb600.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:34+00:00",
+    "updated_at": "2026-07-17T04:47:13+00:00"
   },
   {
     "id": "c58a9aff-e47d-5b5e-ae06-844b8d63564a",
@@ -15717,7 +16818,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-e15-300s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:28+00:00",
+    "updated_at": "2026-07-17T04:47:11+00:00"
   },
   {
     "id": "96a9556d-b57a-5df5-b51b-e653db225a0a",
@@ -15742,7 +16845,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-15bm-500b.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:24+00:00",
+    "updated_at": "2026-07-17T04:47:10+00:00"
   },
   {
     "id": "fa03557c-88d0-507e-96dd-99d12a001fe0",
@@ -15767,7 +16872,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-15bm-300b.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:23+00:00",
+    "updated_at": "2026-07-17T04:47:10+00:00"
   },
   {
     "id": "c37c846e-663b-5c47-a736-8c41fe633815",
@@ -15792,7 +16899,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-p-audio-12bm-300b.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:23+00:00",
+    "updated_at": "2026-07-17T04:47:10+00:00"
   },
   {
     "id": "f3a1000f-1cc5-59e6-abf4-56336f00c518",
@@ -15817,7 +16926,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-8fg51.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:22+00:00",
+    "updated_at": "2026-10-01T02:21:52+00:00"
   },
   {
     "id": "8516faab-0865-5338-8186-9e1fe9016cd6",
@@ -15842,7 +16953,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-18tbx100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:21+00:00",
+    "updated_at": "2026-09-23T02:42:52+00:00"
   },
   {
     "id": "69ae201e-73ce-5be7-b6b9-d7b64bdc5350",
@@ -15867,7 +16980,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-18rbx100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:20+00:00",
+    "updated_at": "2026-09-23T02:42:51+00:00"
   },
   {
     "id": "2c3a7d35-c581-554d-93a0-0ef3d45a716b",
@@ -15892,7 +17007,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-18pzb100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:19+00:00",
+    "updated_at": "2026-09-23T02:42:50+00:00"
   },
   {
     "id": "15e315df-9809-5065-827d-d379ec078f31",
@@ -15917,7 +17034,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-b-c-speakers-5-tac-18ps100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:17+00:00",
+    "updated_at": "2026-09-23T02:43:10+00:00"
   },
   {
     "id": "62ab532f-5010-50a9-bf60-3fa775ff06ba",
@@ -15942,7 +17061,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-sub-roi-b-c-speakers-5-tac-18nbx100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:15+00:00",
+    "updated_at": "2026-09-23T02:43:09+00:00"
   },
   {
     "id": "0bef49dd-b818-5c1d-b20a-5441e842f871",
@@ -15967,7 +17088,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15rbx100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:14+00:00",
+    "updated_at": "2026-09-23T03:14:20+00:00"
   },
   {
     "id": "a3099d77-eda3-5b92-a06f-0b737c172f38",
@@ -15992,7 +17115,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15pzb100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:13+00:00",
+    "updated_at": "2026-09-23T09:55:32+00:00"
   },
   {
     "id": "7d752a3e-2f7f-5c84-85c5-3fe12ebcf67f",
@@ -16017,7 +17142,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15ps76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:12+00:00",
+    "updated_at": "2026-09-23T02:42:45+00:00"
   },
   {
     "id": "aa0c0725-1646-5a4a-8c61-7713a4744858",
@@ -16042,7 +17169,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15ps100.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:11+00:00",
+    "updated_at": "2026-09-23T02:42:44+00:00"
   },
   {
     "id": "178b60ec-7c74-5446-8fca-a0f69368f2fe",
@@ -16067,7 +17196,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15plb76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:10+00:00",
+    "updated_at": "2026-09-23T02:42:44+00:00"
   },
   {
     "id": "a4f369ef-c9ed-500c-8c10-4086dabaf185",
@@ -16092,7 +17223,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15ndl88.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:09+00:00",
+    "updated_at": "2026-09-23T02:42:42+00:00"
   },
   {
     "id": "6c569d35-53d3-5e62-b9fa-29f5f9f6c268",
@@ -16117,7 +17250,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15ndl76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:08+00:00",
+    "updated_at": "2026-09-23T02:42:42+00:00"
   },
   {
     "id": "6564139f-d713-580a-8a6f-a0b6e14887a8",
@@ -16142,7 +17277,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-15cl76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:07+00:00",
+    "updated_at": "2026-09-23T02:42:39+00:00"
   },
   {
     "id": "9362ed32-55d3-593f-af80-4fa8e18ca073",
@@ -16167,7 +17304,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-12plb76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:06+00:00",
+    "updated_at": "2026-09-23T02:42:34+00:00"
   },
   {
     "id": "8a8f8a44-9e5d-5e90-be3f-da772ed97789",
@@ -16192,7 +17331,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-12mh32.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:06+00:00",
+    "updated_at": "2026-09-23T02:42:29+00:00"
   },
   {
     "id": "3b5cb889-f3d4-5aa5-a601-5cd9435b601f",
@@ -16217,7 +17358,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-12fw76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:05+00:00",
+    "updated_at": "2026-09-23T02:42:28+00:00"
   },
   {
     "id": "451a47ad-c156-5b95-a47c-c510944146f7",
@@ -16242,7 +17385,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-12cl76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:04+00:00",
+    "updated_at": "2026-09-23T02:42:25+00:00"
   },
   {
     "id": "50d95a4f-a300-567e-834f-37a69affcfd4",
@@ -16267,7 +17412,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-10fw64.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:03+00:00",
+    "updated_at": "2026-09-23T02:42:17+00:00"
   },
   {
     "id": "d8b5bc47-29b0-5fe2-b8a7-9c3ea3f5a5b7",
@@ -16292,7 +17439,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speaker-8mdn51.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:01+00:00",
+    "updated_at": "2026-09-23T02:42:14+00:00"
   },
   {
     "id": "510f6b6d-1fce-56c0-90c5-695f93410d9b",
@@ -16317,7 +17466,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-bc-speakers-15fw76.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:40:00+00:00",
+    "updated_at": "2026-09-23T02:41:55+00:00"
   },
   {
     "id": "475c936b-4912-55b3-8f4f-0cf8cb2864df",
@@ -16342,7 +17493,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-bc-speakers-12ndl6.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:59+00:00",
+    "updated_at": "2026-09-23T03:37:22+00:00"
   },
   {
     "id": "ef539cd7-694e-5526-b256-d55ec0ac686e",
@@ -16367,7 +17520,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hong-ken-loa-treble-b-c-speakers-me90.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:58+00:00",
+    "updated_at": "2026-09-23T02:41:46+00:00"
   },
   {
     "id": "05a72076-0aa0-526f-b94a-8d92f37cb9cf",
@@ -16392,7 +17547,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hong-loa-treble-b-c-speakers-me45.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:58+00:00",
+    "updated_at": "2026-09-23T02:41:54+00:00"
   },
   {
     "id": "e4f35715-e0d8-5526-b512-d3280dd81d7c",
@@ -16417,7 +17574,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hong-loa-treble-b-c-speakers-me20.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:57+00:00",
+    "updated_at": "2026-09-23T02:41:53+00:00"
   },
   {
     "id": "391b6b60-d52f-5cfe-af9b-78cbdc5f1375",
@@ -16442,7 +17601,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/diaphragm-dp450.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:53+00:00",
+    "updated_at": "2026-07-17T04:45:16+00:00"
   },
   {
     "id": "95e755f7-6ef2-5747-9ee9-ffe919acb6c5",
@@ -16467,7 +17628,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/cu-treble-p-audio-sd-75bf.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:51+00:00",
+    "updated_at": "2026-07-17T04:45:01+00:00"
   },
   {
     "id": "a2bf2531-119b-520f-b930-141a5e00cdd2",
@@ -16492,7 +17655,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/bm-d460.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:40+00:00",
+    "updated_at": "2026-07-17T04:44:51+00:00"
   },
   {
     "id": "182da50c-b22c-5169-85d1-7eccc1067ed2",
@@ -16517,7 +17682,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/loa-roi-bc-speakers-8fw51.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-03-17T08:39:36+00:00",
+    "updated_at": "2026-09-23T02:43:05+00:00"
   },
   {
     "id": "82f59192-af02-58cd-b293-fbc9b67adf02",
@@ -16542,7 +17709,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-thu-am-sennheiser-mk4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:10+00:00",
+    "updated_at": "2026-09-18T03:44:25+00:00"
   },
   {
     "id": "df4f9220-81cc-5473-bc2b-a2c8481d884e",
@@ -16567,7 +17736,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ga-3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:10+00:00",
+    "updated_at": "2026-07-17T04:46:28+00:00"
   },
   {
     "id": "c24b3529-cb4e-5027-82cb-715964f185e9",
@@ -16592,7 +17763,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-micro-sennheiser-mmd-845-1bk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:10+00:00",
+    "updated_at": "2026-09-03T07:18:03+00:00"
   },
   {
     "id": "cbc92dde-5fd0-5a7b-8bbc-fafd935ee224",
@@ -16617,7 +17790,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-micro-sennheiser-mmd-835-1bk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:10+00:00",
+    "updated_at": "2026-09-03T07:17:45+00:00"
   },
   {
     "id": "fe36081e-f78f-50f9-beb7-e95de8a0c0aa",
@@ -16642,7 +17817,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ga-4.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:09+00:00",
+    "updated_at": "2026-07-17T04:46:28+00:00"
   },
   {
     "id": "ce0125e3-7edc-5a66-88e9-700c2c7fc5a0",
@@ -16667,7 +17844,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/me-3-ii.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:09+00:00",
+    "updated_at": "2026-07-17T04:47:39+00:00"
   },
   {
     "id": "4b5f64c8-7ecd-5190-9a16-8f8647542428",
@@ -16692,7 +17871,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d1-845s-nh-nt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:08+00:00",
+    "updated_at": "2026-07-17T04:46:24+00:00"
   },
   {
     "id": "aa4831b6-1e6a-5c0f-9a77-c663c827e60b",
@@ -16717,7 +17898,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-d1-me2-nh-nt.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:08+00:00",
+    "updated_at": "2026-07-17T04:46:24+00:00"
   },
   {
     "id": "f58d02dd-c1b6-5d86-8f35-4b3943277ee7",
@@ -16742,7 +17925,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-e965.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-10-02T03:08:23+00:00"
   },
   {
     "id": "e28947d7-cc22-5b4c-a4c4-719cbe579096",
@@ -16767,7 +17952,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-e945.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-09-03T07:10:49+00:00"
   },
   {
     "id": "3b7e5f5e-7e7e-5a5c-a41f-4726bf76f377",
@@ -16792,7 +17979,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-e935.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-10-02T03:10:42+00:00"
   },
   {
     "id": "a38d8a8b-f24d-55e7-9555-4850ca3079c7",
@@ -16817,7 +18006,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e914.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-07-17T04:46:02+00:00"
   },
   {
     "id": "56591c76-64d3-5ed3-a20e-1929faae6f61",
@@ -16842,7 +18033,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e912-sbk.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-07-17T04:46:02+00:00"
   },
   {
     "id": "8a3438d1-8f8a-5d72-86be-1f79610b0206",
@@ -16867,7 +18060,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e908-d.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-07-17T04:46:01+00:00"
   },
   {
     "id": "baec468c-ab6d-527b-8d40-e29013f1fa45",
@@ -16892,7 +18087,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e908-bew.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:07+00:00",
+    "updated_at": "2026-07-17T04:46:01+00:00"
   },
   {
     "id": "c0f2cce3-6336-53ac-8802-62f9016e0267",
@@ -16917,7 +18114,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e908b.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-07-17T04:46:01+00:00"
   },
   {
     "id": "1e7d6db3-15c5-5706-920c-9e7507469d65",
@@ -16942,7 +18141,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e906.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-07-17T04:46:00+00:00"
   },
   {
     "id": "74db227e-7ea0-5f68-b0f4-672e9cdf72be",
@@ -16967,7 +18168,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e904.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-07-17T04:46:00+00:00"
   },
   {
     "id": "9f806e0b-a58a-5184-ba1c-fb3e495666fd",
@@ -16992,7 +18195,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e902.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-07-17T04:46:00+00:00"
   },
   {
     "id": "af612df8-98d2-58bb-8a8d-2fa461798af8",
@@ -17017,7 +18222,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e901.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-07-17T04:46:00+00:00"
   },
   {
     "id": "9b004b04-e110-5a52-8c26-e6ebfbab35cf",
@@ -17042,7 +18249,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-e865s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-09-03T07:10:05+00:00"
   },
   {
     "id": "b98dd544-edcb-59b3-83c9-52751d3e7f9a",
@@ -17067,7 +18276,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-e845s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:06+00:00",
+    "updated_at": "2026-09-18T03:57:04+00:00"
   },
   {
     "id": "4b777dfa-b988-5cd2-adf3-e1cf11e28632",
@@ -17092,7 +18303,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheise-e835s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:05+00:00",
+    "updated_at": "2026-09-08T04:24:22+00:00"
   },
   {
     "id": "501eb5fb-dc98-5e0c-b6cf-c1a911dd7284",
@@ -17117,7 +18330,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e614.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:05+00:00",
+    "updated_at": "2026-07-17T04:45:59+00:00"
   },
   {
     "id": "f71c22b6-69ff-557b-bc96-e154261d1d0d",
@@ -17142,7 +18357,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e609.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:05+00:00",
+    "updated_at": "2026-07-17T04:45:59+00:00"
   },
   {
     "id": "b666878e-ef14-584d-86ba-3e3958331b4e",
@@ -17167,7 +18384,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e608.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:05+00:00",
+    "updated_at": "2026-07-17T04:45:59+00:00"
   },
   {
     "id": "42264817-c8c0-5031-9d9e-0f5b84397d23",
@@ -17192,7 +18411,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/e604.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:04+00:00",
+    "updated_at": "2026-07-17T04:45:58+00:00"
   },
   {
     "id": "fd0b1af4-5710-5753-be06-6939db77e134",
@@ -17217,7 +18438,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hd-650.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:04+00:00",
+    "updated_at": "2026-07-17T04:46:36+00:00"
   },
   {
     "id": "5cf67639-461f-5874-87e7-f396c210a4c2",
@@ -17242,7 +18465,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/hd-280-pro.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:03+00:00",
+    "updated_at": "2026-07-17T04:46:35+00:00"
   },
   {
     "id": "fd5f844e-3525-54af-827d-edaacfdb9d3a",
@@ -17267,7 +18492,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/eh-250.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:02+00:00",
+    "updated_at": "2026-07-17T04:46:04+00:00"
   },
   {
     "id": "0003a59b-1520-5616-8027-0d5202f26638",
@@ -17292,7 +18519,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-gai-dau-sennheiser-hsp-2-ew.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:02+00:00",
+    "updated_at": "2026-07-17T04:47:40+00:00"
   },
   {
     "id": "f71fd675-9860-590c-b2af-1299e26c173c",
@@ -17317,7 +18546,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/can-micro-co-ngong-sennheiser-mzh-3042.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:02+00:00",
+    "updated_at": "2026-07-17T04:44:53+00:00"
   },
   {
     "id": "6c54a414-e1df-56f9-94ef-64f016f51b43",
@@ -17342,7 +18573,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mzh-3015-l.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:01+00:00",
+    "updated_at": "2026-07-17T04:47:51+00:00"
   },
   {
     "id": "56619613-116b-56a2-b334-c99987352ec2",
@@ -17367,7 +18600,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mzfs-80.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:01+00:00",
+    "updated_at": "2026-07-17T04:47:51+00:00"
   },
   {
     "id": "83ff996e-bda5-5ebc-a84a-e13a19ec8779",
@@ -17392,7 +18627,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mzfs-60.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:01+00:00",
+    "updated_at": "2026-07-17T04:47:51+00:00"
   },
   {
     "id": "0f1dca87-e4e0-57b1-838e-53cdcbd47ca1",
@@ -17417,7 +18654,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/mzfs-30.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:01+00:00",
+    "updated_at": "2026-07-17T04:47:50+00:00"
   },
   {
     "id": "7f4a0fe3-9e99-508b-8174-65bf95a9f29f",
@@ -17442,7 +18681,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-micro-shotgun-sennheiser-me-36.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:01+00:00",
+    "updated_at": "2026-07-17T04:45:08+00:00"
   },
   {
     "id": "1f1edc97-87a8-571d-bb49-c064cb11d24e",
@@ -17467,7 +18708,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/dau-micro-sennheiser-me-35.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:00+00:00",
+    "updated_at": "2026-07-17T04:45:05+00:00"
   },
   {
     "id": "a5807c7a-e75c-5773-adc5-8cf76ad74a75",
@@ -17492,7 +18735,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/de-micro-sennheiser-mat-133b.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:00+00:00",
+    "updated_at": "2026-07-17T04:45:15+00:00"
   },
   {
     "id": "dc79cba6-27f4-544a-92e5-6ac50dd4f07d",
@@ -17517,7 +18762,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/de-micro-sennheiser-mat-133-s-b.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:59:00+00:00",
+    "updated_at": "2026-07-17T04:45:15+00:00"
   },
   {
     "id": "9fb2feed-64b5-5091-b71f-278cc181c548",
@@ -17542,7 +18789,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xsw-65-c.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:59+00:00",
+    "updated_at": "2026-07-17T04:49:20+00:00"
   },
   {
     "id": "7edaa7cc-3121-56ea-9cbb-67f624c74167",
@@ -17567,7 +18816,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xsw-35-b.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:59+00:00",
+    "updated_at": "2026-07-17T04:49:19+00:00"
   },
   {
     "id": "cfee8ed6-8477-5ac0-8b04-8228bda9cb8c",
@@ -17592,7 +18843,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ek-100-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:46:04+00:00"
   },
   {
     "id": "830cad11-d6c0-50bc-9e73-97bdf08263fe",
@@ -17617,7 +18870,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/em-100-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:46:05+00:00"
   },
   {
     "id": "2479245d-6e7e-5aaa-807a-6a590762c1e7",
@@ -17642,7 +18897,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/skp-100-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:48:52+00:00"
   },
   {
     "id": "8b89ffed-62b1-5473-b1da-a474c0f32d24",
@@ -17667,7 +18924,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/skm-100-865-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:48:52+00:00"
   },
   {
     "id": "64983dd4-603c-501e-b3c6-dae25a8278d3",
@@ -17692,7 +18951,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/skm-100-845-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:48:52+00:00"
   },
   {
     "id": "3fdcfe86-09fc-556c-afdd-9d7d3afa0c45",
@@ -17717,7 +18978,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/skm-100-835-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:48:51+00:00"
   },
   {
     "id": "3e97e225-0988-5d24-a7f1-79aace95c6d1",
@@ -17742,7 +19005,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sk-100-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:54+00:00",
+    "updated_at": "2026-07-17T04:48:51+00:00"
   },
   {
     "id": "a3f8386b-7165-5279-a484-d0585e64fa3c",
@@ -17767,7 +19032,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-135-p-g3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:53+00:00",
+    "updated_at": "2026-07-17T04:46:18+00:00"
   },
   {
     "id": "9cab191b-53f3-5831-9f1c-1815c379e2c2",
@@ -17792,7 +19059,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-165-g3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:53+00:00",
+    "updated_at": "2026-07-17T04:46:20+00:00"
   },
   {
     "id": "30656e8e-5554-5e2b-bda9-7049e0f8fac6",
@@ -17817,7 +19086,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-145-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:53+00:00",
+    "updated_at": "2026-07-17T04:46:19+00:00"
   },
   {
     "id": "320e827c-5af2-535a-b7cf-707883a0f10d",
@@ -17842,7 +19113,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-135-g3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:52+00:00",
+    "updated_at": "2026-07-17T04:46:18+00:00"
   },
   {
     "id": "dbcd5225-36db-5de2-9a3b-11487cafcf82",
@@ -17867,7 +19140,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-122-g3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:52+00:00",
+    "updated_at": "2026-07-17T04:46:16+00:00"
   },
   {
     "id": "9f372a37-f7ab-5e0e-bcce-d8a1007fbc41",
@@ -17892,7 +19167,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-112-g3.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:52+00:00",
+    "updated_at": "2026-07-17T04:46:15+00:00"
   },
   {
     "id": "c3fc313f-c73a-52eb-93b3-9ce718336266",
@@ -17917,7 +19194,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xsw-1-835-dual.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:52+00:00",
+    "updated_at": "2026-09-19T09:49:53+00:00"
   },
   {
     "id": "3c4d2b02-a30e-52a0-a1f3-43ee6e51a3c0",
@@ -17942,7 +19221,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xsw-1-825-dual.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:52+00:00",
+    "updated_at": "2026-09-03T07:20:10+00:00"
   },
   {
     "id": "031094e9-f471-5941-8160-b92bfeb758ff",
@@ -17967,7 +19248,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/micro-khong-day-sennheiser-xsw-d-vocal-set.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:52+00:00",
+    "updated_at": "2026-08-27T09:19:56+00:00"
   },
   {
     "id": "5d84a232-1bc2-5a84-a521-5c8cf98c3c2b",
@@ -17992,7 +19275,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/xsw-1-835.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-09-23T06:55:18+00:00"
   },
   {
     "id": "95b70b86-5c28-552e-b3a9-1bbe225822e3",
@@ -18017,7 +19302,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/a-2003-uhf.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:44:37+00:00"
   },
   {
     "id": "9d03458f-fff8-5766-ad40-63f0f3b7bde4",
@@ -18042,7 +19329,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheisser-ew-d-ab.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:48:51+00:00"
   },
   {
     "id": "fc5c5eb7-a68e-5eef-8168-88e6371c2d28",
@@ -18067,7 +19356,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/sennheiser-ew-d-asa.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:48:50+00:00"
   },
   {
     "id": "0a833ca4-beb2-5b10-b775-b0c33f665aa6",
@@ -18092,7 +19383,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-iem-g4-twin.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:46:25+00:00"
   },
   {
     "id": "abc4998c-564e-5d6c-9ae4-6369fbb73f7b",
@@ -18117,7 +19410,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-iem-g4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:46:24+00:00"
   },
   {
     "id": "d5b2beb8-ccc1-5b8f-ba1a-b47e4151cae4",
@@ -18142,7 +19437,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-500-g4-965.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:46:22+00:00"
   },
   {
     "id": "04f2a8b6-eb4c-55f6-87c6-e351a0341995",
@@ -18167,7 +19464,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-500-g4-945.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:51+00:00",
+    "updated_at": "2026-07-17T04:46:21+00:00"
   },
   {
     "id": "9ff66416-5f6a-5192-a176-e420c40b034b",
@@ -18192,7 +19491,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-500-g4-935.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:21+00:00"
   },
   {
     "id": "25383278-7a8c-5efa-97e6-cb40fb252f7b",
@@ -18217,7 +19518,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-300-g4-headmic1-rc.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:21+00:00"
   },
   {
     "id": "86900a13-0658-56f0-a189-a31748aa4cc0",
@@ -18242,7 +19545,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-300-g4-me2-rc.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:21+00:00"
   },
   {
     "id": "8177fddb-6a14-5662-9733-68235c3da0e9",
@@ -18267,7 +19572,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-300-g4-865-s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:21+00:00"
   },
   {
     "id": "a8cde0d1-60f8-5163-ad4d-2d7a238f0ea4",
@@ -18292,7 +19599,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/em-300-500-g4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:06+00:00"
   },
   {
     "id": "8f410fb5-7cbf-5266-9b2b-8fff48d912f6",
@@ -18317,7 +19626,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-512p-g4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:22+00:00"
   },
   {
     "id": "5c55636d-4c44-54c9-9c4d-ce5acbfeaa13",
@@ -18342,7 +19653,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-135p-g4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:18+00:00"
   },
   {
     "id": "ad700481-6821-5266-b644-51318d6f49ba",
@@ -18367,7 +19680,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-122p-g4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:50+00:00",
+    "updated_at": "2026-07-17T04:46:17+00:00"
   },
   {
     "id": "d02ff570-9039-507e-a607-48d09070587a",
@@ -18392,7 +19707,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-112p-g4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:16+00:00"
   },
   {
     "id": "f62b464f-23d6-571f-9793-d1e18cc4af5f",
@@ -18417,7 +19734,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-me2-835-s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:12+00:00"
   },
   {
     "id": "fb8d3172-5811-5490-8404-c31406d05ddd",
@@ -18442,7 +19761,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-945-s.png",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:11+00:00"
   },
   {
     "id": "538e74a9-6661-5746-abd2-50c8b6a58235",
@@ -18467,7 +19788,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-935-s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:11+00:00"
   },
   {
     "id": "17983efc-f53f-51dc-86c7-52330bbb12c5",
@@ -18492,7 +19815,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-865-s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:10+00:00"
   },
   {
     "id": "015b5fe9-df7b-5bad-8ec7-8e02199f444c",
@@ -18517,7 +19842,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-845-s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:10+00:00"
   },
   {
     "id": "bd691621-f49d-510a-b0ad-15cda455ced0",
@@ -18542,7 +19869,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-835-s.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:09+00:00"
   },
   {
     "id": "2c1df9a1-0f66-5309-9f4f-b54743169f72",
@@ -18567,7 +19896,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-ci1.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:11+00:00"
   },
   {
     "id": "9a6b2fe6-5490-53a8-a47e-74f28de83b08",
@@ -18592,7 +19923,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-me3.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:49+00:00",
+    "updated_at": "2026-07-17T04:46:12+00:00"
   },
   {
     "id": "89255ade-a95c-5b17-bf43-fe9694b0839c",
@@ -18617,7 +19950,9 @@ export const MOCK_PRODUCTS: Product[] = [
         "image_url": "/images/products/ew-100-g4-me4.jpg",
         "sort_order": 0
       }
-    ]
+    ],
+    "created_at": "2022-02-23T03:58:48+00:00",
+    "updated_at": "2026-07-17T04:46:13+00:00"
   },
   {
     "id": "51ac4c4b-edbb-5778-9819-63f1c15a321c",
@@ -18640,6 +19975,33 @@ export const MOCK_PRODUCTS: Product[] = [
       {
         "id": "img-1038092619",
         "image_url": "/images/products/ew-100-g4-me2.png",
+        "sort_order": 0
+      }
+    ],
+    "created_at": "2022-02-23T03:58:48+00:00",
+    "updated_at": "2026-07-17T04:46:12+00:00"
+  },
+  {
+    "id": "67b66b50-1685-5884-9abf-8332e5775eb1",
+    "category_id": "31042f34-c3c9-59e6-820d-8e5518ba453b",
+    "category_name": "Hệ Thống DJ All-in-One",
+    "category_slug": "all-in-one-dj-systems",
+    "name": "MÁY DJ PIONEER DJ XDJ-RX2",
+    "slug": "xdj-rx2",
+    "sku": "XDJ-RX2",
+    "brand": "Pioneer DJ",
+    "description": "Bàn DJ Pioneer DJ XDJ-RX2 All-In-One 2 Kênh chuyên nghiệp kế thừa thiết kế chuẩn club NXS2 với màn hình cảm ứng 7 inch sắc nét, 16 Performance Pads đa màu sắc, Beat FX và Sound Color FX mạnh mẽ.",
+    "sale_enabled": true,
+    "sale_price": 42500000,
+    "rental_enabled": false,
+    "rental_price": null,
+    "stock_quantity": 2,
+    "is_active": true,
+    "image_url": "/images/products/xdj-rx2.png",
+    "images": [
+      {
+        "id": "img-2000000002",
+        "image_url": "/images/products/xdj-rx2.png",
         "sort_order": 0
       }
     ]

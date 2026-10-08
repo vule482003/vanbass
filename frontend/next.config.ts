@@ -170,6 +170,8 @@ const nextConfig: NextConfig = {
         { canonical: "xdj-xz", aliases: ["pioneer-xdj-xz", "pioneer-dj-xdj-xz", "ban-dj-xdj-xz"] },
         // 10. 18SW115 Speaker
         { canonical: "loa-sub-roi-bc-speakers-5-tac-18sw115", aliases: ["18sw115", "loa-sub-roi-b-c-speakers-5-tac-18sw115"] },
+        // 11. AlphaTheta CDJ-1500X
+        { canonical: "cdj-1500x-chinh-hang-alphatheta", aliases: ["alphatheta-cdj-1500x"] },
       ].flatMap(({ canonical, aliases }) =>
         aliases.flatMap((alias) => [
           {

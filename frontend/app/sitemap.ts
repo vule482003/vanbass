@@ -136,9 +136,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           seenUrls.add(productUrl);
 
           const isHot = hotSearchSlugs.has(canonicalSlug);
+
+          // Resolve genuine timestamp from product data (priority updated_at, fallback created_at)
+          const rawTimestamp = product.updated_at || product.created_at;
+          let productLastmod: Date | undefined;
+          if (rawTimestamp) {
+            const parsed = new Date(rawTimestamp);
+            if (!isNaN(parsed.getTime())) {
+              productLastmod = parsed;
+            }
+          }
+
           sitemapEntries.push({
             url: productUrl,
-            lastModified: now,
+            ...(productLastmod ? { lastModified: productLastmod } : {}),
             changeFrequency: isHot ? "daily" : "weekly",
             priority: isHot ? 1.0 : 0.8,
           });
@@ -156,7 +167,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         seenUrls.add(productUrl);
         sitemapEntries.push({
           url: productUrl,
-          lastModified: now,
           changeFrequency: "daily",
           priority: 1.0,
         });

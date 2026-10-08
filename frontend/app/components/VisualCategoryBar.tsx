@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { Category, Product } from "../lib/types";
 import { useLanguage } from "../lib/language-context";
 import {
@@ -277,9 +278,12 @@ export default function VisualCategoryBar({
          ============================================================ */}
       <div className="category-tier1-container">
         {/* ALL TAB */}
-        <button
-          type="button"
-          onClick={() => handleSelectGroup("all")}
+        <Link
+          href="/products"
+          scroll={false}
+          onClick={() => {
+            handleSelectGroup("all");
+          }}
           className={`category-tier1-pill ${activeGroupId === "all" ? "is-active" : ""}`}
         >
           <span className="tier1-label">
@@ -288,7 +292,7 @@ export default function VisualCategoryBar({
           <span className="tier1-badge">
             {groupCounts.all}
           </span>
-        </button>
+        </Link>
 
         {/* 4 CATEGORY GROUPS TABS */}
         {CATEGORY_GROUPS.map((group) => {
@@ -296,10 +300,13 @@ export default function VisualCategoryBar({
           const count = groupCounts[group.id] || 0;
 
           return (
-            <button
+            <Link
               key={group.id}
-              type="button"
-              onClick={() => handleSelectGroup(group.id)}
+              href={`/products?group=${group.id}`}
+              scroll={false}
+              onClick={() => {
+                handleSelectGroup(group.id);
+              }}
               className={`category-tier1-pill ${isActive ? "is-active" : ""}`}
             >
               <span className="tier1-label">
@@ -308,7 +315,7 @@ export default function VisualCategoryBar({
               <span className="tier1-badge">
                 {count}
               </span>
-            </button>
+            </Link>
           );
         })}
       </div>
@@ -321,15 +328,19 @@ export default function VisualCategoryBar({
           {activeGroupId === "all" ? (
             <>
               {/* Popular quick filters when "All" is active */}
-              <button
-                type="button"
-                onClick={() => onSelectCategory("all")}
+              <Link
+                href="/products"
+                scroll={false}
+                onClick={() => {
+                  onSelectCategory("all");
+                }}
                 className={`category-tier2-chip ${selectedCategory === "all" ? "is-active" : ""}`}
               >
                 <span>{lang === "en" ? "All Categories" : "Tất Cả Sản Phẩm"}</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href="/products?category=dj-controllers"
+                scroll={false}
                 onClick={() => {
                   setActiveGroupId("dj");
                   onSelectCategory("dj-controllers");
@@ -338,9 +349,10 @@ export default function VisualCategoryBar({
               >
                 <span>DJ Controllers</span>
                 <span className="tier2-count">{subcategoryCounts["dj-controllers"] || 0}</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href="/products?category=all-in-one-dj-systems"
+                scroll={false}
                 onClick={() => {
                   setActiveGroupId("dj");
                   onSelectCategory("all-in-one-dj-systems");
@@ -349,9 +361,10 @@ export default function VisualCategoryBar({
               >
                 <span>All-in-One DJ</span>
                 <span className="tier2-count">{subcategoryCounts["all-in-one-dj-systems"] || 0}</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href="/products?category=loa-thung-pro-audio"
+                scroll={false}
                 onClick={() => {
                   setActiveGroupId("audio");
                   onSelectCategory("loa-thung-pro-audio");
@@ -360,9 +373,10 @@ export default function VisualCategoryBar({
               >
                 <span>{lang === "en" ? "Pro Audio Speakers" : "Loa Thùng Pro"}</span>
                 <span className="tier2-count">{subcategoryCounts["loa-thung-pro-audio"] || 0}</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href="/products?category=mixer-ban-tron-am-thanh"
+                scroll={false}
                 onClick={() => {
                   setActiveGroupId("audio");
                   onSelectCategory("mixer-ban-tron-am-thanh");
@@ -371,9 +385,10 @@ export default function VisualCategoryBar({
               >
                 <span>{lang === "en" ? "Mixer Consoles" : "Mixer Bàn Trộn"}</span>
                 <span className="tier2-count">{subcategoryCounts["mixer-ban-tron-am-thanh"] || 0}</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href="/products?category=micro-khong-day"
+                scroll={false}
                 onClick={() => {
                   setActiveGroupId("audio");
                   onSelectCategory("micro-khong-day");
@@ -382,9 +397,10 @@ export default function VisualCategoryBar({
               >
                 <span>{lang === "en" ? "Wireless Mics" : "Micro Không Dây"}</span>
                 <span className="tier2-count">{subcategoryCounts["micro-khong-day"] || 0}</span>
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                href="/products?category=may-tao-khoi"
+                scroll={false}
                 onClick={() => {
                   setActiveGroupId("effects");
                   onSelectCategory("may-tao-khoi");
@@ -393,14 +409,17 @@ export default function VisualCategoryBar({
               >
                 <span>{lang === "en" ? "Fog Machines" : "Máy Tạo Khói"}</span>
                 <span className="tier2-count">{subcategoryCounts["may-tao-khoi"] || 0}</span>
-              </button>
+              </Link>
             </>
           ) : activeGroup ? (
             <>
               {/* Group View All Chip */}
-              <button
-                type="button"
-                onClick={() => onSelectCategory(`group:${activeGroup.id}`)}
+              <Link
+                href={`/products?group=${activeGroup.id}`}
+                scroll={false}
+                onClick={() => {
+                  onSelectCategory(`group:${activeGroup.id}`);
+                }}
                 className={`category-tier2-chip ${
                   selectedCategory === `group:${activeGroup.id}` || selectedCategory === "all" ? "is-active" : ""
                 }`}
@@ -409,7 +428,7 @@ export default function VisualCategoryBar({
                   {lang === "en" ? `All ${activeGroup.nameEn}` : `Tất Cả ${activeGroup.nameVi}`}
                 </span>
                 <span className="tier2-count">{groupCounts[activeGroup.id]}</span>
-              </button>
+              </Link>
 
               {/* Subcategories list chips */}
               {activeGroup.subcategories.map((sub) => {
@@ -417,15 +436,18 @@ export default function VisualCategoryBar({
                 const count = subcategoryCounts[sub.slug] || 0;
 
                 return (
-                  <button
+                  <Link
                     key={sub.slug}
-                    type="button"
-                    onClick={() => onSelectCategory(sub.slug)}
+                    href={`/products?category=${sub.slug}`}
+                    scroll={false}
+                    onClick={() => {
+                      onSelectCategory(sub.slug);
+                    }}
                     className={`category-tier2-chip ${isSelected ? "is-active" : ""}`}
                   >
                     <span>{lang === "en" ? sub.nameEn : sub.nameVi}</span>
                     <span className="tier2-count">{count}</span>
-                  </button>
+                  </Link>
                 );
               })}
             </>
