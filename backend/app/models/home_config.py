@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import JSON, DateTime, ForeignKey, Uuid
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -26,7 +27,7 @@ class HomeConfig(Base):
     )
 
     draft_data: Mapped[dict[str, Any] | None] = mapped_column(
-        JSON,
+        JSONB,
         nullable=True,
     )
 

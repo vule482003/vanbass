@@ -25,10 +25,7 @@ from app.api.routes import (
     vnpay_router,
 )
 from app.core.config import settings
-
 from app.db.session import engine
-
-
 
 # Ensure static/uploads exists
 Path("static/uploads").mkdir(

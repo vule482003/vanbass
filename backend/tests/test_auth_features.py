@@ -21,6 +21,9 @@ def test_login_with_username_and_email():
     test_email = "testuser_dj@vanbass.vn"
     password = "TestPassword123!"
 
+    # Clean up rate limit
+    redis_client.delete("rl:auth:testclient")
+
     # Clean up or create test user
     user = db.scalar(select(User).where(User.email == test_email))
     if not user:
@@ -79,6 +82,7 @@ def test_forgot_and_reset_password_flow():
 
     # 1. Request OTP
     try:
+        redis_client.delete("rl:auth:testclient")
         redis_client.delete(f"pwd_reset_cooldown:{test_email}")
         redis_client.delete(f"pwd_reset:{test_email}")
     except (ConnectionError, TimeoutError) as err:
