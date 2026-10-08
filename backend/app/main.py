@@ -25,23 +25,10 @@ from app.api.routes import (
     vnpay_router,
 )
 from app.core.config import settings
-from app.db.base import Base
+
 from app.db.session import engine
 
-# Ensure tables are created
-Base.metadata.create_all(bind=engine)
 
-# Safe schema upgrade for store_settings
-try:
-    with engine.connect() as conn:
-        conn.execute(
-            text(
-                "ALTER TABLE store_settings ADD COLUMN IF NOT EXISTS facebook_page_id VARCHAR(255) DEFAULT 'vanbassmusiccenter';"
-            )
-        )
-        conn.commit()
-except SQLAlchemyError:
-    pass
 
 # Ensure static/uploads exists
 Path("static/uploads").mkdir(
