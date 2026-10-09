@@ -32,6 +32,8 @@ export interface Product {
   stock_quantity: number;
   is_active: boolean;
   image_url?: string;
+  image?: string;
+  thumbnail?: string;
   images?: ProductImage[];
   created_at?: string;
   updated_at?: string;

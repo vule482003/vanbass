@@ -348,9 +348,9 @@ export default function ThueBanDjPage() {
                     position: "absolute",
                     top: "16px",
                     right: "16px",
-                    backgroundColor: "rgba(34, 197, 94, 0.15)",
-                    color: "#4ade80",
-                    border: "1px solid #22c55e",
+                    backgroundColor: "#171A20",
+                    color: "#F5F6F8",
+                    border: "1px solid #292D35",
                     fontSize: "11px",
                     fontWeight: 700,
                     padding: "4px 10px",
@@ -384,7 +384,7 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#A2A8B3", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   ALL-IN-ONE SYSTEM
                 </span>
                 <h3
@@ -416,7 +416,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>1.200.000đ</span>
+                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#F5F6F8", letterSpacing: "-0.02em" }}>1.200.000đ</span>
                       <span style={{ fontSize: "12px", color: "#a1a1aa" }}> / 24h</span>
                     </div>
                   </div>
@@ -469,9 +469,9 @@ export default function ThueBanDjPage() {
                     position: "absolute",
                     top: "16px",
                     right: "16px",
-                    backgroundColor: "rgba(34, 197, 94, 0.15)",
-                    color: "#4ade80",
-                    border: "1px solid #22c55e",
+                    backgroundColor: "#171A20",
+                    color: "#F5F6F8",
+                    border: "1px solid #292D35",
                     fontSize: "11px",
                     fontWeight: 700,
                     padding: "4px 10px",
@@ -505,7 +505,7 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#A2A8B3", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   DJ CONTROLLER 2-CHANNEL
                 </span>
                 <h3
@@ -537,7 +537,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>400.000đ</span>
+                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#F5F6F8", letterSpacing: "-0.02em" }}>400.000đ</span>
                       <span style={{ fontSize: "12px", color: "#a1a1aa" }}> / 24h</span>
                     </div>
                   </div>
@@ -626,7 +626,7 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#A2A8B3", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   ALL-IN-ONE 4-CHANNEL
                 </span>
                 <h3
@@ -658,7 +658,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>1.800.000đ</span>
+                      <span style={{ fontSize: "24px", fontWeight: 700, color: "#F5F6F8", letterSpacing: "-0.02em" }}>1.800.000đ</span>
                       <span style={{ fontSize: "12px", color: "#a1a1aa" }}> / 24h</span>
                     </div>
                   </div>
@@ -747,7 +747,7 @@ export default function ThueBanDjPage() {
                   />
                 </div>
 
-                <span style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: "11.5px", color: "#A2A8B3", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   MULTI PLAYER & MIXER
                 </span>
                 <h3
@@ -779,7 +779,7 @@ export default function ThueBanDjPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span style={{ fontSize: "12px", color: "#71717a" }}>Giá thuê tham khảo:</span>
                     <div>
-                      <span style={{ fontSize: "20px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>Liên hệ báo giá</span>
+                      <span style={{ fontSize: "20px", fontWeight: 700, color: "#F5F6F8", letterSpacing: "-0.02em" }}>Liên hệ báo giá</span>
                     </div>
                   </div>
                 </div>
@@ -853,10 +853,10 @@ export default function ThueBanDjPage() {
             </div>
 
             {/* Pricing Table */}
-            <div style={{ overflowX: "auto", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+            <div style={{ overflowX: "auto", borderRadius: "12px", border: "1px solid #292D35" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
                 <thead>
-                  <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.04)", borderBottom: "2px solid #22c55e" }}>
+                  <tr style={{ backgroundColor: "rgba(255, 255, 255, 0.04)", borderBottom: "1px solid #292D35" }}>
                     <th style={{ padding: "16px", color: "#fff", fontWeight: 700 }}>Thiết Bị DJ</th>
                     <th style={{ padding: "16px", color: "#fff", fontWeight: 700 }}>Phân Loại</th>
                     <th style={{ padding: "16px", color: "#fff", fontWeight: 700 }}>Mục Đích Sử Dụng</th>
@@ -873,9 +873,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller (Smartphone / PC)</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Dã ngoại, picnic, tiệc bạn bè, sinh viên</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>350.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>350.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/ddj-flx2" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/ddj-flx2" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -888,9 +888,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ Controller (cần Laptop)</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Tập luyện, tiệc gia đình, workshop nhỏ</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>400.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>400.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/ddj-flx4" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/ddj-flx4" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -903,9 +903,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Tiệc villa, homestay, sinh nhật gọn nhẹ</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>800.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>800.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-rr" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/xdj-rr" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -918,24 +918,24 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One (USB Độc Lập)</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Bar lounge, tiệc cưới, sự kiện chuẩn NXS2</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.000.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>1.000.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-rx2" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/xdj-rx2" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
                   </tr>
-                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)", backgroundColor: "rgba(34, 197, 94, 0.04)" }}>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.06)", backgroundColor: "rgba(255, 255, 255, 0.03)" }}>
                     <td style={{ padding: "16px", fontWeight: 700 }}>
-                      <Link href="/products/xdj-rx3" style={{ color: "#4ade80", textDecoration: "none" }}>
+                      <Link href="/products/xdj-rx3" style={{ color: "#F5F6F8", textDecoration: "none" }}>
                         Pioneer DJ XDJ-RX3 (Best-seller)
                       </Link>
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Màn 10.1&quot;</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Show sự kiện, Wedding, Bar Club, Lounge</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.200.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>1.200.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-rx3" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/xdj-rx3" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -948,9 +948,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Pin Không Dây</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Biển, du thuyền, villa, party ngoài trời</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.200.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>1.200.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/omnis-duo" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/omnis-duo" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -963,9 +963,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One Thế Hệ Mới</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>DJ biểu diễn live, sự kiện trẻ trung</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.500.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>1.500.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-an" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/xdj-an" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -978,9 +978,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One 4 Kênh Wi-Fi</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Festival, Club Standard, DJ chuyên nghiệp</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>2.200.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>2.200.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-az" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/xdj-az" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -993,9 +993,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>All-In-One 4 Kênh Flagship</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Sự kiện lớn, Bar Pub, DJ chuyên nghiệp</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>1.800.000đ</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>1.800.000đ</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/xdj-xz" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/xdj-xz" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -1008,9 +1008,9 @@ export default function ThueBanDjPage() {
                     </td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Club Standard Quốc Tế</td>
                     <td style={{ padding: "16px", color: "#a1a1aa" }}>Lễ hội EDM, Concert, Club, DJ Quốc tế</td>
-                    <td style={{ padding: "16px", color: "#22c55e", fontWeight: 700 }}>Báo giá theo Show</td>
+                    <td style={{ padding: "16px", color: "#F5F6F8", fontWeight: 700 }}>Báo giá theo Show</td>
                     <td style={{ padding: "16px" }}>
-                      <Link href="/products/cdj-3000" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                      <Link href="/products/cdj-3000" style={{ color: "#A2A8B3", fontWeight: 700, textDecoration: "none" }}>
                         Chi tiết &rarr;
                       </Link>
                     </td>
@@ -1028,7 +1028,7 @@ export default function ThueBanDjPage() {
         <section style={{ padding: "75px 0", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", backgroundColor: "#09090b" }}>
           <div className="container" style={{ maxWidth: "960px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "48px" }}>
-              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
+              <span style={{ color: "#A2A8B3", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", display: "inline-block", marginBottom: "8px" }}>
                 TIỆN LỢI & NHANH CHÓNG
               </span>
               <h2
@@ -1047,32 +1047,32 @@ export default function ThueBanDjPage() {
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "20px" }}>
-              <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>01</span>
+              <div style={{ padding: "26px 22px", backgroundColor: "#101216", border: "1px solid #292D35", borderRadius: "14px" }}>
+                <span style={{ fontSize: "30px", color: "#A2A8B3", fontWeight: 700, display: "block", marginBottom: "10px" }}>01</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Chọn Máy & Ngày Thuê</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Nhắn tin qua Messenger hoặc gọi Hotline để chọn mẫu bàn DJ (XDJ-RX3, FLX4, XZ...) và ngày nhận máy.
                 </p>
               </div>
 
-              <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>02</span>
+              <div style={{ padding: "26px 22px", backgroundColor: "#101216", border: "1px solid #292D35", borderRadius: "14px" }}>
+                <span style={{ fontSize: "30px", color: "#A2A8B3", fontWeight: 700, display: "block", marginBottom: "10px" }}>02</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Xác Nhận Thủ Tục</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Xác nhận lịch thuê, đặt cọc giữ máy (hoặc làm hợp đồng thuê thiết bị cho sự kiện). Thủ tục trong 5 phút.
                 </p>
               </div>
 
-              <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>03</span>
+              <div style={{ padding: "26px 22px", backgroundColor: "#101216", border: "1px solid #292D35", borderRadius: "14px" }}>
+                <span style={{ fontSize: "30px", color: "#A2A8B3", fontWeight: 700, display: "block", marginBottom: "10px" }}>03</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Bàn Giao & Test Máy</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Nhận máy tại showroom hoặc kỹ thuật viên giao tận nơi. Test fader, jogwheel và soundcheck âm thanh.
                 </p>
               </div>
 
-              <div style={{ padding: "26px 22px", backgroundColor: "rgba(18, 18, 22, 0.7)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px" }}>
-                <span style={{ fontSize: "30px", color: "#22c55e", fontWeight: 700, display: "block", marginBottom: "10px" }}>04</span>
+              <div style={{ padding: "26px 22px", backgroundColor: "#101216", border: "1px solid #292D35", borderRadius: "14px" }}>
+                <span style={{ fontSize: "30px", color: "#A2A8B3", fontWeight: 700, display: "block", marginBottom: "10px" }}>04</span>
                 <strong style={{ color: "#fff", fontSize: "15px", display: "block", marginBottom: "8px" }}>Hoàn Trả & Tất Toán</strong>
                 <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, margin: 0 }}>
                   Sau khi xong show/sự kiện, VanBass nhận lại máy và hoàn trả cọc nhanh chóng cho khách hàng.

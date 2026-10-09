@@ -690,7 +690,7 @@ export default function BanDjLandingPage() {
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                       <span style={{ fontSize: "12px", color: "#71717a" }}>Giá bán tham khảo:</span>
-                      <span style={{ fontSize: "20px", fontWeight: 700, color: "#22c55e", letterSpacing: "-0.02em" }}>
+                      <span style={{ fontSize: "20px", fontWeight: 700, color: "#F5F6F8", letterSpacing: "-0.02em" }}>
                         {prod.priceText}
                       </span>
                     </div>
@@ -871,7 +871,7 @@ export default function BanDjLandingPage() {
               }}
             >
               <div>
-                <h3 style={{ fontSize: "18px", color: "#22c55e", margin: "0 0 10px 0", fontWeight: 700 }}>
+                <h3 style={{ fontSize: "18px", color: "#F5F6F8", margin: "0 0 10px 0", fontWeight: 700 }}>
                   1. Người mới bắt đầu học DJ nên chọn mua bàn DJ nào?
                 </h3>
                 <p style={{ margin: 0 }}>
@@ -888,7 +888,7 @@ export default function BanDjLandingPage() {
               </div>
 
               <div>
-                <h3 style={{ fontSize: "18px", color: "#22c55e", margin: "0 0 10px 0", fontWeight: 700 }}>
+                <h3 style={{ fontSize: "18px", color: "#F5F6F8", margin: "0 0 10px 0", fontWeight: 700 }}>
                   2. Khi nào nên đầu tư hệ thống All-In-One cắm USB độc lập?
                 </h3>
                 <p style={{ margin: 0 }}>
@@ -920,7 +920,7 @@ export default function BanDjLandingPage() {
               </div>
 
               <div>
-                <h3 style={{ fontSize: "18px", color: "#22c55e", margin: "0 0 10px 0", fontWeight: 700 }}>
+                <h3 style={{ fontSize: "18px", color: "#F5F6F8", margin: "0 0 10px 0", fontWeight: 700 }}>
                   3. Mối quan hệ giữa thương hiệu Pioneer DJ và AlphaTheta
                 </h3>
                 <p style={{ margin: 0 }}>
@@ -929,7 +929,7 @@ export default function BanDjLandingPage() {
               </div>
 
               <div>
-                <h3 style={{ fontSize: "18px", color: "#22c55e", margin: "0 0 10px 0", fontWeight: 700 }}>
+                <h3 style={{ fontSize: "18px", color: "#F5F6F8", margin: "0 0 10px 0", fontWeight: 700 }}>
                   4. Nên mua bàn DJ mới 100% đập hộp hay Like New 98-99% tiết kiệm?
                 </h3>
                 <p style={{ margin: 0 }}>
@@ -1229,19 +1229,19 @@ export default function BanDjLandingPage() {
                       <strong style={{ color: "#ffffff" }}>Hotline / Zalo Tư Vấn:</strong>
                       <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginTop: "4px" }}>
                         <div>
-                          <a href="tel:0905614566" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                          <a href="tel:0905614566" style={{ color: "#F5F6F8", fontWeight: 700, textDecoration: "none" }}>
                             0905 614 566
                           </a>{" "}
                           <span style={{ color: "#a1a1aa" }}>(Mr. Tuyến — Mua Bán)</span>
                         </div>
                         <div>
-                          <a href="tel:0944498987" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                          <a href="tel:0944498987" style={{ color: "#F5F6F8", fontWeight: 700, textDecoration: "none" }}>
                             0944 498 987
                           </a>{" "}
                           <span style={{ color: "#a1a1aa" }}>(Mr. Tuấn — Thuê & Setup)</span>
                         </div>
                         <div>
-                          <a href="tel:0706067799" style={{ color: "#22c55e", fontWeight: 700, textDecoration: "none" }}>
+                          <a href="tel:0706067799" style={{ color: "#F5F6F8", fontWeight: 700, textDecoration: "none" }}>
                             0706 067 799
                           </a>{" "}
                           <span style={{ color: "#a1a1aa" }}>(Mr. Vân — Kỹ Thuật)</span>

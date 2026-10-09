@@ -10,7 +10,7 @@ import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
 import { getTranslatedProductName } from "../lib/product-i18n";
 
-import { resolveProductImage } from "../lib/image-helper";
+import { getProductImageUrl } from "../lib/image-helper";
 
 interface ProductCardProps {
   product: Product;
@@ -58,30 +58,29 @@ export default function ProductCard({
   };
 
   const [prevProductId, setPrevProductId] = useState(product.id || product.slug);
-  const [currentImgSrc, setCurrentImgSrc] = useState(() =>
-    resolveProductImage(product.images?.[0]?.image_url || product.image_url)
-  );
-  const [imageError, setImageError] = useState(false);
-  const [triedFallback, setTriedFallback] = useState(false);
+  const [currentImgSrc, setCurrentImgSrc] = useState(() => getProductImageUrl(product));
+  const [fallbackStep, setFallbackStep] = useState(0);
 
   // Sync state during render when product changes
   if ((product.id || product.slug) !== prevProductId) {
     setPrevProductId(product.id || product.slug);
-    setCurrentImgSrc(resolveProductImage(product.images?.[0]?.image_url || product.image_url));
-    setImageError(false);
-    setTriedFallback(false);
+    setCurrentImgSrc(getProductImageUrl(product));
+    setFallbackStep(0);
   }
 
   const handleImageError = () => {
-    if (!triedFallback && product.slug) {
-      setTriedFallback(true);
+    if (fallbackStep === 0 && product.slug) {
+      setFallbackStep(1);
       setCurrentImgSrc(`/images/products/${product.slug}.png`);
+    } else if (fallbackStep === 1 && product.slug) {
+      setFallbackStep(2);
+      setCurrentImgSrc(`/images/products/${product.slug}.jpg`);
     } else {
-      setImageError(true);
+      setFallbackStep(3);
     }
   };
 
-  const showImage = !imageError;
+  const showImage = fallbackStep < 3;
   const displayName = getTranslatedProductName(product, lang);
   const isOutOfStock = product.stock_quantity <= 0;
 

@@ -222,6 +222,76 @@ function resolveCompareLearnData(rawKey?: string | null, slug?: string): Compare
   return null;
 }
 
+function getProductOrigin(product: Product): string | null {
+  if (!product || !product.specifications || typeof product.specifications !== "object") {
+    return null;
+  }
+
+  for (const [key, rawVal] of Object.entries(product.specifications)) {
+    const normalizedKey = key.trim().toLowerCase();
+    if (normalizedKey === "xuất xứ" || normalizedKey === "xuat xu" || normalizedKey === "origin") {
+      if (typeof rawVal === "string") {
+        const trimmed = rawVal.trim();
+        const lower = trimmed.toLowerCase();
+        if (
+          trimmed &&
+          trimmed !== "-" &&
+          trimmed !== "--" &&
+          lower !== "n/a" &&
+          lower !== "none" &&
+          lower !== "null" &&
+          lower !== "đang cập nhật" &&
+          lower !== "chưa cập nhật" &&
+          lower !== "updating"
+        ) {
+          return trimmed;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function getProductWarranty(product: Product): string {
+  if (product && product.specifications && typeof product.specifications === "object") {
+    for (const [k, v] of Object.entries(product.specifications)) {
+      if (k.trim().toLowerCase() === "bảo hành" && typeof v === "string" && v.trim()) {
+        const trimmed = v.trim();
+        if (
+          trimmed &&
+          trimmed !== "-" &&
+          trimmed !== "--" &&
+          trimmed.toLowerCase() !== "n/a" &&
+          trimmed.toLowerCase() !== "đang cập nhật"
+        ) {
+          return trimmed;
+        }
+      }
+    }
+  }
+  return "12 tháng";
+}
+
+function getProductCondition(product: Product): string {
+  if (product && product.specifications && typeof product.specifications === "object") {
+    for (const [k, v] of Object.entries(product.specifications)) {
+      if (k.trim().toLowerCase() === "tình trạng" && typeof v === "string" && v.trim()) {
+        const trimmed = v.trim();
+        if (
+          trimmed &&
+          trimmed !== "-" &&
+          trimmed !== "--" &&
+          trimmed.toLowerCase() !== "n/a" &&
+          trimmed.toLowerCase() !== "đang cập nhật"
+        ) {
+          return trimmed;
+        }
+      }
+    }
+  }
+  return "Mới 100%";
+}
+
 interface ProductDetailClientProps {
   initialProduct?: Product | null;
   slug: string;
@@ -416,6 +486,10 @@ export default function ProductDetailClient({
     product.category_slug?.includes("dj")
   );
 
+  const productOrigin = product ? getProductOrigin(product) : null;
+  const productWarranty = product ? getProductWarranty(product) : "12 tháng";
+  const productCondition = product ? getProductCondition(product) : "Mới 100%";
+
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       router.push(`/login?redirect=/products/${slug}`);
@@ -442,10 +516,10 @@ export default function ProductDetailClient({
     : null;
 
   return (
-    <div className="product-detail-page-root" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#060709" }}>
+    <div className="product-detail-page-root" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#08090B" }}>
       <Header />
 
-      <main style={{ flex: 1, paddingTop: "110px", paddingBottom: "80px" }}>
+      <main className="pdetail-main-wrapper" style={{ flex: 1, paddingTop: "110px", paddingBottom: "80px" }}>
         <div className="container">
           {/* Breadcrumb Navigation */}
           <nav className="pdetail-breadcrumb" aria-label="Breadcrumb">
@@ -752,71 +826,112 @@ export default function ProductDetailClient({
                 </div>
               </div>
 
-              {/* Product Quick Information Grid */}
-              <div className="pdetail-quick-specs-grid">
-                <div className="quick-spec-item">
-                  <div className="quick-spec-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2l8 4.5v6c0 5.55-3.84 10.74-8 11.5-4.16-.76-8-5.95-8-11.5v-6z" />
-                    </svg>
+              {/* Product Quick Information Card (Reference Design) */}
+              <div className="pdetail-quick-specs-card">
+                {/* Row 1: 3 columns (Thương hiệu, Model, Bảo hành) */}
+                <div className="quick-specs-row">
+                  <div className="quick-spec-item with-divider">
+                    <div className="quick-spec-icon">
+                      {/* Rosette Badge line icon */}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                    </div>
+                    <div className="quick-spec-text">
+                      <span className="quick-spec-lbl">Thương hiệu</span>
+                      <span className="quick-spec-val">{product.brand || "VanBass"}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="quick-spec-lbl">Thương hiệu</span>
-                    <span className="quick-spec-val">{product.brand || "Đang cập nhật"}</span>
+
+                  <div className="quick-spec-item with-divider">
+                    <div className="quick-spec-icon">
+                      {/* Price Tag line icon */}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                        <line x1="7" y1="7" x2="7.01" y2="7" />
+                      </svg>
+                    </div>
+                    <div className="quick-spec-text">
+                      <span className="quick-spec-lbl">Model</span>
+                      <span className="quick-spec-val">{product.sku || product.name}</span>
+                    </div>
+                  </div>
+
+                  <div className="quick-spec-item">
+                    <div className="quick-spec-icon">
+                      {/* Shield with checkmark line icon */}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                    </div>
+                    <div className="quick-spec-text">
+                      <span className="quick-spec-lbl">Bảo hành</span>
+                      <span className="quick-spec-val">{productWarranty}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="quick-spec-item">
-                  <div className="quick-spec-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                      <line x1="7" y1="7" x2="7.01" y2="7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="quick-spec-lbl">Model</span>
-                    <span className="quick-spec-val">{product.sku || product.name}</span>
-                  </div>
-                </div>
+                <div className="quick-specs-divider-h" />
 
-                <div className="quick-spec-item">
-                  <div className="quick-spec-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="quick-spec-lbl">Bảo hành</span>
-                    <span className="quick-spec-val">{product.specifications?.["Bảo hành"] || "Chính hãng"}</span>
-                  </div>
-                </div>
+                {/* Row 2: 2 columns (Xuất xứ nếu có, Tình trạng) */}
+                <div className="quick-specs-row">
+                  {productOrigin ? (
+                    <>
+                      <div className="quick-spec-item with-divider">
+                        <div className="quick-spec-icon">
+                          {/* Globe line icon */}
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                          </svg>
+                        </div>
+                        <div className="quick-spec-text">
+                          <span className="quick-spec-lbl">Xuất xứ</span>
+                          <span className="quick-spec-val">{productOrigin}</span>
+                        </div>
+                      </div>
 
-                <div className="quick-spec-item">
-                  <div className="quick-spec-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="2" y1="12" x2="22" y2="12" />
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="quick-spec-lbl">Xuất xứ</span>
-                    <span className="quick-spec-val">{product.specifications?.["Xuất xứ"] || "Đang cập nhật"}</span>
-                  </div>
-                </div>
+                      <div className="quick-spec-item">
+                        <div className="quick-spec-icon">
+                          {/* CheckCircle line icon */}
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m9 12 2 2 4-4" />
+                          </svg>
+                        </div>
+                        <div className="quick-spec-text">
+                          <span className="quick-spec-lbl">Tình trạng</span>
+                          <span className="quick-spec-val">{productCondition}</span>
+                        </div>
+                      </div>
 
-                <div className="quick-spec-item">
-                  <div className="quick-spec-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                      <polyline points="22 4 12 14.01 9 11.01" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="quick-spec-lbl">Tình trạng</span>
-                    <span className="quick-spec-val">{product.specifications?.["Tình trạng"] || "Mới 100%"}</span>
-                  </div>
+                      {/* Spacer column on desktop to maintain 3-column balance */}
+                      <div className="quick-spec-item-empty" aria-hidden="true" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="quick-spec-item">
+                        <div className="quick-spec-icon">
+                          {/* CheckCircle line icon */}
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m9 12 2 2 4-4" />
+                          </svg>
+                        </div>
+                        <div className="quick-spec-text">
+                          <span className="quick-spec-lbl">Tình trạng</span>
+                          <span className="quick-spec-val">{productCondition}</span>
+                        </div>
+                      </div>
+
+                      {/* Spacer columns on desktop */}
+                      <div className="quick-spec-item-empty" aria-hidden="true" />
+                      <div className="quick-spec-item-empty" aria-hidden="true" />
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -895,11 +1010,11 @@ export default function ProductDetailClient({
                   <div className="pdetail-rental-top-row">
                     <div className="rental-price-wrap">
                       <div className="rental-box-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="3" />
                           <circle cx="12" cy="12" r="4" />
-                          <circle cx="17" cy="17" r="1" fill="#22c55e" />
-                          <circle cx="12" cy="12" r="1.2" fill="#22c55e" />
+                          <circle cx="17" cy="17" r="1" fill="#A2A8B3" />
+                          <circle cx="12" cy="12" r="1.2" fill="#A2A8B3" />
                         </svg>
                       </div>
                       <div>
@@ -931,11 +1046,11 @@ export default function ProductDetailClient({
                           gap: "6px",
                           padding: "8px 14px",
                           borderRadius: "8px",
-                          background: "rgba(34, 197, 94, 0.04)",
-                          border: "1px solid #22c55e",
-                          color: "#22c55e",
+                          background: "#171A20",
+                          border: "1px solid #292D35",
+                          color: "#F5F6F8",
                           fontSize: "11px",
-                          fontWeight: 800,
+                          fontWeight: 700,
                           textDecoration: "none",
                           letterSpacing: "0.02em",
                           whiteSpace: "nowrap",
@@ -960,9 +1075,9 @@ export default function ProductDetailClient({
                           gap: "6px",
                           padding: "8px 14px",
                           borderRadius: "8px",
-                          background: "rgba(255, 255, 255, 0.04)",
-                          border: "1px solid rgba(255, 255, 255, 0.22)",
-                          color: "#ffffff",
+                          background: "#171A20",
+                          border: "1px solid #292D35",
+                          color: "#F5F6F8",
                           fontSize: "11px",
                           fontWeight: 700,
                           textDecoration: "none",
@@ -988,7 +1103,7 @@ export default function ProductDetailClient({
                   <div className="pdetail-branches-grid">
                     <div className="pdetail-branch-card">
                       <div className="pdetail-branch-header">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                           <circle cx="12" cy="10" r="3" />
                         </svg>
@@ -999,7 +1114,7 @@ export default function ProductDetailClient({
 
                     <div className="pdetail-branch-card">
                       <div className="pdetail-branch-header">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A2A8B3" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                           <circle cx="12" cy="10" r="3" />
                         </svg>
@@ -1012,7 +1127,7 @@ export default function ProductDetailClient({
                   <div className="pdetail-contacts-grid">
                     <a href={CONTACTS.tuyen.telHref} className="showroom-contact-item" title={`Gọi ngay ${CONTACTS.tuyen.name}: ${CONTACTS.tuyen.phoneDisplay}`}>
                       <div className="showroom-icon-circle">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#22c55e">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#A2A8B3">
                           <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
                         </svg>
                       </div>
@@ -1024,7 +1139,7 @@ export default function ProductDetailClient({
 
                     <a href={CONTACTS.tuan.telHref} className="showroom-contact-item" title={`Gọi ngay ${CONTACTS.tuan.name}: ${CONTACTS.tuan.phoneDisplay}`}>
                       <div className="showroom-icon-circle">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#22c55e">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#A2A8B3">
                           <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
                         </svg>
                       </div>
@@ -1036,7 +1151,7 @@ export default function ProductDetailClient({
 
                     <a href={CONTACTS.van.telHref} className="showroom-contact-item" title={`Gọi ngay ${CONTACTS.van.name}: ${CONTACTS.van.phoneDisplay}`}>
                       <div className="showroom-icon-circle">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#22c55e">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#A2A8B3">
                           <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-2.2 2.2a15.053 15.053 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.57 3.93A1 1 0 0 0 7.57 3H4.03A1 1 0 0 0 3 4.03C3.47 13.88 11.46 21.87 21.31 22.34a1 1 0 0 0 1.03-1.03v-3.54a1 1 0 0 0-1.03-1.03h-.3z" />
                         </svg>
                       </div>
@@ -1633,16 +1748,28 @@ export default function ProductDetailClient({
         }
 
         .pdetail-brand-badge {
-          font-size: 12px;
+          display: inline-flex;
+          align-items: center;
+          padding: 3px 10px;
+          border-radius: 6px;
+          background: #171A20;
+          border: 1px solid #292D35;
+          font-size: 11.5px;
           font-weight: 700;
-          color: #22c55e;
+          color: #A2A8B3;
           letter-spacing: 0.05em;
           text-transform: uppercase;
         }
 
         .pdetail-sku-badge {
-          font-size: 12px;
-          color: #71717a;
+          display: inline-flex;
+          align-items: center;
+          padding: 3px 10px;
+          border-radius: 6px;
+          background: #171A20;
+          border: 1px solid #292D35;
+          font-size: 11.5px;
+          color: #747C89;
           font-weight: 500;
         }
 
@@ -1758,52 +1885,89 @@ export default function ProductDetailClient({
           color: #22c55e;
         }
 
-        /* Quick Specs Grid */
-        .pdetail-quick-specs-grid {
+        /* Quick Specs Box (Reference Design) */
+        .pdetail-quick-specs-card {
+          background: #101216;
+          border: 1px solid #292D35;
+          border-radius: 12px;
+          padding: 16px 20px;
+          margin-bottom: 22px;
+        }
+
+        .quick-specs-row {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 10px;
-          padding: 14px 16px;
-          background: #0d0e13;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 10px;
-          margin-bottom: 20px;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          align-items: center;
+        }
+
+        .quick-specs-divider-h {
+          height: 1px;
+          background: #292D35;
+          margin: 14px 0;
+          width: 100%;
         }
 
         .quick-spec-item {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
+          min-width: 0;
+          padding-right: 14px;
+        }
+
+        .quick-spec-item.with-divider {
+          position: relative;
+        }
+
+        .quick-spec-item.with-divider::after {
+          content: "";
+          position: absolute;
+          right: 14px;
+          top: 15%;
+          height: 70%;
+          width: 1px;
+          background: #292D35;
+        }
+
+        .quick-spec-item-empty {
+          min-height: 1px;
         }
 
         .quick-spec-icon {
-          width: 30px;
-          height: 30px;
+          width: 36px;
+          height: 36px;
           border-radius: 8px;
-          background: rgba(34, 197, 94, 0.08);
-          border: 1px solid rgba(34, 197, 94, 0.2);
+          background: #171A20;
+          border: 1px solid #292D35;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
         }
 
+        .quick-spec-text {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-width: 0;
+        }
+
         .quick-spec-lbl {
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 400;
-          color: #71717a;
+          color: #A2A8B3;
           display: block;
-          margin-bottom: 1px;
+          margin-bottom: 2px;
+          line-height: 1.25;
         }
 
         .quick-spec-val {
-          font-size: 12px;
+          font-size: 13.5px;
           font-weight: 600;
-          color: #ffffff;
+          color: #F5F6F8;
           display: block;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          line-height: 1.25;
+          word-break: break-word;
         }
 
         /* Purchase Actions */
@@ -1823,8 +1987,8 @@ export default function ProductDetailClient({
         .pdetail-stepper {
           display: flex;
           align-items: center;
-          background: #090a0e;
-          border: 1px solid rgba(255, 255, 255, 0.14);
+          background: #171A20;
+          border: 1px solid #292D35;
           border-radius: 8px;
           height: 46px;
           overflow: hidden;
@@ -1835,7 +1999,7 @@ export default function ProductDetailClient({
           height: 100%;
           background: transparent;
           border: none;
-          color: #ffffff;
+          color: #F5F6F8;
           font-size: 17px;
           font-weight: 700;
           cursor: pointer;
@@ -1846,7 +2010,7 @@ export default function ProductDetailClient({
         }
 
         .stepper-action-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.08);
         }
 
         .stepper-count {
@@ -1855,14 +2019,14 @@ export default function ProductDetailClient({
           font-size: 14px;
           font-weight: 700;
           font-variant-numeric: tabular-nums;
-          color: #ffffff;
+          color: #F5F6F8;
         }
 
         .pdetail-btn-add-cart {
           flex: 1;
           height: 46px;
           background: #22c55e;
-          color: #000000;
+          color: #08090B;
           border: none;
           border-radius: 8px;
           font-size: 13.5px;
@@ -1887,9 +2051,9 @@ export default function ProductDetailClient({
           width: 46px;
           height: 46px;
           border-radius: 8px;
-          background: #090a0e;
-          border: 1px solid rgba(255, 255, 255, 0.14);
-          color: #22c55e;
+          background: #171A20;
+          border: 1px solid #292D35;
+          color: #F5F6F8;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1899,8 +2063,9 @@ export default function ProductDetailClient({
         }
 
         .pdetail-btn-cart-icon:hover {
-          background: rgba(34, 197, 94, 0.1);
-          border-color: #22c55e;
+          background: #22262F;
+          border-color: #3A404B;
+          color: #22c55e;
         }
 
         .cart-badge-dot {
@@ -1908,7 +2073,7 @@ export default function ProductDetailClient({
           top: 5px;
           right: 5px;
           background: #22c55e;
-          color: #000;
+          color: #08090B;
           font-size: 9px;
           font-weight: 800;
           width: 14px;
@@ -1976,8 +2141,8 @@ export default function ProductDetailClient({
 
         /* Rental Card Box */
         .pdetail-rental-card {
-          background: #080a0f;
-          border: 1px solid rgba(255, 255, 255, 0.14);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 12px;
           padding: 16px 18px;
           display: flex;
@@ -2011,7 +2176,7 @@ export default function ProductDetailClient({
         .rental-header-label {
           font-size: 13px;
           font-weight: 700;
-          color: #22c55e;
+          color: #A2A8B3;
           letter-spacing: 0.04em;
           text-transform: uppercase;
           display: block;
@@ -2022,7 +2187,7 @@ export default function ProductDetailClient({
           font-size: 16px;
           font-weight: 700;
           font-variant-numeric: tabular-nums;
-          color: #ffffff;
+          color: #F5F6F8;
           line-height: 1.2;
           margin-top: 2px;
           white-space: nowrap;
@@ -2030,7 +2195,7 @@ export default function ProductDetailClient({
 
         .rental-unit {
           font-size: 12px;
-          color: #9ca3af;
+          color: #A2A8B3;
           font-weight: 500;
         }
 
@@ -2050,9 +2215,9 @@ export default function ProductDetailClient({
           gap: 6px;
           padding: 8px 14px;
           border-radius: 8px;
-          background: rgba(34, 197, 94, 0.04);
-          border: 1px solid #22c55e;
-          color: #22c55e;
+          background: #171A20;
+          border: 1px solid #292D35;
+          color: #F5F6F8;
           font-size: 11px;
           font-weight: 700;
           text-decoration: none;
@@ -2063,8 +2228,9 @@ export default function ProductDetailClient({
         }
 
         .rental-btn-chat:hover {
-          background: #22c55e;
-          color: #000000;
+          background: #22262F;
+          border-color: #3A404B;
+          color: #ffffff;
         }
 
         .rental-btn-rates {
@@ -2075,9 +2241,9 @@ export default function ProductDetailClient({
           gap: 6px;
           padding: 8px 14px;
           border-radius: 8px;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.22);
-          color: #ffffff;
+          background: #171A20;
+          border: 1px solid #292D35;
+          color: #F5F6F8;
           font-size: 11px;
           font-weight: 700;
           text-decoration: none;
@@ -2088,8 +2254,8 @@ export default function ProductDetailClient({
         }
 
         .rental-btn-rates:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.4);
+          background: #22262F;
+          border-color: #3A404B;
           color: #ffffff;
         }
 
@@ -2108,8 +2274,8 @@ export default function ProductDetailClient({
 
         .pdetail-branch-card {
           padding: 10px 12px;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #171A20;
+          border: 1px solid #292D35;
           border-radius: 10px;
           display: flex;
           flex-direction: column;
@@ -2125,14 +2291,14 @@ export default function ProductDetailClient({
         .pdetail-branch-title {
           font-size: 11px;
           font-weight: 700;
-          color: #22c55e;
+          color: #F5F6F8;
           letter-spacing: 0.04em;
         }
 
         .pdetail-branch-addr {
           font-size: 12px;
           line-height: 1.45;
-          color: #d4d4d8;
+          color: #A2A8B3;
           margin: 0;
         }
 
@@ -2147,16 +2313,16 @@ export default function ProductDetailClient({
           align-items: center;
           gap: 8px;
           padding: 8px 10px;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #171A20;
+          border: 1px solid #292D35;
           border-radius: 8px;
           text-decoration: none;
           transition: all 0.2s ease;
         }
 
         .showroom-contact-item:hover {
-          border-color: rgba(34, 197, 94, 0.45);
-          background: rgba(34, 197, 94, 0.03);
+          border-color: #3A404B;
+          background: #22262F;
         }
 
         .showroom-icon-circle {
@@ -2176,7 +2342,7 @@ export default function ProductDetailClient({
         .showroom-city {
           font-size: 11px;
           font-weight: 600;
-          color: #e4e4e7;
+          color: #A2A8B3;
           display: block;
           white-space: nowrap;
           overflow: hidden;
@@ -2187,10 +2353,15 @@ export default function ProductDetailClient({
           font-size: 12px;
           font-weight: 700;
           font-variant-numeric: tabular-nums;
-          color: #22c55e;
+          color: #F5F6F8;
           display: block;
           letter-spacing: 0.01em;
           white-space: nowrap;
+          transition: color 0.15s ease;
+        }
+
+        .showroom-contact-item:hover .showroom-number {
+          color: #22c55e;
         }
 
         /* Tabs Section (Placed cleanly in left column under image gallery) */
@@ -2203,38 +2374,47 @@ export default function ProductDetailClient({
         .pdetail-tabs-header {
           display: flex;
           gap: 16px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid #292D35;
           margin-bottom: 14px;
+          overflow-x: auto;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .pdetail-tabs-header::-webkit-scrollbar {
+          display: none;
         }
 
         .pdetail-tab-btn {
-          padding: 8px 2px;
+          padding: 8px 4px;
           background: none;
           border: none;
           border-bottom: 2px solid transparent;
-          color: #71717a;
-          font-size: 12.5px;
-          font-weight: 700;
-          letter-spacing: 0.03em;
+          color: #A2A8B3;
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.02em;
           cursor: pointer;
           transition: all 0.2s ease;
           white-space: nowrap;
+          flex-shrink: 0;
         }
 
         .pdetail-tab-btn:hover {
-          color: #e4e4e7;
+          color: #F5F6F8;
         }
 
         .pdetail-tab-btn.is-active {
-          color: #22c55e;
+          color: #F5F6F8;
+          font-weight: 700;
           border-bottom-color: #22c55e;
         }
 
         /* Compact Specifications Panel */
         .pdetail-tab-panel {
-          background: #0c0d12;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 10px;
+          background: #101216;
+          border: 1px solid #292D35;
+          border-radius: 12px;
           padding: 16px 20px;
           width: 100%;
         }
@@ -2452,10 +2632,9 @@ export default function ProductDetailClient({
         .pdetail-factblock-wrapper {
           margin-bottom: 36px;
           padding: 30px 26px;
-          background: rgba(18, 18, 24, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 14px;
-          backdrop-filter: blur(12px);
         }
         .pdetail-factblock-header {
           text-align: center;
@@ -2463,7 +2642,7 @@ export default function ProductDetailClient({
         }
         .pdetail-factblock-kicker {
           font-size: 11px;
-          color: #38bdf8;
+          color: #A2A8B3;
           font-weight: 800;
           text-transform: uppercase;
           letter-spacing: 0.12em;
@@ -2473,20 +2652,20 @@ export default function ProductDetailClient({
         .pdetail-factblock-title {
           font-size: clamp(20px, 2.4vw, 26px);
           font-weight: 800;
-          color: #ffffff;
+          color: #F5F6F8;
           margin: 0 0 8px 0;
           letter-spacing: -0.02em;
         }
         .pdetail-factblock-subtitle {
           font-size: 13.5px;
-          color: #a1a1aa;
+          color: #A2A8B3;
           max-width: 760px;
           margin: 0 auto;
           line-height: 1.6;
         }
         .pdetail-factblock-card {
-          background: rgba(24, 24, 30, 0.65);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 10px;
           overflow-x: auto;
         }
@@ -2496,7 +2675,7 @@ export default function ProductDetailClient({
           font-size: 13.5px;
         }
         .pdetail-factblock-table tr {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          border-bottom: 1px solid #292D35;
         }
         .pdetail-factblock-table tr:last-child {
           border-bottom: none;
@@ -2508,32 +2687,32 @@ export default function ProductDetailClient({
           width: 25%;
           min-width: 160px;
           padding: 12px 18px;
-          color: #a1a1aa;
+          color: #A2A8B3;
           font-weight: 600;
-          background: rgba(255, 255, 255, 0.02);
-          border-right: 1px solid rgba(255, 255, 255, 0.06);
+          background: #171A20;
+          border-right: 1px solid #292D35;
           vertical-align: top;
         }
         .fb-data {
           padding: 12px 18px;
-          color: #f4f4f5;
+          color: #F5F6F8;
           line-height: 1.6;
         }
         .fb-price-tag {
           font-size: 16px;
           font-weight: 800;
-          color: #22c55e;
+          color: #F5F6F8;
         }
         .fb-subnote {
           font-size: 12px;
-          color: #71717a;
+          color: #747C89;
         }
         .fb-status-yes {
-          color: #4ade80;
+          color: #22c55e;
           font-weight: 700;
         }
         .fb-action-link {
-          color: #38bdf8;
+          color: #F5F6F8;
           text-decoration: underline;
           font-weight: 600;
           font-size: 12.5px;
@@ -2543,10 +2722,9 @@ export default function ProductDetailClient({
         .pdetail-compare-learn-wrapper {
           margin-bottom: 36px;
           padding: 30px 26px;
-          background: rgba(18, 18, 24, 0.85);
-          border: 1px solid rgba(56, 189, 248, 0.25);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 14px;
-          backdrop-filter: blur(12px);
         }
         .pdetail-compare-header {
           text-align: center;
@@ -2554,7 +2732,7 @@ export default function ProductDetailClient({
         }
         .pdetail-compare-kicker {
           font-size: 11px;
-          color: #38bdf8;
+          color: #A2A8B3;
           font-weight: 800;
           text-transform: uppercase;
           letter-spacing: 0.12em;
@@ -2564,13 +2742,13 @@ export default function ProductDetailClient({
         .pdetail-compare-title {
           font-size: clamp(20px, 2.4vw, 26px);
           font-weight: 800;
-          color: #ffffff;
+          color: #F5F6F8;
           margin: 0 0 8px 0;
           letter-spacing: -0.02em;
         }
         .pdetail-compare-subtitle {
           font-size: 13.5px;
-          color: #a1a1aa;
+          color: #A2A8B3;
           max-width: 760px;
           margin: 0 auto;
           line-height: 1.6;
@@ -2582,8 +2760,8 @@ export default function ProductDetailClient({
           margin-bottom: 22px;
         }
         .pdetail-compare-card {
-          background: rgba(24, 24, 30, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #171A20;
+          border: 1px solid #292D35;
           border-radius: 12px;
           padding: 22px;
           display: flex;
@@ -2592,7 +2770,7 @@ export default function ProductDetailClient({
         .cmp-heading {
           font-size: 16.5px;
           font-weight: 800;
-          color: #38bdf8;
+          color: #F5F6F8;
           margin: 0 0 8px 0;
         }
         .cmp-summary {
@@ -2922,15 +3100,32 @@ export default function ProductDetailClient({
           .pdetail-reviews-summary {
             flex-direction: column;
           }
-
-          .pdetail-quick-specs-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
         }
 
         @media (max-width: 600px) {
-          .pdetail-quick-specs-grid {
+          .pdetail-quick-specs-card {
+            padding: 14px 16px;
+          }
+
+          .quick-specs-row {
             grid-template-columns: 1fr;
+            gap: 12px;
+          }
+
+          .quick-spec-item {
+            padding-right: 0;
+          }
+
+          .quick-spec-item.with-divider::after {
+            display: none;
+          }
+
+          .quick-spec-item-empty {
+            display: none;
+          }
+
+          .quick-specs-divider-h {
+            margin: 12px 0;
           }
 
           .pdetail-branches-grid {
@@ -2953,6 +3148,12 @@ export default function ProductDetailClient({
 
           .pdetail-tab-panel {
             padding: 14px 16px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .pdetail-main-wrapper {
+            padding-bottom: calc(105px + env(safe-area-inset-bottom, 0px)) !important;
           }
         }
       `}</style>

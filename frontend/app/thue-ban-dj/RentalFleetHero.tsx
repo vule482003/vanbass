@@ -35,7 +35,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
         >
           {/* Left Column: Heading & Specifications (Rộng Rãi, Dễ Đọc) */}
           <div style={{ paddingRight: "16px" }}>
-            {/* Headline - H1 Chữ Xám Chuẩn, Nét Vuông Mảnh Sang Trọng */}
+            {/* Headline - H1 Chữ Trắng Chuẩn Dark Premium V3 */}
             <h1
               style={{
                 fontFamily: "var(--font-primary)",
@@ -43,7 +43,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 fontWeight: 600,
                 letterSpacing: "0.02em",
                 lineHeight: 1.08,
-                color: "#9ca3af",
+                color: "#F5F6F8",
                 margin: "0 0 18px 0",
                 textTransform: "uppercase",
               }}
@@ -145,7 +145,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", maxWidth: "540px" }}>
                   <span>• Set 2x CDJ-3000 + Mixer DJM-A9</span>
-                  <strong style={{ color: "#22c55e" }}>{isVi ? "Báo giá Show" : "Show Quote"}</strong>
+                  <strong style={{ color: "#F5F6F8" }}>{isVi ? "Báo giá Show" : "Show Quote"}</strong>
                 </div>
               </div>
             </div>
@@ -176,9 +176,9 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                   borderRadius: "6px",
                   fontWeight: 700,
                   fontSize: "13px",
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "#ffffff",
+                  backgroundColor: "#171A20",
+                  border: "1px solid #292D35",
+                  color: "#F5F6F8",
                 }}
               >
                 Hotline: {hotline}
@@ -229,16 +229,16 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             alignItems: "stretch",
           }}
         >
-          {/* CARD 1: GÓI THEO NGÀY (THẺ TRẮNG NHƯ MOCKUP) */}
+          {/* CARD 1: GÓI THEO NGÀY */}
           <div
             style={{
-              backgroundColor: "#ffffff",
-              color: "#111114",
-              borderRadius: "8px",
+              backgroundColor: "#101216",
+              color: "#F5F6F8",
+              borderRadius: "12px",
               padding: "36px 30px",
               display: "flex",
               flexDirection: "column",
-              border: "1px solid #e4e4e7",
+              border: "1px solid #292D35",
               boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
               position: "relative",
             }}
@@ -247,13 +247,15 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             <div style={{ marginBottom: "20px" }}>
               <span
                 style={{
-                  border: "1px solid #111114",
+                  border: "1px solid #292D35",
+                  backgroundColor: "#171A20",
                   padding: "4px 12px",
-                  borderRadius: "3px",
+                  borderRadius: "6px",
                   fontSize: "11px",
                   fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
+                  color: "#A2A8B3",
                   display: "inline-block",
                 }}
               >
@@ -262,23 +264,23 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             </div>
 
             <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: "#71717a", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "#747C89", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
                 {isVi ? "GIÁ CHỈ TỪ" : "FROM"}
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                <strong style={{ fontSize: "36px", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>400.000đ</strong>
-                <span style={{ fontSize: "14px", fontWeight: 700, color: "#71717a" }}>{isVi ? "/ NGÀY" : "/ DAY"}</span>
+                <strong style={{ fontSize: "36px", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: "#F5F6F8" }}>400.000đ</strong>
+                <span style={{ fontSize: "14px", fontWeight: 700, color: "#A2A8B3" }}>{isVi ? "/ NGÀY" : "/ DAY"}</span>
               </div>
             </div>
 
-            <div style={{ width: "100%", height: "1px", backgroundColor: "#e4e4e7", marginBottom: "20px" }} />
+            <div style={{ width: "100%", height: "1px", backgroundColor: "#292D35", marginBottom: "20px" }} />
 
             {/* What's included (Điền thông tin SEO tối ưu) */}
             <div style={{ flex: 1, marginBottom: "32px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px", color: "#F5F6F8" }}>
                 {isVi ? "Dịch vụ bao gồm:" : "What's included:"}
               </span>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#3f3f46" }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#A2A8B3" }}>
                 {isVi ? (
                   <>
                     <li>• Pioneer DDJ-FLX4 / DDJ-FLX6 Controller</li>
@@ -299,7 +301,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
               </ul>
             </div>
 
-            {/* Solid Button */}
+            {/* Green CTA Button */}
             <a
               href={`https://m.me/vanbassmusiccenter?text=${encodeURIComponent(isVi ? "Tôi muốn thuê bàn DJ gói THEO NGÀY 400k" : "I want to rent DAILY DJ pack 400k")}`}
               target="_blank"
@@ -308,30 +310,31 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 display: "block",
                 textAlign: "center",
                 padding: "14px 20px",
-                backgroundColor: "#111114",
-                color: "#ffffff",
-                fontWeight: 700,
+                backgroundColor: "#22c55e",
+                color: "#08090B",
+                fontWeight: 800,
                 fontSize: "13px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                borderRadius: "4px",
+                borderRadius: "8px",
                 textDecoration: "none",
+                transition: "all 0.2s ease",
               }}
             >
               {isVi ? "THUÊ NGAY" : "RENT NOW"}
             </a>
           </div>
 
-          {/* CARD 2: GÓI CUỐI TUẦN (THẺ TRẮNG NHƯ MOCKUP) */}
+          {/* CARD 2: GÓI CUỐI TUẦN */}
           <div
             style={{
-              backgroundColor: "#ffffff",
-              color: "#111114",
-              borderRadius: "8px",
+              backgroundColor: "#101216",
+              color: "#F5F6F8",
+              borderRadius: "12px",
               padding: "36px 30px",
               display: "flex",
               flexDirection: "column",
-              border: "1px solid #e4e4e7",
+              border: "1px solid #292D35",
               boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
               position: "relative",
             }}
@@ -340,13 +343,15 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             <div style={{ marginBottom: "20px" }}>
               <span
                 style={{
-                  border: "1px solid #111114",
+                  border: "1px solid #292D35",
+                  backgroundColor: "#171A20",
                   padding: "4px 12px",
-                  borderRadius: "3px",
+                  borderRadius: "6px",
                   fontSize: "11px",
                   fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
+                  color: "#A2A8B3",
                   display: "inline-block",
                 }}
               >
@@ -355,23 +360,23 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             </div>
 
             <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: "#71717a", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "#747C89", textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
                 {isVi ? "GIÁ CHỈ TỪ" : "FROM"}
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                <strong style={{ fontSize: "36px", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>1.200.000đ</strong>
-                <span style={{ fontSize: "14px", fontWeight: 700, color: "#71717a" }}>{isVi ? "/ CUỐI TUẦN" : "/ WEEKEND"}</span>
+                <strong style={{ fontSize: "36px", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: "#F5F6F8" }}>1.200.000đ</strong>
+                <span style={{ fontSize: "14px", fontWeight: 700, color: "#A2A8B3" }}>{isVi ? "/ CUỐI TUẦN" : "/ WEEKEND"}</span>
               </div>
             </div>
 
-            <div style={{ width: "100%", height: "1px", backgroundColor: "#e4e4e7", marginBottom: "20px" }} />
+            <div style={{ width: "100%", height: "1px", backgroundColor: "#292D35", marginBottom: "20px" }} />
 
             {/* What's included (Điền thông tin SEO tối ưu) */}
             <div style={{ flex: 1, marginBottom: "32px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px", color: "#F5F6F8" }}>
                 {isVi ? "Dịch vụ bao gồm:" : "What's included:"}
               </span>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#3f3f46" }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#A2A8B3" }}>
                 {isVi ? (
                   <>
                     <li>• Pioneer DJ XDJ-RX3 hoặc XDJ-XZ Flagship</li>
@@ -394,7 +399,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
               </ul>
             </div>
 
-            {/* Solid Button */}
+            {/* Green CTA Button */}
             <a
               href={`https://m.me/vanbassmusiccenter?text=${encodeURIComponent(isVi ? "Tôi muốn thuê bàn DJ gói CUỐI TUẦN RX3 XZ" : "I want to rent WEEKEND DJ pack RX3 XZ")}`}
               target="_blank"
@@ -403,30 +408,31 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 display: "block",
                 textAlign: "center",
                 padding: "14px 20px",
-                backgroundColor: "#111114",
-                color: "#ffffff",
-                fontWeight: 700,
+                backgroundColor: "#22c55e",
+                color: "#08090B",
+                fontWeight: 800,
                 fontSize: "13px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                borderRadius: "4px",
+                borderRadius: "8px",
                 textDecoration: "none",
+                transition: "all 0.2s ease",
               }}
             >
               {isVi ? "THUÊ NGAY" : "RENT NOW"}
             </a>
           </div>
 
-          {/* CARD 3: GÓI SỰ KIỆN (THẺ ĐEN TƯƠNG PHẢN NHƯ MOCKUP) */}
+          {/* CARD 3: GÓI SỰ KIỆN */}
           <div
             style={{
-              backgroundColor: "#111114",
-              color: "#ffffff",
-              borderRadius: "8px",
+              backgroundColor: "#101216",
+              color: "#F5F6F8",
+              borderRadius: "12px",
               padding: "36px 30px",
               display: "flex",
               flexDirection: "column",
-              border: "1px solid rgba(255, 255, 255, 0.16)",
+              border: "1px solid #292D35",
               boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
               position: "relative",
             }}
@@ -435,14 +441,15 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             <div style={{ marginBottom: "20px" }}>
               <span
                 style={{
-                  border: "1px solid rgba(255, 255, 255, 0.3)",
+                  border: "1px solid #292D35",
+                  backgroundColor: "#171A20",
                   padding: "4px 12px",
-                  borderRadius: "3px",
+                  borderRadius: "6px",
                   fontSize: "11px",
                   fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
-                  color: "#ffffff",
+                  color: "#A2A8B3",
                   display: "inline-block",
                 }}
               >
@@ -459,6 +466,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                   letterSpacing: "-0.03em",
                   lineHeight: 1.15,
                   textTransform: "uppercase",
+                  color: "#F5F6F8",
                 }}
               >
                 {isVi ? (
@@ -475,14 +483,14 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
               </strong>
             </div>
 
-            <div style={{ width: "100%", height: "1px", backgroundColor: "rgba(255, 255, 255, 0.12)", marginBottom: "20px" }} />
+            <div style={{ width: "100%", height: "1px", backgroundColor: "#292D35", marginBottom: "20px" }} />
 
             {/* What's included (Điền thông tin SEO tối ưu) */}
             <div style={{ flex: 1, marginBottom: "32px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px", color: "#e4e4e7" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, display: "block", marginBottom: "14px", color: "#F5F6F8" }}>
                 {isVi ? "Dịch vụ bao gồm:" : "What's included:"}
               </span>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#a1a1aa" }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "13.5px", color: "#A2A8B3" }}>
                 {isVi ? (
                   <>
                     <li>• Dàn 2x Pioneer CDJ-3000 + Mixer DJM-A9</li>
@@ -503,7 +511,7 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
               </ul>
             </div>
 
-            {/* Solid White Button */}
+            {/* Dark Gray Neutral Button */}
             <a
               href={`https://m.me/vanbassmusiccenter?text=${encodeURIComponent(isVi ? "Tôi cần báo giá Gói SỰ KIỆN CDJ-3000" : "I need a quote for EVENT CDJ-3000")}`}
               target="_blank"
@@ -512,14 +520,16 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
                 display: "block",
                 textAlign: "center",
                 padding: "14px 20px",
-                backgroundColor: "#ffffff",
-                color: "#111114",
+                backgroundColor: "#171A20",
+                border: "1px solid #292D35",
+                color: "#F5F6F8",
                 fontWeight: 700,
                 fontSize: "13px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                borderRadius: "4px",
+                borderRadius: "8px",
                 textDecoration: "none",
+                transition: "all 0.2s ease",
               }}
             >
               {isVi ? "NHẬN BÁO GIÁ" : "GET A QUOTE"}

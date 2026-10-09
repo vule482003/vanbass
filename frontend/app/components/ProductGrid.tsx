@@ -6,7 +6,7 @@ import { Product } from "../lib/types";
 import { MOCK_PRODUCTS } from "../lib/mock-data";
 import { getApiBaseUrl } from "../lib/api";
 import { useLanguage } from "../lib/language-context";
-import { resolveProductImage } from "../lib/image-helper";
+import { getProductImageUrl } from "../lib/image-helper";
 import ProductCard from "./ProductCard";
 
 function formatPriceVND(amount?: number | null) {
@@ -17,14 +17,12 @@ function formatPriceVND(amount?: number | null) {
 // Sub-component for individual card with image fallback
 function Top10ProductCardItem({ product, idx }: { product: Product; idx: number }) {
   const [prevProductId, setPrevProductId] = useState(product.id || product.slug);
-  const [imgSrc, setImgSrc] = useState(() =>
-    resolveProductImage(product.images?.[0]?.image_url || product.image_url)
-  );
+  const [imgSrc, setImgSrc] = useState(() => getProductImageUrl(product));
   const [fallbackStep, setFallbackStep] = useState(0);
 
   if ((product.id || product.slug) !== prevProductId) {
     setPrevProductId(product.id || product.slug);
-    setImgSrc(resolveProductImage(product.images?.[0]?.image_url || product.image_url));
+    setImgSrc(getProductImageUrl(product));
     setFallbackStep(0);
   }
 
@@ -55,10 +53,21 @@ function Top10ProductCardItem({ product, idx }: { product: Product; idx: number 
   }
 
   const soldCount = 85 + ((idx * 17) % 120);
+  const isTop3 = idx < 3;
 
   return (
     <div className="top10-product-card-wrap">
       <div className="top10-product-card">
+        {/* Minimalist Top Rank & Status Row */}
+        <div className="top10-card-header-badge">
+          <span className={`top10-rank-badge ${isTop3 ? "top3" : ""}`}>
+            {isTop3 ? `★ TOP ${idx + 1}` : `TOP ${idx + 1}`}
+          </span>
+          <span className="top10-status-badge">
+            {idx === 0 ? "BÁN CHẠY NHẤT" : isTop3 ? "HOT" : "CHÍNH HÃNG"}
+          </span>
+        </div>
+
         {/* Product Image */}
         <Link
           href={`/products/${product.slug}`}
@@ -78,12 +87,6 @@ function Top10ProductCardItem({ product, idx }: { product: Product; idx: number 
           />
         </Link>
 
-        {/* Ribbon Badge */}
-        <div className="vb-card-sale-pill" style={{ marginBottom: "4px" }}>
-          <span className="vb-sale-flag">SALE</span>
-          <span className="vb-sale-text">BÁN CHẠY</span>
-        </div>
-
         {/* Product Title */}
         <Link
           href={`/products/${product.slug}`}
@@ -101,23 +104,30 @@ function Top10ProductCardItem({ product, idx }: { product: Product; idx: number 
             {salePrice > 0 ? formatPriceVND(salePrice) : (product.rental_price ? `${formatPriceVND(product.rental_price)}/ngày` : "Giá liên hệ")}
           </span>
           {originalPrice > 0 && (
-            <div className="vb-card-old-price-row">
+            <div className="top10-old-price-row">
               <span className="top10-old-price">{formatPriceVND(originalPrice)}</span>
-              <span className="vb-card-discount-pill">-{discountPct}%</span>
+              <span className="top10-discount-pill">-{discountPct}%</span>
             </div>
           )}
         </div>
 
         {/* Gift Note */}
-        <div className="vb-card-gift-note" title={giftText}>
-          <span className="vb-gift-text">{giftText}</span>
+        <div className="top10-gift-note" title={giftText}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <polyline points="20 12 20 22 4 22 4 12"></polyline>
+            <rect x="2" y="7" width="20" height="5"></rect>
+            <line x1="12" y1="22" x2="12" y2="7"></line>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+          </svg>
+          <span className="top10-gift-text">{giftText}</span>
         </div>
 
         {/* Rating & Sold Stats */}
-        <div className="vb-card-rating-sold-row" style={{ marginTop: "4px" }}>
-          <span className="vb-rating-score">5/5 <span className="vb-star-icon">★</span></span>
-          <span className="vb-rating-sep">|</span>
-          <span className="vb-sold-count">Đã Bán: {soldCount}</span>
+        <div className="top10-rating-sold-row">
+          <span className="top10-rating-score">5.0 <span className="top10-star-icon">★</span></span>
+          <span className="top10-rating-sep">•</span>
+          <span className="top10-sold-count">Đã bán {soldCount}</span>
         </div>
       </div>
     </div>
@@ -298,14 +308,42 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
 
   return (
     <div className="top10-showcase-container">
-      {/* Top Banner Header - Centered */}
+      {/* Top Banner Header - Minimalist Luxury V4 */}
       <div className="top10-banner-header">
-        <h3 className="top10-header-title">TOP BÀN DJ BÁN CHẠY</h3>
+        <div className="top10-header-info">
+          <span className="top10-header-kicker">BESTSELLERS • CHÍNH HÃNG</span>
+          <h3 className="top10-header-title">TOP BÀN DJ BÁN CHẠY</h3>
+        </div>
+        <div className="top10-header-controls">
+          <span className="top10-header-desc">Tuyển chọn các mẫu Controller & All-in-One được DJ ưa chuộng nhất</span>
+          <div className="top10-header-arrows">
+            <button
+              type="button"
+              className="top10-nav-btn prev-btn"
+              onClick={() => handleScroll("left")}
+              aria-label="Xem sản phẩm trước"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="top10-nav-btn next-btn"
+              onClick={() => handleScroll("right")}
+              aria-label="Xem sản phẩm tiếp theo"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Frame Wrapper / Carousel Body */}
       <div className="top10-frame-body">
-        {/* Navigation Previous Button - Centered vertically on the cards */}
+        {/* Floating Side Arrow Left */}
         <button
           type="button"
           className="top10-nav-arrow left-arrow"
@@ -317,7 +355,7 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
           </svg>
         </button>
 
-        {/* Navigation Next Button - Centered vertically on the cards */}
+        {/* Floating Side Arrow Right */}
         <button
           type="button"
           className="top10-nav-arrow right-arrow"
@@ -421,18 +459,44 @@ const CANONICAL_HOT_SLUG_MAP: Record<string, string> = {
   "ban-dj-xdj-az": "xdj-az",
   "pioneer-ddj-flx2": "ddj-flx2",
   "ban-dj-flx2": "ddj-flx2",
+  "ban-dj-flx4": "ddj-flx4",
+  "pioneer-ddj-flx4": "ddj-flx4",
+  "ban-dj-pioneer-ddj-flx4": "ddj-flx4",
+  "pioneer-xdj-rx3": "xdj-rx3",
+  "ban-dj-xdj-rx3": "xdj-rx3",
+  "ban-dj-pioneer-xdj-rx3": "xdj-rx3",
+  "pioneer-xdj-rx2": "xdj-rx2",
+  "ban-dj-xdj-rx2": "xdj-rx2",
+  "ban-dj-pioneer-xdj-rx2": "xdj-rx2",
+  "pioneer-xdj-rr": "xdj-rr",
+  "ban-dj-xdj-rr": "xdj-rr",
+  "ban-dj-pioneer-xdj-rr": "xdj-rr",
+  "ban-dj-pioneer-xdj-xz": "xdj-xz",
+  "pioneer-xdj-xz": "xdj-xz",
+  "pioneer-dj-xdj-xz": "xdj-xz",
+  "pioneer-cdj-3000": "cdj-3000",
+  "pioneer-ddj-rev5": "ddj-rev5",
+  "ban-dj-ddj-rev5": "ddj-rev5",
 };
 
-export default function ProductGrid() {
-  const [allProducts, setAllProducts] = useState<Product[]>(() =>
-    MOCK_PRODUCTS.map((p) => {
+interface ProductGridProps {
+  initialProducts?: Product[];
+}
+
+export default function ProductGrid({ initialProducts }: ProductGridProps = {}) {
+  const [allProducts, setAllProducts] = useState<Product[]>(() => {
+    const source = initialProducts && initialProducts.length > 0 ? initialProducts : MOCK_PRODUCTS;
+    return source.map((p) => {
       const canonical = CANONICAL_HOT_SLUG_MAP[p.slug];
       return canonical ? { ...p, slug: canonical } : p;
-    })
-  );
+    });
+  });
   const { t, lang } = useLanguage();
 
   useEffect(() => {
+    // Single Source of Truth: If SSR passed initialProducts, keep them to avoid layout shift & flash
+    if (initialProducts && initialProducts.length > 0) return;
+
     const fetchLiveProducts = async () => {
       try {
         const apiUrl = getApiBaseUrl();
@@ -454,34 +518,38 @@ export default function ProductGrid() {
     };
 
     fetchLiveProducts();
-  }, []);
+  }, [initialProducts]);
 
   // 1. Desktop Featured products (First 8 items)
   const desktopFeatured = useMemo(() => allProducts.slice(0, 8), [allProducts]);
 
   // 2. Mobile Grouped Products
-  // A. Top 10 Bestsellers
+  // A. Top 10 Bestsellers (Strict Fixed Priority: RX3, RX2, RR, FLX4, FLX2, OMNIS, AZ, XZ, CDJ-3000, REV5)
   const bestsellers = useMemo(() => {
     const prioritySlugs = [
       "xdj-rx3",
+      "xdj-rx2",
+      "xdj-rr",
       "ddj-flx4",
+      "ddj-flx2",
       "omnis-duo",
       "xdj-az",
-      "ddj-flx2",
-      "bc-speakers-10bg76",
-      "tai-nghe-sennheiser-hd-25",
-      "ban-mixer-mackie-profx16v3-16-kenh",
-      "hz-500-silent-hazer-on-flight-case",
-      "dm-50d",
+      "xdj-xz",
       "cdj-3000",
-      "xdj-rx2",
+      "ddj-rev5",
     ];
 
     const sorted: Product[] = [];
     const usedIds = new Set<string>();
 
     prioritySlugs.forEach((slug) => {
-      const p = allProducts.find((item) => (item.slug || "").toLowerCase().includes(slug) || item.slug === slug);
+      const lowerSlug = slug.toLowerCase();
+      // 1. Exact slug match has highest priority
+      let p = allProducts.find((item) => (item.slug || "").toLowerCase() === lowerSlug);
+      // 2. Fallback to contains match if exact not found
+      if (!p) {
+        p = allProducts.find((item) => (item.slug || "").toLowerCase().includes(lowerSlug));
+      }
       if (p && !usedIds.has(p.id)) {
         sorted.push(p);
         usedIds.add(p.id);
@@ -564,7 +632,7 @@ export default function ProductGrid() {
       id="featured-products"
       style={{
         padding: "85px 0 140px 0",
-        backgroundColor: "#090909",
+        backgroundColor: "#08090B",
         position: "relative",
         zIndex: 10,
       }}

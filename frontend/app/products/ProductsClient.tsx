@@ -962,18 +962,18 @@ export default function ProductsClient({
               <nav
                 aria-label="Danh mục thiết bị âm thanh & DJ"
                 style={{
-                  backgroundColor: "rgba(14, 14, 18, 0.4)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "12px",
                   padding: "28px",
                   marginTop: "24px",
                 }}
               >
                 <div style={{ marginBottom: "20px" }}>
-                  <span style={{ color: "#22c55e", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "4px" }}>
+                  <span style={{ color: "#A2A8B3", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "4px" }}>
                     {lang === "en" ? "EXPLORE BY CATEGORY" : "KHÁM PHÁ THEO DANH MỤC"}
                   </span>
-                  <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", margin: 0 }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#F5F6F8", margin: 0 }}>
                     {lang === "en" ? "Full Audio & DJ Equipment Directory" : "Tra Cứu Danh Mục Thiết Bị Âm Thanh & DJ Toàn Diện"}
                   </h3>
                 </div>
@@ -994,7 +994,7 @@ export default function ProductsClient({
                           handleSelectCategory(`group:${group.id}`);
                         }}
                         style={{
-                          color: "#38bdf8",
+                          color: "#F5F6F8",
                           fontSize: "14px",
                           fontWeight: 700,
                           textDecoration: "none",

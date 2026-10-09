@@ -768,7 +768,7 @@ function CartContent() {
                         }}
                       >
                         <span>{t.cart.total}</span>
-                        <span style={{ color: "#22c55e" }}>{formatCurrency(subtotal, lang)}</span>
+                        <span style={{ color: "#F5F6F8" }}>{formatCurrency(subtotal, lang)}</span>
                       </div>
                     </div>
 
@@ -1267,7 +1267,7 @@ function CartContent() {
                               <span style={{ fontSize: "13px", color: "#a1a1aa", marginRight: "8px" }}>
                                 {t.orderHistory.totalAmt}
                               </span>
-                              <strong style={{ fontSize: "20px", color: "#22c55e", fontWeight: 900 }}>
+                              <strong style={{ fontSize: "20px", color: "#F5F6F8", fontWeight: 900 }}>
                                 {formatCurrency(ord.total_amount, lang)}
                               </strong>
                             </div>

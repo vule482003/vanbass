@@ -141,8 +141,8 @@ export default function SuaChuaBanDjPage() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#08090c",
-        color: "#f4f4f5",
+        backgroundColor: "#08090B",
+        color: "#F5F6F8",
         fontFamily: "var(--font-primary)",
       }}
     >
@@ -182,9 +182,9 @@ export default function SuaChuaBanDjPage() {
                   gap: "8px",
                   padding: "6px 16px",
                   borderRadius: "999px",
-                  backgroundColor: "rgba(34, 197, 94, 0.12)",
-                  border: "1px solid rgba(34, 197, 94, 0.3)",
-                  color: "#22c55e",
+                  backgroundColor: "#171A20",
+                  border: "1px solid #292D35",
+                  color: "#22C55E",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -210,7 +210,7 @@ export default function SuaChuaBanDjPage() {
                   fontFamily: "var(--font-primary)",
                   fontSize: "clamp(34px, 4.6vw, 54px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                   letterSpacing: "-0.035em",
                   lineHeight: 1.15,
                   margin: "0 0 20px 0",
@@ -224,7 +224,7 @@ export default function SuaChuaBanDjPage() {
               {/* Subtitle */}
               <p
                 style={{
-                  color: "#a1a1aa",
+                  color: "#A2A8B3",
                   fontSize: "clamp(15px, 1.8vw, 17px)",
                   lineHeight: 1.75,
                   margin: "0 0 34px 0",
@@ -245,7 +245,7 @@ export default function SuaChuaBanDjPage() {
                     padding: "14px 28px",
                     borderRadius: "10px",
                     backgroundColor: "#22c55e",
-                    color: "#000000",
+                    color: "#08090B",
                     fontSize: "14.5px",
                     fontWeight: 700,
                     textDecoration: "none",
@@ -266,9 +266,9 @@ export default function SuaChuaBanDjPage() {
                     gap: "8px",
                     padding: "14px 24px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(255, 255, 255, 0.06)",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    color: "#f4f4f5",
+                    backgroundColor: "#171A20",
+                    border: "1px solid #292D35",
+                    color: "#F5F6F8",
                     fontSize: "14.5px",
                     fontWeight: 500,
                     textDecoration: "none",
@@ -289,8 +289,8 @@ export default function SuaChuaBanDjPage() {
         <section
           style={{
             padding: "90px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#08090B",
+            borderBottom: "1px solid #292D35",
           }}
         >
           <div className="container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
@@ -312,7 +312,7 @@ export default function SuaChuaBanDjPage() {
                 style={{
                   fontSize: "clamp(24px, 3.2vw, 36px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                   letterSpacing: "-0.025em",
                   margin: 0,
                 }}
@@ -331,8 +331,8 @@ export default function SuaChuaBanDjPage() {
               {/* Service 1: Fader / Crossfader */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 26px",
                   display: "flex",
@@ -347,8 +347,8 @@ export default function SuaChuaBanDjPage() {
                       width: "42px",
                       height: "42px",
                       borderRadius: "10px",
-                      backgroundColor: "rgba(34, 197, 94, 0.12)",
-                      border: "1px solid rgba(34, 197, 94, 0.3)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -369,10 +369,10 @@ export default function SuaChuaBanDjPage() {
                       <line x1="17" y1="16" x2="23" y2="16" />
                     </svg>
                   </div>
-                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                     Fader / Crossfader
                   </h3>
-                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                  <p style={{ fontSize: "14px", color: "#A2A8B3", lineHeight: 1.65, margin: "0 0 20px 0" }}>
                     Thay thế cần volume, crossfader Magvel / Alps chính hãng. Khắc phục triệt để lỗi nhảy âm lượng, rè tín hiệu hoặc kẹt cứng.
                   </p>
                 </div>
@@ -382,21 +382,21 @@ export default function SuaChuaBanDjPage() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     paddingTop: "16px",
-                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                    borderTop: "1px solid #292D35",
                   }}
                 >
                   <span style={{ fontSize: "13.5px", color: "#22c55e", fontWeight: 700 }}>
                     Giá từ 250.000đ
                   </span>
-                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                  <span style={{ color: "#747C89", fontSize: "14px" }}>→</span>
                 </div>
               </div>
 
               {/* Service 2: Jogwheel */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 26px",
                   display: "flex",
@@ -411,8 +411,8 @@ export default function SuaChuaBanDjPage() {
                       width: "42px",
                       height: "42px",
                       borderRadius: "10px",
-                      backgroundColor: "rgba(34, 197, 94, 0.12)",
-                      border: "1px solid rgba(34, 197, 94, 0.3)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -427,10 +427,10 @@ export default function SuaChuaBanDjPage() {
                       <line x1="12" y1="2" x2="12" y2="4" />
                     </svg>
                   </div>
-                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                     Jogwheel & Cảm Ứng Mâm
                   </h3>
-                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                  <p style={{ fontSize: "14px", color: "#A2A8B3", lineHeight: 1.65, margin: "0 0 20px 0" }}>
                     Cân chỉnh cảm ứng mặt mâm, xử lý mâm xoay bị nặng, kẹt cơ học hoặc màn hình LCD On-Jog không hiển thị artwork.
                   </p>
                 </div>
@@ -440,21 +440,21 @@ export default function SuaChuaBanDjPage() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     paddingTop: "16px",
-                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                    borderTop: "1px solid #292D35",
                   }}
                 >
                   <span style={{ fontSize: "13.5px", color: "#22c55e", fontWeight: 700 }}>
                     Giá từ 350.000đ
                   </span>
-                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                  <span style={{ color: "#747C89", fontSize: "14px" }}>→</span>
                 </div>
               </div>
 
               {/* Service 3: USB / Audio Jack */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 26px",
                   display: "flex",
@@ -469,8 +469,8 @@ export default function SuaChuaBanDjPage() {
                       width: "42px",
                       height: "42px",
                       borderRadius: "10px",
-                      backgroundColor: "rgba(34, 197, 94, 0.12)",
-                      border: "1px solid rgba(34, 197, 94, 0.3)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -486,10 +486,10 @@ export default function SuaChuaBanDjPage() {
                       <path d="M12 16v6" />
                     </svg>
                   </div>
-                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                     USB / Audio Jack & Nguồn
                   </h3>
-                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                  <p style={{ fontSize: "14px", color: "#A2A8B3", lineHeight: 1.65, margin: "0 0 20px 0" }}>
                     Xử lý mất nguồn bo mạch, sửa cổng USB chập chờn không nhận nhạc, thay jack tai nghe 3.5mm/6.35mm và jack XLR canon.
                   </p>
                 </div>
@@ -499,21 +499,21 @@ export default function SuaChuaBanDjPage() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     paddingTop: "16px",
-                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                    borderTop: "1px solid #292D35",
                   }}
                 >
                   <span style={{ fontSize: "13.5px", color: "#22c55e", fontWeight: 700 }}>
                     Giá từ 300.000đ
                   </span>
-                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                  <span style={{ color: "#747C89", fontSize: "14px" }}>→</span>
                 </div>
               </div>
 
               {/* Service 4: Vệ sinh & Bảo dưỡng */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 26px",
                   display: "flex",
@@ -528,8 +528,8 @@ export default function SuaChuaBanDjPage() {
                       width: "42px",
                       height: "42px",
                       borderRadius: "10px",
-                      backgroundColor: "rgba(34, 197, 94, 0.12)",
-                      border: "1px solid rgba(34, 197, 94, 0.3)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -542,10 +542,10 @@ export default function SuaChuaBanDjPage() {
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                   </div>
-                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                  <h3 style={{ fontSize: "19px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                     Vệ Sinh & Bảo Dưỡng
                   </h3>
-                  <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.65, margin: "0 0 20px 0" }}>
+                  <p style={{ fontSize: "14px", color: "#A2A8B3", lineHeight: 1.65, margin: "0 0 20px 0" }}>
                     Vệ sinh toàn bộ bo mạch bằng dung dịch chuyên dụng, tra dầu mâm xoay, làm sạch mắt quang cảm biến kéo dài tuổi thọ máy.
                   </p>
                 </div>
@@ -555,13 +555,13 @@ export default function SuaChuaBanDjPage() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     paddingTop: "16px",
-                    borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                    borderTop: "1px solid #292D35",
                   }}
                 >
                   <span style={{ fontSize: "13.5px", color: "#22c55e", fontWeight: 700 }}>
                     300.000đ - 500.000đ
                   </span>
-                  <span style={{ color: "#71717a", fontSize: "14px" }}>→</span>
+                  <span style={{ color: "#747C89", fontSize: "14px" }}>→</span>
                 </div>
               </div>
             </div>
@@ -574,15 +574,15 @@ export default function SuaChuaBanDjPage() {
         <section
           style={{
             padding: "90px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#08090B",
+            borderBottom: "1px solid #292D35",
           }}
         >
           <div className="container" style={{ maxWidth: "980px", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
               <span
                 style={{
-                  color: "#22c55e",
+                  color: "#22C55E",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -597,7 +597,7 @@ export default function SuaChuaBanDjPage() {
                 style={{
                   fontSize: "clamp(24px, 3.2vw, 34px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                   letterSpacing: "-0.025em",
                   margin: 0,
                 }}
@@ -608,8 +608,8 @@ export default function SuaChuaBanDjPage() {
 
             <div
               style={{
-                backgroundColor: "#0d0f15",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: "#101216",
+                border: "1px solid #292D35",
                 borderRadius: "14px",
                 overflow: "hidden",
               }}
@@ -618,51 +618,51 @@ export default function SuaChuaBanDjPage() {
                 <thead>
                   <tr
                     style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.04)",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                      backgroundColor: "#171A20",
+                      borderBottom: "1px solid #292D35",
                     }}
                   >
-                    <th style={{ padding: "18px 24px", color: "#ffffff", fontWeight: 600 }}>Hạng Mục Dịch Vụ</th>
-                    <th style={{ padding: "18px 24px", color: "#ffffff", fontWeight: 600 }}>Thời Gian Xử Lý</th>
-                    <th style={{ padding: "18px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Giá Từ</th>
+                    <th style={{ padding: "18px 24px", color: "#F5F6F8", fontWeight: 600 }}>Hạng Mục Dịch Vụ</th>
+                    <th style={{ padding: "18px 24px", color: "#F5F6F8", fontWeight: 600 }}>Thời Gian Xử Lý</th>
+                    <th style={{ padding: "18px 24px", color: "#A2A8B3", fontWeight: 700, textAlign: "right" }}>Giá Từ</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Thay Fader Volume / Pitch Tempo (Pioneer Controller)</td>
-                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>30 - 60 phút (Lấy liền)</td>
-                    <td style={{ padding: "16px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>250.000đ</td>
+                  <tr style={{ borderBottom: "1px solid #292D35" }}>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8" }}>Thay Fader Volume / Pitch Tempo (Pioneer Controller)</td>
+                    <td style={{ padding: "16px 24px", color: "#A2A8B3" }}>30 - 60 phút (Lấy liền)</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8", fontWeight: 700, textAlign: "right" }}>250.000đ</td>
                   </tr>
-                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Thay Fader Magvel / Alps (Dòng RX3, XZ, CDJ-3000)</td>
-                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>1 - 2 giờ</td>
-                    <td style={{ padding: "16px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>450.000đ</td>
+                  <tr style={{ borderBottom: "1px solid #292D35" }}>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8" }}>Thay Fader Magvel / Alps (Dòng RX3, XZ, CDJ-3000)</td>
+                    <td style={{ padding: "16px 24px", color: "#A2A8B3" }}>1 - 2 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8", fontWeight: 700, textAlign: "right" }}>450.000đ</td>
                   </tr>
-                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Thay nút bấm CUE / PLAY / Pad cao su biểu diễn</td>
-                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>30 - 45 phút</td>
-                    <td style={{ padding: "16px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>200.000đ</td>
+                  <tr style={{ borderBottom: "1px solid #292D35" }}>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8" }}>Thay nút bấm CUE / PLAY / Pad cao su biểu diễn</td>
+                    <td style={{ padding: "16px 24px", color: "#A2A8B3" }}>30 - 45 phút</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8", fontWeight: 700, textAlign: "right" }}>200.000đ</td>
                   </tr>
-                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Cân chỉnh cảm ứng Jogwheel, sửa kẹt mâm xoay</td>
-                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>1 - 3 giờ</td>
-                    <td style={{ padding: "16px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>350.000đ</td>
+                  <tr style={{ borderBottom: "1px solid #292D35" }}>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8" }}>Cân chỉnh cảm ứng Jogwheel, sửa kẹt mâm xoay</td>
+                    <td style={{ padding: "16px 24px", color: "#A2A8B3" }}>1 - 3 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8", fontWeight: 700, textAlign: "right" }}>350.000đ</td>
                   </tr>
-                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Vệ sinh bảo dưỡng toàn bộ máy bằng dung dịch chuyên dụng</td>
-                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>1 - 2 giờ</td>
-                    <td style={{ padding: "16px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>300.000đ</td>
+                  <tr style={{ borderBottom: "1px solid #292D35" }}>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8" }}>Vệ sinh bảo dưỡng toàn bộ máy bằng dung dịch chuyên dụng</td>
+                    <td style={{ padding: "16px 24px", color: "#A2A8B3" }}>1 - 2 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8", fontWeight: 700, textAlign: "right" }}>300.000đ</td>
                   </tr>
                   <tr>
-                    <td style={{ padding: "16px 24px", color: "#f4f4f5" }}>Sửa bo mạch nguồn, cứu firmware, thay IC âm thanh DAC</td>
-                    <td style={{ padding: "16px 24px", color: "#a1a1aa" }}>24 - 48 giờ</td>
-                    <td style={{ padding: "16px 24px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>Báo giá sau kiểm tra</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8" }}>Sửa bo mạch nguồn, cứu firmware, thay IC âm thanh DAC</td>
+                    <td style={{ padding: "16px 24px", color: "#A2A8B3" }}>24 - 48 giờ</td>
+                    <td style={{ padding: "16px 24px", color: "#F5F6F8", fontWeight: 700, textAlign: "right" }}>Báo giá sau kiểm tra</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <p style={{ textAlign: "center", color: "#71717a", fontSize: "13px", marginTop: "16px" }}>
+            <p style={{ textAlign: "center", color: "#747C89", fontSize: "13px", marginTop: "16px" }}>
               * Chuẩn đoán lỗi ban đầu hoàn toàn MIỄN PHÍ. Giá trên đã bao gồm công tháo lắp và bảo hành 6 - 12 tháng.
             </p>
           </div>
@@ -674,15 +674,15 @@ export default function SuaChuaBanDjPage() {
         <section
           style={{
             padding: "90px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#08090B",
+            borderBottom: "1px solid #292D35",
           }}
         >
           <div className="container" style={{ maxWidth: "1100px", margin: "0 auto" }}>
             <div style={{ maxWidth: "680px", marginBottom: "50px" }}>
               <span
                 style={{
-                  color: "#22c55e",
+                  color: "#22C55E",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -697,7 +697,7 @@ export default function SuaChuaBanDjPage() {
                 style={{
                   fontSize: "clamp(24px, 3.2vw, 36px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                   letterSpacing: "-0.025em",
                   margin: 0,
                 }}
@@ -716,8 +716,8 @@ export default function SuaChuaBanDjPage() {
               {/* Step 1 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   display: "flex",
@@ -728,17 +728,17 @@ export default function SuaChuaBanDjPage() {
                   style={{
                     fontSize: "13px",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#A2A8B3",
                     letterSpacing: "0.1em",
                     marginBottom: "14px",
                   }}
                 >
                   BƯỚC 01
                 </span>
-                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                   Tiếp Nhận Thiết Bị
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
                   Kỹ thuật viên tiếp nhận bàn DJ tại Showroom hoặc qua vận chuyển liên tỉnh. Lập phiếu kiểm tra ngoại quan và mô tả lỗi chi tiết.
                 </p>
               </div>
@@ -746,8 +746,8 @@ export default function SuaChuaBanDjPage() {
               {/* Step 2 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   display: "flex",
@@ -758,17 +758,17 @@ export default function SuaChuaBanDjPage() {
                   style={{
                     fontSize: "13px",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#A2A8B3",
                     letterSpacing: "0.1em",
                     marginBottom: "14px",
                   }}
                 >
                   BƯỚC 02
                 </span>
-                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                   Báo Giá Minh Bạch
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
                   Chuẩn đoán lỗi miễn phí, đưa ra phương án xử lý tối ưu và báo giá linh kiện rõ ràng trước khi tiến hành sửa.
                 </p>
               </div>
@@ -776,8 +776,8 @@ export default function SuaChuaBanDjPage() {
               {/* Step 3 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   display: "flex",
@@ -788,17 +788,17 @@ export default function SuaChuaBanDjPage() {
                   style={{
                     fontSize: "13px",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#A2A8B3",
                     letterSpacing: "0.1em",
                     marginBottom: "14px",
                   }}
                 >
                   BƯỚC 03
                 </span>
-                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                   Tiến Hành Sửa Chữa
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
                   Thay thế linh kiện chính hãng trong phòng kỹ thuật tiêu chuẩn, vệ sinh sạch sẽ và kiểm tra toàn diện chức năng máy.
                 </p>
               </div>
@@ -806,8 +806,8 @@ export default function SuaChuaBanDjPage() {
               {/* Step 4 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   display: "flex",
@@ -818,17 +818,17 @@ export default function SuaChuaBanDjPage() {
                   style={{
                     fontSize: "13px",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#A2A8B3",
                     letterSpacing: "0.1em",
                     marginBottom: "14px",
                   }}
                 >
                   BƯỚC 04
                 </span>
-                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#F5F6F8", marginBottom: "10px" }}>
                   Bàn Giao & Bảo Hành
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
                   Cùng khách hàng test lại máy, dán tem bảo hành điện tử 6 - 12 tháng và hướng dẫn bảo quản thiết bị đúng cách.
                 </p>
               </div>
@@ -842,7 +842,7 @@ export default function SuaChuaBanDjPage() {
         <section
           style={{
             padding: "90px 0 100px 0",
-            backgroundColor: "#08090c",
+            backgroundColor: "#08090B",
           }}
         >
           <div className="container" style={{ maxWidth: "920px", margin: "0 auto" }}>
@@ -850,8 +850,8 @@ export default function SuaChuaBanDjPage() {
               style={{
                 position: "relative",
                 padding: "54px 44px",
-                backgroundColor: "#0d0f15",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: "#101216",
+                border: "1px solid #292D35",
                 borderRadius: "16px",
                 textAlign: "center",
                 overflow: "hidden",
@@ -875,7 +875,7 @@ export default function SuaChuaBanDjPage() {
               <div style={{ position: "relative", zIndex: 1 }}>
                 <span
                   style={{
-                    color: "#22c55e",
+                    color: "#22C55E",
                     fontSize: "12px",
                     fontWeight: 700,
                     letterSpacing: "0.14em",
@@ -891,7 +891,7 @@ export default function SuaChuaBanDjPage() {
                   style={{
                     fontSize: "clamp(26px, 3.6vw, 38px)",
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#F5F6F8",
                     letterSpacing: "-0.025em",
                     lineHeight: 1.25,
                     margin: "0 auto 16px auto",
@@ -903,7 +903,7 @@ export default function SuaChuaBanDjPage() {
 
                 <p
                   style={{
-                    color: "#a1a1aa",
+                    color: "#A2A8B3",
                     fontSize: "15px",
                     lineHeight: 1.8,
                     maxWidth: "580px",
@@ -922,8 +922,8 @@ export default function SuaChuaBanDjPage() {
                       gap: "8px",
                       padding: "13px 28px",
                       borderRadius: "10px",
-                      backgroundColor: "#22c55e",
-                      color: "#000000",
+                      backgroundColor: "#22C55E",
+                      color: "#08090B",
                       fontSize: "14px",
                       fontWeight: 700,
                       textDecoration: "none",
@@ -942,9 +942,9 @@ export default function SuaChuaBanDjPage() {
                       gap: "8px",
                       padding: "13px 24px",
                       borderRadius: "10px",
-                      backgroundColor: "rgba(255, 255, 255, 0.06)",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                      color: "#f4f4f5",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
+                      color: "#F5F6F8",
                       fontSize: "14px",
                       fontWeight: 500,
                       textDecoration: "none",

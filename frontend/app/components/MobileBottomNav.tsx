@@ -82,7 +82,7 @@ export default function MobileBottomNav() {
           className={`mobile-nav-tab ${isDjRentalActive ? "active" : ""}`}
           aria-label={lang === "en" ? "DJ Rental" : "Thuê DJ"}
         >
-          <div className="mobile-nav-icon-wrap dj-tab-highlight">
+          <div className="mobile-nav-icon-wrap">
             <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <circle cx="12" cy="12" r="3" />

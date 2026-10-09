@@ -1,5 +1,6 @@
 import LiveHomePageClient from "./components/LiveHomePageClient";
 import { DEFAULT_HOME_DATA, HomeData } from "./types/home_config";
+import { fetchProducts } from "./lib/api";
 
 async function getHomeConfig(): Promise<HomeData> {
   try {
@@ -49,7 +50,10 @@ async function getHomeConfig(): Promise<HomeData> {
 }
 
 export default async function Home() {
-  const homeData = await getHomeConfig();
+  const [homeData, products] = await Promise.all([
+    getHomeConfig(),
+    fetchProducts(),
+  ]);
 
-  return <LiveHomePageClient initialHomeData={homeData} mode="public" />;
+  return <LiveHomePageClient initialHomeData={homeData} initialProducts={products} mode="public" />;
 }

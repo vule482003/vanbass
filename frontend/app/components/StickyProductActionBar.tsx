@@ -208,9 +208,9 @@ export default function StickyProductActionBar({
           left: 0;
           right: 0;
           z-index: 999;
-          background: rgba(14, 16, 20, 0.94);
-          border-top: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.75), 0 0 20px rgba(34, 197, 94, 0.08);
+          background: rgba(16, 18, 22, 0.94);
+          border-top: 1px solid #292D35;
+          box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.75);
           backdrop-filter: blur(24px);
           -webkit-backdrop-filter: blur(24px);
           padding: 12px 20px;
@@ -251,8 +251,8 @@ export default function StickyProductActionBar({
           width: 52px;
           height: 52px;
           flex-shrink: 0;
-          background: #18191f;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: #171A20;
+          border: 1px solid #292D35;
           border-radius: 10px;
           padding: 4px;
           display: flex;
@@ -285,7 +285,7 @@ export default function StickyProductActionBar({
         .sticky-brand {
           font-size: 10.5px;
           font-weight: 800;
-          color: #22c55e;
+          color: #A2A8B3;
           letter-spacing: 0.06em;
           text-transform: uppercase;
         }
@@ -293,13 +293,13 @@ export default function StickyProductActionBar({
         .sticky-stock-tag {
           font-size: 10.5px;
           font-weight: 700;
-          color: #4ade80;
+          color: #22c55e;
         }
 
         .sticky-title {
           font-size: 13.5px;
           font-weight: 700;
-          color: #ffffff;
+          color: #F5F6F8;
           margin: 0;
           white-space: nowrap;
           overflow: hidden;
@@ -320,7 +320,7 @@ export default function StickyProductActionBar({
 
         .price-kicker {
           font-size: 10.5px;
-          color: #a1a1aa;
+          color: #A2A8B3;
           text-transform: uppercase;
           font-weight: 600;
         }
@@ -331,15 +331,15 @@ export default function StickyProductActionBar({
         }
 
         .main-price {
-          color: #ffffff;
+          color: #F5F6F8;
         }
 
         .rental-price {
-          color: #22c55e;
+          color: #F5F6F8;
         }
 
         .rental-item {
-          border-left: 1px solid rgba(255, 255, 255, 0.1);
+          border-left: 1px solid #292D35;
           padding-left: 18px;
         }
 
@@ -359,8 +359,8 @@ export default function StickyProductActionBar({
         .sticky-stepper {
           display: flex;
           align-items: center;
-          background: #090a0d;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: #171A20;
+          border: 1px solid #292D35;
           border-radius: 8px;
           overflow: hidden;
         }
@@ -369,7 +369,7 @@ export default function StickyProductActionBar({
           padding: 8px 12px;
           background: transparent;
           border: none;
-          color: #ffffff;
+          color: #F5F6F8;
           font-size: 14px;
           font-weight: 700;
           cursor: pointer;
@@ -377,14 +377,14 @@ export default function StickyProductActionBar({
         }
 
         .stepper-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.08);
         }
 
         .stepper-val {
           padding: 0 8px;
           font-size: 13px;
           font-weight: 800;
-          color: #ffffff;
+          color: #F5F6F8;
           min-width: 24px;
           text-align: center;
         }
@@ -407,7 +407,7 @@ export default function StickyProductActionBar({
 
         .sticky-btn-primary {
           background: #22c55e;
-          color: #000000;
+          color: #08090B;
           box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
         }
 

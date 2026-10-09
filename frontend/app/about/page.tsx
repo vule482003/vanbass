@@ -14,8 +14,8 @@ export default function AboutPage() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#08090c",
-        color: "#f4f4f5",
+        backgroundColor: "#08090B",
+        color: "#F5F6F8",
         fontFamily: "var(--font-primary)",
       }}
     >
@@ -51,9 +51,9 @@ export default function AboutPage() {
                   gap: "8px",
                   padding: "6px 16px",
                   borderRadius: "999px",
-                  backgroundColor: "rgba(34, 197, 94, 0.12)",
-                  border: "1px solid rgba(34, 197, 94, 0.3)",
-                  color: "#22c55e",
+                  backgroundColor: "#171A20",
+                  border: "1px solid #292D35",
+                  color: "#22C55E",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
@@ -82,7 +82,7 @@ export default function AboutPage() {
                   letterSpacing: "-0.035em",
                   lineHeight: 1.15,
                   margin: "0 0 24px 0",
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                 }}
               >
                 {lang === "en" ? (
@@ -100,7 +100,7 @@ export default function AboutPage() {
               <p
                 style={{
                   fontSize: "clamp(15px, 1.8vw, 17px)",
-                  color: "#a1a1aa",
+                  color: "#A2A8B3",
                   lineHeight: 1.8,
                   margin: "0 0 36px 0",
                   fontWeight: 400,
@@ -122,7 +122,7 @@ export default function AboutPage() {
                     padding: "13px 28px",
                     borderRadius: "10px",
                     backgroundColor: "#22c55e",
-                    color: "#000000",
+                    color: "#08090B",
                     fontSize: "14px",
                     fontWeight: 700,
                     textDecoration: "none",
@@ -142,9 +142,9 @@ export default function AboutPage() {
                     gap: "8px",
                     padding: "13px 26px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(255, 255, 255, 0.06)",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    color: "#f4f4f5",
+                    backgroundColor: "#171A20",
+                    border: "1px solid #292D35",
+                    color: "#F5F6F8",
                     fontSize: "14px",
                     fontWeight: 500,
                     textDecoration: "none",
@@ -165,8 +165,8 @@ export default function AboutPage() {
         <section
           style={{
             padding: "90px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#08090B",
+            borderBottom: "1px solid #292D35",
           }}
         >
           <div className="container">
@@ -188,7 +188,7 @@ export default function AboutPage() {
                 style={{
                   fontSize: "clamp(24px, 3.2vw, 36px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                   letterSpacing: "-0.025em",
                   margin: 0,
                 }}
@@ -207,8 +207,8 @@ export default function AboutPage() {
               {/* Feature 1: Sản phẩm chính hãng */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "36px 30px",
                   display: "flex",
@@ -221,8 +221,8 @@ export default function AboutPage() {
                     width: "42px",
                     height: "42px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(34, 197, 94, 0.12)",
-                    border: "1px solid rgba(34, 197, 94, 0.3)",
+                    backgroundColor: "#171A20",
+                    border: "1px solid #292D35",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -238,14 +238,14 @@ export default function AboutPage() {
                   style={{
                     fontSize: "20px",
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#F5F6F8",
                     marginBottom: "12px",
                     letterSpacing: "-0.015em",
                   }}
                 >
                   {lang === "en" ? "100% Genuine Products" : "Sản phẩm chính hãng"}
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14.5px", lineHeight: 1.7, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14.5px", lineHeight: 1.7, margin: 0 }}>
                   {lang === "en"
                     ? "Official authorized distribution of Pioneer DJ, AlphaTheta, Allen & Heath with genuine manufacturer warranty and technical certificate."
                     : "Cam kết 100% thiết bị Pioneer DJ, AlphaTheta, Allen & Heath chính hãng, đầy đủ CO/CQ, tem bảo hành chính thức và hỗ trợ kỹ thuật trọn đời."}
@@ -255,8 +255,8 @@ export default function AboutPage() {
               {/* Feature 2: Giải pháp âm thanh toàn diện */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "36px 30px",
                   display: "flex",
@@ -269,8 +269,8 @@ export default function AboutPage() {
                     width: "42px",
                     height: "42px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(34, 197, 94, 0.12)",
-                    border: "1px solid rgba(34, 197, 94, 0.3)",
+                    backgroundColor: "#171A20",
+                    border: "1px solid #292D35",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -286,14 +286,14 @@ export default function AboutPage() {
                   style={{
                     fontSize: "20px",
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#F5F6F8",
                     marginBottom: "12px",
                     letterSpacing: "-0.015em",
                   }}
                 >
                   {lang === "en" ? "Comprehensive Sound Solutions" : "Giải pháp âm thanh toàn diện"}
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14.5px", lineHeight: 1.7, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14.5px", lineHeight: 1.7, margin: 0 }}>
                   {lang === "en"
                     ? "Expert acoustic consulting, setup, and sound reinforcement system engineering for Clubs, Lounges, Studios, and VIP events."
                     : "Tư vấn thiết kế, thi công tiêu âm và lắp đặt trọn gói hệ thống âm thanh sân khấu, Club, Bar, Lounge cao cấp theo tiêu chuẩn quốc tế."}
@@ -303,8 +303,8 @@ export default function AboutPage() {
               {/* Feature 3: Cho thuê thiết bị DJ */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "36px 30px",
                   display: "flex",
@@ -317,8 +317,8 @@ export default function AboutPage() {
                     width: "42px",
                     height: "42px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(34, 197, 94, 0.12)",
-                    border: "1px solid rgba(34, 197, 94, 0.3)",
+                    backgroundColor: "#171A20",
+                    border: "1px solid #292D35",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -334,14 +334,14 @@ export default function AboutPage() {
                   style={{
                     fontSize: "20px",
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#F5F6F8",
                     marginBottom: "12px",
                     letterSpacing: "-0.015em",
                   }}
                 >
                   {lang === "en" ? "Professional DJ Rental" : "Cho thuê thiết bị DJ"}
                 </h3>
-                <p style={{ color: "#a1a1aa", fontSize: "14.5px", lineHeight: 1.7, margin: 0 }}>
+                <p style={{ color: "#A2A8B3", fontSize: "14.5px", lineHeight: 1.7, margin: 0 }}>
                   {lang === "en"
                     ? "State-of-the-art Pioneer DJ rigs (CDJ-3000, DJM-A9, XDJ-RX3, XDJ-XZ) with prompt delivery and 24/7 technical crew support."
                     : "Cung cấp dàn máy DJ sự kiện đẳng cấp với hệ thống CDJ-3000, DJM-A9, XDJ-RX3, OPUS-QUAD sẵn sàng đáp ứng nhanh mọi show diễn."}
@@ -392,7 +392,7 @@ export default function AboutPage() {
                 style={{
                   fontSize: "clamp(26px, 3.6vw, 42px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#F5F6F8",
                   letterSpacing: "-0.03em",
                   lineHeight: 1.2,
                   margin: "0 0 20px 0",
@@ -406,7 +406,7 @@ export default function AboutPage() {
               {/* Narrative Description */}
               <p
                 style={{
-                  color: "#a1a1aa",
+                  color: "#A2A8B3",
                   fontSize: "15px",
                   lineHeight: 1.8,
                   margin: "0 0 26px 0",
@@ -432,7 +432,8 @@ export default function AboutPage() {
                       width: "20px",
                       height: "20px",
                       borderRadius: "50%",
-                      backgroundColor: "rgba(34, 197, 94, 0.16)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       color: "#22c55e",
                       display: "flex",
                       alignItems: "center",
@@ -445,7 +446,7 @@ export default function AboutPage() {
                   >
                     ✓
                   </div>
-                  <span style={{ color: "#d4d4d8", fontSize: "14.5px", lineHeight: 1.6 }}>
+                  <span style={{ color: "#F5F6F8", fontSize: "14.5px", lineHeight: 1.6 }}>
                     {lang === "en"
                       ? "Directly experience full Pioneer DJ & AlphaTheta lineup"
                       : "Trực tiếp trải nghiệm các dòng máy Pioneer DJ & AlphaTheta mới nhất"}
@@ -458,7 +459,8 @@ export default function AboutPage() {
                       width: "20px",
                       height: "20px",
                       borderRadius: "50%",
-                      backgroundColor: "rgba(34, 197, 94, 0.16)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       color: "#22c55e",
                       display: "flex",
                       alignItems: "center",
@@ -471,7 +473,7 @@ export default function AboutPage() {
                   >
                     ✓
                   </div>
-                  <span style={{ color: "#d4d4d8", fontSize: "14.5px", lineHeight: 1.6 }}>
+                  <span style={{ color: "#F5F6F8", fontSize: "14.5px", lineHeight: 1.6 }}>
                     {lang === "en"
                       ? "1-on-1 technical advisory by professional sound engineers"
                       : "Tư vấn kỹ thuật 1-1 bởi các kỹ sư âm thanh và DJ nhiều năm kinh nghiệm"}
@@ -484,7 +486,8 @@ export default function AboutPage() {
                       width: "20px",
                       height: "20px",
                       borderRadius: "50%",
-                      backgroundColor: "rgba(34, 197, 94, 0.16)",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
                       color: "#22c55e",
                       display: "flex",
                       alignItems: "center",
@@ -497,7 +500,7 @@ export default function AboutPage() {
                   >
                     ✓
                   </div>
-                  <span style={{ color: "#d4d4d8", fontSize: "14.5px", lineHeight: 1.6 }}>
+                  <span style={{ color: "#F5F6F8", fontSize: "14.5px", lineHeight: 1.6 }}>
                     {lang === "en"
                       ? "Dedicated private testing booth for streaming and auditioning"
                       : "Phòng test máy riêng biệt phục vụ thu âm, livestream và sound check"}
@@ -516,7 +519,7 @@ export default function AboutPage() {
                     padding: "13px 28px",
                     borderRadius: "10px",
                     backgroundColor: "#22c55e",
-                    color: "#000000",
+                    color: "#08090B",
                     fontSize: "14px",
                     fontWeight: 700,
                     textDecoration: "none",
@@ -535,9 +538,9 @@ export default function AboutPage() {
                     gap: "8px",
                     padding: "13px 22px",
                     borderRadius: "10px",
-                    backgroundColor: "rgba(255, 255, 255, 0.06)",
-                    border: "1px solid rgba(255, 255, 255, 0.12)",
-                    color: "#f4f4f5",
+                    backgroundColor: "#171A20",
+                    border: "1px solid #292D35",
+                    color: "#F5F6F8",
                     fontSize: "14px",
                     fontWeight: 500,
                     textDecoration: "none",
@@ -556,8 +559,8 @@ export default function AboutPage() {
         <section
           style={{
             padding: "80px 0",
-            backgroundColor: "#08090c",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#08090B",
+            borderBottom: "1px solid #292D35",
           }}
         >
           <div className="container">
@@ -571,8 +574,8 @@ export default function AboutPage() {
               {/* Stat 1 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   textAlign: "center",
@@ -582,7 +585,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#F5F6F8",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -590,7 +593,7 @@ export default function AboutPage() {
                 >
                   5+
                 </div>
-                <div style={{ color: "#a1a1aa", fontSize: "14px", fontWeight: 500 }}>
+                <div style={{ color: "#A2A8B3", fontSize: "14px", fontWeight: 500 }}>
                   {lang === "en" ? "Years of Experience" : "Năm kinh nghiệm"}
                 </div>
               </div>
@@ -598,8 +601,8 @@ export default function AboutPage() {
               {/* Stat 2 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   textAlign: "center",
@@ -609,7 +612,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#F5F6F8",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -617,7 +620,7 @@ export default function AboutPage() {
                 >
                   10.000+
                 </div>
-                <div style={{ color: "#a1a1aa", fontSize: "14px", fontWeight: 500 }}>
+                <div style={{ color: "#A2A8B3", fontSize: "14px", fontWeight: 500 }}>
                   {lang === "en" ? "Trusted Customers" : "Khách hàng tin tưởng"}
                 </div>
               </div>
@@ -625,8 +628,8 @@ export default function AboutPage() {
               {/* Stat 3 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   textAlign: "center",
@@ -636,7 +639,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#F5F6F8",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -644,7 +647,7 @@ export default function AboutPage() {
                 >
                   100%
                 </div>
-                <div style={{ color: "#a1a1aa", fontSize: "14px", fontWeight: 500 }}>
+                <div style={{ color: "#A2A8B3", fontSize: "14px", fontWeight: 500 }}>
                   {lang === "en" ? "Genuine Equipment" : "Sản phẩm chính hãng"}
                 </div>
               </div>
@@ -652,8 +655,8 @@ export default function AboutPage() {
               {/* Stat 4 */}
               <div
                 style={{
-                  backgroundColor: "#0d0f15",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  backgroundColor: "#101216",
+                  border: "1px solid #292D35",
                   borderRadius: "14px",
                   padding: "32px 24px",
                   textAlign: "center",
@@ -663,7 +666,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(32px, 4vw, 44px)",
                     fontWeight: 700,
-                    color: "#22c55e",
+                    color: "#F5F6F8",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -671,7 +674,7 @@ export default function AboutPage() {
                 >
                   24/7
                 </div>
-                <div style={{ color: "#a1a1aa", fontSize: "14px", fontWeight: 500 }}>
+                <div style={{ color: "#A2A8B3", fontSize: "14px", fontWeight: 500 }}>
                   {lang === "en" ? "Technical Advisory" : "Hỗ trợ tư vấn"}
                 </div>
               </div>
@@ -685,7 +688,7 @@ export default function AboutPage() {
         <section
           style={{
             padding: "90px 0 100px 0",
-            backgroundColor: "#08090c",
+            backgroundColor: "#08090B",
           }}
         >
           <div className="container" style={{ maxWidth: "960px", margin: "0 auto" }}>
@@ -693,8 +696,8 @@ export default function AboutPage() {
               style={{
                 position: "relative",
                 padding: "60px 48px",
-                backgroundColor: "#0d0f15",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: "#101216",
+                border: "1px solid #292D35",
                 borderRadius: "16px",
                 textAlign: "center",
                 overflow: "hidden",
@@ -734,7 +737,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: "clamp(26px, 3.6vw, 38px)",
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#F5F6F8",
                     letterSpacing: "-0.025em",
                     lineHeight: 1.25,
                     margin: "0 auto 16px auto",
@@ -748,7 +751,7 @@ export default function AboutPage() {
 
                 <p
                   style={{
-                    color: "#a1a1aa",
+                    color: "#A2A8B3",
                     fontSize: "15px",
                     lineHeight: 1.8,
                     maxWidth: "620px",
@@ -770,7 +773,7 @@ export default function AboutPage() {
                       padding: "13px 30px",
                       borderRadius: "10px",
                       backgroundColor: "#22c55e",
-                      color: "#000000",
+                      color: "#08090B",
                       fontSize: "14px",
                       fontWeight: 700,
                       textDecoration: "none",
@@ -789,9 +792,9 @@ export default function AboutPage() {
                       gap: "8px",
                       padding: "13px 26px",
                       borderRadius: "10px",
-                      backgroundColor: "rgba(255, 255, 255, 0.06)",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                      color: "#f4f4f5",
+                      backgroundColor: "#171A20",
+                      border: "1px solid #292D35",
+                      color: "#F5F6F8",
                       fontSize: "14px",
                       fontWeight: 500,
                       textDecoration: "none",

@@ -1,10 +1,14 @@
-export function resolveProductImage(url?: string | null): string {
+import { Product } from "./types";
+
+export function resolveProductImage(url?: string | null, slug?: string): string {
   if (!url || typeof url !== "string") {
+    if (slug) return `/images/products/${slug}.png`;
     return "/images/products/placeholder.png";
   }
 
   const trimmed = url.trim();
   if (!trimmed || trimmed === "null" || trimmed === "undefined") {
+    if (slug) return `/images/products/${slug}.png`;
     return "/images/products/placeholder.png";
   }
 
@@ -42,6 +46,31 @@ export function resolveProductImage(url?: string | null): string {
   const normalizedPath = cleaned.startsWith("/") ? cleaned : `/${cleaned}`;
 
   return `${backendBase}${normalizedPath}`;
+}
+
+export function getProductImageUrl(
+  product?: (Partial<Product> & { image?: string; thumbnail?: string }) | null
+): string {
+  if (!product) return "/images/products/placeholder.png";
+
+  const rawUrl =
+    product.images?.[0]?.image_url ||
+    product.image_url ||
+    product.image ||
+    product.thumbnail;
+
+  if (rawUrl && typeof rawUrl === "string") {
+    const trimmed = rawUrl.trim();
+    if (trimmed && trimmed !== "null" && trimmed !== "undefined") {
+      return resolveProductImage(trimmed, product.slug);
+    }
+  }
+
+  if (product.slug) {
+    return `/images/products/${product.slug}.png`;
+  }
+
+  return "/images/products/placeholder.png";
 }
 
 export function getProductFallbackImage(slug?: string): string {

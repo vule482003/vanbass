@@ -844,10 +844,10 @@ export default function VisualCategoryBar({
           align-items: center;
           gap: 10px;
           padding: 10px 20px;
-          background: rgba(18, 18, 20, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 9999px;
-          color: #d4d4d8;
+          color: #A2A8B3;
           font-size: 13.5px;
           font-weight: 700;
           cursor: pointer;
@@ -858,17 +858,17 @@ export default function VisualCategoryBar({
         }
 
         .category-tier1-pill:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(34, 197, 94, 0.4);
-          color: #ffffff;
+          background: #171A20;
+          border-color: #3A404B;
+          color: #F5F6F8;
           transform: translateY(-1px);
         }
 
         .category-tier1-pill.is-active {
-          background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 26, 19, 0.95) 100%);
+          background: #171A20;
           border-color: #22c55e;
-          color: #ffffff;
-          box-shadow: 0 0 16px rgba(34, 197, 94, 0.28), inset 0 1px 0 rgba(34, 197, 94, 0.4);
+          color: #F5F6F8;
+          box-shadow: 0 0 14px rgba(34, 197, 94, 0.22);
         }
 
         .tier1-label {
@@ -881,22 +881,22 @@ export default function VisualCategoryBar({
           font-weight: 800;
           padding: 2px 7px;
           border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.08);
-          color: #a1a1aa;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #171A20;
+          color: #747C89;
+          border: 1px solid #292D35;
           transition: all 0.2s ease;
         }
 
         .category-tier1-pill.is-active .tier1-badge {
           background: #22c55e;
-          color: #000000;
+          color: #08090B;
           border-color: #22c55e;
         }
 
         /* Tier 2 Subcategory Chips */
         .category-tier2-wrapper {
-          background: rgba(12, 13, 16, 0.75);
-          border: 1px solid rgba(255, 255, 255, 0.07);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 14px;
           padding: 8px 12px;
           margin-bottom: 20px;
@@ -922,10 +922,10 @@ export default function VisualCategoryBar({
           align-items: center;
           gap: 7px;
           padding: 6px 14px;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #101216;
+          border: 1px solid #292D35;
           border-radius: 9999px;
-          color: #a1a1aa;
+          color: #A2A8B3;
           font-size: 12.5px;
           font-weight: 600;
           cursor: pointer;
@@ -935,14 +935,14 @@ export default function VisualCategoryBar({
         }
 
         .category-tier2-chip:hover {
-          background: rgba(255, 255, 255, 0.09);
-          color: #ffffff;
-          border-color: rgba(255, 255, 255, 0.2);
+          background: #171A20;
+          color: #F5F6F8;
+          border-color: #3A404B;
         }
 
         .category-tier2-chip.is-active {
           background: #22c55e;
-          color: #000000;
+          color: #08090B;
           font-weight: 800;
           border-color: #22c55e;
           box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
@@ -1291,13 +1291,13 @@ export default function VisualCategoryBar({
           align-items: center;
           justify-content: center;
           font-size: 13px;
-          font-weight: 800;
-          color: #22c55e;
-          background-color: #12281c;
+          font-weight: 600;
+          color: #A2A8B3;
+          background-color: #171A20;
           padding: 6px 16px;
           border-radius: 9999px;
-          border: 1.5px solid #22c55e;
-          box-shadow: 0 0 14px rgba(34, 197, 94, 0.25);
+          border: 1px solid #292D35;
+          box-shadow: none;
           white-space: nowrap;
           letter-spacing: -0.01em;
         }

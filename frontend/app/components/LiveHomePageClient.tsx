@@ -13,9 +13,11 @@ import FloatingContact from "./FloatingContact";
 import BrandLogoCloud from "./BrandLogoCloud";
 import CommunityShowcase from "./CommunityShowcase";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
+import { Product } from "../lib/types";
 
 interface LiveHomePageClientProps {
   initialHomeData: HomeData;
+  initialProducts?: Product[];
   mode?: "public" | "editor";
 }
 
@@ -37,7 +39,11 @@ function updateNestedKey<T extends object>(obj: T, path: string, value: unknown)
   return copy as T;
 }
 
-export default function LiveHomePageClient({ initialHomeData, mode = "public" }: LiveHomePageClientProps) {
+export default function LiveHomePageClient({
+  initialHomeData,
+  initialProducts,
+  mode = "public",
+}: LiveHomePageClientProps) {
   const [homeData, setHomeData] = useState<HomeData>(initialHomeData || DEFAULT_HOME_DATA);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
 
@@ -355,7 +361,7 @@ export default function LiveHomePageClient({ initialHomeData, mode = "public" }:
         <BrandLogoCloud />
 
         {/* 2. Thiết bị nổi bật */}
-        {visibility.show_products && <ProductGrid />}
+        {visibility.show_products && <ProductGrid initialProducts={initialProducts} />}
 
         {/* 3. Danh mục sản phẩm */}
         {visibility.show_categories && <CategoryGrid config={homeData.categories_highlight} />}

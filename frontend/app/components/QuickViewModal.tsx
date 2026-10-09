@@ -9,7 +9,7 @@ import { useLanguage } from "../lib/language-context";
 import { getMessengerRentalUrl } from "../lib/api";
 import { getTranslatedProductName, getTranslatedProductDesc, getProductPlainExcerpt } from "../lib/product-i18n";
 
-import { resolveProductImage } from "../lib/image-helper";
+import { resolveProductImage, getProductImageUrl } from "../lib/image-helper";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -44,8 +44,8 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const cleanExcerpt = getProductPlainExcerpt(displayDesc, 260);
 
   const imagesList = (product.images && product.images.length > 0
-    ? product.images.map((i) => resolveProductImage(i.image_url))
-    : [resolveProductImage(product.image_url)]
+    ? product.images.map((i) => resolveProductImage(i.image_url, product.slug))
+    : [getProductImageUrl(product)]
   ).filter(Boolean) as string[];
 
   const handleAddToCart = () => {
@@ -294,8 +294,8 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
               {product.rental_enabled && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: product.sale_enabled ? "1px solid rgba(255, 255, 255, 0.06)" : "none", paddingTop: product.sale_enabled ? "10px" : "0" }}>
-                  <span style={{ fontSize: "13px", color: "#4ade80", fontWeight: 700 }}>{t.products.rentalPriceLabel} {t.products.perDay}:</span>
-                  <span style={{ fontSize: "18px", fontWeight: 800, color: "#22c55e" }}>
+                  <span style={{ fontSize: "13px", color: "#A2A8B3", fontWeight: 700 }}>{t.products.rentalPriceLabel} {t.products.perDay}:</span>
+                  <span style={{ fontSize: "18px", fontWeight: 800, color: "#F5F6F8" }}>
                     {formatVND(product.rental_price)}
                   </span>
                 </div>
@@ -395,7 +395,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
               style={{
                 textAlign: "center",
                 fontSize: "13px",
-                color: "#22c55e",
+                color: "#A2A8B3",
                 fontWeight: 700,
                 textDecoration: "none",
                 marginTop: "4px",

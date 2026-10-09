@@ -638,8 +638,8 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                           alignItems: "center",
                           justifyContent: "space-between",
                           padding: "10px 14px",
-                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(24, 24, 27, 0.9))",
-                          border: "1px solid rgba(34, 197, 94, 0.35)",
+                          background: "#171A20",
+                          border: "1px solid #292D35",
                           borderRadius: "10px",
                           margin: "8px 10px",
                           cursor: "pointer",
@@ -648,15 +648,15 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e" }} />
                           <div>
-                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#22c55e" }}>
+                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#F5F6F8" }}>
                               {lang === "en" ? "DJ Equipment Repair & Maintenance" : "Dịch vụ Sửa chữa & Bảo dưỡng Bàn DJ"}
                             </div>
-                            <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>
+                            <div style={{ fontSize: "11px", color: "#A2A8B3" }}>
                               {lang === "en" ? "Hotline / Zalo: 0706 067 799 • Da Nang & Hue" : "Sửa lấy liền tại Đà Nẵng & Huế • Hotline: 0706 067 799"}
                             </div>
                           </div>
                         </div>
-                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#22c55e" }}>
+                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#A2A8B3" }}>
                           {lang === "en" ? "Details →" : "Xem chi tiết →"}
                         </span>
                       </div>
@@ -754,7 +754,7 @@ export default function Header({ config, isEditor = false }: HeaderProps = {}) {
                                 {item.brand} • {item.sku}
                               </div>
                             </div>
-                            <div style={{ fontSize: "13px", fontWeight: 800, color: "#22c55e", whiteSpace: "nowrap", marginLeft: "12px" }}>
+                            <div style={{ fontSize: "13px", fontWeight: 800, color: "#F5F6F8", whiteSpace: "nowrap", marginLeft: "12px" }}>
                               {item.sale_price ? (lang === "en" ? new Intl.NumberFormat("en-US").format(item.sale_price) + "₫" : item.sale_price.toLocaleString("vi-VN") + "₫") : t.products.contactPrice}
                             </div>
                           </div>

@@ -94,7 +94,20 @@ export async function fetchProducts(params?: {
       return filterMockProducts(params);
     }
     const data = await res.json();
-    if (Array.isArray(data)) return data;
+    if (Array.isArray(data)) {
+      return data.map((p: Product & { image?: string }) => {
+        const primaryImg =
+          p.images?.[0]?.image_url ||
+          p.image_url ||
+          p.image ||
+          (p.slug ? `/images/products/${p.slug}.png` : undefined);
+        return {
+          ...p,
+          image_url: primaryImg || p.image_url,
+          image: primaryImg || p.image,
+        };
+      });
+    }
     return filterMockProducts(params);
   } catch (error) {
     if (process.env.NODE_ENV !== "production") {

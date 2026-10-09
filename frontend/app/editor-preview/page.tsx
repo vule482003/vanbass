@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import LiveHomePageClient from "../components/LiveHomePageClient";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
+import { fetchProducts } from "../lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,11 @@ async function getEditorInitialConfig(): Promise<HomeData> {
 }
 
 export default async function EditorPreviewPage() {
-  const homeData = await getEditorInitialConfig();
+  const [homeData, products] = await Promise.all([
+    getEditorInitialConfig(),
+    fetchProducts(),
+  ]);
 
-  return <LiveHomePageClient initialHomeData={homeData} mode="editor" />;
+  return <LiveHomePageClient initialHomeData={homeData} initialProducts={products} mode="editor" />;
 }
+

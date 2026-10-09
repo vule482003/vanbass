@@ -258,11 +258,11 @@ export default function CompareDrawer({ products, onRemoveProduct, onClearAll }:
 
                   {/* Row: Giá thuê / ngày */}
                   <tr>
-                    <td style={{ padding: "14px 16px", color: "#4ade80", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 700 }}>
+                    <td style={{ padding: "14px 16px", color: "#A2A8B3", borderBottom: "1px solid rgba(255,255,255,0.06)", fontWeight: 700 }}>
                       {t.compareDrawer.rentalPriceField}
                     </td>
                     {products.map((prod) => (
-                      <td key={prod.id} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center", fontWeight: 800, color: "#22c55e", fontSize: "15px" }}>
+                      <td key={prod.id} style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center", fontWeight: 800, color: "#F5F6F8", fontSize: "15px" }}>
                         {prod.rental_enabled && prod.rental_price ? formatVND(prod.rental_price, lang) + ` ${t.compareDrawer.perDayUnit}` : t.compareDrawer.notForRentText}
                       </td>
                     ))}
