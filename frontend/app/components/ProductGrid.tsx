@@ -316,28 +316,6 @@ function Top10BestsellerBox({ products }: Top10BestsellerBoxProps) {
         </div>
         <div className="top10-header-controls">
           <span className="top10-header-desc">Tuyển chọn các mẫu Controller & All-in-One được DJ ưa chuộng nhất</span>
-          <div className="top10-header-arrows">
-            <button
-              type="button"
-              className="top10-nav-btn prev-btn"
-              onClick={() => handleScroll("left")}
-              aria-label="Xem sản phẩm trước"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="top10-nav-btn next-btn"
-              onClick={() => handleScroll("right")}
-              aria-label="Xem sản phẩm tiếp theo"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 

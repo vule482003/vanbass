@@ -45,10 +45,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${baseUrl}/images/services/dj_academy_hero.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "Khóa học DJ thực hành tại Đà Nẵng và Huế - VanBass Music Center",
+        url: `${baseUrl}/images/academy/hero_banner_optimal.png`,
+        width: 1920,
+        height: 1080,
+        alt: "Khóa học DJ thực hành tại Đà Nẵng và Huế - V&B Studio & VanBass",
       },
     ],
   },
