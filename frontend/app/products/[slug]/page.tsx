@@ -916,17 +916,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const plainDesc = hotSeo?.description || getProductPlainExcerpt(product.description, 250) || product.name;
 
-  // Genuine price handling - DO NOT fake price
-  const hasValidPrice = Boolean(
-    (product.sale_price && product.sale_price > 0) ||
-    (isDirectHotModel && hotSeo?.salePrice && hotSeo.salePrice > 0)
-  );
-  const realPrice =
-    product.sale_price && product.sale_price > 0
-      ? product.sale_price
-      : isDirectHotModel && hotSeo?.salePrice
-        ? hotSeo.salePrice
-        : null;
+  // Genuine price handling
+  const rawPrice =
+    (product.sale_price && Number(product.sale_price) > 0 ? Number(product.sale_price) : null) ??
+    ((product as unknown as { price?: number }).price && Number((product as unknown as { price?: number }).price) > 0
+      ? Number((product as unknown as { price?: number }).price)
+      : null) ??
+    (isDirectHotModel && hotSeo?.salePrice && Number(hotSeo.salePrice) > 0 ? Number(hotSeo.salePrice) : null);
+
+  const realPrice = rawPrice ?? 0;
 
   // Genuine brand handling - DO NOT fake brand
   const brandName = product.brand?.trim() || (isDirectHotModel ? (modelKey?.includes("alphatheta") ? "AlphaTheta" : "Pioneer DJ") : null);
@@ -951,34 +949,42 @@ export default async function ProductDetailPage({ params }: PageProps) {
     const full = product.image_url.startsWith("http") ? product.image_url : `${baseUrl}${product.image_url.startsWith("/") ? "" : "/"}${product.image_url}`;
     productImages.push(full);
   }
-
-  // Real Offer Schema - ONLY if genuine price exists!
-  let offerSchema: Record<string, unknown> | null = null;
-  if (hasValidPrice && realPrice) {
-    offerSchema = {
-      "@type": "Offer",
-      "url": `${baseUrl}/products/${canonicalSlug}`,
-      "priceCurrency": "VND",
-      "price": realPrice,
-      "itemCondition": "https://schema.org/NewCondition",
-      "availability": product.stock_quantity === 0 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "VanBass Music Center",
-        "url": baseUrl,
-      },
-      "hasMerchantReturnPolicy": {
-        "@type": "MerchantReturnPolicy",
-        "applicableCountry": "VN",
-        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-        "merchantReturnDays": 7,
-        "returnMethod": "https://schema.org/ReturnInStore",
-        "returnFees": "https://schema.org/FreeReturn",
-      },
-    };
+  if (productImages.length === 0 && (product.image || product.thumbnail)) {
+    const fallbackImg = product.image || product.thumbnail;
+    if (fallbackImg) {
+      const full = fallbackImg.startsWith("http") ? fallbackImg : `${baseUrl}${fallbackImg.startsWith("/") ? "" : "/"}${fallbackImg}`;
+      productImages.push(full);
+    }
   }
 
-  // Product Schema strictly with real data (no fake SKU, brand, image, or offer)
+  // Offer Schema - MANDATORY for Google SEO Structured Data (avoids GSC error "Phải chỉ định 'offers', 'review' hoặc 'aggregateRating'")
+  const offerSchema: Record<string, unknown> = {
+    "@type": "Offer",
+    "url": `${baseUrl}/products/${canonicalSlug}`,
+    "priceCurrency": "VND",
+    "price": realPrice,
+    "priceValidUntil": `${new Date().getFullYear() + 1}-12-31`,
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability":
+      typeof product.stock_quantity === "number" && product.stock_quantity <= 0
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "VanBass Music Center",
+      "url": baseUrl,
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "VN",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 7,
+      "returnMethod": "https://schema.org/ReturnInStore",
+      "returnFees": "https://schema.org/FreeReturn",
+    },
+  };
+
+  // Product Schema strictly with real data (no fake SKU, brand, image) - offers is ALWAYS included
   const productSchema: Record<string, unknown> = {
     "@type": "Product",
     "@id": `${baseUrl}/products/${canonicalSlug}#product`,
@@ -994,7 +1000,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         "name": brandName,
       },
     } : {}),
-    ...(offerSchema ? { "offers": offerSchema } : {}),
+    "offers": offerSchema,
   };
 
   const isDjControllerOrSystem = Boolean(

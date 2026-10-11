@@ -139,7 +139,17 @@ def forgot_password(
 ):
     email = data.email.lower().strip()
     cooldown_key = f"pwd_reset_cooldown:{email}"
+    otp_key = f"pwd_reset:{email}"
 
+    # 1. Verify email service is configured on this server
+    if not EmailService.is_configured():
+        logger.error("Password reset requested for %s, but SMTP service is not configured.", email)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Dịch vụ gửi email hiện chưa khả dụng. Vui lòng liên hệ quản trị viên.",
+        )
+
+    # 2. Check cooldown in Redis (fail fast if Redis is unavailable)
     try:
         if redis_client.get(cooldown_key):
             raise HTTPException(
@@ -149,29 +159,58 @@ def forgot_password(
     except HTTPException:
         raise
     except Exception as e:
-        logger.warning(f"Redis check cooldown error: {e}")
+        logger.error(f"Redis check cooldown error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Hệ thống xác thực tạm thời gián đoạn. Vui lòng thử lại sau.",
+        )
 
+    # 3. Lookup user
     user = db.scalar(select(User).where(func.lower(User.email) == email))
 
-    # Only generate and dispatch OTP if user exists and is active
-    if user and user.is_active:
-        otp = f"{secrets.randbelow(900000) + 100000}"
-        otp_key = f"pwd_reset:{email}"
-
-        try:
-            payload = json.dumps({"otp": otp, "attempts": 0})
-            redis_client.set(otp_key, payload, ex=300)  # 5 minutes TTL
-            redis_client.set(cooldown_key, "1", ex=60)  # 60s cooldown
-        except Exception as e:
-            logger.error(f"Redis setex error for OTP: {e}")
-
-        EmailService.send_password_reset_otp(email, otp)
-
-    return {
+    # Standard public response preserving anti-enumeration (OWASP guidelines)
+    success_response = {
         "success": True,
         "message": "Nếu email tồn tại trong hệ thống, mã xác thực 6 số đã được gửi tới email của bạn. Vui lòng kiểm tra hộp thư (bao gồm cả thư rác/spam).",
         "expires_in": 300,
     }
+
+    # If user does not exist or is inactive, return standard response without generating/sending OTP
+    if not user or not user.is_active:
+        return success_response
+
+    # 4. Generate 6-digit OTP
+    otp = f"{secrets.randbelow(900000) + 100000}"
+
+    # 5. Save OTP to Redis (must succeed before sending email)
+    try:
+        payload = json.dumps({"otp": otp, "attempts": 0})
+        redis_client.set(otp_key, payload, ex=300)  # 5 minutes TTL
+        redis_client.set(cooldown_key, "1", ex=60)  # 60s cooldown
+    except Exception as e:
+        logger.error(f"Redis set OTP error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Hệ thống xác thực tạm thời gián đoạn. Vui lòng thử lại sau.",
+        )
+
+    # 6. Dispatch email via SMTP synchronously to verify SMTP server acceptance
+    email_sent = EmailService.send_password_reset_otp(email, otp)
+    if not email_sent:
+        logger.error("Failed to send password reset email to %s", email)
+        # Roll back OTP and cooldown so user is not locked out with an unsent OTP
+        try:
+            redis_client.delete(otp_key)
+            redis_client.delete(cooldown_key)
+        except Exception as e:
+            logger.warning("Failed to clean up OTP after email send failure: %s", e)
+
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Không thể gửi email xác thực lúc này do sự cố kết nối máy chủ thư. Vui lòng thử lại sau.",
+        )
+
+    return success_response
 
 
 @router.post(
@@ -192,6 +231,10 @@ def reset_password(
         raw_data = redis_client.get(otp_key)
     except Exception as e:
         logger.error(f"Redis get error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Hệ thống xác thực tạm thời gián đoạn. Vui lòng thử lại sau.",
+        )
 
     if not raw_data:
         raise HTTPException(

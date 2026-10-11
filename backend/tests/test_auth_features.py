@@ -1,5 +1,6 @@
 import json
 import logging
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -9,6 +10,7 @@ from app.core.security import hash_password
 from app.db.session import SessionLocal
 from app.main import app
 from app.models.user import User, UserRole
+from app.services.email_service import EmailService
 
 logger = logging.getLogger(__name__)
 
@@ -88,10 +90,14 @@ def test_forgot_and_reset_password_flow():
     except (ConnectionError, TimeoutError) as err:
         logger.warning("Redis cleanup warning: %s", err)
 
-    res_forgot = client.post(
-        "/api/auth/forgot-password",
-        json={"email": test_email},
-    )
+    with (
+        patch.object(EmailService, "is_configured", return_value=True),
+        patch.object(EmailService, "send_password_reset_otp", return_value=True),
+    ):
+        res_forgot = client.post(
+            "/api/auth/forgot-password",
+            json={"email": test_email},
+        )
     assert res_forgot.status_code == 200
     assert res_forgot.json()["success"] is True
 

@@ -25,8 +25,24 @@ def format_currency(val: Decimal | float | None) -> str:
 
 
 class EmailService:
-    @staticmethod
+    @classmethod
+    def is_configured(cls) -> bool:
+        """
+        Check if SMTP host, user, and password are configured.
+        Returns False if any required setting is missing or empty.
+        """
+        return bool(
+            settings.smtp_host
+            and settings.smtp_host.strip()
+            and settings.smtp_user
+            and settings.smtp_user.strip()
+            and settings.smtp_password
+            and settings.smtp_password.strip()
+        )
+
+    @classmethod
     def _send_sync(
+        cls,
         to_emails: list[str],
         subject: str,
         html_content: str,
@@ -45,6 +61,14 @@ class EmailService:
         if not clean_recipients:
             return False
 
+        if not cls.is_configured():
+            logger.warning(
+                "Cannot send email '%s' to %s: SMTP credentials not configured in settings.",
+                subject,
+                clean_recipients,
+            )
+            return False
+
         smtp_user = settings.smtp_user.strip()
         smtp_password = settings.smtp_password.strip()
         smtp_host = settings.smtp_host.strip()
@@ -56,20 +80,6 @@ class EmailService:
             else smtp_user or "no-reply@vanbass.vn"
         )
         from_name = settings.smtp_from_name or "VanBass Music Center"
-
-        # Check if SMTP credentials are configured
-        if not smtp_user or not smtp_password:
-            logger.info(
-                "===========================================================\n"
-                "[MOCK EMAIL - SMTP credentials not yet set in .env]\n"
-                f"From: {from_name} <{from_email}>\n"
-                f"To: {', '.join(clean_recipients)}\n"
-                f"Subject: {subject}\n"
-                "-----------------------------------------------------------\n"
-                f"Preview: {html_content[:300]}...\n"
-                "==========================================================="
-            )
-            return True
 
         try:
             msg = MIMEMultipart("alternative")
@@ -96,12 +106,27 @@ class EmailService:
                     server.sendmail(from_email, clean_recipients, msg.as_string())
 
             logger.info(
-                f"Successfully sent email '{subject}' to {', '.join(clean_recipients)}"
+                "Successfully sent email '%s' to %s", subject, clean_recipients
             )
             return True
 
-        except Exception:
-            logger.exception(f"Failed to send email '{subject}' to {clean_recipients}")
+        except smtplib.SMTPAuthenticationError as e:
+            logger.error("SMTP authentication failed for user '%s': %s", smtp_user, e)
+            return False
+        except smtplib.SMTPConnectError as e:
+            logger.error("SMTP connection failed to %s:%s: %s", smtp_host, smtp_port, e)
+            return False
+        except (TimeoutError, smtplib.SMTPServerDisconnected) as e:
+            logger.error("SMTP timeout or disconnected (%s:%s): %s", smtp_host, smtp_port, e)
+            return False
+        except smtplib.SMTPRecipientsRefused as e:
+            logger.error("SMTP recipients refused for %s: %s", clean_recipients, e)
+            return False
+        except smtplib.SMTPException as e:
+            logger.error("SMTP protocol error while sending '%s': %s", subject, e)
+            return False
+        except Exception as e:  # noqa: BLE001
+            logger.error("Unexpected error while sending email '%s': %s", subject, e)
             return False
 
     @classmethod
@@ -113,16 +138,27 @@ class EmailService:
         text_content: str | None = None,
     ):
         """
-        Non-blocking async email dispatcher.
+        Non-blocking async email dispatcher with failure logging.
         """
         recipients = [to_emails] if isinstance(to_emails, str) else to_emails
-        email_executor.submit(
+        future = email_executor.submit(
             cls._send_sync,
             recipients,
             subject,
             html_content,
             text_content,
         )
+
+        def _on_complete(fut):
+            try:
+                success = fut.result()
+                if not success:
+                    logger.warning("Async email dispatch finished with failure status for '%s'", subject)
+            except Exception as e:  # noqa: BLE001
+                logger.error("Async email dispatch encountered an exception for '%s': %s", subject, e)
+
+        future.add_done_callback(_on_complete)
+        return future
 
     # =========================================================================
     # EMAIL TEMPLATES
@@ -420,11 +456,18 @@ class EmailService:
     @classmethod
     def send_test_email(cls, to_email: str) -> dict[str, Any]:
         """
-        Send a real or mock test email to verify SMTP configuration.
+        Send a real test email to verify SMTP configuration.
         """
         clean_to = to_email.strip()
-        smtp_user = settings.smtp_user.strip()
-        is_configured = bool(smtp_user and settings.smtp_password.strip())
+        is_configured = cls.is_configured()
+
+        if not is_configured:
+            return {
+                "success": False,
+                "to_email": clean_to,
+                "smtp_configured": False,
+                "message": "Chưa thể gửi email: Vui lòng cấu hình SMTP_USER và SMTP_PASSWORD trong biến môi trường.",
+            }
 
         html_body = f"""
 <!DOCTYPE html>
@@ -456,22 +499,23 @@ class EmailService:
         return {
             "success": success,
             "to_email": clean_to,
-            "smtp_configured": is_configured,
+            "smtp_configured": True,
             "message": (
                 "Đã gửi email thực tế qua Gmail SMTP thành công!"
-                if is_configured and success
-                else "Đã tạo mock email thành công (Nhập SMTP_USER và SMTP_PASSWORD trong .env để gửi email thật qua Gmail)."
+                if success
+                else "Gửi email thất bại. Vui lòng kiểm tra lại thông tin SMTP_USER và SMTP_PASSWORD."
             ),
         }
 
     @classmethod
-    def send_password_reset_otp(cls, to_email: str, otp: str):
+    def send_password_reset_otp(cls, to_email: str, otp: str) -> bool:
         """
-        Send a secure 6-digit OTP for password reset.
+        Send a secure 6-digit OTP for password reset synchronously.
+        Returns True if accepted by the SMTP server, False otherwise.
         """
         clean_to = to_email.strip()
         if not clean_to:
-            return
+            return False
 
         html_body = f"""
 <!DOCTYPE html>
@@ -547,10 +591,16 @@ class EmailService:
 </body>
 </html>
         """
+        text_body = (
+            f"VANBASS MUSIC CENTER - YÊU CẦU ĐẶT LẠI MẬT KHẨU\n\n"
+            f"Mã xác thực của bạn là: {otp}\n\n"
+            f"Mã này có hiệu lực trong 5 phút. Vui lòng không chia sẻ mã này cho bất kỳ ai."
+        )
 
-        cls.send_async(
-            to_emails=clean_to,
+        return cls._send_sync(
+            to_emails=[clean_to],
             subject="[VanBass] Mã xác thực đặt lại mật khẩu của bạn",
             html_content=html_body,
+            text_content=text_body,
         )
 
