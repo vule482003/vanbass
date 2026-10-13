@@ -121,7 +121,7 @@ export default function Hero({
   const leftBtnText = lang === "en" ? t.hero.exploreBtn : (heroLeft?.button_text || "Khám phá");
 
   const centerBadge = lang === "en" ? stripNumber(t.hero.panelRentalTag, "SERVICES") : stripNumber(heroCenter?.badge === "THIẾT BỊ DJ CHÍNH HÃNG" ? "DỊCH VỤ" : heroCenter?.badge, "DỊCH VỤ");
-  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : (heroCenter?.headline === "HỆ THỐNG ÂM THANH & CHO THUÊ DJ" ? "CHO THUÊ SỰ KIỆN" : (heroCenter?.headline || "CHO THUÊ SỰ KIỆN"));
+  const centerHeadline = lang === "en" ? t.hero.panelRentalTitle : "THIẾT BỊ DJ & CHO THUÊ";
   const centerDesc = lang === "en" ? t.hero.panelRentalDesc : (heroCenter?.desc || t.hero.panelRentalDesc);
   const centerBtnText = lang === "en" ? t.hero.rentalBtn : (heroCenter?.button_text === "THUÊ THIẾT BỊ NGAY" ? "Bảng giá thuê" : (heroCenter?.button_text || "Bảng giá thuê"));
 

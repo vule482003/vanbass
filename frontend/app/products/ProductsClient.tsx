@@ -12,7 +12,7 @@ import CompareDrawer from "../components/CompareDrawer";
 import { Product, Category } from "../lib/types";
 import { useLanguage } from "../lib/language-context";
 import { getTranslatedProductName } from "../lib/product-i18n";
-import { CATEGORY_GROUPS } from "../lib/category-hierarchy";
+import { CATEGORY_GROUPS, getSubcategoryDisplayName } from "../lib/category-hierarchy";
 import { getApiBaseUrl } from "../lib/api";
 
 const ITEMS_PER_PAGE = 20;
@@ -435,7 +435,22 @@ export default function ProductsClient({
     return products.slice(0, 4);
   }, [products]);
 
-  const renderedTitle = pageTitle || t.productsPage.title;
+  // Dynamic H1: show category/group-specific title when filtering, fallback to default
+  const renderedTitle = useMemo(() => {
+    if (pageTitle) return pageTitle;
+    // Group page: /products?group=dj
+    if (selectedCategory.startsWith("group:")) {
+      const groupId = selectedCategory.replace("group:", "");
+      const grp = CATEGORY_GROUPS.find((g) => g.id === groupId);
+      if (grp) return lang === "en" ? grp.nameEn : grp.nameVi;
+    }
+    // Subcategory page: /products?category=dj-controllers
+    if (selectedCategory && selectedCategory !== "all") {
+      const displayName = getSubcategoryDisplayName(selectedCategory, lang);
+      if (displayName && displayName !== selectedCategory) return displayName;
+    }
+    return t.productsPage.title;
+  }, [pageTitle, selectedCategory, lang, t.productsPage.title]);
   const renderedSubtitle = pageSubtitle || t.productsPage.subtitle;
 
   return (

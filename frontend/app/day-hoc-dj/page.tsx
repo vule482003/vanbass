@@ -144,6 +144,16 @@ export default function DayHocDjPage() {
           </nav>
         </section>
 
+        {/* H1 - SEO Heading for DJ Learning Page */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#F5F6F8] tracking-tight leading-tight">
+            Khóa Dạy Học DJ Thực Hành Tại Đà Nẵng &amp; Huế
+          </h1>
+          <p className="text-sm sm:text-base text-[#A2A8B3] mt-2 max-w-3xl leading-relaxed">
+            Đào tạo DJ 1 kèm 1 trên thiết bị chuẩn Club — Pioneer CDJ-3000, DJM-900NXS2 &amp; XDJ-RX3 tại V&amp;B Studio.
+          </p>
+        </section>
+
         {/* 1. HERO BANNER SECTION (FULL SCREEN WIDESCREEN - KHÔNG ĐÓNG KHUNG) */}
         <section className="w-full relative bg-[#08090B] mb-16 sm:mb-20">
           {/* Full Screen Banner Container */}

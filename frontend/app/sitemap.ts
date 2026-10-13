@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { fetchProducts } from "./lib/api";
 import { PRODUCT_SLUG_ALIASES } from "./products/[slug]/page";
+import { CATEGORY_GROUPS } from "./lib/category-hierarchy";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn").replace(/\/+$/, "");
@@ -170,6 +171,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           changeFrequency: "daily",
           priority: 1.0,
         });
+      }
+    }
+
+    // 4. Category Group URLs (/products?group=dj, etc.) and Subcategory URLs (/products?category=dj-controllers, etc.)
+    // Only include URLs where real products exist (count > 0)
+    if (Array.isArray(products)) {
+      for (const group of CATEGORY_GROUPS) {
+        // Check if this group has any products
+        const groupSubSlugs = group.subcategories.map((s) => s.slug);
+        const groupProductCount = products.filter(
+          (p) => p.is_active !== false && p.category && groupSubSlugs.includes(p.category)
+        ).length;
+
+        if (groupProductCount > 0) {
+          // Add group URL: /products?group=dj
+          const groupUrl = `${baseUrl}/products?group=${encodeURIComponent(group.id)}`;
+          if (!seenUrls.has(groupUrl)) {
+            seenUrls.add(groupUrl);
+            sitemapEntries.push({
+              url: groupUrl,
+              lastModified: now,
+              changeFrequency: "daily",
+              priority: 0.8,
+            });
+          }
+
+          // Add subcategory URLs: /products?category=dj-controllers
+          for (const sub of group.subcategories) {
+            const subProductCount = products.filter(
+              (p) => p.is_active !== false && p.category === sub.slug
+            ).length;
+
+            if (subProductCount > 0) {
+              const subUrl = `${baseUrl}/products?category=${encodeURIComponent(sub.slug)}`;
+              if (!seenUrls.has(subUrl)) {
+                seenUrls.add(subUrl);
+                sitemapEntries.push({
+                  url: subUrl,
+                  lastModified: now,
+                  changeFrequency: "daily",
+                  priority: 0.7,
+                });
+              }
+            }
+          }
+        }
       }
     }
   } catch (error) {
