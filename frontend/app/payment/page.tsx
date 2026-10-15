@@ -27,8 +27,8 @@ const BANK_INFO = {
   bankId: "mbbank",
   bankName: "Ngân hàng TMCP Quân Đội (MBBank)",
   shortName: "MBBank",
-  accountNumber: "0766719886",
-  accountName: "LE VU",
+  accountNumber: "0706067799",
+  accountName: "PHAN THY VAN",
 };
 
 function PaymentBridgeContent() {
