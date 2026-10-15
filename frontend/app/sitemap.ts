@@ -181,7 +181,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // Check if this group has any products
         const groupSubSlugs = group.subcategories.map((s) => s.slug);
         const groupProductCount = products.filter(
-          (p) => p.is_active !== false && p.category && groupSubSlugs.includes(p.category)
+          (p) => p.is_active !== false && p.category_slug && groupSubSlugs.includes(p.category_slug)
         ).length;
 
         if (groupProductCount > 0) {
@@ -200,7 +200,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           // Add subcategory URLs: /products?category=dj-controllers
           for (const sub of group.subcategories) {
             const subProductCount = products.filter(
-              (p) => p.is_active !== false && p.category === sub.slug
+              (p) => p.is_active !== false && p.category_slug === sub.slug
             ).length;
 
             if (subProductCount > 0) {
