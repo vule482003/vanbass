@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng | VanMusic",
+  title: "Mua Bán Bàn DJ Chính Hãng Pioneer DJ & AlphaTheta Tại Đà Nẵng",
   description:
     "Tổng đại lý mua bán bàn DJ Pioneer DJ, AlphaTheta chính hãng tại Đà Nẵng, Huế & Miền Trung: XDJ-RX3, DDJ-FLX4, Omnis-Duo, XDJ-AZ, DDJ-FLX2, XDJ-XZ. Máy mới 100% fullbox & like new 99%, bảo hành 12-24T, trả góp 0%, test máy trực tiếp tại Showroom.",
   keywords: [

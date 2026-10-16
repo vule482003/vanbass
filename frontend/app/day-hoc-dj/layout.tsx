@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vanmusic.com.vn";
 
 export const metadata: Metadata = {
-  title: "Dạy Học DJ Tại Đà Nẵng & Huế | Khóa Học DJ Thực Hành 1 Kèm 1 - VanBass",
+  title: "Dạy Học DJ Tại Đà Nẵng & Huế | Khóa Học DJ Thực Hành 1 Kèm 1",
   description:
     "Khóa dạy học DJ thực hành 1 kèm 1 tại Đà Nẵng & hỗ trợ học viên tại Huế trên thiết bị Pioneer DJ, AlphaTheta chuẩn Club. Lộ trình bài bản từ cảm âm, Beatmatch, EQ Mixing đến biểu diễn thực tế.",
   keywords: [
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     canonical: "/day-hoc-dj",
   },
   openGraph: {
-    title: "Dạy Học DJ Tại Đà Nẵng & Huế | Khóa Học DJ Thực Hành 1 Kèm 1 - VanBass",
+    title: "Dạy Học DJ Tại Đà Nẵng & Huế | Khóa Học DJ Thực Hành 1 Kèm 1 | VanBass Music Center",
     description:
       "Khóa đào tạo và dạy học DJ thực hành chuyên sâu tại Đà Nẵng & Huế. Thực hành 100% trên thiết bị Pioneer DJ, làm chủ mixing, beatmatching và tự tin biểu diễn sân khấu.",
     url: `${baseUrl}/day-hoc-dj`,

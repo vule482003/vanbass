@@ -18,6 +18,17 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.vanmusic.com.vn",
+          },
+        ],
+        destination: "https://vanmusic.com.vn/:path*",
+        permanent: true,
+      },
+      {
         source: "/rental",
         destination: "/thue-ban-dj",
         permanent: true,

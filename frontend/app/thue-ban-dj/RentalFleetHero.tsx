@@ -39,17 +39,26 @@ export default function RentalFleetHero({ messengerUrl, hotline }: RentalFleetHe
             <h1
               style={{
                 fontFamily: "var(--font-primary)",
-                fontSize: "clamp(34px, 5vw, 62px)",
+                fontSize: "clamp(28px, 4.2vw, 52px)",
                 fontWeight: 600,
-                letterSpacing: "0.02em",
-                lineHeight: 1.08,
+                letterSpacing: "0.01em",
+                lineHeight: 1.15,
                 color: "#F5F6F8",
                 margin: "0 0 18px 0",
                 textTransform: "uppercase",
               }}
             >
-              VANBASS <br />
-              {isVi ? "DÀN BÀN DJ CHO THUÊ" : "RENTAL FLEET"}
+              {isVi ? (
+                <>
+                  DỊCH VỤ CHO THUÊ BÀN DJ <br />
+                  <span style={{ color: "#10b981" }}>TẠI ĐÀ NẴNG &amp; HUẾ</span>
+                </>
+              ) : (
+                <>
+                  PROFESSIONAL DJ GEAR RENTAL <br />
+                  <span style={{ color: "#10b981" }}>IN DA NANG &amp; HUE</span>
+                </>
+              )}
             </h1>
 
             {/* Subtitle Tối Ưu SEO Cho Google Tìm Kiếm & AI Overview - Cỡ chữ to rõ */}

@@ -916,7 +916,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const plainDesc = hotSeo?.description || getProductPlainExcerpt(product.description, 250) || product.name;
 
-  // Genuine price handling
+  // Genuine price handling - DO NOT fake price as 0 if product is contact-only
   const rawPrice =
     (product.sale_price && Number(product.sale_price) > 0 ? Number(product.sale_price) : null) ??
     ((product as unknown as { price?: number }).price && Number((product as unknown as { price?: number }).price) > 0
@@ -924,7 +924,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       : null) ??
     (isDirectHotModel && hotSeo?.salePrice && Number(hotSeo.salePrice) > 0 ? Number(hotSeo.salePrice) : null);
 
-  const realPrice = rawPrice ?? 0;
+  const hasValidPrice = typeof rawPrice === "number" && rawPrice > 0;
 
   // Genuine brand handling - DO NOT fake brand
   const brandName = product.brand?.trim() || (isDirectHotModel ? (modelKey?.includes("alphatheta") ? "AlphaTheta" : "Pioneer DJ") : null);
@@ -957,34 +957,36 @@ export default async function ProductDetailPage({ params }: PageProps) {
     }
   }
 
-  // Offer Schema - MANDATORY for Google SEO Structured Data (avoids GSC error "Phải chỉ định 'offers', 'review' hoặc 'aggregateRating'")
-  const offerSchema: Record<string, unknown> = {
-    "@type": "Offer",
-    "url": `${baseUrl}/products/${canonicalSlug}`,
-    "priceCurrency": "VND",
-    "price": realPrice,
-    "priceValidUntil": `${new Date().getFullYear() + 1}-12-31`,
-    "itemCondition": "https://schema.org/NewCondition",
-    "availability":
-      typeof product.stock_quantity === "number" && product.stock_quantity <= 0
-        ? "https://schema.org/OutOfStock"
-        : "https://schema.org/InStock",
-    "seller": {
-      "@type": "Organization",
-      "name": "VanBass Music Center",
-      "url": baseUrl,
-    },
-    "hasMerchantReturnPolicy": {
-      "@type": "MerchantReturnPolicy",
-      "applicableCountry": "VN",
-      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-      "merchantReturnDays": 7,
-      "returnMethod": "https://schema.org/ReturnInStore",
-      "returnFees": "https://schema.org/FreeReturn",
-    },
-  };
+  // Offer Schema - only attached when genuine positive price exists (avoids Google Merchant price: 0 mismatch penalty)
+  const offerSchema: Record<string, unknown> | null = hasValidPrice
+    ? {
+        "@type": "Offer",
+        "url": `${baseUrl}/products/${canonicalSlug}`,
+        "priceCurrency": "VND",
+        "price": rawPrice,
+        "priceValidUntil": `${new Date().getFullYear() + 1}-12-31`,
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability":
+          typeof product.stock_quantity === "number" && product.stock_quantity <= 0
+            ? "https://schema.org/OutOfStock"
+            : "https://schema.org/InStock",
+        "seller": {
+          "@type": "Organization",
+          "name": "VanBass Music Center",
+          "url": baseUrl,
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "VN",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 7,
+          "returnMethod": "https://schema.org/ReturnInStore",
+          "returnFees": "https://schema.org/FreeReturn",
+        },
+      }
+    : null;
 
-  // Product Schema strictly with real data (no fake SKU, brand, image) - offers is ALWAYS included
+  // Product Schema strictly with real data (no fake SKU, brand, image)
   const productSchema: Record<string, unknown> = {
     "@type": "Product",
     "@id": `${baseUrl}/products/${canonicalSlug}#product`,
@@ -1000,7 +1002,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         "name": brandName,
       },
     } : {}),
-    "offers": offerSchema,
+    ...(offerSchema ? { "offers": offerSchema } : {}),
   };
 
   const isDjControllerOrSystem = Boolean(

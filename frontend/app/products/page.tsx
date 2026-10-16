@@ -81,13 +81,13 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   if (page > 1) {
     const canonicalPath = `/products?page=${page}`;
     return {
-      title: `Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng - Trang ${page} | VanBass`,
+      title: `Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng - Trang ${page}`,
       description: `Phân phối & cho thuê thiết bị DJ, Bàn DJ Pioneer DJ, AlphaTheta, Loa Pro, Mixer, Đèn sân khấu chính hãng - Trang ${page}.`,
       alternates: {
         canonical: canonicalPath,
       },
       openGraph: {
-        title: `Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng - Trang ${page} | VanBass`,
+        title: `Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng - Trang ${page} | VanBass Music Center`,
         description: `Kho thiết bị DJ và âm thanh chuyên nghiệp VanBass Music Center - Trang ${page}.`,
         url: `${baseUrl}${canonicalPath}`,
       },
@@ -96,14 +96,14 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   // 5. Default base /products
   return {
-    title: "Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng | VanBass",
+    title: "Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng",
     description:
       "Phân phối & cho thuê thiết bị DJ, Bàn DJ Pioneer DJ, AlphaTheta, Loa Pro, Mixer, Đèn sân khấu chính hãng tại Đà Nẵng, Huế & Miền Trung. Bảo hành 12-24 tháng, trả góp 0%.",
     alternates: {
       canonical: "/products",
     },
     openGraph: {
-      title: "Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng | VanBass",
+      title: "Kho Thiết Bị DJ & Âm Thanh Pro Chính Hãng | VanBass Music Center",
       description:
         "Phân phối & cho thuê thiết bị DJ, Bàn DJ Pioneer DJ, AlphaTheta, Loa Pro, Mixer, Đèn sân khấu chính hãng tại Đà Nẵng, Huế & Miền Trung.",
       url: `${baseUrl}/products`,
