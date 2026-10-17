@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/auth-context";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
+import EditProductModal from "./components/EditProductModal";
 
 interface ProductItem {
   id: string;
@@ -6263,307 +6264,51 @@ export default function AdminDashboardPage() {
       )}
 
       {/* MODAL: EDIT PRODUCT */}
-      {showEditProductModal && editingProduct && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.85)",
-            backdropFilter: "blur(6px)",
-            zIndex: 200,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-          onClick={handleCloseEditModal}
-        >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "760px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              backgroundColor: "#121212",
-              border: "1px solid rgba(34, 197, 94, 0.4)",
-              padding: "32px",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.9), 0 0 30px rgba(34, 197, 94, 0.15)",
-              borderRadius: "8px",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-              <div>
-                <h3 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 4px 0", color: "#fff" }}>
-                  Chỉnh Sửa & Cập Nhật Sản Phẩm
-                </h3>
-                <span style={{ fontSize: "12px", color: "#22c55e", fontWeight: 700 }}>
-                  ID: {editingProduct.id} | SKU: {editingProduct.sku}
-                </span>
-              </div>
-              <button
-                onClick={() => {
-                  setShowEditProductModal(false);
-                  setEditingProduct(null);
-                }}
-                style={{ background: "none", border: "none", color: "#a1a1aa", fontSize: "20px", cursor: "pointer" }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleUpdateProduct}>
-              {/* Row 1: Name & Brand */}
-              <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                    Tên thiết bị *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="VD: Bàn DJ AlphaTheta XDJ-AZ"
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                    Hãng sản xuất *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                    placeholder="AlphaTheta, Pioneer DJ, JBL..."
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-              </div>
-
-              {/* Row 2: Slug, SKU & Category */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                    Đường dẫn (Slug SEO) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
-                    placeholder="alphatheta-xdj-az"
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                    <label style={{ fontSize: "12px", fontWeight: 700, color: "#a1a1aa", textTransform: "uppercase" }}>
-                      Mã SKU
-                    </label>
-                    <button
-                      type="button"
-                      onClick={handleRegenerateSku}
-                      title="Tạo lại mã SKU mới"
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#60a5fa",
-                        fontSize: "11px",
-                        cursor: "pointer",
-                        padding: "0 4px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Tạo mã mới
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    value={sku}
-                    onChange={(e) => setSku(e.target.value)}
-                    placeholder="XDJ-AZ-AT"
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#22c55e", fontWeight: 700, fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                    Danh mục *
-                  </label>
-                  <select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  >
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Row 3: Pricing & Stock */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "16px", padding: "16px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
-                <div>
-                  <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: 700, color: "#fff", marginBottom: "6px" }}>
-                    <input type="checkbox" checked={saleEnabled} onChange={(e) => setSaleEnabled(e.target.checked)} />
-                    BẬT BÁN (VNĐ)
-                  </label>
-                  <input
-                    type="number"
-                    disabled={!saleEnabled}
-                    value={salePrice}
-                    onChange={(e) => setSalePrice(e.target.value)}
-                    placeholder="35000000"
-                    style={{ width: "100%", padding: "8px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: 700, color: "#fff", marginBottom: "6px" }}>
-                    <input type="checkbox" checked={rentalEnabled} onChange={(e) => setRentalEnabled(e.target.checked)} />
-                    BẬT CHO THUÊ (VNĐ/NGÀY)
-                  </label>
-                  <input
-                    type="number"
-                    disabled={!rentalEnabled}
-                    value={rentalPrice}
-                    onChange={(e) => setRentalPrice(e.target.value)}
-                    placeholder="1200000"
-                    style={{ width: "100%", padding: "8px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px" }}>
-                    SỐ LƯỢNG KHO (CÁI)
-                  </label>
-                  <input
-                    type="number"
-                    value={stockQuantity}
-                    onChange={(e) => setStockQuantity(e.target.value)}
-                    style={{ width: "100%", padding: "8px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                  />
-                </div>
-              </div>
-
-              {/* Row 4: Image Input & Upload */}
-              <div style={{ marginBottom: "16px", padding: "16px", backgroundColor: "#0a0a0c", border: "1px solid #27272a" }}>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#fff", marginBottom: "8px", textTransform: "uppercase" }}>
-                  Hình ảnh thiết bị (Dán link URL hoặc Tải file ảnh mới)
-                </label>
-
-                {/* Option A: Direct Image URL */}
-                <div style={{ marginBottom: "12px" }}>
-                  <span style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>
-                    Link ảnh trực tiếp (Image URL):
-                  </span>
-                  <input
-                    type="url"
-                    value={imageUrl}
-                    onChange={(e) => {
-                      setImageUrl(e.target.value);
-                      if (e.target.value) {
-                        setImagePreviewUrl(e.target.value);
-                        setSelectedImageFile(null);
-                      }
-                    }}
-                    placeholder="VD: https://cdn.hstatic.net/products/200000465225/gmusic-alphatheta-xdj-an.png"
-                    style={{ width: "100%", padding: "8px 12px", backgroundColor: "#000", border: "1px solid #3f3f46", color: "#fff", fontSize: "13px", boxSizing: "border-box" }}
-                  />
-                </div>
-
-                {/* Option B: File Upload */}
-                <div>
-                  <span style={{ fontSize: "12px", color: "#a1a1aa", display: "block", marginBottom: "4px" }}>
-                    Hoặc tải file ảnh mới từ máy tính:
-                  </span>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <input
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/avif"
-                      onChange={(e) => {
-                        handleImageFileChange(e);
-                        setImageUrl("");
-                      }}
-                      style={{ fontSize: "13px", color: "#a1a1aa" }}
-                    />
-                    {imagePreviewUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={imagePreviewUrl} alt="Preview" style={{ width: "52px", height: "52px", objectFit: "contain", backgroundColor: "#1c1c20", border: "1px solid #22c55e", padding: "2px", borderRadius: "4px" }} />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Row 5: Description */}
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#a1a1aa", marginBottom: "6px", textTransform: "uppercase" }}>
-                  Mô tả sản phẩm
-                </label>
-                <textarea
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Mô tả các tính năng chính của thiết bị..."
-                  style={{ width: "100%", padding: "10px 14px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "14px", boxSizing: "border-box" }}
-                />
-              </div>
-
-              {/* Row 6: SEO Metadata */}
-              <div style={{ padding: "14px", backgroundColor: "#0f0f11", border: "1px dashed rgba(255,255,255,0.15)", marginBottom: "24px" }}>
-                <p style={{ margin: "0 0 10px 0", fontSize: "12px", fontWeight: 700, color: "#22c55e", textTransform: "uppercase" }}>
-                  Cấu hình SEO Google (Tùy chọn)
-                </p>
-                <input
-                  type="text"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                  placeholder="Tiêu đề SEO (VD: [CHÍNH HÃNG] Mua Bàn DJ AlphaTheta XDJ-AZ Đà Nẵng)"
-                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "13px", marginBottom: "8px", boxSizing: "border-box" }}
-                />
-                <input
-                  type="text"
-                  value={metaDescription}
-                  onChange={(e) => setMetaDescription(e.target.value)}
-                  placeholder="Mô tả SEO 160 ký tự cho Google..."
-                  style={{ width: "100%", padding: "8px 12px", backgroundColor: "#000", border: "1px solid #27272a", color: "#fff", fontSize: "13px", boxSizing: "border-box" }}
-                />
-              </div>
-
-              {/* Submit Buttons */}
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowEditProductModal(false);
-                    setEditingProduct(null);
-                  }}
-                  className="admin-pill-btn-dark"
-                >
-                  Hủy bỏ
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="admin-pill-btn-green"
-                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
-                >
-                  {isSubmitting ? "Đang lưu thay đổi..." : "Lưu Cập Nhật"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <EditProductModal
+        isOpen={showEditProductModal && !!editingProduct}
+        product={editingProduct}
+        categories={categories}
+        name={name}
+        setName={setName}
+        brand={brand}
+        setBrand={setBrand}
+        slug={slug}
+        setSlug={setSlug}
+        sku={sku}
+        setSku={setSku}
+        categoryId={categoryId}
+        setCategoryId={setCategoryId}
+        saleEnabled={saleEnabled}
+        setSaleEnabled={setSaleEnabled}
+        salePrice={salePrice}
+        setSalePrice={setSalePrice}
+        rentalEnabled={rentalEnabled}
+        setRentalEnabled={setRentalEnabled}
+        rentalPrice={rentalPrice}
+        setRentalPrice={setRentalPrice}
+        stockQuantity={stockQuantity}
+        setStockQuantity={setStockQuantity}
+        imageUrl={imageUrl}
+        setImageUrl={setImageUrl}
+        imagePreviewUrl={imagePreviewUrl}
+        setImagePreviewUrl={setImagePreviewUrl}
+        selectedImageFile={selectedImageFile}
+        setSelectedImageFile={setSelectedImageFile}
+        description={description}
+        setDescription={setDescription}
+        metaTitle={metaTitle}
+        setMetaTitle={setMetaTitle}
+        metaDescription={metaDescription}
+        setMetaDescription={setMetaDescription}
+        metaKeywords={metaKeywords}
+        setMetaKeywords={setMetaKeywords}
+        onClose={handleCloseEditModal}
+        onSubmit={handleUpdateProduct}
+        onRegenerateSku={handleRegenerateSku}
+        onImageFileChange={handleImageFileChange}
+        isSubmitting={isSubmitting}
+        errorMessage={actionErrorMsg}
+      />
 
       {/* MODAL: CONFIRM STATUS UPDATE */}
       {statusConfirmModal && (
