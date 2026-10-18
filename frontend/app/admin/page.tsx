@@ -6722,7 +6722,7 @@ export default function AdminDashboardPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#a1a1aa" }}>
                   <span>Phí vận chuyển:</span>
                   <span style={{ color: "#fff" }}>
-                    {selectedOrderDetail.shipping_fee ? formatCurrency(selectedOrderDetail.shipping_fee) : "Miễn phí (0 ₫)"}
+                    {selectedOrderDetail.shipping_fee ? formatCurrency(selectedOrderDetail.shipping_fee) : "Vui lòng thanh toán phí vận chuyển sau."}
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.1)", fontSize: "16px", fontWeight: 800 }}>

@@ -17,11 +17,11 @@ email_executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix="email_wor
 
 def format_currency(val: Decimal | float | None) -> str:
     if val is None:
-        return "0 ₫"
+        return "0 đ"
     try:
-        return f"{int(val):,}".replace(",", ".") + " ₫"
+        return f"{int(val):,}".replace(",", ".") + " đ"
     except (ValueError, TypeError, OverflowError):
-        return f"{val} ₫"
+        return f"{val} đ"
 
 
 class EmailService:
@@ -171,40 +171,36 @@ class EmailService:
         customer_email: str,
     ):
         """
-        Send Order Confirmation Email to the Buyer.
+        Send Order Confirmation Email to the Buyer (Clean Minimal Template - Sample 4).
         """
         if not customer_email:
             return
 
         order_number = getattr(order, "order_number", "VB-ORDER")
-        customer_name = getattr(order, "shipping_name", "Quý khách")
-        phone = getattr(order, "shipping_phone", "")
-        address = getattr(order, "shipping_address", "")
+        customer_name = getattr(order, "shipping_name", "Quý khách") or "Quý khách"
+        phone = getattr(order, "shipping_phone", "") or ""
+        address = getattr(order, "shipping_address", "") or ""
         total_amount = getattr(order, "total_amount", 0)
         items = getattr(order, "items", [])
 
-        # Build items table rows
-        rows_html = ""
+        # Build items list
+        items_html = ""
         for item in items:
             p_name = getattr(item, "product_name", "Sản phẩm")
             p_qty = getattr(item, "quantity", 1)
-            p_price = format_currency(getattr(item, "unit_price", 0))
             p_sub = format_currency(getattr(item, "subtotal", 0))
-            rows_html += f"""
-            <tr>
-              <td style="padding: 12px; border-bottom: 1px solid #27272a; color: #f4f4f5; font-size: 14px;">
-                <strong>{p_name}</strong>
-              </td>
-              <td style="padding: 12px; border-bottom: 1px solid #27272a; text-align: center; color: #a1a1aa; font-size: 14px;">
-                {p_qty}
-              </td>
-              <td style="padding: 12px; border-bottom: 1px solid #27272a; text-align: right; color: #a1a1aa; font-size: 14px;">
-                {p_price}
-              </td>
-              <td style="padding: 12px; border-bottom: 1px solid #27272a; text-align: right; color: #22c55e; font-weight: 700; font-size: 14px;">
-                {p_sub}
-              </td>
-            </tr>
+            items_html += f"""
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 8px;">
+              <tr>
+                <td style="vertical-align: top; padding: 4px 0;">
+                  <div style="font-size: 14px; font-weight: 600; color: #111827;">{p_name}</div>
+                  <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Số lượng: {p_qty}</div>
+                </td>
+                <td style="vertical-align: top; text-align: right; padding: 4px 0; font-size: 14px; font-weight: 500; color: #111827; white-space: nowrap;">
+                  {p_sub}
+                </td>
+              </tr>
+            </table>
             """
 
         formatted_total = format_currency(total_amount)
@@ -217,94 +213,72 @@ class EmailService:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Xác nhận đơn hàng #{order_number}</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f4f4f5;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #09090b; padding: 40px 10px;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #111827; -webkit-font-smoothing: antialiased;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #121412; border: 1px solid #27272a; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
-          
-          <!-- Header -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 560px; width: 100%; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
           <tr>
-            <td style="background: linear-gradient(135deg, #181c18 0%, #0d120d 100%); padding: 32px 24px; text-align: center; border-bottom: 2px solid #22c55e;">
-              <h1 style="margin: 0; color: #22c55e; font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">
-                VANBASS MUSIC CENTER
-              </h1>
-              <p style="margin: 6px 0 0 0; color: #a1a1aa; font-size: 13px; font-weight: 600;">
-                ÂM THANH &amp; THIẾT BỊ DJ CHUYÊN NGHIỆP ĐÀ NẴNG
-              </p>
-            </td>
-          </tr>
+            <td style="padding: 32px;">
+              
+              <!-- Header -->
+              <div style="margin-bottom: 16px;">
+                <div style="font-size: 16px; font-weight: 700; color: #15803d; text-transform: uppercase; letter-spacing: 0.5px;">VANBASS MUSIC CENTER</div>
+                <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Xác nhận đơn hàng</div>
+              </div>
+              
+              <div style="border-bottom: 1px solid #e5e7eb; margin: 16px 0 20px 0;"></div>
 
-          <!-- Body -->
-          <tr>
-            <td style="padding: 32px 24px;">
-              <h2 style="margin: 0 0 12px 0; font-size: 18px; color: #ffffff;">
-                Xin chào {customer_name},
-              </h2>
-              <p style="margin: 0 0 24px 0; color: #a1a1aa; font-size: 14px; line-height: 1.6;">
-                Cảm ơn bạn đã tin tưởng đặt hàng tại <strong>VanBass Music Center</strong>. Chúng tôi đã tiếp nhận đơn hàng <strong>#{order_number}</strong> và đang tiến hành xử lý đóng gói chuyển cho bạn.
+              <!-- Greeting -->
+              <div style="font-size: 17px; font-weight: 700; color: #111827; margin-bottom: 8px;">Xin chào {customer_name},</div>
+              <p style="font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 20px 0;">
+                Cảm ơn bạn đã đặt hàng tại VanBass Music Center. Chúng tôi đã tiếp nhận đơn hàng của bạn.
               </p>
 
-              <!-- Order Summary Card -->
-              <div style="background-color: #1c1f1c; border-radius: 12px; padding: 20px; margin-bottom: 24px; border: 1px solid #2d332d;">
-                <h3 style="margin: 0 0 12px 0; font-size: 14px; color: #4ade80; text-transform: uppercase; letter-spacing: 1px;">
-                  📦 Thông tin giao hàng
-                </h3>
-                <p style="margin: 4px 0; font-size: 13.5px; color: #d4d4d8;">
-                  <strong>Người nhận:</strong> {customer_name}
-                </p>
-                <p style="margin: 4px 0; font-size: 13.5px; color: #d4d4d8;">
-                  <strong>Số điện thoại:</strong> {phone}
-                </p>
-                <p style="margin: 4px 0; font-size: 13.5px; color: #d4d4d8;">
-                  <strong>Địa chỉ nhận hàng:</strong> {address}
-                </p>
+              <!-- Order Summary Box -->
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 20px; margin-bottom: 24px;">
+                <div style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">MÃ ĐƠN HÀNG</div>
+                <div style="font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 6px;">{order_number}</div>
+                <div style="font-size: 13.5px; color: #4b5563;">Trạng thái: Đã tiếp nhận</div>
               </div>
 
-              <!-- Product Table -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px; border-collapse: collapse;">
-                <thead>
-                  <tr style="background-color: #181a18;">
-                    <th style="padding: 10px 12px; text-align: left; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Sản phẩm</th>
-                    <th style="padding: 10px 12px; text-align: center; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">SL</th>
-                    <th style="padding: 10px 12px; text-align: right; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Đơn giá</th>
-                    <th style="padding: 10px 12px; text-align: right; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Thành tiền</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows_html}
-                </tbody>
-              </table>
+              <!-- Shipping Info -->
+              <div style="margin-bottom: 24px;">
+                <div style="font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 10px;">Thông tin giao hàng</div>
+                <div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Người nhận: {customer_name}</div>
+                <div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Điện thoại: {phone}</div>
+                <div style="font-size: 14px; color: #374151;">Địa chỉ: {address}</div>
+              </div>
+
+              <!-- Order Details -->
+              <div style="margin-bottom: 20px;">
+                <div style="font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 12px;">Chi tiết đơn hàng</div>
+                {items_html}
+              </div>
 
               <!-- Total Breakdown -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 28px;">
-                <tr>
-                  <td style="padding: 6px 0; color: #a1a1aa; font-size: 14px;">Phí vận chuyển toàn quốc:</td>
-                  <td style="padding: 6px 0; text-align: right; color: #4ade80; font-weight: 700; font-size: 14px;">MIỄN PHÍ</td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 0 0 0; color: #ffffff; font-size: 16px; font-weight: 700; border-top: 1px solid #27272a;">Tổng thanh toán:</td>
-                  <td style="padding: 12px 0 0 0; text-align: right; color: #22c55e; font-size: 20px; font-weight: 900; border-top: 1px solid #27272a;">{formatted_total}</td>
-                </tr>
-              </table>
-
-              <!-- Hotline Support Box -->
-              <div style="background: rgba(34, 197, 94, 0.08); border-left: 4px solid #22c55e; padding: 14px 18px; border-radius: 6px;">
-                <p style="margin: 0; font-size: 13.5px; color: #d4d4d8; line-height: 1.5;">
-                  📞 <strong>Cần hỗ trợ gấp?</strong> Hotline hỗ trợ: <a href="tel:0905614566" style="color: #4ade80; font-weight: 700; text-decoration: none;">Mr. Tuyến (0905.614.566)</a> | <a href="tel:0944498987" style="color: #4ade80; font-weight: 700; text-decoration: none;">Mr. Tuấn (0944.498.987)</a> | <a href="tel:0706067799" style="color: #4ade80; font-weight: 700; text-decoration: none;">Mr. Vân (0706.067.799)</a>
-                </p>
+              <div style="border-top: 1px solid #e5e7eb; margin: 16px 0; padding-top: 16px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="font-size: 15px; font-weight: 700; color: #111827;">Tổng thanh toán</td>
+                    <td style="text-align: right; font-size: 16px; font-weight: 700; color: #15803d; white-space: nowrap;">{formatted_total}</td>
+                  </tr>
+                </table>
               </div>
+
+              <!-- Support Info -->
+              <p style="font-size: 13.5px; color: #4b5563; line-height: 1.5; margin: 24px 0 24px 0;">
+                Nếu cần hỗ trợ về đơn hàng, vui lòng liên hệ bộ phận chăm sóc khách hàng của chúng tôi.
+              </p>
+
+              <!-- Footer -->
+              <div style="border-top: 1px solid #e5e7eb; margin-top: 24px; padding-top: 16px;">
+                <div style="font-size: 12.5px; color: #6b7280; margin-bottom: 4px;">VanBass Music Center · Đà Nẵng</div>
+                <div style="font-size: 12px; color: #9ca3af;">Email tự động xác nhận giao dịch của bạn.</div>
+              </div>
+
             </td>
           </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #0d0f0d; padding: 20px; text-align: center; border-top: 1px solid #27272a; color: #71717a; font-size: 12px;">
-              <p style="margin: 0 0 4px 0;">© 2026 VanBass Music Center Đà Nẵng. Mọi quyền được bảo lưu.</p>
-              <p style="margin: 0;">Showroom: 77 Nguyễn Tất Thành, phường Hải Châu, thành phố Đà Nẵng</p>
-            </td>
-          </tr>
-
         </table>
       </td>
     </tr>
@@ -326,7 +300,7 @@ class EmailService:
         extra_notify_emails: list[str] | None = None,
     ):
         """
-        Send New Order Alert Email to Shop Admins and Staff.
+        Send New Order Alert Email to Shop Admins and Staff (Clean Minimal Template - Sample 3).
         """
         # Determine recipients: settings.shop_notify_emails + extra_notify_emails
         raw_list = (
@@ -342,103 +316,98 @@ class EmailService:
             return
 
         order_number = getattr(order, "order_number", "VB-ORDER")
-        customer_name = getattr(order, "shipping_name", "Khách hàng")
-        phone = getattr(order, "shipping_phone", "Chưa có")
-        address = getattr(order, "shipping_address", "Chưa có")
+        customer_name = getattr(order, "shipping_name", "Khách hàng") or "Khách hàng"
+        phone = getattr(order, "shipping_phone", "") or ""
+        address = getattr(order, "shipping_address", "") or ""
         total_amount = getattr(order, "total_amount", 0)
         items = getattr(order, "items", [])
-        customer_note = getattr(order, "customer_note", "")
+        customer_note = getattr(order, "customer_note", "") or ""
 
-        # Build items table rows
-        rows_html = ""
-        for item in items:
-            p_name = getattr(item, "product_name", "Sản phẩm")
-            p_qty = getattr(item, "quantity", 1)
-            p_price = format_currency(getattr(item, "unit_price", 0))
-            p_sub = format_currency(getattr(item, "subtotal", 0))
-            rows_html += f"""
-            <tr>
-              <td style="padding: 10px; border-bottom: 1px solid #3f3f46; color: #ffffff; font-size: 13.5px;">
-                <strong>{p_name}</strong>
-              </td>
-              <td style="padding: 10px; border-bottom: 1px solid #3f3f46; text-align: center; color: #fbbf24; font-weight: 800; font-size: 14px;">
-                x{p_qty}
-              </td>
-              <td style="padding: 10px; border-bottom: 1px solid #3f3f46; text-align: right; color: #a1a1aa; font-size: 13.5px;">
-                {p_price}
-              </td>
-              <td style="padding: 10px; border-bottom: 1px solid #3f3f46; text-align: right; color: #34d399; font-weight: 700; font-size: 13.5px;">
-                {p_sub}
-              </td>
-            </tr>
-            """
+        # Format products and quantity for card summary
+        if len(items) == 1:
+            product_line = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Sản phẩm: {getattr(items[0], "product_name", "Sản phẩm")}</div>'
+            qty_line = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Số lượng: {getattr(items[0], "quantity", 1)}</div>'
+        elif len(items) > 1:
+            items_text = ", ".join([f"{getattr(i, 'product_name', 'Sản phẩm')} (x{getattr(i, 'quantity', 1)})" for i in items])
+            total_qty = sum(getattr(i, "quantity", 1) for i in items)
+            product_line = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Sản phẩm: {items_text}</div>'
+            qty_line = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Số lượng: {total_qty}</div>'
+        else:
+            product_line = '<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Sản phẩm: Đơn hàng</div>'
+            qty_line = '<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Số lượng: 1</div>'
 
         formatted_total = format_currency(total_amount)
+
+        # Optional phone & address & note lines if available
+        phone_html = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Điện thoại: {phone}</div>' if phone and phone != "Chưa có" else ""
+        address_html = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Địa chỉ: {address}</div>' if address and address != "Chưa có" else ""
+        note_html = f'<div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Ghi chú: {customer_note}</div>' if customer_note else ""
 
         html_body = f"""
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>🔥 [ĐƠN HÀNG MỚI] #{order_number}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đơn hàng #{order_number}</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #f4f4f5;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #09090b; padding: 30px 10px;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #111827; -webkit-font-smoothing: antialiased;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #18181b; border: 1px solid #3f3f46; border-radius: 12px; overflow: hidden;">
-          
-          <!-- Banner -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 560px; width: 100%; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
           <tr>
-            <td style="background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%); padding: 20px; text-align: center;">
-              <h2 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;">
-                🔥 THÔNG BÁO: CÓ ĐƠN HÀNG MỚI CẦN XỬ LÝ!
-              </h2>
-              <p style="margin: 4px 0 0 0; color: #fef2f2; font-size: 13px;">
-                Mã đơn: <strong>#{order_number}</strong>
-              </p>
-            </td>
-          </tr>
+            <td style="padding: 32px;">
+              
+              <!-- Header -->
+              <div style="margin-bottom: 16px;">
+                <div style="font-size: 16px; font-weight: 700; color: #111827;">VanBass Music Center</div>
+                <div style="font-size: 12.5px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">THÔNG BÁO ĐƠN HÀNG MỚI</div>
+              </div>
+              
+              <div style="border-bottom: 1px solid #e5e7eb; margin: 16px 0 20px 0;"></div>
 
-          <!-- Content -->
-          <tr>
-            <td style="padding: 24px;">
-              <div style="background-color: #27272a; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38bdf8;">👤 Thông tin khách mua:</h3>
-                <p style="margin: 4px 0; font-size: 13.5px;"><strong>Khách hàng:</strong> {customer_name}</p>
-                <p style="margin: 4px 0; font-size: 13.5px;"><strong>Điện thoại:</strong> <a href="tel:{phone}" style="color: #4ade80; font-weight: 700;">{phone}</a></p>
-                <p style="margin: 4px 0; font-size: 13.5px;"><strong>Địa chỉ giao:</strong> {address}</p>
-                {f'<p style="margin: 4px 0; font-size: 13.5px; color: #fbbf24;"><strong>Ghi chú:</strong> {customer_note}</p>' if customer_note else ""}
+              <!-- Heading -->
+              <div style="font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 6px;">Đơn hàng {order_number}</div>
+              <p style="font-size: 14px; color: #4b5563; margin: 0 0 20px 0;">
+                Có đơn hàng mới cần được kiểm tra và xử lý.
+              </p>
+
+              <!-- Customer Info Card -->
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 20px; margin-bottom: 20px;">
+                <div style="font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 12px;">Thông tin khách hàng</div>
+                <div style="font-size: 14px; color: #374151; margin-bottom: 6px;">Họ tên: {customer_name}</div>
+                {phone_html}
+                {address_html}
+                {note_html}
+                {product_line}
+                {qty_line}
+                <div style="font-size: 14px; color: #374151;">Tổng tiền: {formatted_total}</div>
               </div>
 
-              <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #a1a1aa; text-transform: uppercase;">Danh sách sản phẩm cần xuất kho:</h3>
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px; border-collapse: collapse;">
-                <thead>
-                  <tr style="background-color: #27272a;">
-                    <th style="padding: 8px 10px; text-align: left; font-size: 12px; color: #a1a1aa;">Sản phẩm</th>
-                    <th style="padding: 8px 10px; text-align: center; font-size: 12px; color: #a1a1aa;">SL</th>
-                    <th style="padding: 8px 10px; text-align: right; font-size: 12px; color: #a1a1aa;">Đơn giá</th>
-                    <th style="padding: 8px 10px; text-align: right; font-size: 12px; color: #a1a1aa;">Thành tiền</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows_html}
-                </tbody>
+              <!-- Instruction -->
+              <p style="font-size: 14px; color: #4b5563; margin: 0 0 16px 0;">
+                Vui lòng đăng nhập trang quản trị để xem chi tiết và xử lý đơn hàng.
+              </p>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+                <tr>
+                  <td>
+                    <a href="http://localhost:3000/admin" style="display: block; width: 100%; box-sizing: border-box; text-align: center; background-color: #15803d; color: #ffffff; font-size: 15px; font-weight: 600; padding: 13px 20px; border-radius: 6px; text-decoration: none;">
+                      Xem đơn hàng trong quản trị
+                    </a>
+                  </td>
+                </tr>
               </table>
 
-              <div style="text-align: right; padding: 12px 0; border-top: 1px solid #3f3f46; margin-bottom: 20px;">
-                <span style="font-size: 14px; color: #a1a1aa;">Tổng tiền đơn hàng: </span>
-                <span style="font-size: 20px; font-weight: 900; color: #22c55e; margin-left: 8px;">{formatted_total}</span>
+              <!-- Footer -->
+              <div style="border-top: 1px solid #e5e7eb; padding-top: 16px;">
+                <div style="font-size: 12.5px; color: #6b7280;">Email tự động từ hệ thống VanBass Music Center.</div>
               </div>
 
-              <div style="text-align: center;">
-                <a href="http://localhost:3000/admin" style="display: inline-block; background-color: #22c55e; color: #000000; font-weight: 800; font-size: 14px; padding: 12px 28px; border-radius: 8px; text-decoration: none;">
-                  👉 MỞ TRANG QUẢN TRỊ ADMIN ĐỂ DUYỆT ĐƠN
-                </a>
-              </div>
             </td>
           </tr>
-
         </table>
       </td>
     </tr>
@@ -449,7 +418,7 @@ class EmailService:
 
         cls.send_async(
             to_emails=recipients,
-            subject=f"🔥 [ĐƠN HÀNG MỚI #{order_number}] {customer_name} - {formatted_total}",
+            subject=f"[ĐƠN HÀNG MỚI #{order_number}] {customer_name} - {formatted_total}",
             html_content=html_body,
         )
 
@@ -475,7 +444,7 @@ class EmailService:
 <head><meta charset="utf-8"><title>Test Email VanBass</title></head>
 <body style="background: #09090b; color: #f4f4f5; font-family: sans-serif; padding: 30px; text-align: center;">
   <div style="max-width: 500px; margin: auto; background: #181c18; padding: 30px; border-radius: 12px; border: 1px solid #22c55e;">
-    <h2 style="color: #22c55e; margin-top: 0;">🎉 KẾT NỐI EMAIL THÀNH CÔNG!</h2>
+    <h2 style="color: #22c55e; margin-top: 0;"> KẾT NỐI EMAIL THÀNH CÔNG!</h2>
     <p style="color: #d4d4d8; font-size: 15px;">
       Đây là email kiểm tra từ hệ thống <strong>VanBass Music Center</strong>.
     </p>
@@ -564,10 +533,10 @@ class EmailService:
               <!-- Security Notices -->
               <div style="background-color: rgba(239, 68, 68, 0.08); border-left: 4px solid #ef4444; border-radius: 6px; padding: 14px 18px; text-align: left; margin-bottom: 24px;">
                 <p style="margin: 0; font-size: 13px; color: #fca5a5; line-height: 1.5;">
-                  ⏱️ Mã xác thực này có hiệu lực trong <strong>5 phút</strong> và chỉ được sử dụng một lần.
+                   Mã xác thực này có hiệu lực trong <strong>5 phút</strong> và chỉ được sử dụng một lần.
                 </p>
                 <p style="margin: 6px 0 0 0; font-size: 12.5px; color: #a1a1aa; line-height: 1.5;">
-                  🔒 Tuyệt đối không chia sẻ mã này với bất kỳ ai (kể cả nhân viên VanBass). Nếu bạn không yêu cầu đặt lại mật khẩu, bạn có thể yên tâm bỏ qua email này.
+                   Tuyệt đối không chia sẻ mã này với bất kỳ ai (kể cả nhân viên VanBass). Nếu bạn không yêu cầu đặt lại mật khẩu, bạn có thể yên tâm bỏ qua email này.
                 </p>
               </div>
 
