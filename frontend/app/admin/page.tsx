@@ -2273,9 +2273,10 @@ export default function AdminDashboardPage() {
                       <div className="shadcn-metric-val">
                         {dashboardData?.users?.total ?? 0}
                       </div>
-                      <div className="shadcn-metric-trend up">
-                        <span>↗ +3.5%</span>
-                        <span className="shadcn-metric-subtext">vs tuần trước</span>
+                      <div className="shadcn-metric-trend">
+                        <span className="shadcn-metric-subtext">
+                          Tổng số tài khoản khách hàng
+                        </span>
                       </div>
                     </div>
                     {/* Sparkline Bars */}
