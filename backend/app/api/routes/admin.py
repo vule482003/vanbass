@@ -87,6 +87,14 @@ def get_admin_dashboard(
         or 0
     )
 
+    status_counts_raw = db.execute(
+        select(Order.status, func.count(Order.id)).group_by(Order.status)
+    ).all()
+    order_status_counts = {
+        (s.value if hasattr(s, "value") else str(s)): int(count)
+        for s, count in status_counts_raw
+    }
+
     total_rental_requests = db.scalar(select(func.count(RentalRequest.id))) or 0
 
     pending_rental_requests = (
@@ -246,6 +254,7 @@ def get_admin_dashboard(
             "total": float(paid_revenue + rental_revenue),
             "currency": "VND",
         },
+        "order_status_counts": order_status_counts,
         "recent_orders": recent_orders,
         "top_selling_products": top_selling_products,
     }

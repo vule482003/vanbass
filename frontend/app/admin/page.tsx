@@ -44,6 +44,7 @@ interface DashboardData {
   orders: { total: number };
   rental_requests: { total: number; pending: number };
   revenue: { order: number; rental: number; total: number; currency: string };
+  order_status_counts?: Record<string, number>;
   recent_orders: OrderItem[];
   top_selling_products: Array<{
     id: string;
@@ -472,6 +473,43 @@ export default function AdminDashboardPage() {
     return result;
   }, [orders, orderSearchQuery, orderStatusFilter, orderPaymentFilter]);
 
+  // Real Order Status Breakdown for Donut Chart
+  const orderBreakdown = useMemo(() => {
+    const counts = dashboardData?.order_status_counts;
+    if (counts) {
+      const completed = counts["completed"] || 0;
+      const shipping = (counts["shipped"] || 0) + (counts["processing"] || 0) + (counts["confirmed"] || 0);
+      const pending = counts["pending"] || 0;
+      const cancelled = counts["cancelled"] || 0;
+      const total = completed + shipping + pending + cancelled;
+
+      if (total === 0) {
+        return { total: 0, completed: 0, completedPct: 0, shipping: 0, shippingPct: 0, pending: 0, pendingPct: 0, cancelled: 0 };
+      }
+
+      const completedPct = Math.round((completed / total) * 100);
+      const shippingPct = Math.round((shipping / total) * 100);
+      const pendingPct = Math.max(0, 100 - completedPct - shippingPct);
+
+      return { total, completed, completedPct, shipping, shippingPct, pending, pendingPct, cancelled };
+    }
+
+    const total = orders.length;
+    if (total === 0) {
+      return { total: 0, completed: 0, completedPct: 0, shipping: 0, shippingPct: 0, pending: 0, pendingPct: 0, cancelled: 0 };
+    }
+    const completed = orders.filter((o) => o.status === "completed").length;
+    const shipping = orders.filter((o) => ["shipped", "processing", "confirmed"].includes(o.status)).length;
+    const pending = orders.filter((o) => o.status === "pending").length;
+    const cancelled = orders.filter((o) => o.status === "cancelled").length;
+
+    const completedPct = Math.round((completed / total) * 100);
+    const shippingPct = Math.round((shipping / total) * 100);
+    const pendingPct = Math.max(0, 100 - completedPct - shippingPct);
+
+    return { total, completed, completedPct, shipping, shippingPct, pending, pendingPct, cancelled };
+  }, [dashboardData?.order_status_counts, orders]);
+
   const orderTotalPages = Math.max(1, Math.ceil(filteredOrders.length / (orderPageSize || 1)));
   const currentOrderPage = Math.min(orderPage, orderTotalPages);
   const paginatedOrders = useMemo(() => {
@@ -849,6 +887,7 @@ export default function AdminDashboardPage() {
       await Promise.all([
         fetchDashboardData(),
         fetchCategoriesData(),
+        fetchOrdersData(),
       ]);
       fetchProductsData();
     } catch (e) {
@@ -856,7 +895,7 @@ export default function AdminDashboardPage() {
     } finally {
       setIsDataLoading(false);
     }
-  }, [fetchDashboardData, fetchCategoriesData, fetchProductsData]);
+  }, [fetchDashboardData, fetchCategoriesData, fetchProductsData, fetchOrdersData]);
 
   // Lazy tab data loading
   useEffect(() => {
@@ -864,6 +903,7 @@ export default function AdminDashboardPage() {
     startTransition(() => {
       if (activeTab === "overview") {
         void fetchDashboardData();
+        void fetchOrdersData();
       } else if (activeTab === "products") {
         void fetchProductsData();
       } else if (activeTab === "orders") {
@@ -1599,6 +1639,7 @@ export default function AdminDashboardPage() {
       await handleUpdateOrderStatus(id, undefined, newPaymentStatus);
     }
   };
+  
 
   if (isLoading) {
     return (
@@ -2238,20 +2279,6 @@ export default function AdminDashboardPage() {
                       <div className="shadcn-metric-val">
                         {formatCurrency(dashboardData?.revenue?.total ?? 0)}
                       </div>
-                      <div className="shadcn-metric-trend up">
-                        <span>↗ +2.1%</span>
-                        <span className="shadcn-metric-subtext">vs tuần trước</span>
-                      </div>
-                    </div>
-                    {/* Sparkline Bars */}
-                    <div className="shadcn-sparkline">
-                      {[30, 45, 60, 50, 75, 90, 100].map((h, i) => (
-                        <div
-                          key={i}
-                          className={`shadcn-sparkline-bar ${i >= 5 ? "green" : ""}`}
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
                     </div>
                   </div>
                 </div>
@@ -2279,16 +2306,6 @@ export default function AdminDashboardPage() {
                         </span>
                       </div>
                     </div>
-                    {/* Sparkline Bars */}
-                    <div className="shadcn-sparkline">
-                      {[40, 55, 35, 70, 65, 85, 95].map((h, i) => (
-                        <div
-                          key={i}
-                          className={`shadcn-sparkline-bar ${i >= 5 ? "highlight" : ""}`}
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
-                    </div>
                   </div>
                 </div>
 
@@ -2314,20 +2331,6 @@ export default function AdminDashboardPage() {
                           )
                         )}
                       </div>
-                      <div className="shadcn-metric-trend down">
-                        <span>↘ -1.7%</span>
-                        <span className="shadcn-metric-subtext">vs tuần trước</span>
-                      </div>
-                    </div>
-                    {/* Sparkline Bars */}
-                    <div className="shadcn-sparkline">
-                      {[60, 50, 80, 45, 55, 70, 65].map((h, i) => (
-                        <div
-                          key={i}
-                          className={`shadcn-sparkline-bar ${i >= 4 ? "highlight" : ""}`}
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
                     </div>
                   </div>
                 </div>
@@ -2350,20 +2353,6 @@ export default function AdminDashboardPage() {
                       <div className="shadcn-metric-val">
                         {dashboardData?.products?.total ?? (products.length || 980)}
                       </div>
-                      <div className="shadcn-metric-trend up">
-                        <span>↗ +4.3%</span>
-                        <span className="shadcn-metric-subtext">vs tuần trước</span>
-                      </div>
-                    </div>
-                    {/* Sparkline Bars */}
-                    <div className="shadcn-sparkline">
-                      {[35, 50, 60, 75, 80, 90, 100].map((h, i) => (
-                        <div
-                          key={i}
-                          className={`shadcn-sparkline-bar ${i >= 5 ? "green" : ""}`}
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
                     </div>
                   </div>
                 </div>
@@ -2435,8 +2424,17 @@ export default function AdminDashboardPage() {
                               <div style={{ fontSize: "10.5px", color: "#4ade80" }}>{formatCurrency(item.revenue || item.sale_price * item.units_sold)}</div>
                             </td>
                             <td style={{ textAlign: "right" }}>
-                              <span style={{ fontSize: "11px", fontWeight: 700, color: "#22c55e", background: "rgba(34, 197, 94, 0.1)", padding: "2px 6px", borderRadius: "4px" }}>
-                                ↗ +{38 - idx * 4}%
+                              <span
+                                style={{
+                                  fontSize: "11px",
+                                  fontWeight: 700,
+                                  color: item.units_sold > 0 ? "#22c55e" : "#71717a",
+                                  background: item.units_sold > 0 ? "rgba(34, 197, 94, 0.1)" : "rgba(255, 255, 255, 0.05)",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                {item.units_sold > 0 ? `↗ +${item.units_sold}` : "— 0%"}
                               </span>
                             </td>
                           </tr>
@@ -2477,40 +2475,50 @@ export default function AdminDashboardPage() {
                     <div style={{ position: "relative", width: "150px", height: "150px" }}>
                       <svg viewBox="0 0 160 160" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
                         {/* Background track */}
-                        <circle cx="80" cy="80" r="58" fill="none" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="18" />
-                        {/* Segment 1: Completed 65% (Green) */}
-                        <circle
-                          cx="80"
-                          cy="80"
-                          r="58"
-                          fill="none"
-                          stroke="#22c55e"
-                          strokeWidth="18"
-                          strokeDasharray="236 364"
-                          strokeDashoffset="0"
-                        />
-                        {/* Segment 2: Shipping 25% (Teal) */}
-                        <circle
-                          cx="80"
-                          cy="80"
-                          r="58"
-                          fill="none"
-                          stroke="#06b6d4"
-                          strokeWidth="18"
-                          strokeDasharray="91 364"
-                          strokeDashoffset="-236"
-                        />
-                        {/* Segment 3: Pending 10% (Amber) */}
-                        <circle
-                          cx="80"
-                          cy="80"
-                          r="58"
-                          fill="none"
-                          stroke="#f59e0b"
-                          strokeWidth="18"
-                          strokeDasharray="37 364"
-                          strokeDashoffset="-327"
-                        />
+                        <circle cx="80" cy="80" r="58" fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="18" />
+                        {orderBreakdown.total > 0 && (
+                          <>
+                            {/* Segment 1: Completed (Green) */}
+                            {orderBreakdown.completedPct > 0 && (
+                              <circle
+                                cx="80"
+                                cy="80"
+                                r="58"
+                                fill="none"
+                                stroke="#22c55e"
+                                strokeWidth="18"
+                                strokeDasharray={`${Math.round((orderBreakdown.completedPct / 100) * 364)} 364`}
+                                strokeDashoffset="0"
+                              />
+                            )}
+                            {/* Segment 2: Shipping (Teal) */}
+                            {orderBreakdown.shippingPct > 0 && (
+                              <circle
+                                cx="80"
+                                cy="80"
+                                r="58"
+                                fill="none"
+                                stroke="#06b6d4"
+                                strokeWidth="18"
+                                strokeDasharray={`${Math.round((orderBreakdown.shippingPct / 100) * 364)} 364`}
+                                strokeDashoffset={`-${Math.round((orderBreakdown.completedPct / 100) * 364)}`}
+                              />
+                            )}
+                            {/* Segment 3: Pending (Amber) */}
+                            {orderBreakdown.pendingPct > 0 && (
+                              <circle
+                                cx="80"
+                                cy="80"
+                                r="58"
+                                fill="none"
+                                stroke="#f59e0b"
+                                strokeWidth="18"
+                                strokeDasharray={`${Math.round((orderBreakdown.pendingPct / 100) * 364)} 364`}
+                                strokeDashoffset={`-${Math.round(((orderBreakdown.completedPct + orderBreakdown.shippingPct) / 100) * 364)}`}
+                              />
+                            )}
+                          </>
+                        )}
                       </svg>
 
                       {/* Center label */}
@@ -2525,8 +2533,12 @@ export default function AdminDashboardPage() {
                           pointerEvents: "none",
                         }}
                       >
-                        <span style={{ fontSize: "20px", fontWeight: 800, color: "#fff" }}>65%</span>
-                        <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em" }}>Hoàn thành</span>
+                        <span style={{ fontSize: "20px", fontWeight: 800, color: "#fff" }}>
+                          {orderBreakdown.total > 0 ? `${orderBreakdown.completedPct}%` : "0%"}
+                        </span>
+                        <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          {orderBreakdown.total > 0 ? "Hoàn thành" : "0 đơn"}
+                        </span>
                       </div>
                     </div>
 
@@ -2534,15 +2546,15 @@ export default function AdminDashboardPage() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "6px", width: "100%", marginTop: "14px", fontSize: "11.5px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <span style={{ color: "#e4e4e7" }}><span className="shadcn-legend-dot" style={{ background: "#22c55e" }} />Hoàn thành</span>
-                        <strong style={{ color: "#22c55e" }}>65%</strong>
+                        <strong style={{ color: "#22c55e" }}>{orderBreakdown.completed} ({orderBreakdown.completedPct}%)</strong>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <span style={{ color: "#e4e4e7" }}><span className="shadcn-legend-dot" style={{ background: "#06b6d4" }} />Đang giao</span>
-                        <strong style={{ color: "#06b6d4" }}>25%</strong>
+                        <strong style={{ color: "#06b6d4" }}>{orderBreakdown.shipping} ({orderBreakdown.shippingPct}%)</strong>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <span style={{ color: "#e4e4e7" }}><span className="shadcn-legend-dot" style={{ background: "#f59e0b" }} />Chờ xử lý</span>
-                        <strong style={{ color: "#f59e0b" }}>10%</strong>
+                        <strong style={{ color: "#f59e0b" }}>{orderBreakdown.pending} ({orderBreakdown.pendingPct}%)</strong>
                       </div>
                     </div>
                   </div>
