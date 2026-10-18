@@ -2236,7 +2236,7 @@ export default function AdminDashboardPage() {
                   <div className="shadcn-metric-main">
                     <div>
                       <div className="shadcn-metric-val">
-                        {formatCurrency(dashboardData?.revenue?.total || 278500000)}
+                        {formatCurrency(dashboardData?.revenue?.total ?? 0)}
                       </div>
                       <div className="shadcn-metric-trend up">
                         <span>↗ +2.1%</span>
@@ -2271,7 +2271,7 @@ export default function AdminDashboardPage() {
                   <div className="shadcn-metric-main">
                     <div>
                       <div className="shadcn-metric-val">
-                        {dashboardData?.users?.total || 611}
+                        {dashboardData?.users?.total ?? 0}
                       </div>
                       <div className="shadcn-metric-trend up">
                         <span>↗ +3.5%</span>
@@ -2307,7 +2307,10 @@ export default function AdminDashboardPage() {
                     <div>
                       <div className="shadcn-metric-val">
                         {formatCurrency(
-                          Math.round((dashboardData?.revenue?.total || 278500000) / Math.max(dashboardData?.orders?.total || 150, 1))
+                          Math.round(
+                            (dashboardData?.revenue?.total ?? 0) /
+                            Math.max(dashboardData?.orders?.total ?? 0, 1)
+                          )
                         )}
                       </div>
                       <div className="shadcn-metric-trend down">
