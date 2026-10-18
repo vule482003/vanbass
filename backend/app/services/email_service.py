@@ -24,6 +24,17 @@ def format_currency(val: Decimal | float | None) -> str:
         return f"{val} đ"
 
 
+def is_routable_email(email: str | None) -> bool:
+    """
+    Check if an email address is valid and routable for actual notifications,
+    excluding empty, invalid, .local or placeholder emails like admin@vanbass.vn.
+    """
+    if not email or "@" not in email:
+        return False
+    clean = email.strip()
+    return not (clean.endswith(".local") or clean.lower() == "admin@vanbass.vn")
+
+
 class EmailService:
     @classmethod
     def is_configured(cls) -> bool:

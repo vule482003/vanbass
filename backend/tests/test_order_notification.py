@@ -4,7 +4,6 @@ from unittest.mock import MagicMock, patch
 
 from app.api.routes.order import notify_staff_and_customer_of_order
 from app.models.order import Order, OrderStatus, PaymentStatus
-from app.models.user import User, UserRole
 from app.services.email_service import EmailService, is_routable_email
 
 
@@ -24,7 +23,7 @@ def test_notify_staff_and_customer_of_order():
         order_number="VB-TEST123",
         status=OrderStatus.CONFIRMED,
         payment_status=PaymentStatus.PAID,
-        total_amount=Decimal("500000"),
+        total_amount=Decimal(500000),
         shipping_name="Test Customer",
         shipping_phone="0901234567",
         shipping_address="123 Street",

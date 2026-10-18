@@ -231,6 +231,7 @@ export const dictionaries = {
       itemsSubtotal: "Tổng tiền hàng",
       itemsUnit: "món",
       shippingFee: "Phí vận chuyển",
+      shippingFree: "Miễn phí giao hàng",
       warrantyOfficial: "Bảo hành chính hãng",
       warranty12Months: "12 tháng",
       total: "Tổng thanh toán",

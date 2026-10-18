@@ -23,9 +23,34 @@ from app.schemas.order import (
     OrderResponse,
     OrderStatusUpdate,
 )
-from app.services.email_service import EmailService
+from app.services.email_service import EmailService, is_routable_email
 from app.services.order_service import OrderService
 from app.services.user_service import UserService
+
+
+def notify_staff_and_customer_of_order(
+    order: Order,
+    db: Session,
+    customer_email: str | None = None,
+) -> None:
+    if customer_email:
+        EmailService.send_order_confirmation_to_customer(
+            order=order,
+            customer_email=customer_email,
+        )
+
+    # Lấy danh sách email staff/admin từ DB
+    staff_users = (
+        db.execute(select(User.email).where(User.role.in_([UserRole.ADMIN, UserRole.STAFF])))
+        .scalars()
+        .all()
+    )
+    staff_emails = [email for email in staff_users if is_routable_email(email)]
+
+    EmailService.send_order_notification_to_staff(
+        order=order,
+        extra_notify_emails=staff_emails,
+    )
 
 
 class OrderPayRequest(BaseModel):
@@ -130,20 +155,7 @@ def create_order(
         "bank_transfer",
     ]
     if not is_online_payment or order.payment_status == PaymentStatus.PAID:
-        if customer_email:
-            EmailService.send_order_confirmation_to_customer(
-                order=order,
-                customer_email=customer_email,
-            )
-            
-        # Lấy danh sách email staff/admin từ DB
-        staff_users = db.execute(select(User.email).where(User.role.in_([UserRole.ADMIN, UserRole.STAFF]))).scalars().all()
-        staff_emails = [email for email in staff_users if email and "@" in email and not email.endswith("@vanbass.local")]
-
-        EmailService.send_order_notification_to_staff(
-            order=order,
-            extra_notify_emails=staff_emails,
-        )
+        notify_staff_and_customer_of_order(order=order, db=db, customer_email=customer_email)
 
     return order
 
@@ -366,19 +378,9 @@ def bank_transfer_webhook(
             else None
         )
         if cust_email:
-            EmailService.send_order_confirmation_to_customer(
-                order=target_order,
-                customer_email=cust_email,
-            )
-            
-        # Lấy danh sách email staff/admin từ DB
-        staff_users = db.execute(select(User.email).where(User.role.in_([UserRole.ADMIN, UserRole.STAFF]))).scalars().all()
-        staff_emails = [email for email in staff_users if email and "@" in email and not email.endswith("@vanbass.local")]
-
-        EmailService.send_order_notification_to_staff(
-            order=target_order,
-            extra_notify_emails=staff_emails,
-        )
+            notify_staff_and_customer_of_order(order=target_order, db=db, customer_email=cust_email)
+        else:
+            notify_staff_and_customer_of_order(order=target_order, db=db)
     except Exception as e:  # noqa: BLE001
         import logging
         logging.getLogger(__name__).error(f"SePAY webhook email dispatch error: {e}")
