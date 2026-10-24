@@ -193,8 +193,8 @@ class Product(Base):
         Rounded to nearest 1,000 VND.
         """
         if self.sale_enabled and self.sale_price and self.sale_price > 0 and self.discount_percent and self.discount_percent > 0:
-            multiplier = Decimal("1") - (Decimal(self.discount_percent) / Decimal("100"))
+            multiplier = Decimal(1) - (Decimal(self.discount_percent) / Decimal(100))
             raw = self.sale_price / multiplier
             # Round to nearest 1,000 VND
-            return (raw / Decimal("1000")).quantize(Decimal("1"), rounding="ROUND_HALF_UP") * Decimal("1000")
+            return (raw / Decimal(1000)).quantize(Decimal(1), rounding="ROUND_HALF_UP") * Decimal(1000)
         return None
