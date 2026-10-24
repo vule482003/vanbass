@@ -19,22 +19,37 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Language>("vi");
 
   useEffect(() => {
-    // Read saved language from localStorage on client mount
+    // Read saved language from localStorage on client mount (safe client-only hydration)
     try {
-      const savedLang = localStorage.getItem("app_lang") as Language;
-      if (savedLang === "vi" || savedLang === "en") {
+      const savedAppLang = localStorage.getItem("app_lang") as Language;
+      const savedVanbassLang = localStorage.getItem("vanbass_lang") as Language;
+      const validLang =
+        savedAppLang === "vi" || savedAppLang === "en"
+          ? savedAppLang
+          : savedVanbassLang === "vi" || savedVanbassLang === "en"
+          ? savedVanbassLang
+          : null;
+      if (validLang) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        setLangState(savedLang);
+        setLangState(validLang);
       }
     } catch {
       // Local storage might be blocked or unavailable
     }
   }, []);
 
+  useEffect(() => {
+    // Synchronize HTML lang attribute with active language state
+    if (typeof document !== "undefined" && document.documentElement) {
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
   const setLang = (newLang: Language) => {
     setLangState(newLang);
     try {
       localStorage.setItem("app_lang", newLang);
+      localStorage.setItem("vanbass_lang", newLang);
       // Clean up legacy google translate cookie if present
       document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${window.location.hostname}; path=/;`;

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/auth-context";
 import { DEFAULT_HOME_DATA, HomeData } from "../types/home_config";
-import EditProductModal from "./components/EditProductModal";
+import EditProductModal, { EditProductImageOperation } from "./components/EditProductModal";
 import AddProductModal from "./components/AddProductModal";
 
 interface ProductItem {
@@ -18,6 +18,8 @@ interface ProductItem {
   category_id: string;
   sale_enabled: boolean;
   sale_price?: number;
+  discount_percent?: number | null;
+  original_price?: number | null;
   rental_enabled: boolean;
   rental_price?: number;
   stock_quantity: number;
@@ -550,6 +552,7 @@ export default function AdminDashboardPage() {
   const [categoryId, setCategoryId] = useState("");
   const [saleEnabled, setSaleEnabled] = useState(true);
   const [salePrice, setSalePrice] = useState("");
+  const [discountPercent, setDiscountPercent] = useState("");
   const [rentalEnabled, setRentalEnabled] = useState(true);
   const [rentalPrice, setRentalPrice] = useState("");
   const [stockQuantity, setStockQuantity] = useState("5");
@@ -1276,6 +1279,7 @@ export default function AdminDashboardPage() {
     setCategoryId(categories.length > 0 ? categories[0].id : "");
     setSaleEnabled(true);
     setSalePrice("");
+    setDiscountPercent("");
     setRentalEnabled(true);
     setRentalPrice("");
     setStockQuantity("5");
@@ -1364,6 +1368,21 @@ export default function AdminDashboardPage() {
       return;
     }
 
+    let parsedDiscountPercent: number | null = null;
+    const trimmedDiscount = discountPercent.trim();
+    if (trimmedDiscount) {
+      const dp = parseInt(trimmedDiscount, 10);
+      if (isNaN(dp) || dp < 1 || dp > 99) {
+        setActionErrorMsg("Phần trăm giảm giá phải là số nguyên từ 1 đến 99%");
+        return;
+      }
+      if (!saleEnabled || !salePrice || parseFloat(salePrice) <= 0) {
+        setActionErrorMsg("Chỉ có thể áp dụng phần trăm giảm giá khi bật bán sản phẩm với giá bán hợp lệ");
+        return;
+      }
+      parsedDiscountPercent = dp;
+    }
+
     if (rentalEnabled && (!rentalPrice || parseFloat(rentalPrice) <= 0)) {
       setActionErrorMsg("Vui lòng nhập giá thuê hợp lệ (> 0)");
       return;
@@ -1409,6 +1428,7 @@ export default function AdminDashboardPage() {
         category_id: categoryId,
         sale_enabled: saleEnabled,
         sale_price: saleEnabled && salePrice ? parseFloat(salePrice) : null,
+        discount_percent: saleEnabled ? parsedDiscountPercent : null,
         rental_enabled: rentalEnabled,
         rental_price: rentalEnabled && rentalPrice ? parseFloat(rentalPrice) : null,
         stock_quantity: stock,
@@ -1483,6 +1503,7 @@ export default function AdminDashboardPage() {
     setCategoryId(product.category_id || (categories.length > 0 ? categories[0].id : ""));
     setSaleEnabled(product.sale_enabled ?? true);
     setSalePrice(product.sale_price ? String(product.sale_price) : "");
+    setDiscountPercent(product.discount_percent ? String(product.discount_percent) : "");
     setRentalEnabled(product.rental_enabled ?? true);
     setRentalPrice(product.rental_price ? String(product.rental_price) : "");
     setStockQuantity(String(product.stock_quantity ?? 5));
@@ -1498,9 +1519,23 @@ export default function AdminDashboardPage() {
     setActionErrorMsg("");
     setActionSuccessMsg("");
     setShowEditProductModal(true);
+
+    // If product.images is missing or empty, fetch latest full detail to ensure gallery images are loaded
+    if (!product.images || product.images.length === 0) {
+      fetch(`${apiUrl}/products/${product.id}`, { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((fullProd) => {
+          if (fullProd && fullProd.images && fullProd.images.length > 0) {
+            setEditingProduct((prev) =>
+              prev && prev.id === product.id ? { ...prev, images: fullProd.images } : prev
+            );
+          }
+        })
+        .catch(() => {});
+    }
   };
 
-  const handleUpdateProduct = async (e: React.FormEvent) => {
+  const handleUpdateProduct = async (e: React.FormEvent, imageOps?: EditProductImageOperation) => {
     e.preventDefault();
     if (!editingProduct) return;
     setIsSubmitting(true);
@@ -1508,85 +1543,371 @@ export default function AdminDashboardPage() {
     setActionErrorMsg("");
 
     try {
-      let finalImageUrl = imageUrl.trim();
+      // 1. Build DELTA payload (only include modified or explicitly required fields)
+      const payload: Record<string, unknown> = {};
 
-      // If a new local file was selected, upload it first
-      if (selectedImageFile) {
-        const formData = new FormData();
-        formData.append("file", selectedImageFile);
+      const trimmedName = name.trim();
+      if (trimmedName && trimmedName !== editingProduct.name) {
+        payload.name = trimmedName;
+      }
 
-        const uploadRes = await fetch(`${apiUrl}/upload/image`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        });
+      const trimmedSlug = slug.trim();
+      if (trimmedSlug && trimmedSlug !== editingProduct.slug) {
+        payload.slug = trimmedSlug;
+      }
 
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json();
-          finalImageUrl = uploadData.url;
-        } else {
-          const uploadErr = await uploadRes.json().catch(() => ({ detail: "Lỗi tải ảnh" }));
-          setActionErrorMsg(uploadErr.detail || "Không thể tải ảnh lên máy chủ.");
+      const trimmedSku = sku.trim();
+      if (trimmedSku && trimmedSku !== editingProduct.sku) {
+        payload.sku = trimmedSku;
+      }
+
+      const trimmedBrand = brand.trim();
+      if (trimmedBrand !== (editingProduct.brand || "")) {
+        payload.brand = trimmedBrand || null;
+      }
+
+      if (categoryId && categoryId !== editingProduct.category_id) {
+        payload.category_id = categoryId;
+      }
+
+      // 1A. Validate stock quantity (ngăn chặn chuỗi rỗng biến thành số 0)
+      const trimmedStock = typeof stockQuantity === "string" ? stockQuantity.trim() : String(stockQuantity ?? "").trim();
+      if (trimmedStock === "") {
+        setActionErrorMsg("Số lượng tồn kho không được để trống. Vui lòng nhập số lượng (hoặc nhập 0 nếu hết hàng).");
+        setIsSubmitting(false);
+        return;
+      }
+      const parsedStock = Number(trimmedStock);
+      if (isNaN(parsedStock) || parsedStock < 0 || !Number.isInteger(parsedStock)) {
+        setActionErrorMsg("Số lượng tồn kho phải là số nguyên không âm (>= 0).");
+        setIsSubmitting(false);
+        return;
+      }
+      if (parsedStock !== editingProduct.stock_quantity) {
+        payload.stock_quantity = parsedStock;
+      }
+
+      // 1B. Validate sale price khi bật bán
+      if (saleEnabled) {
+        const trimmedSalePrice = typeof salePrice === "string" ? salePrice.trim() : String(salePrice ?? "").trim();
+        if (!trimmedSalePrice) {
+          setActionErrorMsg("Vui lòng nhập giá bán khi bật chức năng bán sản phẩm.");
+          setIsSubmitting(false);
+          return;
+        }
+        const numSalePrice = Number(trimmedSalePrice);
+        if (isNaN(numSalePrice) || numSalePrice <= 0) {
+          setActionErrorMsg("Giá bán phải là số hợp lệ lớn hơn 0 khi bật bán sản phẩm.");
           setIsSubmitting(false);
           return;
         }
       }
 
-      const payload: Record<string, unknown> = {
-        name: name.trim(),
-        slug: slug.trim(),
-        sku: sku.trim(),
-        brand: brand.trim(),
-        category_id: categoryId || undefined,
-        sale_enabled: saleEnabled,
-        sale_price: saleEnabled && salePrice ? Number(salePrice) : null,
-        rental_enabled: rentalEnabled,
-        rental_price: rentalEnabled && rentalPrice ? Number(rentalPrice) : null,
-        stock_quantity: Number(stockQuantity) || 0,
-        description: description.trim() || undefined,
-        meta_title: metaTitle.trim() || undefined,
-        meta_description: metaDescription.trim() || undefined,
-        meta_keywords: metaKeywords.trim() || undefined,
-      };
+      // 1C. Validate rental price khi bật cho thuê
+      if (rentalEnabled) {
+        const trimmedRentalPrice = typeof rentalPrice === "string" ? rentalPrice.trim() : String(rentalPrice ?? "").trim();
+        if (!trimmedRentalPrice) {
+          setActionErrorMsg("Vui lòng nhập giá thuê khi bật chức năng cho thuê.");
+          setIsSubmitting(false);
+          return;
+        }
+        const numRentalPrice = Number(trimmedRentalPrice);
+        if (isNaN(numRentalPrice) || numRentalPrice <= 0) {
+          setActionErrorMsg("Giá thuê phải là số hợp lệ lớn hơn 0 khi bật cho thuê.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
 
-      const res = await fetch(`${apiUrl}/products/${editingProduct.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
+      if (saleEnabled !== editingProduct.sale_enabled) {
+        payload.sale_enabled = saleEnabled;
+      }
 
-      if (res.ok) {
-        // Also attach image via product images endpoint if provided
-        if (finalImageUrl) {
-          try {
-            await fetch(`${apiUrl}/products/${editingProduct.id}/images`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                image_url: finalImageUrl,
-                alt_text: name.trim(),
-                is_primary: true,
-                sort_order: 0,
-              }),
-            });
-          } catch {
-            // Non-blocking
+      const parsedSalePrice = saleEnabled && salePrice ? Number(salePrice) : null;
+      const currentSalePrice =
+        editingProduct.sale_price !== undefined && editingProduct.sale_price !== null
+          ? Number(editingProduct.sale_price)
+          : null;
+      if (parsedSalePrice !== currentSalePrice) {
+        payload.sale_price = parsedSalePrice;
+        if (saleEnabled) payload.sale_enabled = true;
+      }
+
+      // 1B-2. Check and validate discount_percent delta
+      const trimmedUpdateDiscount = discountPercent.trim();
+      let parsedUpdateDiscount: number | null = null;
+      if (trimmedUpdateDiscount) {
+        const dp = parseInt(trimmedUpdateDiscount, 10);
+        if (isNaN(dp) || dp < 1 || dp > 99) {
+          setActionErrorMsg("Phần trăm giảm giá phải là số nguyên từ 1 đến 99%");
+          setIsSubmitting(false);
+          return;
+        }
+        if (!saleEnabled) {
+          setActionErrorMsg("Không thể thiết lập phần trăm giảm giá khi đang tắt bán sản phẩm");
+          setIsSubmitting(false);
+          return;
+        }
+        parsedUpdateDiscount = dp;
+      }
+      // If sale is disabled, discount_percent should be cleared
+      const targetDiscount = saleEnabled ? parsedUpdateDiscount : null;
+      const currentDiscount = editingProduct.discount_percent ?? null;
+      if (targetDiscount !== currentDiscount) {
+        payload.discount_percent = targetDiscount;
+      }
+
+      if (rentalEnabled !== editingProduct.rental_enabled) {
+        payload.rental_enabled = rentalEnabled;
+      }
+
+      const parsedRentalPrice = rentalEnabled && rentalPrice ? Number(rentalPrice) : null;
+      const currentRentalPrice =
+        editingProduct.rental_price !== undefined && editingProduct.rental_price !== null
+          ? Number(editingProduct.rental_price)
+          : null;
+      if (parsedRentalPrice !== currentRentalPrice) {
+        payload.rental_price = parsedRentalPrice;
+        if (rentalEnabled) payload.rental_enabled = true;
+      }
+
+      const trimmedDesc = description.trim();
+      if (trimmedDesc !== (editingProduct.description || "").trim()) {
+        payload.description = trimmedDesc || null;
+      }
+
+      const trimmedMetaTitle = metaTitle.trim();
+      if (trimmedMetaTitle !== (editingProduct.meta_title || "").trim()) {
+        payload.meta_title = trimmedMetaTitle || null;
+      }
+
+      const trimmedMetaDesc = metaDescription.trim();
+      if (trimmedMetaDesc !== (editingProduct.meta_description || "").trim()) {
+        payload.meta_description = trimmedMetaDesc || null;
+      }
+
+      const trimmedMetaKeywords = metaKeywords.trim();
+      if (trimmedMetaKeywords !== (editingProduct.meta_keywords || "").trim()) {
+        payload.meta_keywords = trimmedMetaKeywords || null;
+      }
+
+      // 2. Only call PUT /products/{id} if at least one product field actually changed
+      const productFieldsUpdated = Object.keys(payload).length > 0;
+      if (productFieldsUpdated) {
+        const res = await fetch(`${apiUrl}/products/${editingProduct.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật sản phẩm" }));
+          setActionErrorMsg(err.detail || "Không thể cập nhật sản phẩm. Vui lòng kiểm tra lại thông tin.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // 3. Process image operations independently (Only if user actually modified images)
+      const imageErrors: string[] = [];
+
+      if (imageOps) {
+        // A. Delete images marked for deletion
+        if (imageOps.toDeleteIds && imageOps.toDeleteIds.length > 0) {
+          for (const imgId of imageOps.toDeleteIds) {
+            try {
+              const delRes = await fetch(`${apiUrl}/products/${editingProduct.id}/images/${imgId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              if (!delRes.ok) {
+                const errJson = await delRes.json().catch(() => ({}));
+                imageErrors.push(`Xóa ảnh (#${imgId}) thất bại (${errJson.detail || `HTTP ${delRes.status}`})`);
+              }
+            } catch (err) {
+              console.warn(`Failed to delete image ${imgId}:`, err);
+              imageErrors.push(`Xóa ảnh (#${imgId}) gặp lỗi mạng.`);
+            }
           }
         }
 
-        setActionSuccessMsg(`✓ Đã cập nhật sản phẩm "${name}" thành công!`);
-        handleCloseEditModal();
-        loadAllData();
+        // B. Replace images
+        if (imageOps.toReplace && imageOps.toReplace.length > 0) {
+          for (const item of imageOps.toReplace) {
+            let repUrl = item.url;
+            if (item.file) {
+              const formData = new FormData();
+              formData.append("file", item.file);
+              try {
+                const uploadRes = await fetch(`${apiUrl}/upload/image`, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
+                });
+                if (uploadRes.ok) {
+                  const uploadData = await uploadRes.json();
+                  repUrl = uploadData.url;
+                } else {
+                  const errJson = await uploadRes.json().catch(() => ({}));
+                  imageErrors.push(`Tải ảnh thay thế lên máy chủ thất bại (${errJson.detail || `HTTP ${uploadRes.status}`})`);
+                  continue;
+                }
+              } catch (err) {
+                console.warn("Upload replace image error:", err);
+                imageErrors.push("Tải ảnh thay thế gặp lỗi mạng.");
+                continue;
+              }
+            }
+            if (repUrl && item.id) {
+              try {
+                const repRes = await fetch(`${apiUrl}/products/${editingProduct.id}/images/${item.id}`, {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    image_url: repUrl,
+                    alt_text: (payload.name as string) || editingProduct.name,
+                  }),
+                });
+                if (!repRes.ok) {
+                  const errJson = await repRes.json().catch(() => ({}));
+                  imageErrors.push(`Cập nhật ảnh (#${item.id}) thất bại (${errJson.detail || `HTTP ${repRes.status}`})`);
+                }
+              } catch (err) {
+                console.warn(`Failed to replace image ${item.id}:`, err);
+                imageErrors.push(`Cập nhật ảnh (#${item.id}) gặp lỗi mạng.`);
+              }
+            }
+          }
+        }
+
+        // C. Add new images
+        if (imageOps.toAdd && imageOps.toAdd.length > 0) {
+          for (const item of imageOps.toAdd) {
+            let addUrl = item.url;
+            if (item.file) {
+              const formData = new FormData();
+              formData.append("file", item.file);
+              try {
+                const uploadRes = await fetch(`${apiUrl}/upload/image`, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
+                });
+                if (uploadRes.ok) {
+                  const uploadData = await uploadRes.json();
+                  addUrl = uploadData.url;
+                } else {
+                  const errJson = await uploadRes.json().catch(() => ({}));
+                  imageErrors.push(`Tải ảnh mới lên máy chủ thất bại (${errJson.detail || `HTTP ${uploadRes.status}`})`);
+                  continue;
+                }
+              } catch (err) {
+                console.warn("Upload new image error:", err);
+                imageErrors.push("Tải ảnh mới gặp lỗi mạng.");
+                continue;
+              }
+            }
+            if (addUrl) {
+              try {
+                const addRes = await fetch(`${apiUrl}/products/${editingProduct.id}/images`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    image_url: addUrl,
+                    alt_text: (payload.name as string) || editingProduct.name,
+                    is_primary: false,
+                    sort_order: 10,
+                  }),
+                });
+                if (!addRes.ok) {
+                  const errJson = await addRes.json().catch(() => ({}));
+                  imageErrors.push(`Gắn ảnh mới vào sản phẩm thất bại (${errJson.detail || `HTTP ${addRes.status}`})`);
+                }
+              } catch (err) {
+                console.warn("Failed to add new image:", err);
+                imageErrors.push("Gắn ảnh mới vào sản phẩm gặp lỗi mạng.");
+              }
+            }
+          }
+        }
       } else {
-        const err = await res.json().catch(() => ({ detail: "Lỗi cập nhật sản phẩm" }));
-        setActionErrorMsg(err.detail || "Không thể cập nhật sản phẩm. Vui lòng kiểm tra lại thông tin.");
+        // Fallback for legacy single-file selection: ONLY if user explicitly picked a new file
+        if (selectedImageFile) {
+          const formData = new FormData();
+          formData.append("file", selectedImageFile);
+
+          try {
+            const uploadRes = await fetch(`${apiUrl}/upload/image`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData,
+            });
+
+            if (uploadRes.ok) {
+              const uploadData = await uploadRes.json();
+              const attachRes = await fetch(`${apiUrl}/products/${editingProduct.id}/images`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  image_url: uploadData.url,
+                  alt_text: name.trim(),
+                  is_primary: true,
+                  sort_order: 0,
+                }),
+              });
+              if (!attachRes.ok) {
+                imageErrors.push("Gắn ảnh mới vào sản phẩm thất bại.");
+              }
+            } else {
+              imageErrors.push("Tải ảnh lên máy chủ thất bại.");
+            }
+          } catch {
+            imageErrors.push("Lỗi kết nối khi tải ảnh lên máy chủ.");
+          }
+        }
       }
+
+      // 4. Handle result: complete success vs partial save vs full error
+      if (imageErrors.length > 0) {
+        // Đồng bộ lại product để nạp các ảnh đã thao tác thành công, tránh lặp lại khi người dùng thử lại
+        try {
+          const freshRes = await fetch(`${apiUrl}/products/${editingProduct.id}?_t=${Date.now()}`, {
+            cache: "no-store",
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+          if (freshRes.ok) {
+            const freshProd = await freshRes.json();
+            setEditingProduct(freshProd);
+          }
+        } catch {}
+        void loadAllData();
+
+        if (productFieldsUpdated) {
+          setActionErrorMsg(
+            `⚠ LƯU MỘT PHẦN: Thông tin sản phẩm "${name}" đã được lưu, nhưng thao tác ảnh gặp lỗi: ${imageErrors.join("; ")}. Các thay đổi thành công đã được ghi nhận; vui lòng kiểm tra và thử lại các ảnh bị lỗi.`
+          );
+        } else {
+          setActionErrorMsg(`Thao tác ảnh thất bại: ${imageErrors.join("; ")}. Vui lòng kiểm tra lại.`);
+        }
+        setIsSubmitting(false);
+        return;
+      }
+
+      setActionSuccessMsg(`✓ Đã cập nhật sản phẩm "${name}" thành công!`);
+      handleCloseEditModal();
+      loadAllData();
     } catch (err) {
       console.error("Error updating product:", err);
       setActionErrorMsg("Lỗi kết nối máy chủ khi cập nhật sản phẩm.");
@@ -6049,6 +6370,8 @@ export default function AdminDashboardPage() {
         setSaleEnabled={setSaleEnabled}
         salePrice={salePrice}
         setSalePrice={setSalePrice}
+        discountPercent={discountPercent}
+        setDiscountPercent={setDiscountPercent}
         rentalEnabled={rentalEnabled}
         setRentalEnabled={setRentalEnabled}
         rentalPrice={rentalPrice}
@@ -6106,6 +6429,8 @@ export default function AdminDashboardPage() {
         setSaleEnabled={setSaleEnabled}
         salePrice={salePrice}
         setSalePrice={setSalePrice}
+        discountPercent={discountPercent}
+        setDiscountPercent={setDiscountPercent}
         rentalEnabled={rentalEnabled}
         setRentalEnabled={setRentalEnabled}
         rentalPrice={rentalPrice}

@@ -246,6 +246,50 @@ def update_product(
 
     update_data = data.model_dump(exclude_unset=True)
 
+    # 1. Validation tồn kho không được là null
+    if "stock_quantity" in update_data and update_data["stock_quantity"] is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Số lượng tồn kho không được để trống (null).",
+        )
+
+    # 2. Validation giá bán khi bật bán
+    effective_sale_enabled = update_data.get("sale_enabled", product.sale_enabled)
+    effective_sale_price = update_data.get("sale_price", product.sale_price)
+    if effective_sale_enabled:
+        if effective_sale_price is None or effective_sale_price <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Giá bán phải là số hợp lệ lớn hơn 0 khi bật chức năng bán sản phẩm.",
+            )
+    else:
+        # Nếu tắt bán, tự động đặt discount_percent về None
+        update_data["discount_percent"] = None
+
+    # Validation discount_percent
+    effective_discount = update_data.get("discount_percent", product.discount_percent)
+    if effective_discount is not None:
+        if not effective_sale_enabled or effective_sale_price is None or effective_sale_price <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Khuyến mãi chỉ áp dụng khi sản phẩm được bật bán và có giá bán lớn hơn 0.",
+            )
+        if effective_discount <= 0 or effective_discount >= 100:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Phần trăm giảm giá phải nằm trong khoảng từ 1% đến 99%.",
+            )
+
+    # 3. Validation giá thuê khi bật cho thuê
+    effective_rental_enabled = update_data.get("rental_enabled", product.rental_enabled)
+    effective_rental_price = update_data.get("rental_price", product.rental_price)
+    if effective_rental_enabled:
+        if effective_rental_price is None or effective_rental_price <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Giá thuê phải là số hợp lệ lớn hơn 0 khi bật chức năng cho thuê.",
+            )
+
     if "category_id" in update_data:
         category = db.get(Category, update_data["category_id"])
 

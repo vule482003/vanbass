@@ -27,6 +27,8 @@ export interface Product {
   specifications?: Record<string, string | number | boolean | string[]>;
   sale_enabled: boolean;
   sale_price?: number | null;
+  discount_percent?: number | null;
+  original_price?: number | null;
   rental_enabled: boolean;
   rental_price?: number | null;
   stock_quantity: number;

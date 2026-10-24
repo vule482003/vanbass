@@ -511,9 +511,15 @@ export default function ProductDetailClient({
     router.push("/cart");
   };
 
-  const calculatedOldPrice = product.sale_price
-    ? Math.round((product.sale_price * 1.112) / 100000) * 100000
-    : null;
+  const hasDiscount = Boolean(
+    product.sale_enabled &&
+    product.sale_price &&
+    product.sale_price > 0 &&
+    product.discount_percent &&
+    product.discount_percent > 0 &&
+    product.original_price &&
+    product.original_price > product.sale_price
+  );
 
   return (
     <div className="product-detail-page-root" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#08090B" }}>
@@ -807,14 +813,14 @@ export default function ProductDetailClient({
                       ? formatCurrency(product.sale_price, lang)
                       : "Liên hệ"}
                   </span>
-                  {product.sale_price && product.sale_price > 0 && calculatedOldPrice && (
-                    <span className="pdetail-discount-tag">-10%</span>
+                  {hasDiscount && (
+                    <span className="pdetail-discount-tag">-{product.discount_percent}%</span>
                   )}
                 </div>
 
-                {product.sale_price && product.sale_price > 0 && calculatedOldPrice && (
+                {hasDiscount && product.original_price && (
                   <span className="pdetail-old-price">
-                    {formatCurrency(calculatedOldPrice, lang)}
+                    {formatCurrency(product.original_price, lang)}
                   </span>
                 )}
 
@@ -1171,10 +1177,10 @@ export default function ProductDetailClient({
              ============================================================ */}
           <div className="pdetail-factblock-wrapper">
             <div className="pdetail-factblock-header">
-              <span className="pdetail-factblock-kicker">FACT BLOCK • DỮ LIỆU THỰC TẾ XÁC MINH</span>
-              <h2 className="pdetail-factblock-title">Bảng Thông Tin Thực Tế & Khả Năng Cung Ứng {displayName}</h2>
+              <span className="pdetail-factblock-kicker">{t.productDetail.factBlockKicker}</span>
+              <h2 className="pdetail-factblock-title">{t.productDetail.factBlockTitlePrefix} {displayName}</h2>
               <p className="pdetail-factblock-subtitle">
-                Dữ liệu chính xác được xác thực trực tiếp tại hệ thống VanMusic phục vụ tra cứu nhanh và trích xuất thông tin:
+                {t.productDetail.factBlockSubtitle}
               </p>
             </div>
 
@@ -1182,99 +1188,101 @@ export default function ProductDetailClient({
               <table className="pdetail-factblock-table">
                 <tbody>
                   <tr>
-                    <td className="fb-label">Tên sản phẩm</td>
+                    <td className="fb-label">{t.productDetail.fbLabelProductName}</td>
                     <td className="fb-data"><strong>{displayName}</strong></td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Mã SKU / Model</td>
+                    <td className="fb-label">{t.productDetail.fbLabelSku}</td>
                     <td className="fb-data"><code>{product.sku || product.name}</code></td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Thương hiệu</td>
-                    <td className="fb-data">{product.brand ? `${product.brand} (Chính Hãng Phân Phối)` : "Chính Hãng Phân Phối"}</td>
+                    <td className="fb-label">{t.productDetail.fbLabelBrand}</td>
+                    <td className="fb-data">{product.brand ? `${product.brand} (${t.productDetail.fbBrandGenuine})` : t.productDetail.fbBrandGenuine}</td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Phân khúc thiết bị</td>
-                    <td className="fb-data">{product.category_name || (isDjControllerOrSystem ? "Thiết Bị DJ Chuyên Nghiệp" : "Thiết Bị Âm Thanh")}</td>
+                    <td className="fb-label">{t.productDetail.fbLabelCategory}</td>
+                    <td className="fb-data">{product.category_name || (isDjControllerOrSystem ? t.productDetail.fbCategoryProDj : t.productDetail.fbCategoryAudio)}</td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Tình trạng máy</td>
-                    <td className="fb-data">{product.specifications?.["Tình trạng"] || "Mới 100% Fullbox / Like New 99% Tuyển Chọn"}</td>
+                    <td className="fb-label">{t.productDetail.fbLabelCondition}</td>
+                    <td className="fb-data">{product.specifications?.["Tình trạng"] || t.productDetail.fbConditionDefault}</td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Giá mua niêm yết</td>
+                    <td className="fb-label">{t.productDetail.fbLabelPrice}</td>
                     <td className="fb-data">
                       <span className="fb-price-tag">
-                        {product.sale_price ? formatCurrency(product.sale_price, lang) : "Liên hệ nhận báo giá ưu đãi"}
+                        {product.sale_price ? formatCurrency(product.sale_price, lang) : t.productDetail.fbPriceContact}
                       </span>
-                      <span className="fb-subnote"> (Hỗ trợ trả góp 0% qua thẻ tín dụng và CCCD)</span>
+                      <span className="fb-subnote"> {t.productDetail.fbInstallmentNote}</span>
                     </td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Chính sách bảo hành</td>
-                    <td className="fb-data">{product.specifications?.["Bảo hành"] || "12 - 24 tháng chính hãng (Linh kiện chuẩn)"}</td>
+                    <td className="fb-label">{t.productDetail.fbLabelWarranty}</td>
+                    <td className="fb-data">{product.specifications?.["Bảo hành"] || t.productDetail.fbWarrantyDefault}</td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Mua bán & Sở hữu</td>
+                    <td className="fb-label">{t.productDetail.fbLabelSaleStatus}</td>
                     <td className="fb-data">
-                      <span className="fb-status-yes">{product.stock_quantity > 0 ? "✓ Có hàng tại kho" : "Liên hệ kiểm tra kho"}</span>
+                      <span className="fb-status-yes">{product.stock_quantity > 0 ? t.productDetail.fbInStock : t.productDetail.fbCheckStock}</span>
                       {" • "}
                       {isDirectHotModel || isDjControllerOrSystem ? (
                         <Link href="/ban-dj" className="fb-action-link">
-                          Xem trung tâm Mua Bán Bàn DJ &rarr;
+                          {t.productDetail.fbViewDjCenter}
                         </Link>
                       ) : (
                         <Link
                           href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
                           className="fb-action-link"
                         >
-                          Xem danh mục {product.category_name || "sản phẩm"} &rarr;
+                          {t.productDetail.fbViewCategoryPrefix} {product.category_name || "sản phẩm"} &rarr;
                         </Link>
                       )}
                     </td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Cho thuê sự kiện</td>
+                    <td className="fb-label">{t.productDetail.fbLabelRentalStatus}</td>
                     <td className="fb-data">
                       {product.rental_enabled || product.rental_price ? (
                         <>
-                          <span className="fb-status-yes">✓ Có hỗ trợ cho thuê</span>
-                          {product.rental_price ? ` (từ ${formatCurrency(product.rental_price, lang)} / 24h)` : ""}
+                          <span className="fb-status-yes">{t.productDetail.fbRentalAvailable}</span>
+                          {product.rental_price ? ` (${t.productDetail.fbRentalStartingFrom} ${formatCurrency(product.rental_price, lang)} / 24h)` : ""}
                           {" • "}
                           <Link href={isDjControllerOrSystem ? "/thue-ban-dj" : "/products"} className="fb-action-link">
-                            {isDjControllerOrSystem ? "Xem bảng giá thuê máy →" : "Hỗ trợ cấu hình sự kiện →"}
+                            {isDjControllerOrSystem ? t.productDetail.fbViewRentalService : t.productDetail.fbViewEquipmentRental}
                           </Link>
                         </>
                       ) : (
-                        <span>Hỗ trợ tư vấn thuê theo cấu hình sự kiện</span>
+                        <span>{lang === "en" ? "Rental consultation based on event configuration" : "Hỗ trợ tư vấn thuê theo cấu hình sự kiện"}</span>
                       )}
                     </td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Sửa chữa & Kỹ thuật</td>
+                    <td className="fb-label">{lang === "en" ? "Technical & Repair" : "Sửa chữa & Kỹ thuật"}</td>
                     <td className="fb-data">
-                      <span className="fb-status-yes">✓ Có trạm kỹ thuật</span>
+                      <span className="fb-status-yes">{lang === "en" ? "✓ Technical service center available" : "✓ Có trạm kỹ thuật"}</span>
                       {isDjControllerOrSystem ? (
                         <>
-                          {" (Sẵn fader Alps, cân chỉnh jogwheel, vệ sinh bo mạch) • "}
+                          {lang === "en" ? " (OEM Alps faders, jogwheel calibration, circuit servicing) • " : " (Sẵn fader Alps, cân chỉnh jogwheel, vệ sinh bo mạch) • "}
                           <Link href="/sua-chua-ban-dj" className="fb-action-link">
-                            Dịch vụ sửa chữa &rarr;
+                            {lang === "en" ? "Repair service →" : "Dịch vụ sửa chữa →"}
                           </Link>
                         </>
                       ) : (
                         <>
-                          {" (Kiểm tra kỹ thuật, bảo hành chính hãng, linh kiện chuẩn) • "}
+                          {lang === "en" ? " (Diagnostic bench, genuine warranty, standard components) • " : " (Kiểm tra kỹ thuật, bảo hành chính hãng, linh kiện chuẩn) • "}
                           <Link href="/sua-chua-ban-dj" className="fb-action-link">
-                            Trung tâm kỹ thuật &rarr;
+                            {lang === "en" ? "Technical center →" : "Trung tâm kỹ thuật →"}
                           </Link>
                         </>
                       )}
                     </td>
                   </tr>
                   <tr>
-                    <td className="fb-label">Khu vực phục vụ</td>
+                    <td className="fb-label">{lang === "en" ? "Service Area" : "Khu vực phục vụ"}</td>
                     <td className="fb-data">
-                      Showroom Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu) & Showroom Huế (442 Chi Lăng) • Giao hàng toàn quốc
+                      {lang === "en"
+                        ? "Da Nang Showroom (77 Nguyen Tat Thanh, Hai Chau Ward) & Hue Showroom (442 Chi Lang) • Nationwide Delivery"
+                        : "Showroom Đà Nẵng (77 Nguyễn Tất Thành, phường Hải Châu) & Showroom Huế (442 Chi Lăng) • Giao hàng toàn quốc"}
                     </td>
                   </tr>
                 </tbody>
@@ -1287,10 +1295,10 @@ export default function ProductDetailClient({
              ============================================================ */}
           <div className="pdetail-3pillars-wrapper">
             <div className="pdetail-3pillars-header">
-              <span className="pdetail-3pillars-kicker">HỆ SINH THÁI DỊCH VỤ TẠI VANMUSIC</span>
-              <h2 className="pdetail-3pillars-title">Dịch Vụ Cho Thiết Bị {displayName}</h2>
+              <span className="pdetail-3pillars-kicker">{t.productDetail.pillarsKicker}</span>
+              <h2 className="pdetail-3pillars-title">{t.productDetail.pillarsTitlePrefix} {displayName}</h2>
               <p className="pdetail-3pillars-subtitle">
-                Tùy theo nhu cầu thực tế, bạn có thể chọn mua sở hữu, thuê sự kiện ngắn ngày hoặc bảo dưỡng kỹ thuật tại Showroom Đà Nẵng & Huế:
+                {t.productDetail.pillarsSubtitle}
               </p>
             </div>
 
@@ -1299,23 +1307,21 @@ export default function ProductDetailClient({
               <div className="pdetail-pillar-card pillar-buy">
                 <div className="pillar-icon">🛒</div>
                 <h3 className="pillar-card-title">
-                  {isDirectHotModel || isDjControllerOrSystem ? `Mua Bàn DJ ${displayName}` : `Mua ${displayName} Chính Hãng`}
+                  {isDirectHotModel || isDjControllerOrSystem ? `${t.productDetail.pillarBuyTitleDj} ${displayName}` : `${t.productDetail.pillarBuyTitleGeneric} ${displayName}`}
                 </h3>
                 <p className="pillar-card-desc">
-                  Phân phối chính hãng mới 100% fullbox hoặc like new 99% tuyển chọn, bảo hành 12 - 24T, hỗ trợ trả góp 0%.
+                  {t.productDetail.pillarBuyDesc}
                 </p>
                 {isDirectHotModel || isDjControllerOrSystem ? (
                   <Link href="/ban-dj" className="pillar-cta-btn pillar-cta-buy">
-                    <span>Khám phá các mẫu bàn DJ đang bán</span>
-                    <span>&rarr;</span>
+                    <span>{t.productDetail.pillarBuyCtaDj}</span>
                   </Link>
                 ) : (
                   <Link
                     href={product.category_slug ? `/products?category=${product.category_slug}` : "/products"}
                     className="pillar-cta-btn pillar-cta-buy"
                   >
-                    <span>Khám phá sản phẩm cùng danh mục</span>
-                    <span>&rarr;</span>
+                    <span>{t.productDetail.pillarBuyCtaGeneric}</span>
                   </Link>
                 )}
               </div>
@@ -1324,19 +1330,16 @@ export default function ProductDetailClient({
               <div className="pdetail-pillar-card pillar-rent">
                 <div className="pillar-icon">🎧</div>
                 <h3 className="pillar-card-title">
-                  {isDirectHotModel || isDjProduct ? "Thuê Thiết Bị Biểu Diễn" : "Thuê Thiết Bị Sự Kiện"}
+                  {isDirectHotModel || isDjProduct ? t.productDetail.pillarRentTitleDj : t.productDetail.pillarRentTitleGeneric}
                 </h3>
                 <p className="pillar-card-desc">
-                  {isDirectHotModel || isDjProduct
-                    ? "Hỗ trợ cho thuê thiết bị DJ ngắn ngày cho show, tiệc và sự kiện, giao nhận và setup tận nơi 24/7 tại Đà Nẵng & Huế."
-                    : "Hỗ trợ giải pháp thuê âm thanh ngắn ngày cho show, hội thảo và sự kiện, giao nhận setup tận nơi tại Đà Nẵng & Huế."}
+                  {isDirectHotModel || isDjProduct ? t.productDetail.pillarRentDescDj : t.productDetail.pillarRentDescGeneric}
                 </p>
                 <Link
                   href={isDirectHotModel || isDjControllerOrSystem ? "/thue-ban-dj" : (product.category_slug ? `/products?category=${product.category_slug}` : "/products")}
                   className="pillar-cta-btn pillar-cta-rent"
                 >
-                  <span>{isDirectHotModel || isDjControllerOrSystem ? "Xem dịch vụ cho thuê bàn DJ" : "Xem dịch vụ cho thuê thiết bị"}</span>
-                  <span>&rarr;</span>
+                  <span>{isDirectHotModel || isDjControllerOrSystem ? t.productDetail.pillarRentCtaDj : t.productDetail.pillarRentCtaGeneric}</span>
                 </Link>
               </div>
 
@@ -1344,16 +1347,13 @@ export default function ProductDetailClient({
               <div className="pdetail-pillar-card pillar-repair">
                 <div className="pillar-icon">🛠️</div>
                 <h3 className="pillar-card-title">
-                  {isDjControllerOrSystem ? "Sửa Chữa & Bảo Dưỡng Bàn DJ" : "Dịch Vụ Kỹ Thuật & Sửa Chữa"}
+                  {isDjControllerOrSystem ? t.productDetail.pillarRepairTitleDj : t.productDetail.pillarRepairTitleGeneric}
                 </h3>
                 <p className="pillar-card-desc">
-                  {isDjControllerOrSystem
-                    ? "Trạm kỹ thuật tiếp nhận kiểm tra miễn phí, thay thế fader, cân chỉnh jogwheel và bảo dưỡng thiết bị DJ chuyên nghiệp."
-                    : "Trạm kỹ thuật tiếp nhận kiểm tra miễn phí, xử lý bo mạch, cân chỉnh âm học và bảo hành thiết bị chính hãng."}
+                  {isDjControllerOrSystem ? t.productDetail.pillarRepairDescDj : t.productDetail.pillarRepairDescGeneric}
                 </p>
                 <Link href="/sua-chua-ban-dj" className="pillar-cta-btn pillar-cta-repair">
-                  <span>Xem dịch vụ sửa chữa & bảo dưỡng</span>
-                  <span>&rarr;</span>
+                  <span>{t.productDetail.pillarRepairCta}</span>
                 </Link>
               </div>
             </div>
@@ -1595,13 +1595,13 @@ export default function ProductDetailClient({
             <div className="pdetail-faq-section">
               <div style={{ marginBottom: "18px" }}>
                 <span className="pdetail-banner-kicker">
-                  FAQ • Hỏi & Đáp
+                  {t.productDetail.faqKicker}
                 </span>
                 <h2 className="pdetail-faq-title">
-                  Câu Hỏi Thường Gặp Về {displayName}
+                  {t.productDetail.faqTitlePrefix} {displayName}
                 </h2>
                 <p style={{ fontSize: "14px", color: "#a1a1aa", margin: "6px 0 0 0" }}>
-                  Giải đáp chi tiết về thông số kỹ thuật, cách sử dụng, giá bán & dịch vụ thuê {displayName} tại VanBass.
+                  {t.productDetail.faqSubtitle}
                 </p>
               </div>
 

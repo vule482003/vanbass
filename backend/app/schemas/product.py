@@ -23,6 +23,7 @@ class ProductCreate(BaseModel):
 
     sale_enabled: bool = False
     sale_price: Decimal | None = Field(default=None, gt=0)
+    discount_percent: int | None = Field(default=None, ge=1, le=99)
 
     rental_enabled: bool = False
     rental_price: Decimal | None = Field(default=None, gt=0)
@@ -36,6 +37,10 @@ class ProductCreate(BaseModel):
 
         if not self.sale_enabled and self.sale_price is not None:
             raise ValueError("sale_price must be null when sale_enabled is false")
+
+        if self.discount_percent is not None:
+            if not self.sale_enabled or self.sale_price is None or self.sale_price <= 0:
+                raise ValueError("Khuyến mãi chỉ áp dụng khi sản phẩm bật bán và có giá bán lớn hơn 0")
 
         if self.rental_enabled and self.rental_price is None:
             raise ValueError("rental_price is required when rental_enabled is true")
@@ -65,6 +70,7 @@ class ProductUpdate(BaseModel):
 
     sale_enabled: bool | None = None
     sale_price: Decimal | None = Field(default=None, gt=0)
+    discount_percent: int | None = Field(default=None, ge=1, le=99)
 
     rental_enabled: bool | None = None
     rental_price: Decimal | None = Field(default=None, gt=0)
@@ -92,6 +98,8 @@ class ProductResponse(BaseModel):
 
     sale_enabled: bool
     sale_price: Decimal | None
+    discount_percent: int | None = None
+    original_price: Decimal | None = None
 
     rental_enabled: bool
     rental_price: Decimal | None
@@ -103,3 +111,13 @@ class ProductResponse(BaseModel):
 
     created_at: datetime
     updated_at: datetime
+
+    @model_validator(mode="after")
+    def compute_original_price(self):
+        if not self.sale_enabled or not self.sale_price or not self.discount_percent or self.discount_percent <= 0:
+            self.original_price = None
+        elif self.original_price is None:
+            multiplier = Decimal("1") - (Decimal(self.discount_percent) / Decimal("100"))
+            raw = self.sale_price / multiplier
+            self.original_price = (raw / Decimal("1000")).quantize(Decimal("1"), rounding="ROUND_HALF_UP") * Decimal("1000")
+        return self

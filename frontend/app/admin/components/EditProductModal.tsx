@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 
 export interface ProductItem {
   id: string;
@@ -11,6 +11,8 @@ export interface ProductItem {
   category_id: string;
   sale_enabled: boolean;
   sale_price?: number;
+  discount_percent?: number | null;
+  original_price?: number | null;
   rental_enabled: boolean;
   rental_price?: number;
   stock_quantity: number;
@@ -19,7 +21,7 @@ export interface ProductItem {
   meta_description?: string;
   meta_keywords?: string;
   canonical_url?: string;
-  images?: Array<{ id?: string; image_url: string; alt_text?: string; is_primary?: boolean }>;
+  images?: Array<{ id?: string; image_url: string; alt_text?: string; is_primary?: boolean; sort_order?: number }>;
   image_url?: string;
 }
 
@@ -30,6 +32,24 @@ export interface CategoryItem {
   description?: string;
   image_url?: string;
   is_active?: boolean;
+}
+
+export interface EditProductImageOperation {
+  toDeleteIds: string[];
+  toReplace: Array<{ id: string; file?: File; url?: string }>;
+  toAdd: Array<{ file?: File; url?: string }>;
+}
+
+export interface InternalImageItem {
+  id?: string;
+  image_url: string;
+  alt_text?: string;
+  is_primary?: boolean;
+  sort_order?: number;
+  isMarkedForDeletion?: boolean;
+  replacementFile?: File | null;
+  replacementPreviewUrl?: string | null;
+  isNew?: boolean;
 }
 
 export interface EditProductModalProps {
@@ -51,18 +71,20 @@ export interface EditProductModalProps {
   setSaleEnabled: (val: boolean) => void;
   salePrice: string;
   setSalePrice: (val: string) => void;
+  discountPercent?: string;
+  setDiscountPercent?: (val: string) => void;
   rentalEnabled: boolean;
   setRentalEnabled: (val: boolean) => void;
   rentalPrice: string;
   setRentalPrice: (val: string) => void;
   stockQuantity: string;
   setStockQuantity: (val: string) => void;
-  imageUrl: string;
-  setImageUrl: (val: string) => void;
-  imagePreviewUrl: string | null;
-  setImagePreviewUrl: (val: string | null) => void;
-  selectedImageFile: File | null;
-  setSelectedImageFile: (file: File | null) => void;
+  imageUrl?: string;
+  setImageUrl?: (val: string) => void;
+  imagePreviewUrl?: string | null;
+  setImagePreviewUrl?: (val: string | null) => void;
+  selectedImageFile?: File | null;
+  setSelectedImageFile?: (file: File | null) => void;
   description: string;
   setDescription: (val: string) => void;
   metaTitle: string;
@@ -73,9 +95,9 @@ export interface EditProductModalProps {
   setMetaKeywords: (val: string) => void;
   // Handlers & State
   onClose: () => void;
-  onSubmit: (e: React.FormEvent) => void | Promise<void>;
+  onSubmit: (e: React.FormEvent, imageOps?: EditProductImageOperation) => void | Promise<void>;
   onRegenerateSku: () => void;
-  onImageFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onImageFileChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isSubmitting: boolean;
   errorMessage?: string;
 }
@@ -98,18 +120,15 @@ export default function EditProductModal({
   setSaleEnabled,
   salePrice,
   setSalePrice,
+  discountPercent,
+  setDiscountPercent,
   rentalEnabled,
   setRentalEnabled,
   rentalPrice,
   setRentalPrice,
   stockQuantity,
   setStockQuantity,
-  imageUrl,
-  setImageUrl,
-  imagePreviewUrl,
-  setImagePreviewUrl,
   selectedImageFile,
-  setSelectedImageFile,
   description,
   setDescription,
   metaTitle,
@@ -121,11 +140,249 @@ export default function EditProductModal({
   onClose,
   onSubmit,
   onRegenerateSku,
-  onImageFileChange,
   isSubmitting,
   errorMessage,
 }: EditProductModalProps) {
   const [isSeoOpen, setIsSeoOpen] = useState(false);
+  const [imagesList, setImagesList] = useState<InternalImageItem[]>([]);
+  const [newImageUrlInput, setNewImageUrlInput] = useState("");
+  const [showAddUrlInput, setShowAddUrlInput] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const replaceFileInputRef = useRef<HTMLInputElement>(null);
+  const [replacingIndex, setReplacingIndex] = useState<number | null>(null);
+  const [localValidationMsg, setLocalValidationMsg] = useState<string | null>(null);
+  const [enableDiscount, setEnableDiscount] = useState<boolean>(false);
+
+  // Sync images list and discount toggle whenever product or modal state changes (React idiomatic render-time sync)
+  const [prevProductSyncKey, setPrevProductSyncKey] = useState<string | null>(null);
+  const currentProductSyncKey = isOpen && product ? `${product.id}_${product.images?.length || 0}` : null;
+
+  if (currentProductSyncKey !== prevProductSyncKey) {
+    setPrevProductSyncKey(currentProductSyncKey);
+    setLocalValidationMsg(null);
+    setEnableDiscount(Boolean(discountPercent && Number(discountPercent) > 0));
+    if (product) {
+      if (product.images && product.images.length > 0) {
+        setImagesList(
+          product.images.map((img, idx) => ({
+            id: img.id,
+            image_url: img.image_url,
+            alt_text: img.alt_text,
+            is_primary: img.is_primary ?? idx === 0,
+            sort_order: img.sort_order ?? idx,
+            isMarkedForDeletion: false,
+            replacementFile: null,
+            replacementPreviewUrl: null,
+            isNew: false,
+          }))
+        );
+      } else if (product.image_url) {
+        setImagesList([
+          {
+            id: undefined,
+            image_url: product.image_url,
+            is_primary: true,
+            sort_order: 0,
+            isMarkedForDeletion: false,
+            replacementFile: null,
+            replacementPreviewUrl: null,
+            isNew: false,
+          },
+        ]);
+      } else {
+        setImagesList([]);
+      }
+    } else {
+      setImagesList([]);
+    }
+    setNewImageUrlInput("");
+    setShowAddUrlInput(false);
+    setReplacingIndex(null);
+  }
+
+  const handleToggleDelete = (idx: number) => {
+    setImagesList((prev) => {
+      const target = prev[idx];
+      if (!target) return prev;
+      if (target.isNew) {
+        return prev.filter((_, i) => i !== idx);
+      }
+      return prev.map((img, i) =>
+        i === idx ? { ...img, isMarkedForDeletion: !img.isMarkedForDeletion } : img
+      );
+    });
+  };
+
+  const handleTriggerReplace = (idx: number) => {
+    setReplacingIndex(idx);
+    replaceFileInputRef.current?.click();
+  };
+
+  const handleReplaceFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && replacingIndex !== null) {
+      const preview = URL.createObjectURL(file);
+      setImagesList((prev) =>
+        prev.map((img, i) =>
+          i === replacingIndex
+            ? {
+                ...img,
+                replacementFile: file,
+                replacementPreviewUrl: preview,
+                isMarkedForDeletion: false,
+              }
+            : img
+        )
+      );
+    }
+    if (replaceFileInputRef.current) {
+      replaceFileInputRef.current.value = "";
+    }
+    setReplacingIndex(null);
+  };
+
+  const handleCancelReplace = (idx: number) => {
+    setImagesList((prev) =>
+      prev.map((img, i) =>
+        i === idx
+          ? {
+              ...img,
+              replacementFile: null,
+              replacementPreviewUrl: null,
+            }
+          : img
+      )
+    );
+  };
+
+  const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newItems: InternalImageItem[] = Array.from(files).map((file) => ({
+        image_url: "",
+        replacementFile: file,
+        replacementPreviewUrl: URL.createObjectURL(file),
+        isNew: true,
+        isMarkedForDeletion: false,
+      }));
+      setImagesList((prev) => [...prev, ...newItems]);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleAddUrl = () => {
+    const url = newImageUrlInput.trim();
+    if (!url) return;
+    setImagesList((prev) => [
+      ...prev,
+      {
+        image_url: url,
+        isNew: true,
+        isMarkedForDeletion: false,
+      },
+    ]);
+    setNewImageUrlInput("");
+    setShowAddUrlInput(false);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLocalValidationMsg(null);
+
+    // 1. Validation tồn kho không được để trống
+    const trimmedStock = String(stockQuantity ?? "").trim();
+    if (trimmedStock === "") {
+      setLocalValidationMsg("Số lượng tồn kho không được để trống. Vui lòng nhập số lượng (hoặc nhập 0 nếu hết hàng).");
+      return;
+    }
+    const numStock = Number(trimmedStock);
+    if (isNaN(numStock) || numStock < 0 || !Number.isInteger(numStock)) {
+      setLocalValidationMsg("Số lượng tồn kho phải là số nguyên không âm (>= 0).");
+      return;
+    }
+
+    // 2. Validation giá bán khi bật bán
+    if (saleEnabled) {
+      const trimmedSalePrice = String(salePrice ?? "").trim();
+      if (!trimmedSalePrice) {
+        setLocalValidationMsg("Vui lòng nhập giá bán khi bật chức năng bán sản phẩm.");
+        return;
+      }
+      const numSalePrice = Number(trimmedSalePrice);
+      if (isNaN(numSalePrice) || numSalePrice <= 0) {
+        setLocalValidationMsg("Giá bán phải là số hợp lệ lớn hơn 0 khi bật bán sản phẩm.");
+        return;
+      }
+    }
+
+    // 2B. Validation khuyến mãi
+    if (enableDiscount) {
+      const trimmedDiscount = String(discountPercent ?? "").trim();
+      if (!trimmedDiscount) {
+        setLocalValidationMsg("Vui lòng nhập phần trăm giảm giá (từ 1% đến 99%) hoặc tắt tùy chọn khuyến mãi.");
+        return;
+      }
+      const numDiscount = Number(trimmedDiscount);
+      if (isNaN(numDiscount) || !Number.isInteger(numDiscount) || numDiscount < 1 || numDiscount > 99) {
+        setLocalValidationMsg("Phần trăm giảm giá phải là số nguyên từ 1 đến 99%.");
+        return;
+      }
+      if (!saleEnabled || !salePrice || Number(salePrice) <= 0) {
+        setLocalValidationMsg("Chỉ có thể áp dụng khuyến mãi khi sản phẩm đang được bật bán với giá bán hợp lệ.");
+        return;
+      }
+    }
+
+    // 3. Validation giá thuê khi bật cho thuê
+    if (rentalEnabled) {
+      const trimmedRentalPrice = String(rentalPrice ?? "").trim();
+      if (!trimmedRentalPrice) {
+        setLocalValidationMsg("Vui lòng nhập giá thuê khi bật chức năng cho thuê.");
+        return;
+      }
+      const numRentalPrice = Number(trimmedRentalPrice);
+      if (isNaN(numRentalPrice) || numRentalPrice <= 0) {
+        setLocalValidationMsg("Giá thuê phải là số hợp lệ lớn hơn 0 khi bật cho thuê.");
+        return;
+      }
+    }
+
+    const toDeleteIds: string[] = [];
+    const toReplace: Array<{ id: string; file?: File; url?: string }> = [];
+    const toAdd: Array<{ file?: File; url?: string }> = [];
+
+    for (const img of imagesList) {
+      if (img.isNew) {
+        if (!img.isMarkedForDeletion) {
+          if (img.replacementFile) {
+            toAdd.push({ file: img.replacementFile });
+          } else if (img.image_url.trim()) {
+            toAdd.push({ url: img.image_url.trim() });
+          }
+        }
+      } else if (img.isMarkedForDeletion) {
+        if (img.id) {
+          toDeleteIds.push(img.id);
+        }
+      } else if (img.replacementFile) {
+        if (img.id) {
+          toReplace.push({ id: img.id, file: img.replacementFile });
+        } else {
+          // Legacy product with no ID in image record -> add as new
+          toAdd.push({ file: img.replacementFile });
+        }
+      }
+    }
+
+    // Support legacy single file if passed via props
+    if (selectedImageFile) {
+      toAdd.push({ file: selectedImageFile });
+    }
+
+    await onSubmit(e, { toDeleteIds, toReplace, toAdd });
+  };
 
   // Close on Escape key press
   useEffect(() => {
@@ -152,16 +409,26 @@ export default function EditProductModal({
     }
   }, [isOpen]);
 
-  if (!isOpen || !product) {
-    return null;
-  }
-
   // Format currency helper
   const formatVND = (value: string | number) => {
     const num = typeof value === "string" ? Number(value) : value;
     if (isNaN(num) || num <= 0) return null;
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(num);
   };
+
+  // Tính toán giá gốc dự kiến theo công thức: original_price = sale_price / (1 - discount_percent / 100), làm tròn đến 1.000đ
+  const previewOriginalPrice = useMemo(() => {
+    if (!saleEnabled || !salePrice) return null;
+    const s = Number(salePrice);
+    const d = Number(discountPercent);
+    if (isNaN(s) || s <= 0 || isNaN(d) || d < 1 || d > 99) return null;
+    const raw = s / (1 - d / 100);
+    return Math.round(raw / 1000) * 1000;
+  }, [saleEnabled, salePrice, discountPercent]);
+
+  if (!isOpen || !product) {
+    return null;
+  }
 
   const currentCategoryName = categories.find((c) => c.id === categoryId)?.name;
 
@@ -189,7 +456,7 @@ export default function EditProductModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <form onSubmit={onSubmit} className="flex flex-col h-full min-h-0" noValidate={false}>
+        <form onSubmit={handleFormSubmit} className="flex flex-col h-full min-h-0" noValidate={false}>
           {/* =========================================================
               MODAL HEADER (REFINED & SLIM)
               ========================================================= */}
@@ -238,11 +505,11 @@ export default function EditProductModal({
               WebkitOverflowScrolling: "touch",
             }}
           >
-            {/* Error Banner if update fails */}
-            {errorMessage && (
+            {/* Error Banner if update fails or local validation fails */}
+            {(localValidationMsg || errorMessage) && (
               <div className="p-3.5 rounded-lg bg-red-950/30 border border-red-500/40 flex items-start gap-2.5 text-red-200 text-[13px]">
                 <span className="text-red-400 font-bold leading-none mt-0.5">⚠️</span>
-                <div className="flex-1 leading-snug">{errorMessage}</div>
+                <div className="flex-1 leading-snug">{localValidationMsg || errorMessage}</div>
               </div>
             )}
 
@@ -438,92 +705,305 @@ export default function EditProductModal({
                     <span>{Number(stockQuantity) > 0 ? `Còn hàng (${stockQuantity})` : "Hết hàng"}</span>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* SECTION 3: HÌNH ẢNH THIẾT BỊ */}
-            <div className="border-b border-[#22242a] pb-6">
-              <h3 className="text-[16px] font-semibold text-[#f4f4f5] mb-4">
-                Hình ảnh sản phẩm
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                {/* Inputs */}
-                <div className="md:col-span-3 space-y-3">
-                  <div>
-                    <label className="block text-[13px] font-medium text-[#d4d4d8] mb-1.5">
-                      Đường dẫn ảnh trực tiếp (Image URL)
-                    </label>
-                    <input
-                      type="url"
-                      value={imageUrl}
-                      onChange={(e) => {
-                        setImageUrl(e.target.value);
-                        if (e.target.value) {
-                          setImagePreviewUrl(e.target.value);
-                          setSelectedImageFile(null);
-                        }
-                      }}
-                      placeholder="VD: https://cdn.hstatic.net/products/200000465225/alphatheta-xdj-az.png"
-                      className="w-full h-[42px] px-3.5 bg-[#0c0d10] border border-[#27272e] rounded-md text-white text-[13.5px] placeholder-[#71717a] focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981]/30 focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[13px] font-medium text-[#d4d4d8] mb-1.5">
-                      Hoặc tải file ảnh mới từ máy tính
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/avif"
-                        onChange={(e) => {
-                          onImageFileChange(e);
-                          setImageUrl("");
-                        }}
-                        className="text-[13px] text-[#a1a1aa] file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-[12.5px] file:font-medium file:bg-[#1f2128] file:text-zinc-200 hover:file:bg-[#282b34] cursor-pointer"
-                      />
+                {/* Áp dụng giá khuyến mãi */}
+                {saleEnabled && (
+                  <div className="md:col-span-3 mt-1 p-3.5 bg-[#0e1014] border border-[#27272e] rounded-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[13px] font-semibold text-[#f4f4f5] flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={enableDiscount}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setEnableDiscount(checked);
+                            if (!checked && setDiscountPercent) {
+                              setDiscountPercent("");
+                            }
+                          }}
+                          className="w-4 h-4 rounded text-[#10b981] focus:ring-0 accent-[#10b981] cursor-pointer"
+                        />
+                        <span>Áp dụng giá khuyến mãi (Hiển thị % giảm giá &amp; giá gốc gạch ngang)</span>
+                      </label>
+                      {enableDiscount && (
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                          ĐANG BẬT SALE
+                        </span>
+                      )}
                     </div>
-                    {selectedImageFile && (
-                      <div className="mt-1 text-[12px] text-emerald-400">
-                        Đã chọn: {selectedImageFile.name} ({(selectedImageFile.size / 1024).toFixed(1)} KB)
+
+                    {enableDiscount && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-[#1f2127]">
+                        <div className="space-y-1.5">
+                          <label className="block text-[12.5px] font-medium text-[#d4d4d8]">
+                            Phần trăm giảm giá (%) <span className="text-emerald-400">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="1"
+                              max="99"
+                              step="1"
+                              value={discountPercent || ""}
+                              onChange={(e) => setDiscountPercent?.(e.target.value)}
+                              placeholder="VD: 10"
+                              className="w-full h-[40px] px-3.5 pr-8 bg-[#0c0d10] border border-[#27272e] rounded-md text-white font-mono text-[14px] placeholder-[#71717a] focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981]/30 focus:outline-none transition-colors"
+                            />
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#71717a] font-bold pointer-events-none">
+                              %
+                            </span>
+                          </div>
+                          <span className="text-[11.5px] text-[#71717a] block">
+                            Nhập số nguyên từ 1 đến 99
+                          </span>
+                        </div>
+
+                        <div className="md:col-span-2 p-3 bg-[#14171d] border border-[#222731] rounded-md">
+                          <div className="text-[11.5px] font-bold uppercase tracking-wider text-[#a1a1aa] mb-1.5">
+                            Xem trước hiển thị giá khách hàng
+                          </div>
+                          <div className="flex flex-wrap items-baseline gap-3">
+                            <div>
+                              <span className="text-[11px] text-[#71717a] block">Giá bán thanh toán:</span>
+                              <span className="text-[15px] font-bold text-white font-mono">
+                                {salePrice && Number(salePrice) > 0 ? formatVND(salePrice) : "--"}
+                              </span>
+                            </div>
+                            {previewOriginalPrice && previewOriginalPrice > 0 ? (
+                              <>
+                                <span className="text-[14px] text-emerald-400 font-bold">➔</span>
+                                <div>
+                                  <span className="text-[11px] text-[#71717a] block">Giá gốc tự tính (gạch ngang):</span>
+                                  <span className="text-[15px] font-medium text-[#a1a1aa] line-through font-mono">
+                                    {formatVND(previewOriginalPrice)}
+                                  </span>
+                                </div>
+                                <div className="ml-auto text-right">
+                                  <span className="text-[11px] text-[#71717a] block">Thẻ giảm:</span>
+                                  <span className="inline-block text-[12px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                    -{discountPercent}%
+                                  </span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="text-[12px] text-[#71717a] italic mt-1">
+                                {salePrice && Number(salePrice) > 0
+                                  ? "Nhập % giảm giá từ 1 đến 99 để hệ thống tự tính giá gốc."
+                                  : "Vui lòng nhập giá bán hợp lệ trước."}
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-[10.5px] text-[#71717a] mt-2 pt-2 border-t border-[#1a1e27]">
+                            Công thức chuẩn: <code>original_price = sale_price / (1 - discount_percent / 100)</code> (làm tròn đến 1.000đ).
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
-                </div>
+                )}
+              </div>
+            </div>
 
-                {/* Thumbnail Preview */}
-                <div className="flex flex-col items-center justify-center p-2">
-                  {imagePreviewUrl ? (
-                    <div className="text-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={imagePreviewUrl}
-                        alt="Preview"
-                        className="w-[84px] h-[84px] object-contain rounded-md bg-[#000] border border-[#27272e] p-1 mx-auto"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = "none";
-                        }}
-                      />
-                      <span className="block text-[11px] text-[#71717a] mt-1.5">
-                        {selectedImageFile ? "Ảnh mới chọn" : "Ảnh hiện tại"}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="w-[84px] h-[84px] rounded-md border border-dashed border-[#27272e] flex flex-col items-center justify-center text-[#71717a] text-[11px] text-center p-2">
-                      <svg className="w-5 h-5 mb-1 text-[#52525b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                      <span>Chưa có ảnh</span>
-                    </div>
-                  )}
+            {/* SECTION 3: QUẢN LÝ HÌNH ẢNH SẢN PHẨM */}
+            <div className="border-b border-[#22242a] pb-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <div>
+                  <h3 className="text-[16px] font-semibold text-[#f4f4f5]">
+                    Quản lý hình ảnh sản phẩm
+                  </h3>
+                  <p className="text-[12.5px] text-[#71717a] mt-0.5">
+                    Hiển thị các ảnh hiện có. Giữ nguyên nếu không thao tác; chỉ cập nhật khi bạn chủ động thêm, thay thế hoặc xóa.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[12px] font-mono text-[#a1a1aa] bg-[#1a1c23] border border-[#27272e] px-2.5 py-1 rounded-md">
+                    {imagesList.filter((img) => !img.isMarkedForDeletion).length} ảnh hoạt động
+                  </span>
                 </div>
               </div>
+
+              {/* Gallery Cards Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 pt-1">
+                {imagesList.map((img, idx) => {
+                  const displayUrl = img.replacementPreviewUrl || img.image_url;
+                  const isPrimary = idx === 0 || img.is_primary;
+                  const isDeleted = img.isMarkedForDeletion;
+
+                  return (
+                    <div
+                      key={img.id || `img-${idx}`}
+                      className={`relative rounded-lg border p-2 flex flex-col justify-between transition-all duration-150 ${
+                        isDeleted
+                          ? "border-red-500/40 bg-red-950/20 opacity-60"
+                          : img.replacementFile
+                          ? "border-emerald-500/50 bg-[#161a22]"
+                          : img.isNew
+                          ? "border-blue-500/40 bg-[#131720]"
+                          : "border-[#27272e] bg-[#0c0d10] hover:border-[#383b45]"
+                      }`}
+                      style={{ minHeight: "165px" }}
+                    >
+                      {/* Badge top */}
+                      <div className="flex items-center justify-between gap-1 mb-1.5 min-h-[20px]">
+                        {isPrimary ? (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
+                            Ảnh chính
+                          </span>
+                        ) : (
+                          <span className="text-[10.5px] text-[#71717a] font-mono">
+                            #{idx + 1}
+                          </span>
+                        )}
+
+                        {isDeleted ? (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-500/25 border border-red-500/40 text-red-300">
+                            Sẽ xóa
+                          </span>
+                        ) : img.replacementFile ? (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/25 border border-emerald-500/40 text-emerald-300">
+                            Đã đổi
+                          </span>
+                        ) : img.isNew ? (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-500/25 border border-blue-500/40 text-blue-300">
+                            Mới thêm
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {/* Image Thumbnail */}
+                      <div className="w-full h-[95px] rounded bg-[#000] border border-[#1f2128] overflow-hidden flex items-center justify-center p-1 relative">
+                        {displayUrl ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={displayUrl}
+                            alt={img.alt_text || `Product image ${idx + 1}`}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/images/products/placeholder.png";
+                            }}
+                          />
+                        ) : (
+                          <span className="text-[11px] text-[#71717a]">Chưa có ảnh</span>
+                        )}
+                      </div>
+
+                      {/* Card Actions */}
+                      <div className="flex items-center justify-between gap-1 mt-2 pt-1.5 border-t border-[#1f2128]">
+                        {isDeleted ? (
+                          <button
+                            type="button"
+                            onClick={() => handleToggleDelete(idx)}
+                            className="w-full text-[11px] text-[#38bdf8] hover:text-[#7dd3fc] font-medium py-1 px-1.5 rounded hover:bg-[#1a2332] transition-colors cursor-pointer text-center"
+                          >
+                            ↩ Hoàn tác
+                          </button>
+                        ) : img.replacementFile ? (
+                          <button
+                            type="button"
+                            onClick={() => handleCancelReplace(idx)}
+                            className="w-full text-[11px] text-[#a1a1aa] hover:text-white font-medium py-1 px-1.5 rounded hover:bg-[#1f2128] transition-colors cursor-pointer text-center"
+                          >
+                            Hủy đổi
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleTriggerReplace(idx)}
+                              className="text-[11px] text-[#d4d4d8] hover:text-white font-medium py-1 px-2 rounded hover:bg-[#1f2128] transition-colors flex items-center gap-1 cursor-pointer"
+                              title="Thay thế ảnh này"
+                            >
+                              <svg className="w-3 h-3 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                              <span>Thay</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleToggleDelete(idx)}
+                              className="text-[11px] text-red-400 hover:text-red-300 font-medium py-1 px-2 rounded hover:bg-red-950/30 transition-colors flex items-center gap-1 cursor-pointer ml-auto"
+                              title="Xóa ảnh này"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                              <span>Xóa</span>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Dropzone Card: THÊM ẢNH MỚI */}
+                <div
+                  className="rounded-lg border border-dashed border-[#343842] hover:border-[#10b981] bg-[#0c0d10]/60 hover:bg-[#12151c] p-3 flex flex-col items-center justify-center text-center transition-all duration-150 cursor-pointer group"
+                  style={{ minHeight: "165px" }}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#1b1e26] group-hover:bg-[#10b981]/20 group-hover:text-[#10b981] text-[#a1a1aa] flex items-center justify-center mb-1.5 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <span className="text-[12.5px] font-medium text-white group-hover:text-[#10b981] transition-colors">
+                    Thêm ảnh mới
+                  </span>
+                  <span className="text-[11px] text-[#71717a] mt-0.5">
+                    Chọn từ máy tính
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAddUrlInput((prev) => !prev);
+                    }}
+                    className="mt-2 text-[11px] text-[#38bdf8] hover:underline"
+                  >
+                    {showAddUrlInput ? "Ẩn nhập link" : "+ Dán link ảnh"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Hidden file inputs for add & replace */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                multiple
+                className="hidden"
+                onChange={handleFilesSelected}
+              />
+              <input
+                ref={replaceFileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                className="hidden"
+                onChange={handleReplaceFileSelected}
+              />
+
+              {/* URL Input dropdown if toggled */}
+              {showAddUrlInput && (
+                <div className="mt-3 p-3 rounded-lg bg-[#0c0d10] border border-[#27272e] flex items-center gap-2">
+                  <input
+                    type="url"
+                    value={newImageUrlInput}
+                    onChange={(e) => setNewImageUrlInput(e.target.value)}
+                    placeholder="Dán link ảnh trực tiếp (VD: https://cdn.../product.png)"
+                    className="flex-1 h-[36px] px-3 bg-[#111317] border border-[#27272e] rounded text-white text-[13px] placeholder-[#71717a] focus:border-[#10b981] focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddUrl}
+                    className="h-[36px] px-3.5 rounded bg-[#10b981] hover:bg-[#059669] text-white text-[12.5px] font-medium transition-colors cursor-pointer"
+                  >
+                    Thêm ảnh
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* SECTION 4: MÔ TẢ CHI TIẾT (RAW HTML TEXTAREA) */}

@@ -174,7 +174,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   letterSpacing: "0.05em",
                 }}
               >
-                CÓ CHO THUÊ
+                {(t.products.forRent || "CÓ CHO THUÊ").toUpperCase()}
               </span>
             )}
           </div>
@@ -286,9 +286,21 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
               {product.sale_enabled && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontSize: "13px", color: "#a1a1aa", fontWeight: 600 }}>{t.products.purchasePriceLabel}</span>
-                  <span style={{ fontSize: "22px", fontWeight: 900, color: "#ffffff" }}>
-                    {formatVND(product.sale_price)}
-                  </span>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                    {product.discount_percent && product.discount_percent > 0 && product.original_price ? (
+                      <>
+                        <span style={{ fontSize: "13px", color: "#71717a", textDecoration: "line-through" }}>
+                          {formatVND(product.original_price)}
+                        </span>
+                        <span style={{ fontSize: "11px", fontWeight: 800, color: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.15)", padding: "1px 6px", borderRadius: "4px" }}>
+                          -{product.discount_percent}%
+                        </span>
+                      </>
+                    ) : null}
+                    <span style={{ fontSize: "22px", fontWeight: 900, color: "#ffffff" }}>
+                      {formatVND(product.sale_price)}
+                    </span>
+                  </div>
                 </div>
               )}
 

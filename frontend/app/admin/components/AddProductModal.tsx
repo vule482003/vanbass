@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import type { CategoryItem } from "./EditProductModal";
 
 export interface AddProductModalProps {
@@ -21,6 +21,8 @@ export interface AddProductModalProps {
   setSaleEnabled: (val: boolean) => void;
   salePrice: string;
   setSalePrice: (val: string) => void;
+  discountPercent?: string;
+  setDiscountPercent?: (val: string) => void;
   rentalEnabled: boolean;
   setRentalEnabled: (val: boolean) => void;
   rentalPrice: string;
@@ -69,6 +71,8 @@ export default function AddProductModal({
   setSaleEnabled,
   salePrice,
   setSalePrice,
+  discountPercent,
+  setDiscountPercent,
   rentalEnabled,
   setRentalEnabled,
   rentalPrice,
@@ -101,6 +105,7 @@ export default function AddProductModal({
   errorMessage,
 }: AddProductModalProps) {
   const [isSeoOpen, setIsSeoOpen] = useState(false);
+  const [enableDiscount, setEnableDiscount] = useState<boolean>(Boolean(discountPercent && Number(discountPercent) > 0));
 
   // Close on Escape key press
   useEffect(() => {
@@ -127,16 +132,26 @@ export default function AddProductModal({
     }
   }, [isOpen]);
 
-  if (!isOpen) {
-    return null;
-  }
-
   // Format currency helper
   const formatVND = (value: string | number) => {
     const num = typeof value === "string" ? Number(value) : value;
     if (isNaN(num) || num <= 0) return null;
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(num);
   };
+
+  // Tính toán giá gốc dự kiến theo công thức: original_price = sale_price / (1 - discount_percent / 100), làm tròn đến 1.000đ
+  const previewOriginalPrice = useMemo(() => {
+    if (!saleEnabled || !salePrice) return null;
+    const s = Number(salePrice);
+    const d = Number(discountPercent);
+    if (isNaN(s) || s <= 0 || isNaN(d) || d < 1 || d > 99) return null;
+    const raw = s / (1 - d / 100);
+    return Math.round(raw / 1000) * 1000;
+  }, [saleEnabled, salePrice, discountPercent]);
+
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div
@@ -409,6 +424,102 @@ export default function AddProductModal({
                     <span>{Number(stockQuantity) > 0 ? `Còn hàng (${stockQuantity})` : "Hết hàng"}</span>
                   </div>
                 </div>
+
+                {/* Áp dụng giá khuyến mãi */}
+                {saleEnabled && (
+                  <div className="md:col-span-3 mt-1 p-3.5 bg-[#0e1014] border border-[#27272e] rounded-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[13px] font-semibold text-[#f4f4f5] flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={enableDiscount}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setEnableDiscount(checked);
+                            if (!checked && setDiscountPercent) {
+                              setDiscountPercent("");
+                            }
+                          }}
+                          className="w-4 h-4 rounded text-[#10b981] focus:ring-0 accent-[#10b981] cursor-pointer"
+                        />
+                        <span>Áp dụng giá khuyến mãi (Hiển thị % giảm giá &amp; giá gốc gạch ngang)</span>
+                      </label>
+                      {enableDiscount && (
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                          ĐANG BẬT SALE
+                        </span>
+                      )}
+                    </div>
+
+                    {enableDiscount && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-[#1f2127]">
+                        <div className="space-y-1.5">
+                          <label className="block text-[12.5px] font-medium text-[#d4d4d8]">
+                            Phần trăm giảm giá (%) <span className="text-emerald-400">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="1"
+                              max="99"
+                              step="1"
+                              value={discountPercent || ""}
+                              onChange={(e) => setDiscountPercent?.(e.target.value)}
+                              placeholder="VD: 10"
+                              className="w-full h-[40px] px-3.5 pr-8 bg-[#0c0d10] border border-[#27272e] rounded-md text-white font-mono text-[14px] placeholder-[#71717a] focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981]/30 focus:outline-none transition-colors"
+                            />
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#71717a] font-bold pointer-events-none">
+                              %
+                            </span>
+                          </div>
+                          <span className="text-[11.5px] text-[#71717a] block">
+                            Nhập số nguyên từ 1 đến 99
+                          </span>
+                        </div>
+
+                        <div className="md:col-span-2 p-3 bg-[#14171d] border border-[#222731] rounded-md">
+                          <div className="text-[11.5px] font-bold uppercase tracking-wider text-[#a1a1aa] mb-1.5">
+                            Xem trước hiển thị giá khách hàng
+                          </div>
+                          <div className="flex flex-wrap items-baseline gap-3">
+                            <div>
+                              <span className="text-[11px] text-[#71717a] block">Giá bán thanh toán:</span>
+                              <span className="text-[15px] font-bold text-white font-mono">
+                                {salePrice && Number(salePrice) > 0 ? formatVND(salePrice) : "--"}
+                              </span>
+                            </div>
+                            {previewOriginalPrice && previewOriginalPrice > 0 ? (
+                              <>
+                                <span className="text-[14px] text-emerald-400 font-bold">➔</span>
+                                <div>
+                                  <span className="text-[11px] text-[#71717a] block">Giá gốc tự tính (gạch ngang):</span>
+                                  <span className="text-[15px] font-medium text-[#a1a1aa] line-through font-mono">
+                                    {formatVND(previewOriginalPrice)}
+                                  </span>
+                                </div>
+                                <div className="ml-auto text-right">
+                                  <span className="text-[11px] text-[#71717a] block">Thẻ giảm:</span>
+                                  <span className="inline-block text-[12px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                    -{discountPercent}%
+                                  </span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="text-[12px] text-[#71717a] italic mt-1">
+                                {salePrice && Number(salePrice) > 0
+                                  ? "Nhập % giảm giá từ 1 đến 99 để hệ thống tự tính giá gốc."
+                                  : "Vui lòng nhập giá bán hợp lệ trước."}
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-[10.5px] text-[#71717a] mt-2 pt-2 border-t border-[#1a1e27]">
+                            Công thức chuẩn: <code>original_price = sale_price / (1 - discount_percent / 100)</code> (làm tròn đến 1.000đ).
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

@@ -106,7 +106,14 @@ export default function StickyProductActionBar({
           {product.sale_enabled && product.sale_price ? (
             <div className="price-item">
               <span className="price-kicker">{lang === "en" ? "Buy Price" : "Giá bán"}</span>
-              <span className="price-val main-price">{formatCurrency(product.sale_price, lang)}</span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                <span className="price-val main-price">{formatCurrency(product.sale_price, lang)}</span>
+                {product.discount_percent && product.discount_percent > 0 && product.original_price ? (
+                  <span style={{ fontSize: "11px", color: "#71717a", textDecoration: "line-through" }}>
+                    {formatCurrency(product.original_price, lang)}
+                  </span>
+                ) : null}
+              </div>
             </div>
           ) : null}
 

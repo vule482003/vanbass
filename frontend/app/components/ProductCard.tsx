@@ -84,22 +84,20 @@ export default function ProductCard({
   const displayName = getTranslatedProductName(product, lang);
   const isOutOfStock = product.stock_quantity <= 0;
 
-  // Compute realistic promotional attributes
+  // Promotional attributes from backend
+  const discountPct = product.discount_percent && product.discount_percent > 0 ? product.discount_percent : 0;
+  const originalPrice = discountPct > 0 && product.original_price ? product.original_price : 0;
   const hash = (product.id || product.slug || "").split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const salePrice = product.sale_price || 0;
-  const discountPercentages = [5, 8, 12, 15, 10, 18, 6, 20, 14, 7];
-  const discountPct = discountPercentages[hash % discountPercentages.length];
-  const originalPrice = (product as { original_price?: number }).original_price || (salePrice > 0 ? Math.round(salePrice * (1 + discountPct / 100)) : 0);
 
   // Gift incentive text based on product type
   const categoryName = (product.category_name || product.category_slug || product.name || "").toLowerCase();
-  let giftText = "Tặng gói bảo hành vàng 24 tháng chính hãng";
+  let giftText = t.products.giftWarrantyGold;
   if (categoryName.includes("dj") || categoryName.includes("xdj") || categoryName.includes("ddj") || categoryName.includes("controller")) {
-    giftText = "Tặng túi đựng bàn DJ cao cấp 1.200.000đ";
+    giftText = t.products.giftDjBag;
   } else if (categoryName.includes("loa") || categoryName.includes("speaker") || categoryName.includes("âm thanh") || categoryName.includes("mixer")) {
-    giftText = "Tặng gói setup cân chỉnh âm thanh & dây tín hiệu Pro";
+    giftText = t.products.giftAudioCable;
   } else if (categoryName.includes("khói") || categoryName.includes("sáng") || categoryName.includes("effects")) {
-    giftText = "Tặng 1 can dung dịch tạo khói cao cấp chính hãng";
+    giftText = t.products.giftFogFluid;
   }
 
   // Sold count & rating score
@@ -227,7 +225,7 @@ export default function ProductCard({
               </div>
             ) : (
               <div className="vb-price-primary rental-alt">
-                {product.rental_price ? `${formatVND(product.rental_price)} / ngày` : t.products.rentalOnly}
+                {product.rental_price ? `${formatVND(product.rental_price)} ${t.products.perDay}` : t.products.rentalOnly}
               </div>
             )}
           </div>

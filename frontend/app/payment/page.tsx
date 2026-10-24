@@ -7,6 +7,7 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../lib/auth-context";
+import { useLanguage } from "../lib/language-context";
 
 interface OrderDetail {
   id: string;
@@ -36,6 +37,7 @@ function PaymentBridgeContent() {
   const router = useRouter();
   const orderId = searchParams.get("order_id") || "";
   const { token } = useAuth();
+  const { t, lang } = useLanguage();
 
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -142,7 +144,7 @@ function PaymentBridgeContent() {
   if (isLoading) {
     return (
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
-        <p style={{ color: "#a1a1aa", fontSize: "15px" }}>Đang tải thông tin thanh toán...</p>
+        <p style={{ color: "#a1a1aa", fontSize: "15px" }}>{t.common.loading}</p>
       </div>
     );
   }
@@ -150,9 +152,9 @@ function PaymentBridgeContent() {
   if (!orderId || !order) {
     return (
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", padding: "20px", textAlign: "center" }}>
-        <p style={{ color: "#ef4444", fontSize: "16px", marginBottom: "16px" }}>Không tìm thấy đơn hàng cần thanh toán.</p>
+        <p style={{ color: "#ef4444", fontSize: "16px", marginBottom: "16px" }}>{t.payment.noOrderTitle}.</p>
         <Link href="/cart?tab=history" className="button" style={{ backgroundColor: "#27272a", color: "#fff", padding: "10px 20px", borderRadius: "6px" }}>
-          ← Quay lại Lịch sử Đơn Mua
+          ← {t.payment.viewOrderBtn}
         </Link>
       </div>
     );
@@ -209,14 +211,14 @@ function PaymentBridgeContent() {
               ✓
             </div>
             <h1 style={{ fontSize: "24px", color: "#fff", fontWeight: 800, marginBottom: "10px" }}>
-              Thanh Toán Thành Công!
+              {t.payment.paymentSuccessTitle}
             </h1>
             <p style={{ color: "#a1a1aa", fontSize: "14.5px", marginBottom: "8px", lineHeight: 1.6 }}>
-              Hệ thống đã tự động ghi nhận thanh toán cho đơn hàng{" "}
+              {lang === "en" ? "System has automatically verified payment for order " : "Hệ thống đã tự động ghi nhận thanh toán cho đơn hàng "}
               <strong style={{ color: "#22c55e" }}>#{order.order_number}</strong>.
             </p>
             <p style={{ color: "#71717a", fontSize: "13.5px", marginBottom: "28px" }}>
-              Cảm ơn bạn đã tin tưởng mua sắm tại VanBass Music Center! Đơn hàng đang được chuẩn bị đóng gói.
+              {t.payment.paymentSuccessDesc}
             </p>
 
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
@@ -232,7 +234,7 @@ function PaymentBridgeContent() {
                   textDecoration: "none",
                 }}
               >
-                Xem Lịch Sử Đơn Mua
+                {t.payment.viewOrderBtn}
               </Link>
               <Link
                 href="/"
@@ -246,7 +248,7 @@ function PaymentBridgeContent() {
                   textDecoration: "none",
                 }}
               >
-                Trang Chủ VanBass
+                {t.payment.backHomeBtn}
               </Link>
             </div>
           </div>
@@ -272,13 +274,13 @@ function PaymentBridgeContent() {
                   marginBottom: "12px",
                 }}
               >
-                QUÉT MÃ VIETQR TỰ ĐỘNG
+                {t.payment.autoVietQrBadge}
               </div>
               <h1 style={{ fontSize: "22px", color: "#fff", fontWeight: 800, margin: "0 0 6px 0" }}>
-                Chuyển Khoản Ngân Hàng
+                {t.payment.title}
               </h1>
               <p style={{ color: "#a1a1aa", fontSize: "13.5px", margin: 0 }}>
-                Quét mã VietQR bằng bất kỳ App ngân hàng nào (MB, VCB, Techcombank, Momo,...)
+                {t.payment.scanInstructions}
               </p>
             </div>
 
@@ -310,7 +312,7 @@ function PaymentBridgeContent() {
                 }}
               />
               <p style={{ color: "#52525b", fontSize: "12px", marginTop: "10px", textAlign: "center", fontWeight: 500 }}>
-                Quét bằng ứng dụng ngân hàng để tự động điền STK, Số tiền và Nội dung
+                {t.payment.qrSubtext}
               </p>
             </div>
 
@@ -329,7 +331,7 @@ function PaymentBridgeContent() {
             >
               {/* Ngân hàng */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#71717a", fontSize: "13.5px" }}>Ngân hàng:</span>
+                <span style={{ color: "#71717a", fontSize: "13.5px" }}>{t.payment.bankLabel}</span>
                 <span style={{ color: "#fff", fontWeight: 700, fontSize: "14px" }}>
                   {BANK_INFO.bankName}
                 </span>
@@ -337,7 +339,7 @@ function PaymentBridgeContent() {
 
               {/* Số tài khoản */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#71717a", fontSize: "13.5px" }}>Số tài khoản:</span>
+                <span style={{ color: "#71717a", fontSize: "13.5px" }}>{t.payment.accountNumberLabel}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <span style={{ color: "#22c55e", fontWeight: 800, fontSize: "16px", letterSpacing: "0.5px" }}>
                     {BANK_INFO.accountNumber}
@@ -356,14 +358,14 @@ function PaymentBridgeContent() {
                       cursor: "pointer",
                     }}
                   >
-                    {copiedField === "account" ? "✓ Đã chép" : "Sao chép"}
+                    {copiedField === "account" ? `✓ ${t.payment.copySuccess}` : t.payment.copyBtn}
                   </button>
                 </div>
               </div>
 
               {/* Chủ tài khoản */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#71717a", fontSize: "13.5px" }}>Chủ tài khoản:</span>
+                <span style={{ color: "#71717a", fontSize: "13.5px" }}>{t.payment.accountNameLabel}</span>
                 <span style={{ color: "#fff", fontWeight: 700, fontSize: "14px" }}>
                   {BANK_INFO.accountName}
                 </span>
@@ -371,7 +373,7 @@ function PaymentBridgeContent() {
 
               {/* Số tiền */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#71717a", fontSize: "13.5px" }}>Số tiền:</span>
+                <span style={{ color: "#71717a", fontSize: "13.5px" }}>{t.payment.amountLabel}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <span style={{ color: "#fff", fontWeight: 800, fontSize: "16px" }}>
                     {amount.toLocaleString("vi-VN")} đ
@@ -390,7 +392,7 @@ function PaymentBridgeContent() {
                       cursor: "pointer",
                     }}
                   >
-                    {copiedField === "amount" ? "✓ Đã chép" : "Sao chép"}
+                    {copiedField === "amount" ? `✓ ${t.payment.copySuccess}` : t.payment.copyBtn}
                   </button>
                 </div>
               </div>
@@ -407,10 +409,10 @@ function PaymentBridgeContent() {
               >
                 <div>
                   <span style={{ color: "#f59e0b", fontSize: "13.5px", fontWeight: 700, display: "block" }}>
-                    Nội dung chuyển khoản:
+                    {t.payment.transferContentLabel}
                   </span>
                   <span style={{ color: "#71717a", fontSize: "11px" }}>
-                    (Bắt buộc để tự động kích hoạt)
+                    {lang === "en" ? "(Required for automatic order activation)" : "(Bắt buộc để tự động kích hoạt)"}
                   </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -442,7 +444,7 @@ function PaymentBridgeContent() {
                       cursor: "pointer",
                     }}
                   >
-                    {copiedField === "content" ? "✓ Đã chép" : "Sao chép"}
+                    {copiedField === "content" ? `✓ ${t.payment.copySuccess}` : t.payment.copyBtn}
                   </button>
                 </div>
               </div>
@@ -475,7 +477,7 @@ function PaymentBridgeContent() {
                   boxShadow: "0 0 10px #22c55e",
                 }}
               />
-              Đang chờ hệ thống ghi nhận chuyển khoản tự động...
+              {lang === "en" ? "Awaiting automatic bank transfer confirmation..." : "Đang chờ hệ thống ghi nhận chuyển khoản tự động..."}
             </div>
 
             {/* Action Buttons */}
@@ -501,7 +503,7 @@ function PaymentBridgeContent() {
                   transition: "all 0.15s ease",
                 }}
               >
-                {isChecking ? "Đang kiểm tra giao dịch..." : "Tôi Đã Chuyển Khoản Xong (Kiểm tra lại)"}
+                {isChecking ? t.payment.checkingBtn : (lang === "en" ? "I Have Completed Transfer (Re-check)" : "Tôi Đã Chuyển Khoản Xong (Kiểm tra lại)")}
               </button>
 
               <button
@@ -518,7 +520,7 @@ function PaymentBridgeContent() {
                   cursor: "pointer",
                 }}
               >
-                ← Quay lại danh sách đơn mua
+                ← {t.payment.viewOrderBtn}
               </button>
             </div>
           </div>

@@ -42,6 +42,10 @@ class Product(Base):
             "NOT rental_enabled OR rental_price > 0",
             name="ck_products_rental_price_required",
         ),
+        CheckConstraint(
+            "discount_percent IS NULL OR (discount_percent > 0 AND discount_percent < 100)",
+            name="ck_products_discount_percent_range",
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -100,6 +104,12 @@ class Product(Base):
     sale_price: Mapped[Decimal | None] = mapped_column(
         Numeric(18, 2),
         nullable=True,
+    )
+
+    discount_percent: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
+        default=None,
     )
 
     rental_enabled: Mapped[bool] = mapped_column(
@@ -174,3 +184,17 @@ class Product(Base):
     rental_request_items: Mapped[list["RentalRequestItem"]] = relationship(
         back_populates="product",
     )
+
+    @property
+    def original_price(self) -> Decimal | None:
+        """
+        Calculate original price before promotional discount.
+        Formula: original_price = sale_price / (1 - discount_percent / 100)
+        Rounded to nearest 1,000 VND.
+        """
+        if self.sale_enabled and self.sale_price and self.sale_price > 0 and self.discount_percent and self.discount_percent > 0:
+            multiplier = Decimal("1") - (Decimal(self.discount_percent) / Decimal("100"))
+            raw = self.sale_price / multiplier
+            # Round to nearest 1,000 VND
+            return (raw / Decimal("1000")).quantize(Decimal("1"), rounding="ROUND_HALF_UP") * Decimal("1000")
+        return None
